@@ -1946,4 +1946,29 @@ BOOST_AUTO_TEST_CASE( NpthPadCopperKeepsNumberAndNet )
 }
 
 
+/**
+ * Altium treats the pads of a component that share a number as one pin, joined inside the part.
+ * KiCad must be told, or it wants copper between them; but pads Altium has on two different nets
+ * are not joined, since that would be a short.
+ */
+BOOST_AUTO_TEST_CASE( DuplicatePadNumbersAreJumpers )
+{
+    std::string dataPath = KI_TEST::GetPcbnewTestDataDir()
+                           + "plugins/altium/duplicate_pad_numbers/duplicate_pad_numbers.PcbDoc";
+
+    std::unique_ptr<BOARD> board = m_altiumPlugin.LoadBoard( dataPath );
+    BOOST_REQUIRE( board );
+
+    std::map<wxString, bool> jumpers;
+
+    for( FOOTPRINT* footprint : board->Footprints() )
+        jumpers[footprint->GetReference()] = footprint->GetDuplicatePadNumbersAreJumpers();
+
+    BOOST_REQUIRE_EQUAL( jumpers.size(), 3 );
+    BOOST_CHECK( jumpers[wxT( "R24" )] );   // two pads "1" on one net
+    BOOST_CHECK( !jumpers[wxT( "R23" )] );  // two pads "1" on different nets
+    BOOST_CHECK( jumpers[wxT( "R22" )] );   // two pads "1" on no net
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()

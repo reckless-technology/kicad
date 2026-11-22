@@ -268,6 +268,14 @@ private:
      *         that a footprint whose only SMD pads are the copper of non-plated holes has none.
      */
     int HelperGetLikelyMountingStyle( const FOOTPRINT* aFootprint ) const;
+
+    /**
+     * Join the pads of a footprint that share a number, as Altium does: it treats them as one pin
+     * of the part, where KiCad otherwise wants copper between them.  Nothing is joined when two
+     * such pads are on different nets.
+     */
+    void HelperSetDuplicatePadNumbersAreJumpers( FOOTPRINT* aFootprint );
+
     void HelperSetFootprintStackups();
 
     /**

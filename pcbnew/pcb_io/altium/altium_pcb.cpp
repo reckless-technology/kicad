@@ -858,6 +858,12 @@ void ALTIUM_PCB::Parse( const ALTIUM_PCB_COMPOUND_FILE&              altiumPcbFi
     // pad has been attached to its footprint.
     HelperSetFootprintMountingStyles();
 
+    for( FOOTPRINT* footprint : m_components )
+    {
+        if( footprint )
+            HelperSetDuplicatePadNumbersAreJumpers( footprint );
+    }
+
     // Copper that touches no pad returns to the board here, before the tuning patterns claim it
     HelperFoldComponentCopperIntoPads();
 
@@ -1501,6 +1507,8 @@ std::unique_ptr<FOOTPRINT> ALTIUM_PCB::ParseFootprint( ALTIUM_PCB_COMPOUND_FILE&
     }
 
     HelperPlaceUnfoldedCopper();
+
+    HelperSetDuplicatePadNumbersAreJumpers( footprint.get() );
 
     // Auto-position reference and value
     footprint->AutoPositionFields();
@@ -6515,6 +6523,52 @@ int ALTIUM_PCB::HelperGetLikelyMountingStyle( const FOOTPRINT* aFootprint ) cons
     }
 
     return likely;
+}
+
+
+void ALTIUM_PCB::HelperSetDuplicatePadNumbersAreJumpers( FOOTPRINT* aFootprint )
+{
+    std::map<wxString, int>           padCount;
+    std::map<wxString, std::set<int>> padNets;
+
+    for( PAD* pad : aFootprint->Pads() )
+    {
+        if( pad->GetNumber().IsEmpty() )
+            continue;
+
+        padCount[pad->GetNumber()]++;
+
+        if( pad->GetNetCode() > 0 )
+            padNets[pad->GetNumber()].insert( pad->GetNetCode() );
+    }
+
+    bool hasDuplicates = false;
+
+    for( const auto& [number, count] : padCount )
+    {
+        if( count < 2 )
+            continue;
+
+        // Joining pads that Altium has on two different nets would short them; leave that to DRC
+        if( padNets[number].size() > 1 )
+        {
+            if( m_reporter )
+            {
+                m_reporter->Report( wxString::Format( _( "Footprint %s has pads numbered %s on "
+                                                         "different nets; they are not joined." ),
+                                                      aFootprint->GetReference(), number ),
+                                    RPT_SEVERITY_WARNING );
+            }
+
+            return;
+        }
+
+        hasDuplicates = true;
+    }
+
+    // Altium makes the pads of a component that share a number one pin, joined inside the part
+    if( hasDuplicates )
+        aFootprint->SetDuplicatePadNumbersAreJumpers( true );
 }
 
 
