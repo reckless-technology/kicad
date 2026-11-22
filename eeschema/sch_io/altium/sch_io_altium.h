@@ -131,6 +131,13 @@ public:
 
     bool IsLibraryWritable( const wxString& aLibraryPath ) override { return false; }
 
+    /**
+     * @return true if \a aNickname, an Altium source library's name, already belongs to a library
+     *         in the library tables that this import does not register (KiCad's own "Relay" or
+     *         "Switch", say), whose symbols would replace the imported ones of the same name.
+     */
+    bool isForeignSymbolLibrary( const wxString& aNickname );
+
     wxString   getLibName();
     wxFileName getLibFileName();
 
@@ -407,6 +414,12 @@ private:
 
     // Special strings sheet text refers to, which Altium resolves to nothing when no value exists
     std::set<wxString> m_sheetSpecialStrings;
+
+    /// Nicknames of the Altium symbol libraries a project import registers in the project.
+    std::set<wxString> m_sourceSymbolLibs;
+
+    /// Source library nicknames, and whether another library already answers to each.
+    std::map<wxString, bool> m_foreignSymbolLibs;
 
     // Cache the error messages to avoid duplicate messages
     std::unordered_map<wxString, SEVERITY > m_errorMessages;

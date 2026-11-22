@@ -75,6 +75,7 @@
 #include <wx/wfstream.h>
 #include <magic_enum.hpp>
 #include "sch_io_altium.h"
+#include <import_proj_properties.h>
 
 
 // Harness port object itself does not contain color information about itself
@@ -398,6 +399,26 @@ wxString SCH_IO_ALTIUM::getLibName()
 }
 
 
+bool SCH_IO_ALTIUM::isForeignSymbolLibrary( const wxString& aNickname )
+{
+    if( m_sourceSymbolLibs.count( aNickname ) )
+        return false;
+
+    if( auto it = m_foreignSymbolLibs.find( aNickname ); it != m_foreignSymbolLibs.end() )
+        return it->second;
+
+    SYMBOL_LIBRARY_ADAPTER* adapter = nullptr;
+
+    if( m_schematic )
+        adapter = PROJECT_SCH::SymbolLibAdapter( &m_schematic->Project() );
+
+    bool isForeign = adapter && adapter->GetRow( aNickname ).has_value();
+
+    m_foreignSymbolLibs[aNickname] = isForeign;
+    return isForeign;
+}
+
+
 wxFileName SCH_IO_ALTIUM::getLibFileName()
 {
     wxFileName fn( m_schematic->Project().GetProjectPath(), getLibName(),
@@ -549,6 +570,13 @@ SCH_SHEET* SCH_IO_ALTIUM::LoadSchematicFile( const wxString& aFileName, SCHEMATI
         m_rootSheetFile = wxFileName( m_schematic->Project().GetProjectPath(), m_schematic->Project().GetProjectName(),
                                       FILEEXT::KiCadSchematicFileExtension ).GetFullPath();
     }
+
+    // Only the source libraries the project import registers may lend their nicknames
+    wxString              symbolCacheNickname;
+    std::vector<wxString> sourceSymbolLibs;
+    IMPORT_PROJ_PROPS::ReadSymbolProps( aProperties, symbolCacheNickname, sourceSymbolLibs );
+    m_sourceSymbolLibs = std::set<wxString>( sourceSymbolLibs.begin(), sourceSymbolLibs.end() );
+    m_foreignSymbolLibs.clear();
 
     // Collect the font substitution warnings (RAII - automatically reset on scope exit)
     FONTCONFIG_REPORTER_SCOPE fontconfigScope( &LOAD_INFO_REPORTER::GetInstance() );
@@ -3027,9 +3055,15 @@ void SCH_IO_ALTIUM::ParseComponent( int aIndex, const std::map<wxString, wxStrin
         // library table, so address it by its real library id and let the placement transform
         // ride on the SCH_SYMBOL rather than baking it into a unique name. Altium stores Windows
         // paths, so split the source library name accordingly.
+        wxString nickname = wxFileName( elem.sourcelibraryname, wxPATH_WIN ).GetName();
+
+        // Unless another library already has that nickname: its part of the same name would
+        // replace this one when the symbol links are updated, so take the project's own
+        if( isForeignSymbolLibrary( nickname ) )
+            nickname = getLibName();
+
         name = elem.libreference;
-        libId = AltiumToKiCadLibID( wxFileName( elem.sourcelibraryname, wxPATH_WIN ).GetName(),
-                                    name );
+        libId = AltiumToKiCadLibID( nickname, name );
     }
     else
     {
