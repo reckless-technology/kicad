@@ -95,6 +95,13 @@ struct ALTIUM_SCH_IMPORT_FIXTURE
                + aName;
     }
 
+    wxString issue26126DataFile( const wxString& aName ) const
+    {
+        return wxString::FromUTF8( KI_TEST::GetEeschemaTestDataDir()
+                                   + "/plugins/altium/issue26126/" )
+               + aName;
+    }
+
     wxString issue16903DataFile( const wxString& aName ) const
     {
         return wxString::FromUTF8( KI_TEST::GetEeschemaTestDataDir()
@@ -611,6 +618,97 @@ BOOST_AUTO_TEST_CASE( Issue26127_AltiumFonts )
             BOOST_CHECK_EQUAL( text->GetTextWidth(), size );
         }
     }
+}
+
+
+// https://gitlab.com/kicad/code/kicad/-/issues/26126
+// Altium gives a field's text orientation and justification in page coordinates. KiCad stores them
+// relative to the symbol and displays them through its rotation and mirroring, so the importer
+// must store the values that display as Altium's. Each of the eight symbols in this sheet has one
+// of the four rotations, mirrored or not, and three fields whose text orientations and
+// justifications between them cover every value. Text Altium turns upside down is drawn upright
+// in the same place, so its justification is reversed both ways.
+BOOST_AUTO_TEST_CASE( Issue26126_FieldJustification )
+{
+    SCH_IO_ALTIUM plugin;
+
+    SCH_SHEET* rootSheet = plugin.LoadSchematicFile(
+            issue26126DataFile( wxT( "field_justification.SchDoc" ) ), &m_schematic );
+    BOOST_REQUIRE( rootSheet );
+
+    SCH_SCREEN* screen = rootSheet->GetScreen();
+    BOOST_REQUIRE( screen );
+
+    struct DISPLAYED
+    {
+        EDA_ANGLE         angle;
+        GR_TEXT_H_ALIGN_T hJustify;
+        GR_TEXT_V_ALIGN_T vJustify;
+    };
+
+    // Altium text orientation (quarter turns) and justification (0 = bottom left ... 8 = top right)
+    auto altiumDisplay =
+            []( int aOrientation, int aJustification ) -> DISPLAYED
+            {
+                static const GR_TEXT_H_ALIGN_T h[] = { GR_TEXT_H_ALIGN_LEFT, GR_TEXT_H_ALIGN_CENTER,
+                                                       GR_TEXT_H_ALIGN_RIGHT };
+                static const GR_TEXT_V_ALIGN_T v[] = { GR_TEXT_V_ALIGN_BOTTOM, GR_TEXT_V_ALIGN_CENTER,
+                                                       GR_TEXT_V_ALIGN_TOP };
+
+                DISPLAYED shown{ aOrientation % 2 ? ANGLE_VERTICAL : ANGLE_HORIZONTAL,
+                                 h[aJustification % 3], v[aJustification / 3] };
+
+                if( aOrientation >= 2 )
+                {
+                    shown.hJustify = h[2 - aJustification % 3];
+                    shown.vJustify = v[2 - aJustification / 3];
+                }
+
+                return shown;
+            };
+
+    m_schematic.RefreshHierarchy();
+    const SCH_SHEET_PATH& sheetPath = m_schematic.Hierarchy().front();
+
+    int checked = 0;
+
+    for( SCH_ITEM* item : screen->Items().OfType( SCH_SYMBOL_T ) )
+    {
+        SCH_SYMBOL* symbol = static_cast<SCH_SYMBOL*>( item );
+        wxString    ref = symbol->GetRef( &sheetPath );
+        long        number = 0;
+
+        BOOST_REQUIRE( ref.Mid( 2 ).ToLong( &number ) );
+
+        // Symbol RV(k + 1) has rotation k % 4 and is mirrored when k >= 4. Its field i (0 the
+        // reference, 1 the value, 2 FUNCTION) has text orientation (k + i) % 4 and justification
+        // (3k + 4i) % 9.
+        const int k = static_cast<int>( number ) - 1;
+
+        const std::vector<std::pair<SCH_FIELD*, int>> fields = {
+            { symbol->GetField( FIELD_T::REFERENCE ), 0 },
+            { symbol->GetField( FIELD_T::VALUE ), 1 },
+            { symbol->GetField( wxT( "FUNCTION" ) ), 2 },
+        };
+
+        for( const auto& [field, i] : fields )
+        {
+            BOOST_REQUIRE( field );
+
+            const DISPLAYED expected = altiumDisplay( ( k + i ) % 4, ( 3 * k + 4 * i ) % 9 );
+
+            BOOST_TEST_CONTEXT( ref << " field " << i )
+            {
+                BOOST_CHECK( field->GetDrawRotation() == expected.angle );
+                BOOST_CHECK_EQUAL( field->GetEffectiveHorizJustify(), expected.hJustify );
+                BOOST_CHECK_EQUAL( field->GetEffectiveVertJustify(), expected.vJustify );
+            }
+
+            checked++;
+        }
+    }
+
+    BOOST_CHECK_EQUAL( checked, 24 );
 }
 
 
