@@ -25,6 +25,7 @@
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <wx/arrstr.h>
 #include <json_common.h>
+#include <deque>
 #include <unordered_set>
 #include <set>
 #include <map>
@@ -599,6 +600,16 @@ public:
     {
         return m_variantDescriptions;
     }
+
+    /**
+     * Link footprints to the symbols of this netlist by reference designator, giving each the
+     * path, sheet name and sheet file "Update PCB from Schematic" would.  For footprints whose
+     * ids were never derived from the schematic's, as after importing a non-KiCad project.  A
+     * reference that names more than one symbol or footprint is left alone.
+     *
+     * @return the number of footprints linked.
+     */
+    int LinkFootprintsByReference( const std::deque<FOOTPRINT*>& aFootprints );
 
 private:
     boost::ptr_vector<COMPONENT>     m_components;          // Components found in the netlist.

@@ -814,12 +814,19 @@ void PCB_EDIT_FRAME::KiwayMailIn( KIWAY_MAIL_EVENT& mail )
 
         int renamed = ReconcileImportedReferences( *GetBoard(), netlist );
 
+        // the importers give symbols and footprints unrelated ids, so the board is linked to the
+        // schematic by reference, as Update PCB from Schematic would link it
+        int linked = netlist.LinkFootprintsByReference( GetBoard()->Footprints() );
+
         NET_RECONCILE_RESULT result = ReconcileImportedNetNames( *GetBoard(), netlist, WXLOG_REPORTER::GetInstance() );
 
         int filled = FillImportedFootprintFields( *GetBoard(), netlist );
 
-        if( renamed > 0 || result.m_renamed > 0 || result.m_unconnectedAssigned > 0 || filled > 0 )
+        if( renamed > 0 || linked > 0 || result.m_renamed > 0 || result.m_unconnectedAssigned > 0
+            || filled > 0 )
+        {
             OnModify();
+        }
 
         // the fields were changed behind the view's back, so it is rebuilt from the board
         if( filled > 0 )

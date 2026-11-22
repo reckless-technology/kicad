@@ -208,6 +208,22 @@ void IMPORT_PROJ_HELPER::doImport( const wxString& aFile, FRAME_T aFrameType, in
 }
 
 
+void IMPORT_PROJ_HELPER::ReconcileImportedDesigns()
+{
+    if( !m_importedFrames.contains( FRAME_SCH ) || !m_importedFrames.contains( FRAME_PCB_EDITOR ) )
+        return;
+
+    std::string payload;
+    m_frame->Kiway().ExpressMail( FRAME_PCB_EDITOR, MAIL_PCB_RECONCILE_NETS, payload, m_frame );
+
+    std::string footprintIds;
+    m_frame->Kiway().ExpressMail( FRAME_PCB_EDITOR, MAIL_PCB_GET_FOOTPRINT_IDS, footprintIds, m_frame );
+
+    if( !footprintIds.empty() )
+        m_frame->Kiway().ExpressMail( FRAME_SCH, MAIL_SCH_LINK_FOOTPRINTS, footprintIds, m_frame );
+}
+
+
 void IMPORT_PROJ_HELPER::SaveImportedFiles()
 {
     for( FRAME_T frameType : m_importedFrames )
