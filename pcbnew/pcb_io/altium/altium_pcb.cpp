@@ -1475,6 +1475,10 @@ std::unique_ptr<FOOTPRINT> ALTIUM_PCB::ParseFootprint( ALTIUM_PCB_COMPOUND_FILE&
                     if( !( aPad1->GetNumber().IsEmpty() ^ aPad2->GetNumber().IsEmpty() ) )
                         return;
 
+                    // A hole that cannot be numbered stays unnumbered under its pad's copper
+                    if( !aPad1->CanHaveNumber() || !aPad2->CanHaveNumber() )
+                        return;
+
                     // A pad answers for layers it lacks with its own shape, and masks carry no current
                     const LSET sharedCopper = aPad1->GetLayerSet() & aPad2->GetLayerSet() & LSET::AllCuMask();
 
@@ -1504,7 +1508,8 @@ std::unique_ptr<FOOTPRINT> ALTIUM_PCB::ParseFootprint( ALTIUM_PCB_COMPOUND_FILE&
     // Altium has no mounting style to copy, so derive it from the pads using the same heuristic
     // as KiCad's footprint checker.  Unlike the board importer this can be done here, because a
     // library footprint's pads are converted inline above.
-    footprint->SetAttributes( footprint->GetAttributes() | footprint->GetLikelyAttribute() );
+    footprint->SetAttributes( footprint->GetAttributes()
+                              | HelperGetLikelyMountingStyle( footprint.get() ) );
 
     altiumSetFootprintStackup( footprint.get(), drawnCopper, 2 );
 
@@ -5234,7 +5239,138 @@ void ALTIUM_PCB::ConvertPads6ToFootprintItemOnCopper( FOOTPRINT* aFootprint, con
     pad->SetPadToDieLength( aElem.pad_to_die_length );
     pad->SetPadToDieDelay( aElem.pad_to_die_delay );
 
+    if( pad->GetAttribute() == PAD_ATTRIB::NPTH )
+    {
+        PAD* hole = pad.release();
+        aFootprint->Add( hole, ADD_MODE::APPEND );
+        ConvertNpthCopperToSmdPads( aFootprint, hole, aElem );
+        return;
+    }
+
     aFootprint->Add( pad.release(), ADD_MODE::APPEND );
+}
+
+
+void ALTIUM_PCB::ConvertNpthCopperToSmdPads( FOOTPRINT* aFootprint, PAD* aHole,
+                                             const APAD6& aElem )
+{
+    PADSTACK&      ps = aHole->Padstack();
+    const VECTOR2I drill = aHole->GetDrillSize();
+
+    // Whether the pad's shape on a layer reaches beyond the hole, the test PAD::FlashLayer() makes
+    auto hasCopper =
+            [&]( PCB_LAYER_ID aLayer )
+            {
+                const VECTOR2I& size = ps.Size( aLayer );
+
+                if( size.x <= 0 || size.y <= 0 )
+                    return false;
+
+                if( ps.Offset( aLayer ) != VECTOR2I( 0, 0 ) )
+                    return true;
+
+                switch( ps.Shape( aLayer ) )
+                {
+                case PAD_SHAPE::CIRCLE:
+                case PAD_SHAPE::OVAL:   return size.x > drill.x || size.y > drill.y;
+                default:                return true;
+                }
+            };
+
+    std::vector<PCB_LAYER_ID> copperSides;
+
+    for( PCB_LAYER_ID layer : { F_Cu, B_Cu } )
+    {
+        if( hasCopper( layer ) )
+            copperSides.push_back( layer );
+    }
+
+    const PAD_SHAPE holeShape = aHole->GetDrillShape() == PAD_DRILL_SHAPE::OBLONG
+                                        ? PAD_SHAPE::OVAL
+                                        : PAD_SHAPE::CIRCLE;
+
+    // The hole's own size is the KiCad way to say "no copper on this layer"
+    auto makeHoleOnly =
+            [&]( PCB_LAYER_ID aLayer )
+            {
+                ps.SetSize( drill, aLayer );
+                ps.SetShape( holeShape, aLayer );
+                ps.Offset( aLayer ) = VECTOR2I( 0, 0 );
+            };
+
+    // Altium writes a zero size for a layer without copper, which KiCad rejects as an invalid
+    // padstack
+    auto fixZeroSize =
+            [&]( PCB_LAYER_ID aLayer )
+            {
+                if( ps.Size( aLayer ).x <= 0 || ps.Size( aLayer ).y <= 0 )
+                    makeHoleOnly( aLayer );
+            };
+
+    // A KiCad NPTH pad cannot carry a number or a net (PAD::SetAttribute() has just cleared both)
+    // and its padstack has no way to leave one outer layer without copper, so only a hole whose
+    // outer copper is the same on both sides, with no number and no net, is kept as it is.  So is
+    // one without outer copper, whose number and net would have nothing to go on.
+    // Altium designates mechanical pads, such as a heatsink's fixing hole, 0: no pin of the part
+    bool isNumbered = !aElem.name.IsEmpty() && aElem.name != wxT( "0" );
+
+    bool isNative = copperSides.empty()
+                    || ( !isNumbered && aElem.net == ALTIUM_NET_UNCONNECTED
+                         && copperSides.size() == 2
+                         && ps.CopperLayer( F_Cu ) == ps.CopperLayer( B_Cu ) );
+
+    if( isNative )
+    {
+        ps.ForEachUniqueLayer( fixZeroSize );
+        return;
+    }
+
+    const int netCode = GetNetCode( aElem.net );
+
+    for( PCB_LAYER_ID layer : copperSides )
+    {
+        std::unique_ptr<PAD> copper = std::make_unique<PAD>( aFootprint );
+
+        copper->SetAttribute( PAD_ATTRIB::SMD );
+        copper->SetNumber( aElem.name );
+        copper->SetPosition( aHole->GetPosition() );
+        copper->SetOrientation( aHole->GetOrientation() );
+        copper->SetThermalSpokeAngle( aHole->GetThermalSpokeAngle() );
+        copper->Padstack().SetMode( PADSTACK::MODE::NORMAL );
+        copper->Padstack().CopperLayer( PADSTACK::ALL_LAYERS ) = ps.CopperLayer( layer );
+
+        PCB_LAYER_ID mask = layer == F_Cu ? F_Mask : B_Mask;
+        LSET         layers( { layer } );
+
+        if( aHole->GetLayerSet().test( mask ) )
+            layers.set( mask );
+
+        copper->SetLayer( layer );
+        copper->SetLayerSet( layers );
+
+        if( aHole->GetLocalSolderMaskMargin().has_value() )
+            copper->SetLocalSolderMaskMargin( aHole->GetLocalSolderMaskMargin() );
+
+        copper->SetPadToDieLength( aHole->GetPadToDieLength() );
+        copper->SetPadToDieDelay( aHole->GetPadToDieDelay() );
+        copper->SetNetCode( netCode );
+
+        m_npthCopperPads.insert( copper.get() );
+        aFootprint->Add( copper.release(), ADD_MODE::APPEND );
+    }
+
+    // Altium's two rings are one pin, joined by the part bolted through the hole
+    if( copperSides.size() > 1 && !aElem.name.IsEmpty() )
+        aFootprint->SetDuplicatePadNumbersAreJumpers( true );
+
+    // What is left is the hole itself, on the net of the copper around it, which keeps that
+    // copper out of hole clearance testing against its own hole.  SetNetCode() gives a pad without
+    // copper no net, though a board file holds one, so the net is set directly.
+    ps.SetMode( PADSTACK::MODE::NORMAL );
+    makeHoleOnly( PADSTACK::ALL_LAYERS );
+
+    if( m_board )
+        aHole->SetNet( m_board->FindNet( netCode ) );
 }
 
 
@@ -6330,7 +6466,7 @@ void ALTIUM_PCB::HelperFoldComponentCopperIntoPads()
 
             for( PAD* pad : footprint->Pads() )
             {
-                if( !pad->GetNumber().IsEmpty() || pad->GetNetCode() <= 0 )
+                if( !pad->GetNumber().IsEmpty() || pad->GetNetCode() <= 0 || !pad->CanHaveNumber() )
                     continue;
 
                 const LSET padCopper = pad->GetLayerSet() & LSET::AllCuMask();
@@ -6360,6 +6496,28 @@ void ALTIUM_PCB::HelperFoldComponentCopperIntoPads()
 }
 
 
+int ALTIUM_PCB::HelperGetLikelyMountingStyle( const FOOTPRINT* aFootprint ) const
+{
+    int likely = aFootprint->GetLikelyAttribute();
+
+    // The copper of a non-plated hole is no surface-mount part, though it is held as SMD pads
+    if( likely == FP_SMD )
+    {
+        bool onlyHoleCopper = std::all_of( aFootprint->Pads().begin(), aFootprint->Pads().end(),
+                [&]( const PAD* aPad )
+                {
+                    return aPad->GetAttribute() != PAD_ATTRIB::SMD
+                           || m_npthCopperPads.count( aPad );
+                } );
+
+        if( onlyHoleCopper )
+            likely = 0;
+    }
+
+    return likely;
+}
+
+
 void ALTIUM_PCB::HelperSetFootprintMountingStyles()
 {
     // Altium has no per-component mounting style to copy, so derive it from the pads the way
@@ -6377,7 +6535,8 @@ void ALTIUM_PCB::HelperSetFootprintMountingStyles()
         if( footprint->GetAttributes() & ( FP_SMD | FP_THROUGH_HOLE ) )
             continue;
 
-        footprint->SetAttributes( footprint->GetAttributes() | footprint->GetLikelyAttribute() );
+        footprint->SetAttributes( footprint->GetAttributes()
+                                  | HelperGetLikelyMountingStyle( footprint ) );
     }
 }
 

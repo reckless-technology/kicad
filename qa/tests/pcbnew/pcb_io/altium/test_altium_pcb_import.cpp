@@ -1824,4 +1824,126 @@ BOOST_AUTO_TEST_CASE( Issue26133_BinaryPcbExtension )
 }
 
 
+/**
+ * Altium lets a non-plated hole carry copper, a pad number and a net, which a KiCad NPTH pad
+ * cannot.  The importer keeps the bare hole, on the net, and adds a numbered SMD pad of the copper
+ * on each outer side Altium has copper on, so the pin, its net and its copper all survive.  A
+ * layer without copper must not be left with the zero size Altium writes, an invalid padstack.
+ */
+BOOST_AUTO_TEST_CASE( NpthPadCopperKeepsNumberAndNet )
+{
+    std::string dataPath = KI_TEST::GetPcbnewTestDataDir()
+                           + "plugins/altium/npth_copper/npth_copper.PcbDoc";
+
+    std::unique_ptr<BOARD> board = m_altiumPlugin.LoadBoard( dataPath );
+    BOOST_REQUIRE( board );
+
+    auto footprintByRef =
+            [&]( const wxString& aReference ) -> FOOTPRINT*
+            {
+                for( FOOTPRINT* footprint : board->Footprints() )
+                {
+                    if( footprint->GetReference() == aReference )
+                        return footprint;
+                }
+
+                return nullptr;
+            };
+
+    // The NPTH pad of the given drill and the pads sharing its position, hole first
+    auto holeAndCopper =
+            [&]( FOOTPRINT* aFootprint, int aDrill )
+            {
+                std::vector<PAD*> pads;
+
+                for( PAD* pad : aFootprint->Pads() )
+                {
+                    if( pad->GetAttribute() == PAD_ATTRIB::NPTH && pad->GetDrillSize().x == aDrill )
+                        pads.push_back( pad );
+                }
+
+                if( pads.size() != 1 )
+                    return pads;
+
+                for( PAD* pad : aFootprint->Pads() )
+                {
+                    if( pad != pads[0] && pad->GetPosition() == pads[0]->GetPosition() )
+                        pads.push_back( pad );
+                }
+
+                return pads;
+            };
+
+    const VECTOR2I copperSize( pcbIUScale.mmToIU( 3.0 ), pcbIUScale.mmToIU( 3.0 ) );
+    const VECTOR2I holeSize( pcbIUScale.mmToIU( 1.5 ), pcbIUScale.mmToIU( 1.5 ) );
+
+    auto checkHole =
+            [&]( PAD* aHole, const wxString& aNet )
+            {
+                BOOST_CHECK( aHole->GetAttribute() == PAD_ATTRIB::NPTH );
+                BOOST_CHECK( aHole->GetNumber().IsEmpty() );
+                BOOST_CHECK_EQUAL( aHole->GetNetname(), aNet );
+                BOOST_CHECK( aHole->GetDrillSize() == holeSize );
+
+                // No copper on the outer layers, and no zero-size layer anywhere
+                BOOST_CHECK( aHole->GetSize( F_Cu ) == holeSize );
+                BOOST_CHECK( aHole->GetSize( B_Cu ) == holeSize );
+
+                aHole->Padstack().ForEachUniqueLayer(
+                        [&]( PCB_LAYER_ID aLayer )
+                        {
+                            BOOST_CHECK( aHole->GetSize( aLayer ).x > 0 );
+                            BOOST_CHECK( aHole->GetSize( aLayer ).y > 0 );
+                        } );
+
+                BOOST_CHECK( !aHole->FlashLayer( F_Cu ) );
+                BOOST_CHECK( !aHole->FlashLayer( B_Cu ) );
+            };
+
+    auto checkCopper =
+            [&]( PAD* aCopper, PCB_LAYER_ID aLayer, PCB_LAYER_ID aMask, const wxString& aNet )
+            {
+                BOOST_CHECK( aCopper->GetAttribute() == PAD_ATTRIB::SMD );
+                BOOST_CHECK_EQUAL( aCopper->GetNumber(), wxT( "1" ) );
+                BOOST_CHECK_EQUAL( aCopper->GetNetname(), aNet );
+                BOOST_CHECK( aCopper->GetShape( aLayer ) == PAD_SHAPE::CIRCLE );
+                BOOST_CHECK( aCopper->GetSize( aLayer ) == copperSize );
+                BOOST_CHECK( aCopper->GetLayerSet() == LSET( { aLayer, aMask } ) );
+            };
+
+    // Copper on both sides: the hole and two numbered pads, joined as one pin
+    FOOTPRINT* bothSides = footprintByRef( wxT( "R24" ) );
+    BOOST_REQUIRE( bothSides );
+
+    std::vector<PAD*> pads = holeAndCopper( bothSides, holeSize.x );
+    BOOST_REQUIRE_EQUAL( pads.size(), 3 );
+    checkHole( pads[0], wxT( "VCC" ) );
+    checkCopper( pads[1], F_Cu, F_Mask, wxT( "VCC" ) );
+    checkCopper( pads[2], B_Cu, B_Mask, wxT( "VCC" ) );
+    BOOST_CHECK( bothSides->GetDuplicatePadNumbersAreJumpers() );
+
+    // The ordinary plated pad beside it is untouched, and keeps the footprint through hole
+    BOOST_CHECK_EQUAL( bothSides->Pads().size(), 4 );
+    BOOST_CHECK( bothSides->GetAttributes() & FP_THROUGH_HOLE );
+
+    // Copper on the bottom only: one numbered pad there, and no copper or zero size on top
+    FOOTPRINT* bottomOnly = footprintByRef( wxT( "R23" ) );
+    BOOST_REQUIRE( bottomOnly );
+
+    pads = holeAndCopper( bottomOnly, holeSize.x );
+    BOOST_REQUIRE_EQUAL( pads.size(), 2 );
+    checkHole( pads[0], wxT( "Top_Layer_Single" ) );
+    checkCopper( pads[1], B_Cu, B_Mask, wxT( "Top_Layer_Single" ) );
+
+    // A plain mounting hole, with no copper beyond the hole, stays a single unnumbered NPTH pad
+    pads = holeAndCopper( bottomOnly, pcbIUScale.mmToIU( 2.0 ) );
+    BOOST_REQUIRE_EQUAL( pads.size(), 1 );
+    BOOST_CHECK( pads[0]->GetAttribute() == PAD_ATTRIB::NPTH );
+    BOOST_CHECK_EQUAL( pads[0]->GetNetCode(), NETINFO_LIST::UNCONNECTED );
+
+    // The copper of a hole makes no surface-mount part
+    BOOST_CHECK( !( bottomOnly->GetAttributes() & ( FP_SMD | FP_THROUGH_HOLE ) ) );
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()
