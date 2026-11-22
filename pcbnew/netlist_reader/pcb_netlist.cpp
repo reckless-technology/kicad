@@ -582,3 +582,49 @@ void NETLIST::ApplyGroupMembership()
         }
     }
 }
+
+
+int NETLIST::LinkFootprintsByReference( const std::deque<FOOTPRINT*>& aFootprints )
+{
+    std::map<wxString, int> symbolCount;
+    std::map<wxString, int> footprintCount;
+
+    for( const COMPONENT& component : m_components )
+        symbolCount[component.GetReference()]++;
+
+    for( const FOOTPRINT* footprint : aFootprints )
+        footprintCount[footprint->GetReference()]++;
+
+    int linked = 0;
+
+    for( FOOTPRINT* footprint : aFootprints )
+    {
+        const wxString& reference = footprint->GetReference();
+
+        if( symbolCount[reference] != 1 || footprintCount[reference] != 1 )
+            continue;
+
+        COMPONENT* component = GetComponentByReference( reference );
+
+        if( !component || component->GetKIIDs().empty() )
+            continue;
+
+        KIID_PATH path = component->GetPath();
+        path.push_back( component->GetKIIDs().front() );
+        footprint->SetPath( path );
+
+        const std::map<wxString, wxString>& properties = component->GetProperties();
+
+        if( !component->GetHumanReadablePath().empty() )
+            footprint->SetSheetname( component->GetHumanReadablePath() );
+        else if( properties.count( wxT( "Sheetname" ) ) )
+            footprint->SetSheetname( properties.at( wxT( "Sheetname" ) ) );
+
+        if( properties.count( wxT( "Sheetfile" ) ) )
+            footprint->SetSheetfile( properties.at( wxT( "Sheetfile" ) ) );
+
+        linked++;
+    }
+
+    return linked;
+}
