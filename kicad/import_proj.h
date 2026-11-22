@@ -64,6 +64,13 @@ public:
      */
     void SaveImportedFiles();
 
+    /**
+     * @brief Makes a schematic and board imported together agree, when both were imported: the
+     * board's references, net names, footprint fields and symbol links follow the schematic, and
+     * the schematic's Footprint fields name the board's footprints.
+     */
+    void ReconcileImportedDesigns();
+
     wxFileName m_InputFile;
     wxFileName m_TargetProj;
 

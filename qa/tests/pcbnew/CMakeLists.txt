@@ -152,6 +152,7 @@ set( QA_PCBNEW_SRCS
     test_board_netlist_updater_fpid_change.cpp
     test_board_netlist_updater_nested_groups.cpp
     test_netlist_group_instances.cpp
+    test_netlist_link_by_reference.cpp
     test_step_export_modified_board.cpp
     test_pdf_output_path.cpp
     test_shape_corner_radius.cpp
