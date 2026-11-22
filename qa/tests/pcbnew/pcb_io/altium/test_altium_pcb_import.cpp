@@ -27,6 +27,7 @@
 #include <qa_utils/wx_utils/unit_test_utils.h>
 
 #include <pcbnew/pcb_io/altium/pcb_io_altium_designer.h>
+#include <pcbnew/pcb_io/pcb_io_mgr.h>
 #include <pcbnew/pcb_io/altium/pcb_io_altium_circuit_studio.h>
 #include <pcbnew/pcb_io/altium/altium_pcb.h>
 #include <pcbnew/pcb_io/altium/altium_pcb_compound_file.h>
@@ -1795,6 +1796,31 @@ BOOST_AUTO_TEST_CASE( NetNamesTakeSchematicCase )
 
     BOOST_CHECK( standaloneBoard->FindNet( wxT( "ALL_LOW_LETTER" ) ) );
     BOOST_CHECK( !standaloneBoard->FindNet( wxT( "all_low_letter" ) ) );
+}
+
+
+/**
+ * Older Altium and Protel versions saved binary boards as .pcb, the same compound file as a
+ * .PcbDoc.  Such a board must be recognised and read like a .PcbDoc, so that Altium project import
+ * can open it.
+ *
+ * Regression test for https://gitlab.com/kicad/code/kicad/-/issues/26133
+ */
+BOOST_AUTO_TEST_CASE( Issue26133_BinaryPcbExtension )
+{
+    std::string dataPath = KI_TEST::GetPcbnewTestDataDir()
+                           + "plugins/altium/issue26133/protel_binary.pcb";
+
+    BOOST_CHECK( m_altiumPlugin.CanReadBoard( dataPath ) );
+    BOOST_CHECK_EQUAL( PCB_IO_MGR::FindPluginTypeFromBoardPath( dataPath ),
+                       PCB_IO_MGR::ALTIUM_DESIGNER );
+
+    std::unique_ptr<BOARD> board = m_altiumPlugin.LoadBoard( dataPath );
+    BOOST_REQUIRE( board );
+
+    BOOST_REQUIRE_EQUAL( board->Footprints().size(), 1 );
+    BOOST_CHECK_EQUAL( board->Footprints().front()->GetReference(), wxT( "R24" ) );
+    BOOST_CHECK_EQUAL( board->Footprints().front()->Pads().size(), 2 );
 }
 
 

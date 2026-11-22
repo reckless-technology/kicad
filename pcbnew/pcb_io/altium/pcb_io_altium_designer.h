@@ -56,7 +56,9 @@ public:
     // -----<PUBLIC PCB_IO API>--------------------------------------------------
     const IO_BASE::IO_FILE_DESC GetBoardFileDesc() const override
     {
-        return IO_BASE::IO_FILE_DESC( _HKI( "Altium Designer PCB files" ), { "PcbDoc" } );
+        // Older Altium and Protel versions also saved binary boards as .pcb.  Other formats share
+        // that extension, so CanReadBoard() also checks for the compound file header.
+        return IO_BASE::IO_FILE_DESC( _HKI( "Altium Designer PCB files" ), { "PcbDoc", "pcb" } );
     }
 
     const IO_BASE::IO_FILE_DESC GetLibraryDesc() const override
