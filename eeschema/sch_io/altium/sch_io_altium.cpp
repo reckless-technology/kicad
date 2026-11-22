@@ -1296,6 +1296,100 @@ void SCH_IO_ALTIUM::EnsureSheetSymbolNames()
 }
 
 
+// Altium's junction dot: 60 mil across, in its default dark blue
+static void SetAltiumJunctionStyle( SCH_JUNCTION* aJunction )
+{
+    aJunction->SetDiameter( schIUScale.MilsToIU( 60 ) );
+    aJunction->SetColor( COLOR4D( 0.0, 0.0, 128.0 / 255.0, 1.0 ) );
+}
+
+
+void SCH_IO_ALTIUM::AddAutomaticJunctions()
+{
+    SCH_SCREEN* screen = getCurrentScreen();
+    wxCHECK( screen, /* void */ );
+
+    // Connections ending at each point: wire ends, pin ends, ports and power ports
+    std::map<std::pair<int, int>, int> ends;
+    std::set<std::pair<int, int>>      wireEnds;
+
+    auto addEnd =
+            [&]( const VECTOR2I& aPoint )
+            {
+                ends[{ aPoint.x, aPoint.y }]++;
+            };
+
+    for( SCH_ITEM* item : screen->Items() )
+    {
+        switch( item->Type() )
+        {
+        case SCH_LINE_T:
+        {
+            SCH_LINE* line = static_cast<SCH_LINE*>( item );
+
+            if( !line->IsWire() )
+                break;
+
+            for( const VECTOR2I& point : { line->GetStartPoint(), line->GetEndPoint() } )
+            {
+                addEnd( point );
+                wireEnds.insert( { point.x, point.y } );
+            }
+
+            break;
+        }
+
+        case SCH_SYMBOL_T: // components and power ports
+            for( const VECTOR2I& point : static_cast<SCH_SYMBOL*>( item )->GetConnectionPoints() )
+                addEnd( point );
+
+            break;
+
+        case SCH_HIER_LABEL_T: // ports
+        case SCH_GLOBAL_LABEL_T:
+            addEnd( item->GetPosition() );
+            break;
+
+        default:
+            break;
+        }
+    }
+
+    for( const auto& [key, count] : ends )
+    {
+        const VECTOR2I         point( key.first, key.second );
+        std::vector<SCH_LINE*> throughWires;
+
+        for( SCH_LINE* line : screen->GetBusesAndWires( point, true ) )
+        {
+            if( line->IsWire() )
+                throughWires.push_back( line );
+        }
+
+        if( throughWires.empty() && !wireEnds.count( key ) )
+            continue;
+
+        if( count + 2 * static_cast<int>( throughWires.size() ) < 3 )
+            continue;
+
+        if( screen->GetItem( point, 0, SCH_JUNCTION_T ) )
+            continue;
+
+        SCH_JUNCTION* junction = new SCH_JUNCTION( point );
+        SetAltiumJunctionStyle( junction );
+        junction->SetFlags( IS_NEW );
+        screen->Append( junction );
+
+        for( SCH_LINE* wire : throughWires )
+        {
+            SCH_LINE* newSegment = wire->NonGroupAware_BreakAt( point );
+            screen->Update( wire, false );
+            screen->Append( newSegment );
+        }
+    }
+}
+
+
 wxFileName SCH_IO_ALTIUM::ResolveSheetFileName( const wxString& aParentPath,
                                                 const wxString& aSheetFileName ) const
 {
@@ -1996,6 +2090,7 @@ void SCH_IO_ALTIUM::ParseAltiumSch( const wxString& aFileName )
     }
 
     FinishParameterSets();
+    AddAutomaticJunctions();
 
     SCH_SCREEN* currentScreen = getCurrentScreen();
     wxCHECK( currentScreen, /* void */ );
@@ -5919,6 +6014,7 @@ void SCH_IO_ALTIUM::ParseJunction( const std::map<wxString, wxString>& aProperti
     ASCH_JUNCTION elem( aProperties );
 
     SCH_JUNCTION* junction = new SCH_JUNCTION( elem.location + m_sheetOffset );
+    SetAltiumJunctionStyle( junction );
 
     junction->SetFlags( IS_NEW );
     screen->Append( junction );

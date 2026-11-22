@@ -166,6 +166,17 @@ private:
     void CreateAliases();
     void PostProcessBusLabels();
     void EnsureSheetSymbolNames();
+
+    /**
+     * Add the junctions Altium draws without storing them.
+     *
+     * Altium joins every point on a wire where three or more connections meet and dots it; only
+     * junctions placed by hand are saved. Wire ends, pin ends, ports and power ports count once
+     * each, and a wire passing through the point counts twice. Wires are broken at each junction
+     * added, as KiCad joins wires only at their ends.
+     */
+    void AddAutomaticJunctions();
+
     wxFileName ResolveSheetFileName( const wxString& aParentPath, const wxString& aSheetFileName ) const;
     void NormalizeRepeatedSheetInstances();
 

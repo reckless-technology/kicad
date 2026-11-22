@@ -32,6 +32,7 @@
 #include <project/net_settings.h>
 #include <project/project_file.h>
 #include <lib_symbol.h>
+#include <sch_junction.h>
 #include <sch_pin.h>
 #include <sch_shape.h>
 #include <sch_text.h>
@@ -135,6 +136,13 @@ struct ALTIUM_SCH_IMPORT_FIXTURE
     {
         return wxString::FromUTF8( KI_TEST::GetEeschemaTestDataDir()
                                    + "/plugins/altium/symbol_graphics/" )
+               + aName;
+    }
+
+    wxString issue26130DataFile( const wxString& aName ) const
+    {
+        return wxString::FromUTF8( KI_TEST::GetEeschemaTestDataDir()
+                                   + "/plugins/altium/issue26130/" )
                + aName;
     }
 
@@ -1220,6 +1228,115 @@ BOOST_AUTO_TEST_CASE( AltiumLibraryText )
     BOOST_CHECK_EQUAL( reference.GetTextPos(),
                        VECTOR2I( KiROUND( 11596.8504 * schIUScale.IU_PER_MILS ),
                                  KiROUND( -5249.6080 * schIUScale.IU_PER_MILS - up ) ) );
+}
+
+
+// https://gitlab.com/kicad/code/kicad/-/issues/26130
+// Altium joins every point on a wire where three or more connections meet and draws the junction
+// itself, storing none in the file. In this sheet a vertical wire is met mid-span by a resistor's
+// pin, by a wire ending on it, and by two collinear wires ending on it from either side; a fourth
+// wire crosses it without ending and a polyline turns a corner. The import must add the three
+// junctions Altium draws, and only those, so that each joins the vertical wire's net.
+BOOST_AUTO_TEST_CASE( Issue26130_AutomaticJunctions )
+{
+    SCH_IO_ALTIUM plugin;
+
+    SCH_SHEET* rootSheet = plugin.LoadSchematicFile( issue26130DataFile( wxT( "auto_junctions.SchDoc" ) ),
+                                                     &m_schematic );
+    BOOST_REQUIRE( rootSheet );
+
+    SCH_SCREEN* screen = rootSheet->GetScreen();
+    BOOST_REQUIRE( screen );
+
+    // Altium places items in 10 mil units with the Y axis flipped about the page bottom
+    const int gridPitch = m_schematic.Settings().m_ConnectionGridSize;
+    const int pageHeight = screen->GetPageSettings().GetHeightIU( schIUScale.IU_PER_MILS );
+    const int flipY = ( pageHeight / gridPitch ) * gridPitch;
+
+    auto altiumPoint =
+            [&]( int aX, int aY )
+            {
+                return VECTOR2I( schIUScale.MilsToIU( aX * 10 ), flipY - schIUScale.MilsToIU( aY * 10 ) );
+            };
+
+    const VECTOR2I pinOnWire = altiumPoint( 300, 400 );
+    const VECTOR2I wireOnWire = altiumPoint( 300, 300 );
+    const VECTOR2I twoWiresOnWire = altiumPoint( 300, 500 );
+    const VECTOR2I crossing = altiumPoint( 300, 550 );
+
+    std::set<std::pair<int, int>> junctions;
+
+    for( SCH_ITEM* item : screen->Items().OfType( SCH_JUNCTION_T ) )
+    {
+        junctions.emplace( item->GetPosition().x, item->GetPosition().y );
+
+        // Altium's dot is 60 mil across
+        BOOST_CHECK_EQUAL( static_cast<SCH_JUNCTION*>( item )->GetDiameter(), schIUScale.MilsToIU( 60 ) );
+    }
+
+    const std::set<std::pair<int, int>> expected = { { pinOnWire.x, pinOnWire.y },
+                                                     { wireOnWire.x, wireOnWire.y },
+                                                     { twoWiresOnWire.x, twoWiresOnWire.y } };
+
+    BOOST_CHECK( junctions == expected );
+
+    m_schematic.RefreshHierarchy();
+
+    CONNECTION_GRAPH graph;
+    graph.SetSchematic( &m_schematic );
+    graph.Recalculate( m_schematic.BuildSheetListSortedByPageNumbers(), true );
+
+    SCH_ITEM* junctionAtPin = screen->GetItem( pinOnWire, 0, SCH_JUNCTION_T );
+    BOOST_REQUIRE( junctionAtPin );
+
+    CONNECTION_SUBGRAPH* netSubgraph = graph.GetSubgraphForItem( junctionAtPin );
+    BOOST_REQUIRE( netSubgraph );
+    const wxString netName = netSubgraph->GetNetName();
+
+    auto netOf =
+            [&]( SCH_ITEM* aItem ) -> wxString
+            {
+                CONNECTION_SUBGRAPH* subgraph = graph.GetSubgraphForItem( aItem );
+                return subgraph ? subgraph->GetNetName() : wxString();
+            };
+
+    // The resistor's pin 2 ends on the vertical wire
+    SCH_PIN* pin2 = nullptr;
+
+    for( SCH_ITEM* item : screen->Items().OfType( SCH_SYMBOL_T ) )
+    {
+        for( SCH_PIN* pin : static_cast<SCH_SYMBOL*>( item )->GetPins( &m_schematic.Hierarchy().front() ) )
+        {
+            if( pin->GetNumber() == wxT( "2" ) )
+                pin2 = pin;
+        }
+    }
+
+    BOOST_REQUIRE( pin2 );
+    BOOST_CHECK_EQUAL( pin2->GetPosition(), pinOnWire );
+    BOOST_CHECK_EQUAL( netOf( pin2 ), netName );
+
+    // Every wire meeting the vertical wire at a junction is on its net; the crossing wire is not
+    for( SCH_ITEM* item : screen->Items().OfType( SCH_LINE_T ) )
+    {
+        SCH_LINE* line = static_cast<SCH_LINE*>( item );
+
+        if( !line->IsWire() )
+            continue;
+
+        bool meetsJunction = false;
+
+        for( const VECTOR2I& point : { pinOnWire, wireOnWire, twoWiresOnWire } )
+        {
+            if( line->IsEndPoint( point ) )
+                meetsJunction = true;
+        }
+
+        if( meetsJunction )
+            BOOST_CHECK_EQUAL( netOf( line ), netName );
+        else if( line->GetStartPoint().y == crossing.y )
+            BOOST_CHECK( netOf( line ) != netName );
+    }
 }
 
 
