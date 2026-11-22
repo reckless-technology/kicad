@@ -442,6 +442,9 @@ void IMPORT_PROJ_HELPER::AltiumProjectHandler()
     // pass source fp libs to both imports so found footprints relink to source, not the cache
     m_properties[IMPORT_PROJ_PROPS::SOURCE_FP_LIBS] = joinSourceLibNicknames( pcb_libs );
 
+    // and the symbol libraries, so only symbols from these keep their source library's nickname
+    m_properties[IMPORT_PROJ_PROPS::SOURCE_SYM_LIBS] = joinSourceLibNicknames( sch_libs );
+
     m_properties["project_file"] = m_InputFile.GetFullPath();
 
     int ii = 0;
