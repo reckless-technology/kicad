@@ -157,6 +157,12 @@ static const std::vector<PCB_IO_PLUGIN_CASE> BoardPluginCases = {
         "Basic Altium Designer board file",
         "plugins/altium/eDP_adapter_dvt1_source/eDP_adapter_dvt1.PcbDoc",
         PCB_IO_MGR::ALTIUM_DESIGNER
+    },
+    {
+        // Issue #26133: older Altium and Protel versions saved binary boards as .pcb
+        "Altium Designer board file with the older .pcb extension",
+        "plugins/altium/issue26133/protel_binary.pcb",
+        PCB_IO_MGR::ALTIUM_DESIGNER
     }
     // Todo: Add Altium derivatives and Fabmaster tests
 };

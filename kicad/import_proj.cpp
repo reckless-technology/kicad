@@ -53,6 +53,7 @@
 #include <io/easyedapro/easyedapro_parser.h>
 #include <io/easyedapro/easyedapro_v3_parser.h>
 #include <io/common/plugin_common_choose_project.h>
+#include <io/io_utils.h>
 #include <io/pads/pads_common.h>
 #include <io/easypc/easypc_classes_project.h>
 #include <io/easypc/easypc_document.h>
@@ -351,18 +352,29 @@ void IMPORT_PROJ_HELPER::AltiumProjectHandler()
     wxString pcb_file;
     int      pcb_file_type = PCB_IO_MGR::ALTIUM_DESIGNER;
 
-    auto matchPcbExt = []( const wxString& aExt ) -> int
+    auto matchPcbFile = []( const wxFileName& aFile ) -> int
     {
-        if( !aExt.CmpNoCase( wxS( "PcbDoc" ) ) )
+        const wxString ext = aFile.GetExt();
+
+        if( !ext.CmpNoCase( wxS( "PcbDoc" ) ) )
             return PCB_IO_MGR::ALTIUM_DESIGNER;
 
-        if( !aExt.CmpNoCase( wxS( "CSPcbDoc" ) ) )
+        // Older Altium (and Protel) projects keep the board as a binary .pcb, a compound file
+        // holding the same records as a .PcbDoc.  The header keeps other .pcb formats out.
+        if( !ext.CmpNoCase( wxS( "pcb" ) )
+            && IO_UTILS::fileHasBinaryHeader( aFile.GetFullPath(),
+                                              IO_UTILS::COMPOUND_FILE_HEADER ) )
+        {
+            return PCB_IO_MGR::ALTIUM_DESIGNER;
+        }
+
+        if( !ext.CmpNoCase( wxS( "CSPcbDoc" ) ) )
             return PCB_IO_MGR::ALTIUM_CIRCUIT_STUDIO;
 
-        if( !aExt.CmpNoCase( wxS( "CMPcbDoc" ) ) )
+        if( !ext.CmpNoCase( wxS( "CMPcbDoc" ) ) )
             return PCB_IO_MGR::ALTIUM_CIRCUIT_MAKER;
 
-        if( !aExt.CmpNoCase( wxS( "SWPcbDoc" ) ) )
+        if( !ext.CmpNoCase( wxS( "SWPcbDoc" ) ) )
             return PCB_IO_MGR::SOLIDWORKS_PCB;
 
         return -1;
@@ -390,7 +402,7 @@ void IMPORT_PROJ_HELPER::AltiumProjectHandler()
         if( !fname.IsAbsolute() )
             fname.MakeAbsolute( m_InputFile.GetPath() );
 
-        int pcbType = matchPcbExt( fname.GetExt() );
+        int pcbType = matchPcbFile( fname );
 
         if( pcbType >= 0 && pcb_file.empty() )
         {
