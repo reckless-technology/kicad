@@ -47,7 +47,13 @@
 #include <sch_sheet_path.h>
 #include <sch_symbol.h>
 #include <settings/settings_manager.h>
+#include <import_proj_properties.h>
+#include <libraries/library_manager.h>
+#include <pgm_base.h>
 
+#include <wx/wfstream.h>
+
+#include <cstring>
 #include <map>
 #include <optional>
 #include <set>
@@ -280,6 +286,82 @@ BOOST_AUTO_TEST_CASE( SheetsClaimFilesNoOtherSheetSavesTo )
 
     for( const wxString& file : sheetFiles( appended.get() ) )
         BOOST_CHECK_MESSAGE( !hostFiles.contains( file ), file << " is already saved by the host" );
+}
+
+
+// https://gitlab.com/kicad/code/kicad/-/issues/26129
+// When the library tables already hold a library of the Altium library's name (KiCad's own
+// "Relay", say) that the import does not register, the imported symbols must not take that
+// nickname, or updating the symbol links replaces them with that library's different parts.
+BOOST_AUTO_TEST_CASE( Issue26129_ForeignLibraryNicknameIsNotTaken )
+{
+    // A project whose library table has a "mounting_holes" of its own
+    KI_TEST::SCOPED_TEMP_DIR projectDir( "altium-foreign-library" );
+
+    {
+        wxFFileOutputStream out( projectDir.ChildPathStr( wxS( "sym-lib-table" ) ) );
+        BOOST_REQUIRE( out.IsOk() );
+        const char* table = "(sym_lib_table\n"
+                            "  (version 7)\n"
+                            "  (lib (name \"mounting_holes\") (type \"KiCad\")"
+                            " (uri \"${KIPRJMOD}/other.kicad_sym\") (options \"\") (descr \"\"))\n"
+                            ")\n";
+        out.WriteAll( table, std::strlen( table ) );
+    }
+
+    LIBRARY_MANAGER& manager = Pgm().GetLibraryManager();
+    manager.LoadProjectTables( projectDir.PathStr() );
+
+    auto nicknamesOf =
+            [&]( const std::map<std::string, UTF8>* aProperties )
+            {
+                SCHEMATIC schematic( &m_settingsManager.Prj() );
+                schematic.Reset();
+
+                SCH_IO_ALTIUM plugin;
+                SCH_SHEET*    rootSheet = plugin.LoadSchematicFile( dataFile( "1_cover.SchDoc" ),
+                                                                    &schematic, nullptr,
+                                                                    aProperties );
+                std::map<wxString, int> nicknames;
+
+                if( rootSheet && rootSheet->GetScreen() )
+                {
+                    for( SCH_ITEM* item : rootSheet->GetScreen()->Items().OfType( SCH_SYMBOL_T ) )
+                    {
+                        SCH_SYMBOL* sym = static_cast<SCH_SYMBOL*>( item );
+
+                        if( sym->GetLibId().GetUniStringLibItemName() == wxT( "MH M3" ) )
+                        {
+                            nicknames[sym->GetLibId().GetUniStringLibNickname()]++;
+
+                            // The symbol is still the one the importer drew, not left unlinked
+                            BOOST_CHECK( sym->GetLibSymbolRef() );
+                        }
+                    }
+                }
+
+                schematic.Reset();
+                return nicknames;
+            };
+
+    // Not registered by the import: the symbols take the project's own nickname instead
+    std::map<wxString, int> standalone = nicknamesOf( nullptr );
+    BOOST_CHECK( !standalone.empty() );
+    BOOST_CHECK( !standalone.count( wxT( "mounting_holes" ) ) );
+
+    for( const auto& [nickname, count] : standalone )
+        BOOST_CHECK_MESSAGE( nickname.EndsWith( wxT( "-altium-import" ) ), nickname );
+
+    // Registered by the project import, the library's own nickname is the right one
+    std::map<std::string, UTF8> properties;
+    properties[IMPORT_PROJ_PROPS::SOURCE_SYM_LIBS] = "mounting_holes";
+
+    std::map<wxString, int> registered = nicknamesOf( &properties );
+    BOOST_CHECK_EQUAL( registered.size(), 1 );
+    BOOST_CHECK( registered.count( wxT( "mounting_holes" ) ) );
+
+    // Leave the library tables as the other tests expect them
+    manager.LoadProjectTables( m_settingsManager.Prj().GetProjectDirectory() );
 }
 
 
