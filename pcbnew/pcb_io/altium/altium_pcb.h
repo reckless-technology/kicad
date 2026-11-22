@@ -29,6 +29,7 @@
 #include <map>
 #include <set>
 #include <memory>
+#include <set>
 #include <vector>
 #include <pcb_io/common/plugin_common_layer_mapping.h>
 
@@ -226,6 +227,23 @@ private:
     void ConvertPads6ToFootprintItem( FOOTPRINT* aFootprint, const APAD6& aElem );
     void ConvertPads6ToBoardItemOnNonCopper( const APAD6& aElem );
     void ConvertPads6ToFootprintItemOnCopper( FOOTPRINT* aFootprint, const APAD6& aElem );
+
+    /**
+     * Give a non-plated Altium pad's copper back its pad number and net.
+     *
+     * Altium lets a non-plated hole carry copper, a pad number and a net (a pot or bush clamped
+     * to a ground ring, say), but a KiCad NPTH pad has neither number nor net, and its padstack
+     * cannot leave an outer layer without copper.  Such a pad is kept as the bare hole, which
+     * carries the net so that its own copper is no hole clearance violation, and one SMD pad of
+     * the Altium pad's number and net is added for each outer copper layer Altium has copper on.
+     * A pad without copper beyond its hole only has its zero-size layers made valid.
+     *
+     * @param aFootprint is the footprint the pad belongs to; the SMD pads are added to it.
+     * @param aHole is the converted NPTH pad, not yet added to \a aFootprint.
+     * @param aElem is the Altium pad \a aHole was converted from.
+     */
+    void ConvertNpthCopperToSmdPads( FOOTPRINT* aFootprint, PAD* aHole, const APAD6& aElem );
+
     void ConvertPads6ToFootprintItemOnNonCopper( FOOTPRINT* aFootprint, const APAD6& aElem );
     void ParseVias6Data( const ALTIUM_PCB_COMPOUND_FILE&     aAltiumPcbFile,
                          const CFB::COMPOUND_FILE_ENTRY* aEntry );
@@ -244,6 +262,12 @@ private:
     void ParseUnionNamesData( const ALTIUM_PCB_COMPOUND_FILE& aAltiumPcbFile, const CFB::COMPOUND_FILE_ENTRY* aEntry );
     void HelperCreateTuningPatterns();
     void HelperSetFootprintMountingStyles();
+
+    /**
+     * @return the mounting style FOOTPRINT::GetLikelyAttribute() derives from the pads, except
+     *         that a footprint whose only SMD pads are the copper of non-plated holes has none.
+     */
+    int HelperGetLikelyMountingStyle( const FOOTPRINT* aFootprint ) const;
     void HelperSetFootprintStackups();
 
     /**
@@ -391,6 +415,7 @@ private:
 
     BOARD*                               m_board;
     std::vector<FOOTPRINT*>              m_components;
+    std::set<const PAD*>                 m_npthCopperPads; // SMD pads split from an NPTH pad
     std::vector<ZONE*>                   m_polygons;
     std::vector<PCB_DIM_RADIAL*>         m_radialDimensions;
 
