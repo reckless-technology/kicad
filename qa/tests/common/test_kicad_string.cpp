@@ -180,6 +180,19 @@ BOOST_AUTO_TEST_CASE( Double2Str )
 
 
 /**
+ * Test that #FormatDouble2Str never writes a negative zero.
+ */
+BOOST_AUTO_TEST_CASE( Double2StrNegativeZero )
+{
+    BOOST_CHECK_EQUAL( FormatDouble2Str( -0.0 ), "0" );
+    BOOST_CHECK_EQUAL( FormatDouble2Str( 0.0 * -1.0 ), "0" );
+    BOOST_CHECK_EQUAL( FormatDouble2Str( -0.00000000000000001523 ), "0" ); // cut off to nothing
+    BOOST_CHECK_EQUAL( FormatDouble2Str( -1.050 ), "-1.05" );
+    BOOST_CHECK_EQUAL( FormatDouble2Str( -0.00001523 ), "-0.00001523" );
+}
+
+
+/**
  * Test #EscapeHTML and #UnescapeHTML methods.
  */
 BOOST_AUTO_TEST_CASE( HTMLEscape )
