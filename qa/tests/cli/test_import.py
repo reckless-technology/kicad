@@ -464,3 +464,52 @@ class TestImportAltiumProject:
             checked += 1
 
         assert checked > 0
+
+
+def get_template_sheet_test_file() -> str:
+    """An Altium schematic whose sheet template becomes the imported schematic's drawing sheet."""
+    sch = os.path.join( os.path.dirname( __file__ ), "..", "..", "data", "eeschema", "plugins", "altium",
+                        "issue26128", "drawing_sheet.SchDoc" )
+
+    return sch if os.path.exists( sch ) else None
+
+
+@pytest.mark.skipif( get_template_sheet_test_file() is None, reason="Altium template test file not available" )
+class TestImportAltiumTemplateSheet:
+    """Test that an imported sheet template is the project's drawing sheet"""
+
+    def test_template_is_plotted( self, kitest: KiTestFixture ):
+        """The importer embeds the sheet's template as the drawing sheet; the project the import writes
+        must name it, or a plot has no border and no title block
+        (https://github.com/reckless-technology/kicad/issues/17)"""
+        stem = get_project_stem( kitest, "altium_template", "sheet" )
+        command = [ utils.kicad_cli(), "import", get_template_sheet_test_file(), "-o", str( stem ) ]
+
+        stdout, stderr, return_code = utils.run_and_capture( command )
+
+        assert return_code == 0
+
+        with open( stem.with_suffix( ".kicad_pro" ), "r" ) as f:
+            project = json.load( f )
+
+        assert project["schematic"]["page_layout_descr_file"] == "kicad-embed://House_A4.kicad_wks"
+
+        plotDir = kitest.get_output_path( "cli/import/altium_template_plot/" )
+
+        for old in plotDir.glob( "*.svg" ):
+            old.unlink()
+
+        command = [ utils.kicad_cli(), "sch", "export", "svg", "-o", str( plotDir ),
+                    str( stem.with_suffix( ".kicad_sch" ) ) ]
+
+        stdout, stderr, return_code = utils.run_and_capture( command )
+
+        assert return_code == 0
+
+        plots = list( plotDir.glob( "*.svg" ) )
+        assert len( plots ) == 1
+
+        # the title block is filled from the sheet's parameters, so its texts are in the plot
+        svg = plots[0].read_text( encoding="utf-8" )
+        assert "Test board" in svg
+        assert "J. Smith" in svg
