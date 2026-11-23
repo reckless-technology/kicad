@@ -728,9 +728,9 @@ SCH_SHEET* SCH_IO_ALTIUM::LoadSchematicFile( const wxString& aFileName, SCHEMATI
         // document's date rather than none
         wxString projectDate;
 
-        for( const wxString& name : { wxS( "DATE" ), wxS( "DOCUMENTDATE" ) } )
+        for( const char* name : { "DATE", "DOCUMENTDATE" } )
         {
-            auto it = projectParameters.find( name );
+            auto it = projectParameters.find( wxString( name ) );
 
             if( projectDate.IsEmpty() && it != projectParameters.end() && it->second != wxS( "*" ) )
                 projectDate = it->second;
