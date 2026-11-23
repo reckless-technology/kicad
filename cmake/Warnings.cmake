@@ -30,6 +30,11 @@ if( CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang" )
     set( WARN_FLAGS_C   "-Wall" )
     set( WARN_FLAGS_CXX "-Wall" )
 
+    # Reckless: the house policy is -Wall -Wextra -Wpedantic, with warnings errors (KICAD_WERROR below).
+    # These go into WARN_FLAGS_CXX, which only KiCad's own directories add to their flags, so thirdparty/
+    # does not get them. See https://github.com/reckless-technology/kicad/issues/6
+    set( WARN_FLAGS_CXX "${WARN_FLAGS_CXX} -Wextra -Wpedantic" )
+
 
     # Warn about missing override specifiers
     CHECK_CXX_COMPILER_FLAG( "-Wsuggest-override" COMPILER_SUPPORTS_WSUGGEST_OVERRIDE )
