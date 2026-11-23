@@ -174,6 +174,9 @@ public:
     /// Special strings in the parsed text that KiCad has no variable for.
     const std::set<wxString>& GetSpecialStrings() const { return m_specialStrings; }
 
+    /// The zones left unfilled for the caller to fill, the internal planes.
+    const std::vector<ZONE*>& GetZonesToFill() const { return m_zonesToFill; }
+
 private:
     void checkpoint();
 
@@ -278,6 +281,14 @@ private:
      * its index.
      */
     void HelperSetZonePrioritiesFromFills();
+
+    /**
+     * Prepare Altium internal planes, which a file stores without fills, to be poured: Altium
+     * plots a plane whole, so a board saved without its fill would have no plane until refilled.
+     * A plane stops its layer's pullback distance short of the board edge.  The planes are listed
+     * in m_zonesToFill for the caller to fill, the importer having no zone filler of its own.
+     */
+    void HelperPrepareUnfilledPlanes();
     void HelperSetFootprintMountingStyles();
 
     /**
@@ -478,6 +489,8 @@ private:
     std::vector<std::pair<FOOTPRINT*, AVIA6>>      m_pendingComponentVias;
 
     std::map<ALTIUM_LAYER, ZONE*>        m_outer_plane;
+    std::map<ALTIUM_LAYER, int>          m_planePullbacks;
+    std::vector<ZONE*>                   m_zonesToFill;
 
     LAYER_MAPPING_HANDLER   m_layerMappingHandler;
 

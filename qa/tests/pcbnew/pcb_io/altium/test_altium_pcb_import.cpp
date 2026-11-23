@@ -59,6 +59,7 @@
 #include <project/net_settings.h>
 #include <settings/settings_manager.h>
 #include <zone.h>
+#include <zone_filler.h>
 
 #include <algorithm>
 #include <cmath>
@@ -2062,6 +2063,49 @@ BOOST_AUTO_TEST_CASE( OverlappingPoursFollowAltiumFill )
 
     BOOST_CHECK_NE( first->GetNetCode(), second->GetNetCode() );
     BOOST_CHECK_GT( second->GetAssignedPriority(), first->GetAssignedPriority() );
+}
+
+
+/**
+ * Altium stores no fill for its internal planes, so the importer hands them to the caller to pour
+ * (as the board loader and the import job do): every plane comes filled, and kept the board's
+ * plane pullback (20 mil here) inside the board edge.
+ */
+BOOST_AUTO_TEST_CASE( InternalPlanesArePoured )
+{
+    std::string dataPath = KI_TEST::GetPcbnewTestDataDir() + "plugins/altium/issue24654/PCB1.PcbDoc";
+
+    std::unique_ptr<BOARD> board = m_altiumPlugin.LoadBoard( dataPath );
+    BOOST_REQUIRE( board );
+    BOOST_REQUIRE( !m_altiumPlugin.GetZonesToFill().empty() );
+
+    board->BuildConnectivity();
+
+    ZONE_FILLER filler( board.get(), nullptr );
+    filler.Fill( m_altiumPlugin.GetZonesToFill() );
+
+    BOX2I inside = board->GetBoardEdgesBoundingBox();
+    inside.Inflate( -pcbIUScale.mmToIU( 0.5 ) );
+
+    int planes = 0;
+
+    for( ZONE* zone : board->Zones() )
+    {
+        if( zone->GetIsRuleArea() || zone->GetLayerSet().count() != 1 || !IsInnerCopperLayer( zone->GetFirstLayer() ) )
+            continue;
+
+        PCB_LAYER_ID layer = zone->GetFirstLayer();
+        planes++;
+
+        BOOST_REQUIRE_MESSAGE( zone->HasFilledPolysForLayer( layer ) && !zone->GetFilledPolysList( layer )->IsEmpty(),
+                               "plane on " + board->GetLayerName( layer ) + " is not filled" );
+
+        BOX2I fill = zone->GetFilledPolysList( layer )->BBox();
+        BOOST_CHECK_MESSAGE( inside.Contains( fill ),
+                             "plane on " + board->GetLayerName( layer ) + " reaches the board edge" );
+    }
+
+    BOOST_CHECK_GT( planes, 0 );
 }
 
 

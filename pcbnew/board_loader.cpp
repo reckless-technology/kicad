@@ -35,6 +35,7 @@
 #include <properties/property.h>
 #include <reporter.h>
 #include <wildcards_and_files_ext.h>
+#include <zone_filler.h>
 #include <unordered_set>
 #include <wx/image.h>
 #include <wx/log.h>
@@ -68,6 +69,15 @@ std::unique_ptr<BOARD> BOARD_LOADER::Load( const wxString& aFileName, PCB_IO_MGR
 
         // own the board first so a throwing hook can't leak it
         board = pi->LoadBoard( aFileName, aOptions.properties, aProject );
+
+        // an importer has no zone filler of its own, so the zones it leaves unfilled are filled here
+        if( board && !pi->GetZonesToFill().empty() )
+        {
+            board->BuildConnectivity();
+
+            ZONE_FILLER filler( board.get(), nullptr );
+            filler.Fill( pi->GetZonesToFill() );
+        }
 
         // grab cached lib footprints while the plugin is alive
         if( board && aOptions.post_load_hook )

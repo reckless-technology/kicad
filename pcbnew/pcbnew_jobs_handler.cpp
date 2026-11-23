@@ -161,6 +161,7 @@
 
 #include <specctra_import_export/specctra.h>
 #include <tools/zone_filler_tool.h>
+#include <zone_filler.h>
 
 #include <locale_io.h>
 #include <confirm.h>
@@ -4333,6 +4334,15 @@ int PCBNEW_JOBS_HANDLER::JobImport( JOB* aJob )
             return CLI::EXIT_CODES::ERR_INVALID_INPUT_FILE;
         }
         board->SetProject( projectPtr, job->m_isPartOfMultiBoardProject );
+
+        // an importer has no zone filler of its own, so the zones it leaves unfilled are filled here
+        if( !pi->GetZonesToFill().empty() )
+        {
+            board->BuildConnectivity();
+
+            ZONE_FILLER filler( board.get(), nullptr );
+            filler.Fill( pi->GetZonesToFill() );
+        }
 
 
 
