@@ -1026,6 +1026,50 @@ BOOST_AUTO_TEST_CASE( GetUnitDrawItems )
 
 
 /**
+ * Check that a unit whose items are common to every body style gets no empty record beside them.
+ */
+BOOST_AUTO_TEST_CASE( GetUnitDrawItemsCommonToBodyStyles )
+{
+    LIB_SYMBOL part( "common" );
+
+    SCH_PIN* pin = new SCH_PIN( &part );
+    pin->SetNumber( "1" );
+    pin->SetUnit( 1 );
+    pin->SetBodyStyle( ALL_BODY_STYLES );
+    part.AddDrawItem( pin );
+
+    std::vector<struct LIB_SYMBOL_UNIT> units = part.GetUnitDrawItems();
+
+    // with one body style the pin's record covers unit 1 whole, as _1_0 in a library file
+    BOOST_REQUIRE_EQUAL( units.size(), 1u );
+    BOOST_CHECK_EQUAL( units[0].m_unit, 1 );
+    BOOST_CHECK_EQUAL( units[0].m_bodyStyle, ALL_BODY_STYLES );
+    BOOST_CHECK_EQUAL( units[0].m_items.size(), 1u );
+
+    // a second unit with nothing in it is still reported
+    part.SetUnitCount( 2, false );
+
+    units = part.GetUnitDrawItems();
+
+    BOOST_REQUIRE_EQUAL( units.size(), 2u );
+    BOOST_CHECK_EQUAL( units[0].m_unit, 1 );
+    BOOST_CHECK_EQUAL( units[0].m_bodyStyle, ALL_BODY_STYLES );
+    BOOST_CHECK_EQUAL( units[1].m_unit, 2 );
+    BOOST_CHECK_EQUAL( units[1].m_bodyStyle, 1 );
+
+    // with more body styles each is still reported, which is what keeps their count in the file
+    part.SetHasDeMorganBodyStyles( true );
+
+    units = part.GetUnitDrawItems();
+
+    BOOST_REQUIRE_EQUAL( units.size(), 5u );
+    BOOST_CHECK_EQUAL( units[1].m_unit, 1 );
+    BOOST_CHECK_EQUAL( units[1].m_bodyStyle, 1 );
+    BOOST_CHECK_EQUAL( units[2].m_bodyStyle, 2 );
+}
+
+
+/**
  * Check inheritance support.
  */
 BOOST_AUTO_TEST_CASE( Inheritance )
