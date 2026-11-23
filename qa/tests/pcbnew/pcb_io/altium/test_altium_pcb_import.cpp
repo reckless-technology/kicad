@@ -2039,4 +2039,30 @@ BOOST_AUTO_TEST_CASE( HatchWithoutGapIsSolid )
 }
 
 
+/**
+ * Where two pours of different nets overlap, the one Altium's own fill gives the overlap to is
+ * poured first, whatever order their pour indices give.  Pour 1 is poured first by its index but
+ * Altium's fill leaves the overlap to pour 2.
+ */
+BOOST_AUTO_TEST_CASE( OverlappingPoursFollowAltiumFill )
+{
+    std::string dataPath = KI_TEST::GetPcbnewTestDataDir()
+                           + "plugins/altium/zone_priorities/zone_priorities.PcbDoc";
+
+    std::unique_ptr<BOARD> board = m_altiumPlugin.LoadBoard( dataPath );
+    BOOST_REQUIRE( board );
+    BOOST_REQUIRE_EQUAL( board->Zones().size(), 2 );
+
+    // poured first by its index, the left one; the right one is what Altium's fill gives the overlap
+    ZONE* first = board->Zones().front();
+    ZONE* second = board->Zones().back();
+
+    if( first->GetBoundingBox().GetLeft() > second->GetBoundingBox().GetLeft() )
+        std::swap( first, second );
+
+    BOOST_CHECK_NE( first->GetNetCode(), second->GetNetCode() );
+    BOOST_CHECK_GT( second->GetAssignedPriority(), first->GetAssignedPriority() );
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()
