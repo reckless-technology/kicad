@@ -58,7 +58,9 @@
 
 #include <bezier_curves.h>
 #include <compoundfilereader.h>
+#include <font/font.h>
 #include <font/fontconfig.h>
+#include <font/outline_font.h>
 #include <reporter.h>
 #include <geometry/ellipse.h>
 #include <geometry/shape_utils.h>
@@ -1692,6 +1694,44 @@ void SCH_IO_ALTIUM::NameNetsAfterNetLabels()
 }
 
 
+// Altium's colour for a text record: its COLOR, or Altium's default dark blue
+static COLOR4D AltiumTextColor( const std::map<wxString, wxString>& aProperties )
+{
+    return GetColorFromInt( ALTIUM_PROPS_UTILS::ReadInt( aProperties, "COLOR", 0x800000 ) );
+}
+
+
+void SCH_IO_ALTIUM::SetTextFont( EDA_TEXT* aText, int aFontId ) const
+{
+    if( !m_altiumSheet || m_altiumSheet->fonts.empty() )
+        return;
+
+    if( aFontId <= 0 || aFontId > static_cast<int>( m_altiumSheet->fonts.size() ) )
+        aFontId = 1;
+
+    const ASCH_SHEET_FONT& font = m_altiumSheet->fonts.at( aFontId - 1 );
+    KIFONT::FONT*          kifont = nullptr;
+
+    // Missing faces are substituted by fontconfig; the Altium name is kept for the file
+    if( !font.FontName.IsEmpty() )
+        kifont = KIFONT::FONT::GetFont( font.FontName, font.Bold, font.Italic );
+
+    int size = font.Size / 2;
+
+    if( kifont && kifont->IsOutline() )
+    {
+        aText->SetFont( kifont );
+        size = KiROUND( static_cast<KIFONT::OUTLINE_FONT*>( kifont )->GetTextSizeForAscentPlusDescent( font.Size ) );
+    }
+
+    aText->SetTextSize( { size, size } );
+
+    // Must come after SetTextSize()
+    aText->SetBold( font.Bold );
+    aText->SetItalic( font.Italic );
+}
+
+
 void SCH_IO_ALTIUM::ParseAltiumSch( const wxString& aFileName )
 {
     // Load path may be different from the project path.
@@ -3114,18 +3154,8 @@ void SCH_IO_ALTIUM::ParseLabel( const std::map<wxString, wxString>& aProperties,
         }
 
         SetTextPositioning( textItem, elem.justification, elem.orientation );
-
-        size_t fontId = static_cast<int>( elem.fontId );
-
-        if( m_altiumSheet && fontId > 0 && fontId <= m_altiumSheet->fonts.size() )
-        {
-            const ASCH_SHEET_FONT& font = m_altiumSheet->fonts.at( fontId - 1 );
-            textItem->SetTextSize( { font.Size / 2, font.Size / 2 } );
-
-            // Must come after SetTextSize()
-            textItem->SetBold( font.Bold );
-            textItem->SetItalic( font.Italic );
-        }
+        SetTextFont( textItem, elem.fontId );
+        textItem->SetTextColor( AltiumTextColor( aProperties ) );
 
         textItem->SetFlags( IS_NEW );
 
@@ -3194,12 +3224,7 @@ void SCH_IO_ALTIUM::ParseLabel( const std::map<wxString, wxString>& aProperties,
 
         if( m_altiumSheet && fontId > 0 && fontId <= m_altiumSheet->fonts.size() )
         {
-            const ASCH_SHEET_FONT& font = m_altiumSheet->fonts.at( fontId - 1 );
-            textItem->SetTextSize( { font.Size / 2, font.Size / 2 } );
-
-            // Must come after SetTextSize()
-            textItem->SetBold( font.Bold );
-            textItem->SetItalic( font.Italic );
+            SetTextFont( textItem, elem.fontId );
         }
         else if( fontId > 0 && fontId <= aFontSizes.size() )
         {
@@ -3269,18 +3294,8 @@ void SCH_IO_ALTIUM::AddTextBox( const ASCH_TEXT_FRAME *aElem )
         break;
     }
 
-    size_t fontId = static_cast<int>( aElem->FontID );
-
-    if( m_altiumSheet && fontId > 0 && fontId <= m_altiumSheet->fonts.size() )
-    {
-        const ASCH_SHEET_FONT& font = m_altiumSheet->fonts.at( fontId - 1 );
-        textBox->SetTextSize( { font.Size / 2, font.Size / 2 } );
-
-        // Must come after SetTextSize()
-        textBox->SetBold( font.Bold );
-        textBox->SetItalic( font.Italic );
-        //textBox->SetFont(  //how to set font, we have a font name here: ( font.fontname );
-    }
+    SetTextFont( textBox, aElem->FontID );
+    textBox->SetTextColor( GetColorFromInt( aElem->TextColor ) );
 
     textBox->SetFlags( IS_NEW );
 
@@ -5135,6 +5150,8 @@ void SCH_IO_ALTIUM::ParsePowerPort( const std::map<wxString, wxString>& aPropert
     SCH_FIELD* valueField = symbol->GetField( FIELD_T::VALUE );
     valueField->SetVisible( elem.showNetName );
     valueField->SetPosition( libSymbol->GetValueField().GetPosition() );
+    SetTextFont( valueField, elem.fontId );
+    valueField->SetTextColor( AltiumTextColor( aProperties ) );
 
     symbol->SetPosition( elem.location + m_sheetOffset );
 
@@ -5320,6 +5337,9 @@ void SCH_IO_ALTIUM::ParsePortHelper( const ASCH_PORT& aElem )
         break;
     }
 
+    SetTextFont( label, aElem.FontID );
+    label->SetTextColor( GetColorFromInt( aElem.TextColor ) );
+
     label->AutoplaceFields( screen, AUTOPLACE_AUTO );
     label->SetFlags( IS_NEW );
 
@@ -5379,6 +5399,8 @@ void SCH_IO_ALTIUM::ParseNetLabel( const std::map<wxString, wxString>& aProperti
     wxCHECK( screen, /* void */ );
 
     SetTextPositioning( label, elem.justification, elem.orientation );
+    SetTextFont( label, elem.fontId );
+    label->SetTextColor( AltiumTextColor( aProperties ) );
 
     label->SetFlags( IS_NEW );
     screen->Append( label );
@@ -5656,6 +5678,8 @@ void SCH_IO_ALTIUM::ParseSheetName( const std::map<wxString, wxString>& aPropert
     sheetNameField->SetText( sheetName );
     sheetNameField->SetVisible( !elem.isHidden );
     SetTextPositioning( sheetNameField, ASCH_LABEL_JUSTIFICATION::BOTTOM_LEFT, elem.orientation );
+    SetTextFont( sheetNameField, elem.fontId );
+    sheetNameField->SetTextColor( AltiumTextColor( aProperties ) );
 }
 
 
@@ -5680,6 +5704,8 @@ void SCH_IO_ALTIUM::ParseFileName( const std::map<wxString, wxString>& aProperti
     filenameField->SetText( elem.text );
     filenameField->SetVisible( !elem.isHidden );
     SetTextPositioning( filenameField, ASCH_LABEL_JUSTIFICATION::BOTTOM_LEFT, elem.orientation );
+    SetTextFont( filenameField, elem.fontId );
+    filenameField->SetTextColor( AltiumTextColor( aProperties ) );
 }
 
 
@@ -5719,6 +5745,8 @@ void SCH_IO_ALTIUM::ParseDesignator( const std::map<wxString, wxString>& aProper
     field->SetVisible( visible );
     field->SetPosition( elem.location + m_sheetOffset );
     SetTextPositioning( field, elem.justification, elem.orientation );
+    SetTextFont( field, elem.fontId );
+    field->SetTextColor( AltiumTextColor( aProperties ) );
 
     const auto& altiumSymIt = m_altiumComponents.find( elem.ownerindex );
 
@@ -5879,6 +5907,8 @@ void SCH_IO_ALTIUM::ParseParameter( const std::map<wxString, wxString>& aPropert
         field->SetVisible( !elem.isHidden );
         field->SetNameShown( elem.isShowName );
         SetTextPositioning( field, elem.justification, elem.orientation );
+        SetTextFont( field, elem.fontId );
+        field->SetTextColor( AltiumTextColor( aProperties ) );
 
         const auto& altiumSymIt = m_altiumComponents.find( elem.ownerindex );
 

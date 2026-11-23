@@ -660,6 +660,7 @@ ASCH_POWER_PORT::ASCH_POWER_PORT( const std::map<wxString, wxString>& aProps ) :
 
     text        = ALTIUM_PROPS_UTILS::ReadString( aProps, "TEXT", "" );
     showNetName = ALTIUM_PROPS_UTILS::ReadBool( aProps, "SHOWNETNAME", true );
+    fontId = ALTIUM_PROPS_UTILS::ReadInt( aProps, "FONTID", 0 );
 
     style = ReadEnum<ASCH_POWER_PORT_STYLE>( aProps, "STYLE", 0, 10,
                                              ASCH_POWER_PORT_STYLE::CIRCLE );
@@ -686,8 +687,9 @@ ASCH_PORT::ASCH_PORT( const std::map<wxString, wxString>& aProps ) :
 
     AreaColor = ALTIUM_PROPS_UTILS::ReadInt( aProps, "AREACOLOR", 0 );
     Color = ALTIUM_PROPS_UTILS::ReadInt( aProps, "COLOR", 0 );
-    FontID = ALTIUM_PROPS_UTILS::ReadInt( aProps, "TEXTFONTID", 0 );
-    TextColor = ALTIUM_PROPS_UTILS::ReadInt( aProps, "TEXTCOLOR", 0 );
+    // Ports give their font as FONTID; TEXTFONTID is kept for files that use it
+    FontID = ALTIUM_PROPS_UTILS::ReadInt( aProps, "FONTID", ALTIUM_PROPS_UTILS::ReadInt( aProps, "TEXTFONTID", 0 ) );
+    TextColor = ALTIUM_PROPS_UTILS::ReadInt( aProps, "TEXTCOLOR", 0x80 ); // Altium's dark red
 
     m_align = ReadEnum<ASCH_PORT_ALIGNMENT>( aProps, "ALIGNMENT", 0, 2, ASCH_PORT_ALIGNMENT::CENTER );
 }
@@ -711,6 +713,7 @@ ASCH_NET_LABEL::ASCH_NET_LABEL( const std::map<wxString, wxString>& aProps ) :
     wxASSERT( ReadRecord( aProps ) == ALTIUM_SCH_RECORD::NET_LABEL );
 
     text = ALTIUM_PROPS_UTILS::ReadString( aProps, "TEXT", "" );
+    fontId = ALTIUM_PROPS_UTILS::ReadInt( aProps, "FONTID", 0 );
 
     location = VECTOR2I( ReadKiCadUnitFrac( aProps, "LOCATION.X" ),
                          -ReadKiCadUnitFrac( aProps, "LOCATION.Y" ) );
@@ -863,6 +866,7 @@ ASCH_SHEET_NAME::ASCH_SHEET_NAME( const std::map<wxString, wxString>& aProps ) :
     wxASSERT( ReadRecord( aProps ) == ALTIUM_SCH_RECORD::SHEET_NAME );
 
     text = ALTIUM_PROPS_UTILS::ReadString( aProps, "TEXT", "" );
+    fontId = ALTIUM_PROPS_UTILS::ReadInt( aProps, "FONTID", 0 );
 
     orientation = ReadEnum<ASCH_RECORD_ORIENTATION>( aProps, "ORIENTATION", 0, 3,
                                                      ASCH_RECORD_ORIENTATION::RIGHTWARDS );
@@ -880,6 +884,7 @@ ASCH_FILE_NAME::ASCH_FILE_NAME( const std::map<wxString, wxString>& aProps ) :
     wxASSERT( ReadRecord( aProps ) == ALTIUM_SCH_RECORD::FILE_NAME );
 
     text = ALTIUM_PROPS_UTILS::ReadString( aProps, "TEXT", "" );
+    fontId = ALTIUM_PROPS_UTILS::ReadInt( aProps, "FONTID", 0 );
 
     orientation = ReadEnum<ASCH_RECORD_ORIENTATION>( aProps, "ORIENTATION", 0, 3,
                                                      ASCH_RECORD_ORIENTATION::RIGHTWARDS );

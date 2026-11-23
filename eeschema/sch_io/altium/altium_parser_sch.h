@@ -675,6 +675,8 @@ struct ASCH_POWER_PORT : ASCH_OWNER_INTERFACE
     ASCH_RECORD_ORIENTATION orientation;
     ASCH_POWER_PORT_STYLE   style;
 
+    int fontId;
+
     explicit ASCH_POWER_PORT( const std::map<wxString, wxString>& aProps );
 };
 
@@ -720,6 +722,8 @@ struct ASCH_NET_LABEL : ASCH_OWNER_INTERFACE
 
     ASCH_LABEL_JUSTIFICATION justification;
     ASCH_RECORD_ORIENTATION orientation;
+
+    int fontId;
 
     explicit ASCH_NET_LABEL( const std::map<wxString, wxString>& aProps );
 };
@@ -839,6 +843,8 @@ struct ASCH_SHEET_NAME : ASCH_OWNER_INTERFACE
 
     bool isHidden;
 
+    int fontId;
+
     explicit ASCH_SHEET_NAME( const std::map<wxString, wxString>& aProps );
 };
 
@@ -851,6 +857,8 @@ struct ASCH_FILE_NAME : ASCH_OWNER_INTERFACE
     VECTOR2I                location;
 
     bool isHidden;
+
+    int fontId;
 
     explicit ASCH_FILE_NAME( const std::map<wxString, wxString>& aProps );
 };
