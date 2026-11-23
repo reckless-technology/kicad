@@ -157,7 +157,19 @@ int CLI::IMPORT_COMMAND::doPerform( KIWAY& aKiway )
 
     std::map<wxString, wxString> netNameMap;
     wxString boardInput;
-    std::set<wxString>           copperLayers;
+
+    // The boards of a multi-board archive: imported once the schematic has supplied its names, as a
+    // single board is
+    struct DEFERRED_BOARD
+    {
+        wxString input;
+        wxString pcbId;
+        wxString outputPath;
+        bool     isPartOfMultiBoardProject;
+    };
+
+    std::vector<DEFERRED_BOARD> deferredBoards;
+    std::set<wxString>          copperLayers;
 
     // The schematic's netlist, from which the board is linked to its symbols as the project
     // manager's import links it
@@ -258,26 +270,11 @@ int CLI::IMPORT_COMMAND::doPerform( KIWAY& aKiway )
                             outputFn.SetName( uniqueBoardName );
                         }
 
-                        JOB_PCB_IMPORT pcbJob;
-                        pcbJob.m_inputFile = input;
-                        pcbJob.m_importPcbId = pcbId;
-                        pcbJob.m_isPartOfMultiBoardProject = hasMultipleBoards;
-                        pcbJob.SetConfiguredOutputPath( outputFn.GetFullPath() );
-
-                        pcbResult = aKiway.ProcessJob( KIWAY::FACE_PCB, &pcbJob, &reporter );
-
-                        if( pcbResult != EXIT_CODES::SUCCESS )
-                        {
-                            retCode = pcbResult;
-                            break;
-                        }
+                        deferredBoards.push_back( { input, pcbId, outputFn.GetFullPath(), hasMultipleBoards } );
 
                         boards.emplace_back( KIID(), outputFn.GetFullName() );
                         haveBoard = true;
                     }
-
-                    if( retCode != EXIT_CODES::SUCCESS )
-                        break;
                 }
                 else
                 {
@@ -371,6 +368,38 @@ int CLI::IMPORT_COMMAND::doPerform( KIWAY& aKiway )
         }
 
         copperLayers = std::move( pcbJob.m_copperLayers );
+    }
+
+    // The boards of a multi-board archive take the schematic's names and links as a single board does
+    std::map<wxString, wxString> footprintIds;
+
+    for( const DEFERRED_BOARD& deferred : deferredBoards )
+    {
+        if( retCode != EXIT_CODES::SUCCESS )
+            break;
+
+        JOB_PCB_IMPORT pcbJob;
+        pcbJob.m_inputFile = deferred.input;
+        pcbJob.m_importPcbId = deferred.pcbId;
+        pcbJob.m_isPartOfMultiBoardProject = deferred.isPartOfMultiBoardProject;
+        pcbJob.m_netNameMap = netNameMap;
+
+        if( haveNetlist )
+            pcbJob.m_netlistFile = netlistFile;
+
+        pcbJob.SetConfiguredOutputPath( deferred.outputPath );
+        retCode = aKiway.ProcessJob( KIWAY::FACE_PCB, &pcbJob, &reporter );
+
+        // a reference on two boards keeps the first board's footprint
+        footprintIds.insert( pcbJob.m_footprintIds.begin(), pcbJob.m_footprintIds.end() );
+    }
+
+    if( retCode == EXIT_CODES::SUCCESS && haveSch && !footprintIds.empty() )
+    {
+        JOB_SCH_IMPORT linkJob;
+        linkJob.m_inputFile = schFn.GetFullPath();
+        linkJob.m_footprintIds = std::move( footprintIds );
+        retCode = aKiway.ProcessJob( KIWAY::FACE_SCH, &linkJob, &reporter );
     }
 
     // after the board, whose copper layers decide which mid layers the output jobs' plots keep
