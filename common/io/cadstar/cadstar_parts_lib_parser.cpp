@@ -79,7 +79,7 @@ template <>                                                                     
 struct CADSTAR_LIB_PARSER_ACTION<Rule>                                                           \
 {                                                                                                \
     template <typename ActionInput>                                                              \
-    static void apply( const ActionInput& in, CADSTAR_LIB_PARSER_STATE& s )                      \
+    static void apply( const ActionInput& in [[maybe_unused]], CADSTAR_LIB_PARSER_STATE& s )                      \
     {                                                                                            \
         assert( s.m_CurrentString == "" && s.m_CurrentAttrName == "" );                          \
         s.StateVariable = helperStringToLong( in.string() );                                     \
@@ -116,7 +116,7 @@ template <>                                                                     
 struct CADSTAR_LIB_PARSER_ACTION<Rule>                                                           \
 {                                                                                                \
     template <typename ActionInput>                                                              \
-    static void apply( const ActionInput& in, CADSTAR_LIB_PARSER_STATE& s )                      \
+    static void apply( const ActionInput& in [[maybe_unused]], CADSTAR_LIB_PARSER_STATE& s )                      \
     {                                                                                            \
         assert( s.m_CurrentString == "" && s.m_CurrentAttrName == "" );                          \
         s.m_CurrentString = in.string();                                                         \
@@ -135,7 +135,7 @@ struct CADSTAR_LIB_PARSER_ACTION<Rule>                                          
 {                                                                                                \
     /* @todo : convert to use apply0 to improve performance( once fully tested ) */              \
     template <typename ActionInput>                                                              \
-    static void apply( const ActionInput& in, CADSTAR_LIB_PARSER_STATE& s )                      \
+    static void apply( const ActionInput& in [[maybe_unused]], CADSTAR_LIB_PARSER_STATE& s )                      \
     {                                                                                            \
         assert( in.string().size() >= s.m_CurrentString.size() );                                \
         s.StateVariable = s.m_CurrentString;                                                     \
@@ -280,7 +280,7 @@ template <>                                                                     
 struct CADSTAR_LIB_PARSER_ACTION<Rule>                                                           \
 {                                                                                                \
     template <typename ActionInput>                                                              \
-    static void apply( const ActionInput& in, CADSTAR_LIB_PARSER_STATE& s )                      \
+    static void apply( const ActionInput& in [[maybe_unused]], CADSTAR_LIB_PARSER_STATE& s )                      \
     {                                                                                            \
         assert( s.m_CurrentString == "" && s.m_CurrentAttrName == "" );                          \
                                                                                                  \
@@ -417,7 +417,7 @@ template <>                                                                     
 struct CADSTAR_LIB_PARSER_ACTION<Rule>                                                           \
 {                                                                                                \
     template <typename ActionInput>                                                              \
-    static void apply( const ActionInput& in, CADSTAR_LIB_PARSER_STATE& s )                      \
+    static void apply( const ActionInput& in [[maybe_unused]], CADSTAR_LIB_PARSER_STATE& s )                      \
     {                                                                                            \
         if( s.StateVariable.count( s.m_CurrentAttrName ) )                                       \
         {                                                                                        \
