@@ -333,6 +333,26 @@ int SCH_IO_ALTIUM::pinTextSize() const
 }
 
 
+namespace
+{
+/**
+ * Show a part in Altium's normal display mode when it has nothing in the one it was placed in.
+ *
+ * Altium draws a part placed in an alternate display mode in its normal mode when the library part
+ * has no graphics for that part in the alternate one.  Such an instance would otherwise show the
+ * empty body style KiCad writes for it, with no pins.
+ */
+void useNormalBodyStyleWhenEmpty( SCH_SYMBOL* aSymbol, LIB_SYMBOL* aLibSymbol )
+{
+    if( aSymbol->GetBodyStyle() <= 1 )
+        return;
+
+    if( aLibSymbol->GetUnitDrawItems( aSymbol->GetUnit(), aSymbol->GetBodyStyle() ).empty() )
+        aSymbol->SetBodyStyle( 1 );
+}
+} // namespace
+
+
 void SCH_IO_ALTIUM::fixupSymbolPinNameNumbers( SYMBOL* aSymbol )
 {
     std::vector<SCH_PIN*> pins;
@@ -2694,6 +2714,7 @@ void SCH_IO_ALTIUM::ParseFileHeader( const ALTIUM_COMPOUND_FILE& aAltiumSchFile 
 
         fixupSymbolPinNameNumbers( symbol.second );
         fixupSymbolPinNameNumbers( libSymbolIt->second );
+        useNormalBodyStyleWhenEmpty( symbol.second, libSymbolIt->second );
 
         symbol.second->SetLibSymbol( libSymbolIt->second );
     }
@@ -2807,6 +2828,7 @@ void SCH_IO_ALTIUM::ParseASCIISchematic( const wxString& aFileName )
 
         fixupSymbolPinNameNumbers( symbol.second );
         fixupSymbolPinNameNumbers( libSymbolIt->second );
+        useNormalBodyStyleWhenEmpty( symbol.second, libSymbolIt->second );
 
         symbol.second->SetLibSymbol( libSymbolIt->second );
     }
