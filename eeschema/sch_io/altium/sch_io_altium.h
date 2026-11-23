@@ -485,6 +485,13 @@ private:
     // Persists across sheets so variant application can match by Altium UniqueId
     std::map<const SCH_SYMBOL*, wxString> m_altiumSymbolToUid;
 
+    // The lower-cased name of the Altium sheet file being read, which with a component's unique id
+    // names the symbol made from it
+    wxString m_sourceSheetName;
+
+    // How many symbols were made from each such name, so a unique id Altium repeats stays distinct
+    std::map<wxString, int> m_symbolNameCounts;
+
     // Special strings sheet text refers to, which Altium resolves to nothing when no value exists
     std::set<wxString> m_sheetSpecialStrings;
 
