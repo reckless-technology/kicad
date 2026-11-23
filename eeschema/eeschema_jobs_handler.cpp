@@ -112,6 +112,7 @@
 #include <dialogs/dialog_symbol_fields_table.h>
 #include <confirm.h>
 #include <project_sch.h>
+#include <kiface_services.h>
 #include <wx/app.h>
 
 #include <libraries/symbol_library_adapter.h>
@@ -1461,7 +1462,20 @@ int EESCHEMA_JOBS_HANDLER::JobSymUpgrade( JOB* aJob )
     }
     else
     {
-        if( !SCH_IO_MGR::ConvertLibrary( nullptr, fn.GetAbsolutePath(), upgradeJob->m_outputLibraryPath, m_reporter ) )
+        // Symbols from other tools name a footprint without its library; find the library in the
+        // footprint library tables that are in force
+        PROJECT&                        project = Pgm().GetSettingsManager().Prj();
+        SCH_IO_MGR::FOOTPRINT_RESOLVER resolver =
+                [&]( const wxString& aFootprintName )
+                {
+                    KIFACE* cvpcb = m_kiway->KiFACE( KIWAY::FACE_CVPCB );
+                    auto    find = GetKifaceService<KIFACE_FIND_FOOTPRINT_LIB_ID_SERVICE>( cvpcb );
+
+                    return find ? find( aFootprintName, &project ) : wxString();
+                };
+
+        if( !SCH_IO_MGR::ConvertLibrary( nullptr, fn.GetAbsolutePath(), upgradeJob->m_outputLibraryPath, m_reporter,
+                                         resolver ) )
         {
             m_reporter->Report( ( "Unable to convert library\n" ), RPT_SEVERITY_ERROR );
             return CLI::EXIT_CODES::ERR_UNKNOWN;

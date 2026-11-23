@@ -98,6 +98,9 @@ using KIFACE_FOOTPRINT_PAD_NUMBERS_SERVICE =
         KIFACE_SERVICE<KIFACE_FOOTPRINT_PAD_NUMBERS,
                        void (*)( const wxString&, PROJECT*, std::set<wxString>& )>;
 
+using KIFACE_FIND_FOOTPRINT_LIB_ID_SERVICE =
+        KIFACE_SERVICE<KIFACE_FIND_FOOTPRINT_LIB_ID, wxString (*)( const wxString&, PROJECT* )>;
+
 /**
  * Return a service address for IfaceOrAddress().
  *

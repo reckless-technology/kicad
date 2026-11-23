@@ -51,6 +51,8 @@
 #include <wildcards_and_files_ext.h>
 #include <kiway_player.h>
 #include <string_utils.h>
+#include <lib_symbol.h>
+#include <sch_field.h>
 #include <libraries/library_table_parser.h>
 
 #define FMT_UNIMPLEMENTED   _( "Plugin '%s' does not implement the '%s' function." )
@@ -251,7 +253,8 @@ SCH_IO_MGR::SCH_FILE_T SCH_IO_MGR::GuessPluginTypeFromSchPath( const wxString& a
 
 
 bool SCH_IO_MGR::ConvertLibrary( std::map<std::string, UTF8>* aOldFileProps, const wxString& aOldFilePath,
-                                 const wxString& aNewFilepath, REPORTER* aReporter )
+                                 const wxString& aNewFilepath, REPORTER* aReporter,
+                                 const FOOTPRINT_RESOLVER& aFootprintResolver )
 {
     auto report = [&]( const wxString& aMessage, SEVERITY aSeverity )
     {
@@ -319,6 +322,29 @@ bool SCH_IO_MGR::ConvertLibrary( std::map<std::string, UTF8>* aOldFileProps, con
 
             newSymbols.push_back( std::make_unique<LIB_SYMBOL>( *symbol ) );
             newSymbols.back()->SetParent( symbolMap[ symbol->GetParent().lock().get() ] );
+        }
+
+        if( aFootprintResolver )
+        {
+            for( std::unique_ptr<LIB_SYMBOL>& symbol : newSymbols )
+            {
+                SCH_FIELD* field = symbol->GetField( FIELD_T::FOOTPRINT );
+
+                if( !field || field->GetText().IsEmpty() )
+                    continue;
+
+                wxString qualified = aFootprintResolver( field->GetText() );
+
+                if( qualified.IsEmpty() )
+                {
+                    report( wxString::Format( _( "Symbol '%s': no footprint library holds footprint '%s'" ),
+                                              symbol->GetName(), field->GetText() ),
+                            RPT_SEVERITY_WARNING );
+                    continue;
+                }
+
+                field->SetText( qualified );
+            }
         }
 
         // Create a blank library
