@@ -2140,4 +2140,27 @@ BOOST_AUTO_TEST_CASE( FootprintNameKeepsSlashes )
 }
 
 
+/**
+ * A 3D body Altium links to a STEP file of its own, rather than embedding it, keeps its model as
+ * a reference to that file, with the body's placement.
+ */
+BOOST_AUTO_TEST_CASE( LinkedModelIsKept )
+{
+    std::string dataPath = KI_TEST::GetPcbnewTestDataDir()
+                           + "plugins/altium/linked_3d_model/linked_3d_model.PcbDoc";
+
+    std::unique_ptr<BOARD> board = m_altiumPlugin.LoadBoard( dataPath );
+    BOOST_REQUIRE( board );
+
+    BOOST_REQUIRE_EQUAL( board->Footprints().size(), 1 );
+
+    const std::vector<FP_3DMODEL>& models = board->Footprints().front()->Models();
+
+    BOOST_REQUIRE_EQUAL( models.size(), 1 );
+    BOOST_CHECK_EQUAL( models.front().m_Filename, wxT( "linked_body.step" ) );
+    BOOST_CHECK_CLOSE( models.front().m_Offset.z, 0.254, 1e-6 );
+    BOOST_CHECK_CLOSE( std::abs( models.front().m_Rotation.z ), 90.0, 1e-6 );
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()
