@@ -715,7 +715,10 @@ SCH_SHEET* SCH_IO_ALTIUM::LoadSchematicFile( const wxString& aFileName, SCHEMATI
     }
 
     if( !aAppendToMe )
+    {
         NormalizeRepeatedSheetInstances();
+        EnsureSymbolInstancesOnHierarchy();
+    }
 
     if( m_reporter )
     {
@@ -1642,6 +1645,36 @@ void SCH_IO_ALTIUM::NormalizeRepeatedSheetInstances()
 
         if( !m_schematic->RefSuffixCollisions( true ).empty() )
             m_schematic->Settings().m_AnnotateReusedSheetSuffixes = false;
+    }
+}
+
+
+void SCH_IO_ALTIUM::EnsureSymbolInstancesOnHierarchy()
+{
+    wxCHECK( m_schematic, /* void */ );
+
+    m_schematic->RefreshHierarchy();
+
+    for( const SCH_SHEET_PATH& sheetPath : m_schematic->Hierarchy() )
+    {
+        SCH_SCREEN* screen = sheetPath.LastScreen();
+
+        if( !screen )
+            continue;
+
+        for( SCH_ITEM* item : screen->Items().OfType( SCH_SYMBOL_T ) )
+        {
+            SCH_SYMBOL*         symbol = static_cast<SCH_SYMBOL*>( item );
+            SCH_SYMBOL_INSTANCE existing;
+
+            if( symbol->GetInstance( existing, sheetPath.Path() ) || symbol->GetInstances().empty() )
+                continue;
+
+            // The designator was recorded under the path the sheet was parsed on
+            const SCH_SYMBOL_INSTANCE& parsed = symbol->GetInstances().front();
+
+            symbol->AddHierarchicalReference( sheetPath.Path(), parsed.m_Reference, parsed.m_Unit );
+        }
     }
 }
 
