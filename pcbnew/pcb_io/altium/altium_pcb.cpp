@@ -3691,8 +3691,13 @@ void ALTIUM_PCB::ParsePolygons6Data( const ALTIUM_PCB_COMPOUND_FILE&     aAltium
             }
         }
 
+        // A hatch whose tracks are as wide as its grid leaves no gap: Altium pours it solid, and
+        // a zero hatch gap would have KiCad's filler draw an endless grid
+        bool isSolidHatch = elem.hatchstyle != ALTIUM_POLYGON_HATCHSTYLE::NONE
+                            && elem.gridsize <= elem.trackwidth;
+
         if( elem.hatchstyle != ALTIUM_POLYGON_HATCHSTYLE::SOLID
-                && elem.hatchstyle != ALTIUM_POLYGON_HATCHSTYLE::UNKNOWN )
+                && elem.hatchstyle != ALTIUM_POLYGON_HATCHSTYLE::UNKNOWN && !isSolidHatch )
         {
             zone->SetFillMode( ZONE_FILL_MODE::HATCH_PATTERN );
             zone->SetHatchThickness( elem.trackwidth );
