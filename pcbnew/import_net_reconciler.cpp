@@ -328,3 +328,20 @@ int FillImportedFootprintFields( BOARD& aBoard, NETLIST& aNetlist )
 
     return filled;
 }
+
+
+IMPORT_RECONCILE_RESULT ReconcileImportedBoard( BOARD& aBoard, NETLIST& aNetlist, REPORTER& aReporter )
+{
+    IMPORT_RECONCILE_RESULT result;
+
+    result.m_referencesRenamed = ReconcileImportedReferences( aBoard, aNetlist );
+
+    // the importers give symbols and footprints unrelated ids, so the board is linked to the
+    // schematic by reference, as Update PCB from Schematic would link it
+    result.m_footprintsLinked = aNetlist.LinkFootprintsByReference( aBoard.Footprints() );
+
+    result.m_nets = ReconcileImportedNetNames( aBoard, aNetlist, aReporter );
+    result.m_footprintsFilled = FillImportedFootprintFields( aBoard, aNetlist );
+
+    return result;
+}

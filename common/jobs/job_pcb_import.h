@@ -77,7 +77,8 @@ public:
     /// Avoid promoting an individual board's source settings into shared project settings.
     bool m_isPartOfMultiBoardProject = false;
 
-    /// Netlist of the imported schematic, whose net names the board takes where the two agree.
+    /// Netlist of the schematic imported with the board.  The board is linked to its symbols and
+    /// takes their references, net names and fields where the two agree.
     wxString m_netlistFile;
 
     /// Library coordination properties, as IMPORT_PROJ_HELPER hands them to the editor.

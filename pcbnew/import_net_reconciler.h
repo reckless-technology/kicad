@@ -76,4 +76,36 @@ NET_RECONCILE_RESULT ReconcileImportedNetNames( BOARD& aBoard, NETLIST& aNetlist
  */
 int FillImportedFootprintFields( BOARD& aBoard, NETLIST& aNetlist );
 
+/**
+ * Outcome of making an imported board agree with its imported schematic.
+ */
+struct IMPORT_RECONCILE_RESULT
+{
+    int                  m_referencesRenamed = 0; ///< footprints given their symbol's reference
+    int                  m_footprintsLinked = 0;  ///< footprints linked to their symbol
+    NET_RECONCILE_RESULT m_nets;
+    int                  m_footprintsFilled = 0;  ///< footprints that gained a value or a field
+
+    /// Whether anything on the board changed.
+    bool BoardChanged() const
+    {
+        return m_referencesRenamed > 0 || m_footprintsLinked > 0 || m_nets.m_renamed > 0
+               || m_nets.m_unconnectedAssigned > 0 || m_footprintsFilled > 0;
+    }
+};
+
+/**
+ * Make an imported board agree with the schematic imported with it, as far as Update PCB from
+ * Schematic would without touching any copper: the footprints' references, their links to the
+ * symbols, the net names and the fields a footprint lacks, in that order.
+ *
+ * Shared by the project manager's import and the `kicad-cli import` command.
+ *
+ * @param[in] aBoard is the imported board.
+ * @param[in] aNetlist is the netlist of the imported schematic.
+ * @param[in] aReporter receives the net name counts and the first differences.
+ * @return what was changed.
+ */
+IMPORT_RECONCILE_RESULT ReconcileImportedBoard( BOARD& aBoard, NETLIST& aNetlist, REPORTER& aReporter );
+
 #endif // IMPORT_NET_RECONCILER_H

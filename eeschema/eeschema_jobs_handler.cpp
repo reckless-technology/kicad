@@ -2703,6 +2703,19 @@ int EESCHEMA_JOBS_HANDLER::JobImport( JOB* aJob )
     if( const IMPORT_NET_MAP* map = schematic->GetImportNetMap() )
         job->m_netNameMap = GetBoardNetNameMap( *map, *m_reporter );
 
+    // and links its footprints to the symbols from this, as the project manager's import does
+    if( !job->m_netlistFile.IsEmpty() )
+    {
+        NETLIST_EXPORTER_KICAD exporter( schematic.get(), m_kiway );
+
+        if( !exporter.WriteNetlist( job->m_netlistFile, 0, *m_reporter ) )
+        {
+            m_reporter->Report( _( "The imported schematic's netlist could not be written, so the board is "
+                                   "not linked to it\n" ),
+                                RPT_SEVERITY_WARNING );
+        }
+    }
+
     m_reporter->Report( wxString::Format( _( "Successfully saved imported schematic to '%s'\n" ),
                                           outputFn.GetFullPath() ),
                         RPT_SEVERITY_INFO );
