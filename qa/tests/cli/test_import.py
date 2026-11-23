@@ -281,6 +281,26 @@ class TestImportEasyEdaProV2Project:
         assert "# Board Outline ↔ Track: 11.8 mil" in rules
         assert "# Copper / Plane Zone ↔ Track: 11.8 mil" not in rules
 
+    def test_import_all_project_boards_linked_to_schematic( self, kitest: KiTestFixture ):
+        """Each board of the archive is linked to the schematic as a single board is: its footprints take
+        the path of the symbol of their reference"""
+        archive = get_easyedapro_v2_test_file()
+        stem = get_project_stem( kitest, "easyedapro_v2_linked", "project" )
+
+        command = [ utils.kicad_cli(), "import", archive, "-o", str( stem ) ]
+        stdout, stderr, return_code = utils.run_and_capture( command )
+
+        assert return_code == 0
+        assert list( stem.parent.glob( "*.kicad_sch" ) )
+
+        with open( stem.with_suffix( ".kicad_pro" ), "r" ) as f:
+            project = json.load( f )
+
+        boards = [ stem.parent / filename for _, filename in project.get( "boards", [] ) ]
+        assert len( boards ) > 1
+
+        assert footprints_linked_to_symbols( stem, boards ) > 0
+
     @pytest.mark.skipif( get_easyedapro_v2_single_board_test_file() is None,
                          reason="Single-board EasyEDA Pro v2 test file not available" )
     def test_import_single_project_board_uses_project_name( self, kitest: KiTestFixture ):
@@ -420,9 +440,10 @@ def reference_of( node: list ) -> str:
     return ""
 
 
-def footprints_linked_to_symbols( stem: Path ) -> int:
+def footprints_linked_to_symbols( stem: Path, boards: list = None ) -> int:
     """Check that each board footprint is linked to the symbol of its reference, in any sheet of the
-    project, as Update PCB from Schematic links it; return how many footprints were checked."""
+    project, as Update PCB from Schematic links it; return how many footprints were checked.
+    The boards are the stem's own board unless a list of board files is given."""
     symbols = {}
 
     for sheet in stem.parent.glob( "*.kicad_sch" ):
@@ -433,20 +454,22 @@ def footprints_linked_to_symbols( stem: Path ) -> int:
             if reference and not reference.startswith( "#" ) and uuid:
                 symbols.setdefault( reference, [] ).append( uuid[0][1] )
 
-    board = parse_sexpr( stem.with_suffix( ".kicad_pcb" ).read_text( encoding="utf-8" ) )
     checked = 0
 
-    for footprint in children( board, "footprint" ):
-        reference = reference_of( footprint )
+    for board_file in boards or [ stem.with_suffix( ".kicad_pcb" ) ]:
+        board = parse_sexpr( board_file.read_text( encoding="utf-8" ) )
 
-        if len( symbols.get( reference, [] ) ) != 1:
-            continue
+        for footprint in children( board, "footprint" ):
+            reference = reference_of( footprint )
 
-        path = children( footprint, "path" )
-        assert path, f"footprint {reference} has no path"
-        assert path[0][1].split( "/" )[-1] == symbols[reference][0], \
-            f"footprint {reference} is not linked to its symbol"
-        checked += 1
+            if len( symbols.get( reference, [] ) ) != 1:
+                continue
+
+            path = children( footprint, "path" )
+            assert path, f"footprint {reference} has no path"
+            assert path[0][1].split( "/" )[-1] == symbols[reference][0], \
+                f"footprint {reference} is not linked to its symbol"
+            checked += 1
 
     return checked
 
