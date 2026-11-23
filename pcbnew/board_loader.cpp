@@ -23,6 +23,8 @@
 #include <base_screen.h>
 #include <board.h>
 #include <board_design_settings.h>
+#include <collectors.h>
+#include <pcb_shape.h>
 #include <board_tables/generated_table_refresh.h>
 #include <drawing_sheet/ds_data_model.h>
 #include <drc/drc_engine.h>
@@ -222,4 +224,39 @@ bool BOARD_LOADER::SaveBoard( wxString& aFileName, BOARD& aBoard, PCB_IO_MGR::PC
 bool BOARD_LOADER::SaveBoard( wxString& aFileName, BOARD& aBoard )
 {
     return SaveBoard( aFileName, aBoard, PCB_IO_MGR::KICAD_SEXP );
+}
+
+
+int BOARD_LOADER::InferLegacyEdgeClearance( BOARD& aBoard, bool* aMixedWidths )
+{
+    PCB_LAYER_COLLECTOR collector;
+
+    collector.SetLayerId( Edge_Cuts );
+    collector.Collect( &aBoard, GENERAL_COLLECTOR::AllBoardItems );
+
+    int  edgeWidth = -1;
+    bool mixed = false;
+
+    for( int i = 0; i < collector.GetCount(); i++ )
+    {
+        if( collector[i]->Type() == PCB_SHAPE_T )
+        {
+            int itemWidth = static_cast<PCB_SHAPE*>( collector[i] )->GetWidth();
+
+            if( edgeWidth != -1 && edgeWidth != itemWidth )
+            {
+                mixed = true;
+                edgeWidth = std::max( edgeWidth, itemWidth );
+            }
+            else
+            {
+                edgeWidth = itemWidth;
+            }
+        }
+    }
+
+    if( aMixedWidths )
+        *aMixedWidths = mixed;
+
+    return std::max( 0, edgeWidth / 2 );
 }

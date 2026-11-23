@@ -75,6 +75,16 @@ public:
 
     static bool SaveBoard( wxString& aFileName, BOARD& aBoard );
 
+    /**
+     * The copper edge clearance a board that predates the setting meant: half the width of its
+     * board outline, which used to keep the copper clear of the edge.
+     *
+     * @param aBoard is the board whose Edge.Cuts shapes are measured.
+     * @param aMixedWidths is set to true if the outline's shapes differ in width (the widest
+     *                     is used), when not null.
+     */
+    static int InferLegacyEdgeClearance( BOARD& aBoard, bool* aMixedWidths = nullptr );
+
 private:
     static void initializeLoadedBoard( BOARD* aBoard, const wxString& aFileName,
                                        PROJECT* aProject, const OPTIONS& aOptions );

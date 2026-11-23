@@ -2737,6 +2737,10 @@ int EESCHEMA_JOBS_HANDLER::JobImport( JOB* aJob )
     // Linked by the top-level `import` command's subsequent SaveProject().
     if( Pgm().GetSettingsManager().IsProjectOpenNotDummy() )
     {
+        // as the schematic editor records it when it saves the project, for the IPC-2581 export
+        if( schematic->RootScreen() )
+            project.GetProjectFile().m_IP2581Bom.schRevision = schematic->RootScreen()->GetTitleBlock().GetRevision();
+
         std::vector<FILE_INFO_PAIR>& projectSheets = project.GetProjectFile().GetSheets();
         projectSheets.clear();
 
