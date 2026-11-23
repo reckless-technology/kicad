@@ -6,7 +6,7 @@ This is a modified version of [KiCad](https://www.kicad.org), maintained by Reck
 - **Based on:** KiCad's development line (upstream `master`, gitlab.com/kicad/code/kicad), which becomes KiCad 11.
   Files it saves use the KiCad 11 development format, which KiCad 10 cannot open.
 - **Modified:** from 2026-11-22. Branch `reckless/main` is upstream `master` plus our changes, rebased onto upstream
-  every week; every change is a separate commit, listed by `git log upstream/master..reckless/main`.
+  only when we choose to; every change is a separate commit, listed by `git log upstream/master..reckless/main`.
 - **License:** unchanged, GNU GPL version 3 or later (see `LICENSE` and `LICENSE.README`), as for KiCad itself.
 - **Builds** identify themselves with a `-reckless` suffix in Help > About.
 
@@ -18,7 +18,8 @@ and lands as one commit. We don't offer the changes back to KiCad unless KiCad a
 
 ## Keeping up with upstream
 
-Once a week, `reckless/main` is rebased onto upstream `master` (#24):
+`reckless/main` is rebased onto upstream `master` only when Jonny asks for it, never on a schedule, so a rebase never
+lands in the middle of fixes in progress (#24). When it is:
 
 1. `git fetch upstream master`. If `reckless/main` already sits on it, there's nothing to do.
 2. Tag the current head `pre-rebase/YYYY-MM-DD` and push the tag. A rebase rewrites every commit of ours, and the
@@ -29,7 +30,7 @@ Once a week, `reckless/main` is rebased onto upstream `master` (#24):
    warning count with the previous build.
 5. `git push --force-with-lease=reckless/main:<old head> origin rebase/YYYY-MM-DD:reckless/main`, then rebase any
    open `fix/*` branches onto the new `reckless/main`.
-6. Install. Comment on #24 with the old and new upstream base, the number of our commits and the test results.
+6. Install. Comment on the rebase's issue with the old and new upstream base, the number of our commits and the test results.
 
 ## Building
 
