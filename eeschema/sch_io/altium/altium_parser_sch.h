@@ -744,7 +744,8 @@ struct ASCH_BUS : ASCH_OWNER_INTERFACE
 
 struct ASCH_WIRE : ASCH_OWNER_INTERFACE
 {
-    int lineWidth;
+    int lineWidth; ///< KiCad width of Altium's Smallest, Small, Medium or Large line
+    int color;
 
     std::vector<VECTOR2I> points;
 

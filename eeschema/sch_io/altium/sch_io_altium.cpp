@@ -6098,7 +6098,7 @@ void SCH_IO_ALTIUM::ParseWire( const std::map<wxString, wxString>& aProperties )
     {
         SCH_LINE* wire = new SCH_LINE( elem.points.at( i ) + m_sheetOffset, SCH_LAYER_ID::LAYER_WIRE );
         wire->SetEndPoint( elem.points.at( i + 1 ) + m_sheetOffset );
-        // wire->SetLineWidth( elem.lineWidth );
+        wire->SetStroke( STROKE_PARAMS( elem.lineWidth, LINE_STYLE::DEFAULT, GetColorFromInt( elem.color ) ) );
 
         wire->SetFlags( IS_NEW );
         screen->Append( wire );
