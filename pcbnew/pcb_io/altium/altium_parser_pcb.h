@@ -525,6 +525,9 @@ struct ABOARD6
 
     std::vector<ALTIUM_VERTICE> board_vertices;
 
+    // Pullback of each internal plane from the board edge
+    std::map<ALTIUM_LAYER, int> planePullbacks;
+
     // Vertices the file placed outside the representable coordinate range
     int discardedVertices = 0;
 

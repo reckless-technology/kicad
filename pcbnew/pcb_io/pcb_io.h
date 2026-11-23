@@ -36,6 +36,7 @@ class BOARD;
 class FOOTPRINT;
 class PROJECT;
 class PROGRESS_REPORTER;
+class ZONE;
 
 // MIKE WILLIAMS TODO: convert all of the other stringly-typed IO plugin properties to use constants
 namespace PCB_IO_LOAD_PROPERTIES
@@ -184,6 +185,13 @@ public:
      * The caller owns persistence of these rules beside the imported KiCad board.
      */
     virtual wxString GetImportedDesignRules() const { return wxEmptyString; }
+
+    /**
+     * Return the zones of the board loaded by the most recent #LoadBoard that the importer left
+     * unfilled for the caller to fill, such as planes whose fill the source format does not
+     * store.  The zones belong to that board; most importers leave none.
+     */
+    const std::vector<ZONE*>& GetZonesToFill() const { return m_zonesToFill; }
 
 
     /**
@@ -405,4 +413,7 @@ protected:
 
     /// Properties passed via Save() or Load(), no ownership, may be NULL.
     const std::map<std::string, UTF8>* m_props;
+
+    /// Zones of the last loaded board for the caller to fill, no ownership
+    std::vector<ZONE*> m_zonesToFill;
 };

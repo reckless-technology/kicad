@@ -87,5 +87,6 @@ void PCB_IO_ALTIUM_CIRCUIT_MAKER::loadBoard( const wxString& aFileName, BOARD& a
     // clang-format on
 
     LoadAltiumBoard( aFileName, m_board, mapping, m_props, aProject,
-                     m_progressReporter, m_layer_mapping_handler, m_reporter );
+                     m_progressReporter, m_layer_mapping_handler, m_reporter,
+                     m_zonesToFill );
 }

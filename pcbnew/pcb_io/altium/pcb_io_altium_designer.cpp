@@ -125,8 +125,10 @@ void LoadAltiumBoard( const wxString& aFileName, BOARD* aBoard,
                       const std::map<ALTIUM_PCB_DIR, std::string>& aMapping,
                       const std::map<std::string, UTF8>* aProperties, PROJECT* aProject,
                       PROGRESS_REPORTER* aProgressReporter, LAYER_MAPPING_HANDLER& aLayerMappingHandler,
-                      REPORTER* aReporter )
+                      REPORTER* aReporter, std::vector<ZONE*>& aZonesToFill )
 {
+    aZonesToFill.clear();
+
     // The compound-file constructor already translates CFB errors to IO_ERROR.
     ALTIUM_PCB_COMPOUND_FILE altiumPcbFile( aFileName );
 
@@ -137,6 +139,7 @@ void LoadAltiumBoard( const wxString& aFileName, BOARD* aBoard,
         ALTIUM_PCB pcb( aBoard, aProgressReporter, aLayerMappingHandler, aReporter );
         pcb.Parse( altiumPcbFile, aMapping, aProperties );
         specialStrings = pcb.GetSpecialStrings();
+        aZonesToFill = pcb.GetZonesToFill();
     }
     catch( CFB::CFBException& exception )
     {
@@ -255,7 +258,8 @@ void PCB_IO_ALTIUM_DESIGNER::loadBoard( const wxString& aFileName, BOARD& aBoard
     // clang-format on
 
     LoadAltiumBoard( aFileName, m_board, mapping, m_props, aProject,
-                     m_progressReporter, m_layer_mapping_handler, m_reporter );
+                     m_progressReporter, m_layer_mapping_handler, m_reporter,
+                     m_zonesToFill );
 }
 
 

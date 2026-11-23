@@ -931,6 +931,8 @@ void ALTIUM_PCB::Parse( const ALTIUM_PCB_COMPOUND_FILE&              altiumPcbFi
 
     HelperFinishBoardOutline();
 
+    HelperPrepareUnfilledPlanes();
+
     MoveOpenCourtyardItems( *m_board );
 
     // Altium doesn't appear to store either the dimension value nor the dimensioned object in
@@ -1637,6 +1639,60 @@ void ALTIUM_PCB::ParseExtendedPrimitiveInformationData( const ALTIUM_PCB_COMPOUN
 }
 
 
+void ALTIUM_PCB::HelperPrepareUnfilledPlanes()
+{
+    // Altium's default plane pullback, for files that do not store one
+    const int defaultPullback = pcbIUScale.mmToIU( 0.508 );
+
+    std::map<PCB_LAYER_ID, int> pullbacks;
+
+    for( const auto& [altiumLayer, kicadLayer] : m_layermap )
+    {
+        if( IsAltiumLayerAPlane( altiumLayer ) )
+        {
+            auto it = m_planePullbacks.find( altiumLayer );
+            pullbacks[kicadLayer] = it != m_planePullbacks.end() ? it->second : defaultPullback;
+        }
+    }
+
+    std::vector<ZONE*> planes;
+
+    for( ZONE* zone : m_board->Zones() )
+    {
+        if( zone->GetIsRuleArea() || !zone->IsOnCopperLayer() || zone->GetLayerSet().count() != 1 )
+            continue;
+
+        PCB_LAYER_ID layer = zone->GetFirstLayer();
+
+        if( !pullbacks.contains( layer ) )
+            continue;
+
+        if( zone->HasFilledPolysForLayer( layer ) && !zone->GetFilledPolysList( layer )->IsEmpty() )
+            continue;
+
+        planes.push_back( zone );
+    }
+
+    if( planes.empty() )
+        return;
+
+    SHAPE_POLY_SET boardOutline;
+
+    if( m_board->GetBoardPolygonOutlines( boardOutline, true ) && boardOutline.OutlineCount() > 0 )
+    {
+        for( ZONE* zone : planes )
+        {
+            SHAPE_POLY_SET inside = boardOutline;
+            inside.Deflate( pullbacks[zone->GetFirstLayer()], CORNER_STRATEGY::CHAMFER_ACUTE_CORNERS,
+                            ARC_HIGH_DEF );
+            zone->Outline()->BooleanIntersection( inside );
+        }
+    }
+
+    m_zonesToFill = std::move( planes );
+}
+
+
 void ALTIUM_PCB::ParseBoard6Data( const ALTIUM_PCB_COMPOUND_FILE&     aAltiumPcbFile,
                                   const CFB::COMPOUND_FILE_ENTRY* aEntry )
 {
@@ -1653,6 +1709,7 @@ void ALTIUM_PCB::ParseBoard6Data( const ALTIUM_PCB_COMPOUND_FILE&     aAltiumPcb
 
     m_board->GetDesignSettings().SetAuxOrigin( elem.origin );
     m_board->GetDesignSettings().SetGridOrigin( elem.origin );
+    m_planePullbacks = elem.planePullbacks;
 
     // read layercount from stackup, because LAYERSETSCOUNT is not always correct?!
     size_t layercount = 0;
