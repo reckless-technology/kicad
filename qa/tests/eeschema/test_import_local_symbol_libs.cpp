@@ -30,6 +30,8 @@
 
 #include <wx/filename.h>
 
+#include <algorithm>
+
 #include <io/io_mgr.h>
 #include <libraries/library_manager.h>
 #include <libraries/library_table.h>
@@ -38,6 +40,8 @@
 #include <reporter.h>
 #include <sch_io/sch_io.h>
 #include <sch_io/sch_io_mgr.h>
+#include <lib_symbol.h>
+#include <sch_field.h>
 #include <settings/settings_manager.h>
 #include <wildcards_and_files_ext.h>
 
@@ -97,6 +101,73 @@ BOOST_AUTO_TEST_CASE( ProjectLibraryIsConvertedToKiCad )
     BOOST_CHECK( !wxFileName( project.GetProjectPath(), libFn.GetFullName() ).FileExists() );
 
     Pgm().GetSettingsManager().LoadProject( wxS( "" ) );
+}
+
+
+namespace
+{
+/// The footprint field of every symbol of a converted library, empty fields left out
+std::vector<wxString> convertedFootprintFields( const wxString& aLibraryPath,
+                                                const SCH_IO_MGR::FOOTPRINT_RESOLVER& aResolver )
+{
+    KI_TEST::SCOPED_TEMP_DIR outDir( wxS( "altium_schlib_footprints" ) );
+    wxFileName               out( outDir.PathStr(), wxS( "converted" ), FILEEXT::KiCadSymbolLibFileExtension );
+
+    WX_STRING_REPORTER reporter;
+    bool ok = SCH_IO_MGR::ConvertLibrary( nullptr, aLibraryPath, out.GetFullPath(), &reporter, aResolver );
+    BOOST_TEST_MESSAGE( reporter.GetMessages() );
+    BOOST_REQUIRE( ok );
+
+    std::vector<LIB_SYMBOL*> symbols;
+    IO_RELEASER<SCH_IO>      kicad( SCH_IO_MGR::FindPlugin( SCH_IO_MGR::SCH_KICAD ) );
+    kicad->EnumerateSymbolLib( symbols, out.GetFullPath() );
+
+    std::vector<wxString> fields;
+
+    for( LIB_SYMBOL* symbol : symbols )
+    {
+        wxString text = symbol->GetField( FIELD_T::FOOTPRINT )->GetText();
+
+        if( !text.IsEmpty() )
+            fields.push_back( text );
+    }
+
+    return fields;
+}
+} // namespace
+
+
+// fails on revert, since the footprint an Altium symbol names is the source PcbLib's, not an installed library
+BOOST_AUTO_TEST_CASE( ConvertedSchLibQualifiesFootprintFields )
+{
+    wxString original =
+            wxString::FromUTF8( KI_TEST::GetEeschemaTestDataDir() + "plugins/altium/issue22943/mounting_holes.SchLib" );
+
+    // without a footprint library table to consult, the symbols keep what Altium names
+    std::vector<wxString> plain = convertedFootprintFields( original, nullptr );
+    BOOST_REQUIRE_GT( plain.size(), 0 );
+
+    // one names the source library, the other no library at all; neither is an installed library
+    BOOST_CHECK( std::any_of( plain.begin(), plain.end(), []( const wxString& f ) { return f.Contains( ':' ); } ) );
+    BOOST_CHECK( std::any_of( plain.begin(), plain.end(), []( const wxString& f ) { return !f.Contains( ':' ); } ) );
+
+    // with one, the installed library that holds the footprint is named
+    std::vector<wxString> qualified = convertedFootprintFields(
+            original,
+            []( const wxString& aFootprint )
+            {
+                return wxS( "InstalledLib:" ) + aFootprint.AfterLast( ':' );
+            } );
+
+    BOOST_REQUIRE_EQUAL( qualified.size(), plain.size() );
+
+    for( size_t i = 0; i < qualified.size(); ++i )
+        BOOST_CHECK_EQUAL( qualified[i], wxS( "InstalledLib:" ) + plain[i].AfterLast( ':' ) );
+
+    // a footprint no installed library holds is left as the source named it
+    std::vector<wxString> unresolved =
+            convertedFootprintFields( original, []( const wxString& ) { return wxString(); } );
+    BOOST_CHECK( unresolved == plain );
 }
 
 
