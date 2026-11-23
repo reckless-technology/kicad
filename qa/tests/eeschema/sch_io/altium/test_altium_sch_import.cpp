@@ -178,6 +178,13 @@ struct ALTIUM_SCH_IMPORT_FIXTURE
                + aName;
     }
 
+    wxString netLabelBackslashDataFile( const wxString& aName ) const
+    {
+        return wxString::FromUTF8( KI_TEST::GetEeschemaTestDataDir()
+                                   + "/plugins/altium/net_label_backslash/" )
+               + aName;
+    }
+
     wxString wireStyleDataFile( const wxString& aName ) const
     {
         return wxString::FromUTF8( KI_TEST::GetEeschemaTestDataDir()
@@ -1781,6 +1788,29 @@ BOOST_AUTO_TEST_CASE( Issue26128_AltiumSheetSizeAndDate )
 
     BOOST_REQUIRE_EQUAL( texts.size(), 1 );
     BOOST_CHECK_EQUAL( texts.front()->GetText(), wxT( "${ISSUE_DATE}" ) );
+}
+
+
+// A net label whose text is only a backslash, an overline marker with no text, draws nothing and
+// names nothing. It must not become a label with an empty name, which ERC reports.
+BOOST_AUTO_TEST_CASE( AltiumNetLabelOfOnlyBackslashesIsDropped )
+{
+    SCH_IO_ALTIUM plugin;
+
+    SCH_SHEET* rootSheet = plugin.LoadSchematicFile(
+            netLabelBackslashDataFile( wxT( "net_label_backslash.SchDoc" ) ), &m_schematic );
+    BOOST_REQUIRE( rootSheet );
+
+    SCH_SCREEN* screen = rootSheet->GetScreen();
+    BOOST_REQUIRE( screen );
+
+    std::vector<wxString> texts;
+
+    for( SCH_ITEM* item : screen->Items().OfType( SCH_LABEL_T ) )
+        texts.push_back( static_cast<SCH_LABEL*>( item )->GetText() );
+
+    BOOST_CHECK_EQUAL( texts.size(), 1 );
+    BOOST_CHECK( texts.size() == 1 && texts[0] == wxT( "VCC" ) );
 }
 
 
