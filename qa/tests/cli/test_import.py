@@ -375,3 +375,92 @@ class TestImportPcadProject:
         assert stem.with_suffix( ".kicad_pro" ).exists()
         assert stem.with_suffix( ".kicad_sch" ).exists()
         assert stem.with_suffix( ".kicad_pcb" ).exists()
+
+
+def get_altium_pair_test_files() -> tuple:
+    """Paths to an Altium schematic and the board drawn from it, or (None, None)."""
+    folder = os.path.join( os.path.dirname( __file__ ), "..", "..", "data", "pcbnew", "plugins",
+                           "altium", "issue25374" )
+    sch = os.path.join( folder, "altium_import_netname.SchDoc" )
+    pcb = os.path.join( folder, "altium_import_netname.CSPcbDoc" )
+
+    if os.path.exists( sch ) and os.path.exists( pcb ):
+        return sch, pcb
+
+    return None, None
+
+
+def parse_sexpr( text: str ) -> list:
+    """The first list of a KiCad s-expression file, as nested Python lists of strings."""
+    stack, current = [], []
+
+    for match in re.finditer( r'"((?:[^"\\]|\\.)*)"|([()])|([^\s()"]+)', text ):
+        if match.group( 2 ) == "(":
+            stack.append( current )
+            current = []
+        elif match.group( 2 ) == ")":
+            done, current = current, stack.pop()
+            current.append( done )
+        else:
+            current.append( match.group( 1 ) if match.group( 1 ) is not None else match.group( 3 ) )
+
+    return current[0]
+
+
+def children( node: list, name: str ) -> list:
+    return [ c for c in node if isinstance( c, list ) and c and c[0] == name ]
+
+
+def reference_of( node: list ) -> str:
+    for prop in children( node, "property" ):
+        if len( prop ) > 2 and prop[1] == "Reference":
+            return prop[2]
+
+    return ""
+
+
+@pytest.mark.skipif( get_altium_pair_test_files() == ( None, None ),
+                     reason="Altium test files not available" )
+class TestImportAltiumProject:
+    """Test importing an Altium schematic and its board"""
+
+    def test_import_altium_pair_links_footprints( self, kitest: KiTestFixture ):
+        """Each footprint is linked to the symbol of its reference, as Update PCB from Schematic links it
+        (https://gitlab.com/kicad/code/kicad/-/issues/26132): the importers give the two unrelated ids"""
+        sch_file, pcb_file = get_altium_pair_test_files()
+        stem = get_project_stem( kitest, "altium_pair", "design" )
+
+        command = [ utils.kicad_cli(), "import", sch_file, pcb_file, "-o", str( stem ) ]
+
+        stdout, stderr, return_code = utils.run_and_capture( command )
+
+        assert return_code == 0
+        assert stem.with_suffix( ".kicad_sch" ).exists()
+        assert stem.with_suffix( ".kicad_pcb" ).exists()
+
+        schematic = parse_sexpr( stem.with_suffix( ".kicad_sch" ).read_text( encoding="utf-8" ) )
+        symbols = {}
+
+        for symbol in children( schematic, "symbol" ):
+            reference = reference_of( symbol )
+            uuid = children( symbol, "uuid" )
+
+            if reference and not reference.startswith( "#" ) and uuid:
+                symbols.setdefault( reference, [] ).append( uuid[0][1] )
+
+        board = parse_sexpr( stem.with_suffix( ".kicad_pcb" ).read_text( encoding="utf-8" ) )
+        checked = 0
+
+        for footprint in children( board, "footprint" ):
+            reference = reference_of( footprint )
+
+            if len( symbols.get( reference, [] ) ) != 1:
+                continue
+
+            path = children( footprint, "path" )
+            assert path, f"footprint {reference} has no path"
+            assert path[0][1].split( "/" )[-1] == symbols[reference][0], \
+                f"footprint {reference} is not linked to its symbol"
+            checked += 1
+
+        assert checked > 0

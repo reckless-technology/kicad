@@ -19,6 +19,7 @@
  */
 
 #include <import_net_names.h>
+#include <import_net_reconciler.h>
 #include <diff_merge/merge_dispatch.h>
 #include <richio.h>
 #include <string_utils.h>
@@ -4345,6 +4346,27 @@ int PCBNEW_JOBS_HANDLER::JobImport( JOB* aJob )
         {
             const wxString reconciliationPath = job->m_importPcbId.empty() ? job->m_inputFile : outputPath;
             ReconcileImportedFootprints( *pi, *board, *projectPtr, reconciliationPath, nullptr, *m_reporter );
+        }
+
+        // Imported with its schematic, the board is linked to the symbols and given their references,
+        // net names and fields, as the project manager's import does
+        if( !job->m_netlistFile.IsEmpty() && wxFileExists( job->m_netlistFile ) )
+        {
+            NETLIST netlist;
+
+            try
+            {
+                KICAD_NETLIST_READER reader( new FILE_LINE_READER( job->m_netlistFile ), &netlist );
+                reader.LoadNetlist();
+                ReconcileImportedBoard( *board, netlist, *m_reporter );
+            }
+            catch( const IO_ERROR& ioe )
+            {
+                m_reporter->Report( wxString::Format( _( "The schematic netlist could not be read, so the board is "
+                                                         "not linked to it: %s\n" ),
+                                                      ioe.What() ),
+                                    RPT_SEVERITY_WARNING );
+            }
         }
 
         // Flag explicit map entries that never matched a source layer so typos do not pass silently.

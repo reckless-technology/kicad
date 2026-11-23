@@ -65,6 +65,10 @@ public:
     wxString             m_reportFile;
     std::map<wxString, wxString> m_netNameMap;
 
+    /// Where to write the imported schematic's KiCad netlist, for the board imported with it to
+    /// be reconciled against; empty to write none.
+    wxString m_netlistFile;
+
     /// Importer and library coordination properties, as IMPORT_PROJ_HELPER hands them to the editor.
     std::map<std::string, UTF8> m_properties;
 
