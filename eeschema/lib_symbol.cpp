@@ -26,6 +26,7 @@
 #include <algorithm>
 #include <functional>
 #include <memory>
+#include <set>
 #include <unordered_map>
 #include <unordered_set>
 
@@ -2518,9 +2519,25 @@ std::vector<LIB_SYMBOL_UNIT> LIB_SYMBOL::GetUnitDrawItems()
 {
     std::vector<LIB_SYMBOL_UNIT> units;
 
+    // A symbol with a single body style writes the items of a unit that are common to every body style
+    // as a record of their own, so the unit needs no empty record beside it
+    std::set<int> unitsWithCommonItems;
+
+    if( GetBodyStyleCount() == 1 )
+    {
+        for( SCH_ITEM& item : m_drawings )
+        {
+            if( item.Type() != SCH_FIELD_T && item.GetUnit() != ALL_UNITS && item.GetBodyStyle() == ALL_BODY_STYLES )
+                unitsWithCommonItems.insert( item.GetUnit() );
+        }
+    }
+
     // Enforce writing out of all defined unit/body-style combinations
     for( int unit = 1; unit <= GetUnitCount(); unit++ )
     {
+        if( unitsWithCommonItems.count( unit ) )
+            continue;
+
         for( int bodyStyle = 1; bodyStyle <= GetBodyStyleCount(); bodyStyle++ )
         {
             LIB_SYMBOL_UNIT record;
