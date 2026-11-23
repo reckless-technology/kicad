@@ -31,6 +31,7 @@
 #include <project_pcb.h>
 #include <reporter.h>
 #include <pcb_io/pcb_io_mgr.h>
+#include <wildcards_and_files_ext.h>
 
 
 std::vector<wxString> RegisterLocalFootprintLibraries( PROJECT& aProject, const wxString& aSourceProjectDir,
@@ -78,7 +79,19 @@ std::vector<wxString> RegisterLocalFootprintLibraries( PROJECT& aProject, const 
                                     && !relFn.IsAbsolute() && !relFn.GetFullPath().StartsWith( wxS( ".." ) );
         wxString   libTableUri;
 
-        if( isProjectLocal )
+        // A project-local library in another tool's format is converted into a KiCad library in
+        // the new project, which then needs neither that format nor the source's files
+        wxFileName kicadFn = wxFileName::DirName( projectPath );
+        kicadFn.AppendDir( fn.GetName() + wxS( "." ) + FILEEXT::KiCadFootprintLibPathExtension );
+
+        if( isProjectLocal && type != PCB_IO_MGR::KICAD_SEXP && fn.FileExists()
+            && ( kicadFn.DirExists()
+                 || PCB_IO_MGR::ConvertLibrary( {}, fn.GetFullPath(), kicadFn.GetPath(), &aReporter ) ) )
+        {
+            type = PCB_IO_MGR::KICAD_SEXP;
+            libTableUri = wxS( "${KIPRJMOD}/" ) + kicadFn.GetDirs().Last();
+        }
+        else if( isProjectLocal )
         {
             // Copy a project-local library into the KiCad project directory and reference it
             // with a project-relative path so the fp-lib-table stays portable.
