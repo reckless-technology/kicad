@@ -39,6 +39,10 @@ As for KiCad (dev-docs.kicad.org, "Building on Linux"), with clang-20. We config
 -DCMAKE_C_COMPILER=clang-20 -DCMAKE_CXX_COMPILER=clang++-20` and set `CMAKE_INSTALL_RPATH` to the prefix's `lib` and
 `lib/kicad/plugins/3d`, so the programs run without wrapper scripts.
 
+The experimental Vulkan render engine (`common/rhi/`, "RHI Vulkan (Experimental)" in Preferences > Common >
+Graphics) is only compiled when the Vulkan headers and `glslc` are present (Ubuntu: `libvulkan-dev`, `glslc`). We
+build it in (#40); OpenGL stays the default canvas, and the engine loads the system Vulkan library only when selected.
+
 ### Warnings are errors
 
 `KICAD_WERROR` (cmake/Warnings.cmake) makes every compiler warning in KiCad's own code an error, through CMake's
