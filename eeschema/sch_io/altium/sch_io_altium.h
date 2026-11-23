@@ -248,6 +248,18 @@ private:
                            ASCH_LABEL_JUSTIFICATION aJustification, ASCH_RECORD_ORIENTATION aOrientation,
                            const std::map<wxString, wxString>& aProperties ) const;
 
+    /**
+     * Join net labels across sheets where the project's net identifier scope does.
+     *
+     * With Altium's Automatic scope, the default, a project with neither sheet entries nor ports
+     * connects same-named net labels on every sheet, and a net label named like a power port joins
+     * that power net. KiCad joins only global labels across sheets, so those labels become global
+     * labels; the rest stay local.
+     *
+     * @param aProjectFile is the Altium project (.PrjPcb) the sheets were imported from.
+     */
+    void JoinNetLabelsAcrossSheets( const wxString& aProjectFile );
+
     void AddTextBox( const ASCH_TEXT_FRAME* aElem );
     void AddLibTextBox( const ASCH_TEXT_FRAME* aElem, std::vector<LIB_SYMBOL*>& aSymbol = nullsym,
                         std::vector<int>& aFontSize = nullint );
@@ -344,6 +356,7 @@ private:
     SCHEMATIC*     m_schematic;         // Passed to Load(), the schematic object being loaded
     wxString       m_libName;           // Library name to save symbols
     bool           m_isIntLib;          // Flag to indicate Integrated Library
+    bool           m_hasPortsOrSheetEntries; // Any port or sheet entry in the sheets imported
 
     std::unique_ptr<TITLE_BLOCK>       m_currentTitleBlock;   // Will be assigned at the end of parsing
                                                               //   a sheet
