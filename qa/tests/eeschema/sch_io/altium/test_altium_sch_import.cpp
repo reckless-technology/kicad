@@ -36,6 +36,7 @@
 #include <sch_pin.h>
 #include <sch_shape.h>
 #include <sch_text.h>
+#include <sch_textbox.h>
 #include <schematic.h>
 #include <sch_io/altium/sch_io_altium.h>
 #include <sch_label.h>
@@ -157,6 +158,13 @@ struct ALTIUM_SCH_IMPORT_FIXTURE
     {
         return wxString::FromUTF8( KI_TEST::GetEeschemaTestDataDir()
                                    + "/plugins/altium/wire_style/" )
+               + aName;
+    }
+
+    wxString textFramesDataFile( const wxString& aName ) const
+    {
+        return wxString::FromUTF8( KI_TEST::GetEeschemaTestDataDir()
+                                   + "/plugins/altium/text_frames/" )
                + aName;
     }
 
@@ -1536,6 +1544,41 @@ BOOST_AUTO_TEST_CASE( AltiumWireWidthsAndColours )
     }
 
     BOOST_CHECK_EQUAL( checked, 4 );
+}
+
+
+// An Altium text frame keeps its box with the text flowing from the top, its text margin on every
+// side, its border's width (one of Altium's four) and colour when it shows one, and its fill,
+// white by default, when it is solid.
+BOOST_AUTO_TEST_CASE( AltiumTextFrames )
+{
+    SCH_IO_ALTIUM plugin;
+
+    SCH_SHEET* rootSheet = plugin.LoadSchematicFile( textFramesDataFile( wxT( "text_frames.SchDoc" ) ),
+                                                     &m_schematic );
+    BOOST_REQUIRE( rootSheet );
+
+    std::map<wxString, SCH_TEXTBOX*> boxes;
+
+    for( SCH_ITEM* item : rootSheet->GetScreen()->Items().OfType( SCH_TEXTBOX_T ) )
+        boxes[static_cast<SCH_TEXTBOX*>( item )->GetText()] = static_cast<SCH_TEXTBOX*>( item );
+
+    BOOST_REQUIRE_EQUAL( boxes.size(), 2 );
+
+    SCH_TEXTBOX* boxed = boxes.at( wxT( "Boxed note" ) );
+    BOOST_CHECK( boxed->GetStart().x < boxed->GetEnd().x );
+    BOOST_CHECK( boxed->GetStart().y < boxed->GetEnd().y );
+    BOOST_CHECK_EQUAL( boxed->GetVertJustify(), GR_TEXT_V_ALIGN_TOP );
+    BOOST_CHECK_EQUAL( boxed->GetMarginLeft(), schIUScale.MilsToIU( 5 ) );
+    BOOST_CHECK_EQUAL( boxed->GetMarginTop(), schIUScale.MilsToIU( 5 ) );
+    BOOST_CHECK_EQUAL( boxed->GetStroke().GetWidth(), schIUScale.MilsToIU( 30 ) );
+    BOOST_CHECK_EQUAL( boxed->GetStroke().GetColor(), COLOR4D( 128 / 255.0, 0.0, 0.0, 1.0 ) );
+    BOOST_CHECK( boxed->GetFillMode() == FILL_T::FILLED_WITH_COLOR );
+    BOOST_CHECK_EQUAL( boxed->GetFillColor(), COLOR4D( 1.0, 1.0, 1.0, 1.0 ) );
+
+    SCH_TEXTBOX* plain = boxes.at( wxT( "Plain note" ) );
+    BOOST_CHECK( plain->GetStroke().GetWidth() < 0 );
+    BOOST_CHECK( !plain->IsSolidFill() );
 }
 
 

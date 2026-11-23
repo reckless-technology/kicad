@@ -3695,8 +3695,18 @@ void SCH_IO_ALTIUM::AddTextBox( const ASCH_TEXT_FRAME *aElem )
     VECTOR2I sheetTopRight = aElem->TopRight + m_sheetOffset;
     VECTOR2I sheetBottomLeft = aElem->BottomLeft +m_sheetOffset;
 
-    textBox->SetStart( sheetTopRight );
-    textBox->SetEnd( sheetBottomLeft );
+    // From the top left corner, so the text flows down from the top as in Altium
+    textBox->SetStart( VECTOR2I( std::min( sheetTopRight.x, sheetBottomLeft.x ),
+                                 std::min( sheetTopRight.y, sheetBottomLeft.y ) ) );
+    textBox->SetEnd( VECTOR2I( std::max( sheetTopRight.x, sheetBottomLeft.x ),
+                               std::max( sheetTopRight.y, sheetBottomLeft.y ) ) );
+
+    // Altium's margin on every side, and its text from the top
+    textBox->SetMarginLeft( aElem->TextMargin );
+    textBox->SetMarginTop( aElem->TextMargin );
+    textBox->SetMarginRight( aElem->TextMargin );
+    textBox->SetMarginBottom( aElem->TextMargin );
+    textBox->SetVertJustify( GR_TEXT_V_ALIGN_TOP );
 
     textBox->SetText( AltiumEscapeTextVars( aElem->Text ) );
 
@@ -3708,7 +3718,7 @@ void SCH_IO_ALTIUM::AddTextBox( const ASCH_TEXT_FRAME *aElem )
         textBox->SetFilled( false );
 
     if( aElem->ShowBorder )
-        textBox->SetStroke( STROKE_PARAMS( 0, LINE_STYLE::DEFAULT, GetColorFromInt( aElem->BorderColor ) ) );
+        textBox->SetStroke( STROKE_PARAMS( aElem->BorderWidth, LINE_STYLE::SOLID, GetColorFromInt( aElem->BorderColor ) ) );
     else
         textBox->SetStroke( STROKE_PARAMS( -1, LINE_STYLE::DEFAULT, GetColorFromInt( aElem->BorderColor ) ) );
 
