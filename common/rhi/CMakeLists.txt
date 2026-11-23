@@ -46,7 +46,8 @@ if( RHI_HAS_VULKAN )
         target_include_directories( rhi PRIVATE ${Vulkan_INCLUDE_DIRS} )
     endif()
 
-    target_include_directories( rhi PRIVATE ${CMAKE_SOURCE_DIR}/thirdparty/vma )
+    # Vendored code: as a SYSTEM directory its headers' warnings are not ours to fix
+    target_include_directories( rhi SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/thirdparty/vma )
     target_link_libraries( rhi PRIVATE ${CMAKE_DL_LIBS} )
 
     # This file only compiles the vendored allocator, whose warnings are not ours to fix.
