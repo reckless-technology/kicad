@@ -306,6 +306,9 @@ private:
 
     void fixupSymbolPinNameNumbers( SYMBOL* aSymbol );
 
+    /// The size of pin names and numbers: text in the sheet's system font; 0 without a font table.
+    int pinTextSize() const;
+
     // Symbol caching
     void ensureLoadedLibrary( const wxString& aLibraryPath, const std::map<std::string, UTF8>* aProperties );
     long long getLibraryTimestamp( const wxString& aLibraryPath ) const;
