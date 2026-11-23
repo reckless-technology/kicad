@@ -24,10 +24,13 @@
 
 #include <set>
 
+#include <wx/filename.h>
 #include <wx/string.h>
 
 #include <font/fontconfig.h>
 #include <project.h>
+#include <project/component_class_settings.h>
+#include <project/project_file.h>
 #include <pcb_io_altium_designer.h>
 #include <altium_pcb.h>
 #include <altium_pcb_compound_file.h>
@@ -121,11 +124,12 @@ void ApplyAltiumProjectVariantsToBoard( BOARD* aBoard,
     }
 }
 
-void LoadAltiumBoard( const wxString& aFileName, BOARD* aBoard,
-                      const std::map<ALTIUM_PCB_DIR, std::string>& aMapping,
-                      const std::map<std::string, UTF8>* aProperties, PROJECT* aProject,
-                      PROGRESS_REPORTER* aProgressReporter, LAYER_MAPPING_HANDLER& aLayerMappingHandler,
-                      REPORTER* aReporter, std::vector<ZONE*>& aZonesToFill )
+wxString LoadAltiumBoard( const wxString& aFileName, BOARD* aBoard,
+                          const std::map<ALTIUM_PCB_DIR, std::string>& aMapping,
+                          const std::map<std::string, UTF8>* aProperties, PROJECT* aProject,
+                          PROGRESS_REPORTER* aProgressReporter, LAYER_MAPPING_HANDLER& aLayerMappingHandler,
+                          REPORTER* aReporter, std::vector<ZONE*>& aZonesToFill,
+                          bool aIsNewLoad )
 {
     aZonesToFill.clear();
 
@@ -133,6 +137,9 @@ void LoadAltiumBoard( const wxString& aFileName, BOARD* aBoard,
     ALTIUM_PCB_COMPOUND_FILE altiumPcbFile( aFileName );
 
     std::set<wxString> specialStrings;
+    wxString           designRules;
+
+    std::vector<std::pair<wxString, std::vector<wxString>>> componentClasses;
 
     try
     {
@@ -140,6 +147,8 @@ void LoadAltiumBoard( const wxString& aFileName, BOARD* aBoard,
         pcb.Parse( altiumPcbFile, aMapping, aProperties );
         specialStrings = pcb.GetSpecialStrings();
         aZonesToFill = pcb.GetZonesToFill();
+        designRules = pcb.GetDesignRules( wxFileName( aFileName ).GetFullName() );
+        componentClasses = pcb.GetDesignRuleComponentClasses();
     }
     catch( CFB::CFBException& exception )
     {
@@ -165,6 +174,29 @@ void LoadAltiumBoard( const wxString& aFileName, BOARD* aBoard,
         for( const wxString& name : specialStrings )
             aProject->GetTextVars().emplace( name, wxString() );
     }
+
+    // The rules test for these classes; KiCad assigns them in the board setup
+    if( aProject && aIsNewLoad )
+    {
+        COMPONENT_CLASS_SETTINGS& settings = *aProject->GetProjectFile().ComponentClassSettings();
+
+        for( const auto& [name, members] : componentClasses )
+        {
+            COMPONENT_CLASS_ASSIGNMENT_DATA assignment;
+            assignment.SetComponentClass( name );
+            assignment.SetConditionsOperation( COMPONENT_CLASS_ASSIGNMENT_DATA::CONDITIONS_OPERATOR::ANY );
+
+            for( const wxString& member : members )
+            {
+                assignment.AddCondition( COMPONENT_CLASS_ASSIGNMENT_DATA::CONDITION_TYPE::REFERENCE, member,
+                                         wxEmptyString );
+            }
+
+            settings.AddComponentClassAssignment( assignment );
+        }
+    }
+
+    return designRules;
 }
 
 
@@ -257,9 +289,11 @@ void PCB_IO_ALTIUM_DESIGNER::loadBoard( const wxString& aFileName, BOARD& aBoard
     };
     // clang-format on
 
-    LoadAltiumBoard( aFileName, m_board, mapping, m_props, aProject,
-                     m_progressReporter, m_layer_mapping_handler, m_reporter,
-                     m_zonesToFill );
+    wxString designRules = LoadAltiumBoard( aFileName, m_board, mapping, m_props, aProject, m_progressReporter,
+                                            m_layer_mapping_handler, m_reporter, m_zonesToFill, aIsNewLoad );
+
+    // Appending to a board keeps that board's own rules
+    m_importedDesignRules = aIsNewLoad ? designRules : wxString();
 }
 
 

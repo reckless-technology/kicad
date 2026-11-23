@@ -106,6 +106,7 @@ struct COMPOUND_FILE_ENTRY;
 } // namespace CFB
 
 class ALTIUM_PCB_COMPOUND_FILE;
+class ALTIUM_DESIGN_RULES;
 struct ALTIUM_PCB_IMPORT_FIXTURE;
 
 // Structure for storing embedded model data
@@ -176,6 +177,19 @@ public:
 
     /// The zones left unfilled for the caller to fill, the internal planes.
     const std::vector<ZONE*>& GetZonesToFill() const { return m_zonesToFill; }
+
+    /**
+     * @return the board's Altium design rules as a KiCad custom rules file, or an empty string
+     *         when none could be translated.  Valid after Parse().
+     * @param aSourceName the Altium file name, quoted in the file's header comment.
+     */
+    wxString GetDesignRules( const wxString& aSourceName ) const;
+
+    /**
+     * @return the component classes the translated rules test for, with their members'
+     *         designators.  Valid after Parse().
+     */
+    std::vector<std::pair<wxString, std::vector<wxString>>> GetDesignRuleComponentClasses() const;
 
 private:
     void checkpoint();
@@ -305,6 +319,13 @@ private:
     void HelperSetDuplicatePadNumbersAreJumpers( FOOTPRINT* aFootprint );
 
     void HelperSetFootprintStackups();
+
+    /**
+     * Translate the board's Altium design rules into KiCad custom rules once every item is on the
+     * board, report the rules that could not be, and lower the board minimums to what the rules
+     * ask for.
+     */
+    void HelperConvertDesignRules();
 
     /**
      * Hold copper a footprint draws until its pads exist.
@@ -479,6 +500,9 @@ private:
 
     std::map<wxString, ALTIUM_EMBEDDED_MODEL_DATA>  m_EmbeddedModels;
     std::map<ALTIUM_RULE_KIND, std::vector<ARULE6>> m_rules;
+    std::vector<ARULE6>                             m_ruleRecords;  ///< in the order of the file
+    std::vector<ACLASS6>                            m_classRecords; ///< in the order of the file
+    std::unique_ptr<ALTIUM_DESIGN_RULES>            m_designRules;
     std::map<ALTIUM_RECORD, std::multimap<int, const AEXTENDED_PRIMITIVE_INFORMATION>>
             m_extendedPrimitiveInformationMaps;
 

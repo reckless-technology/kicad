@@ -285,6 +285,7 @@ set( QA_PCBNEW_SRCS
     drc/test_drc_violation_layers_issue24941.cpp
     drc/test_drc_net_chain_tuning_profiles.cpp
 
+    pcb_io/altium/test_altium_design_rules.cpp
     pcb_io/altium/test_altium_rule_transformer.cpp
     pcb_io/altium/test_altium_pcblib_import.cpp
     pcb_io/altium/test_altium_pcb_import.cpp

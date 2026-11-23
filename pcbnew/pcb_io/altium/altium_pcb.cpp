@@ -19,6 +19,7 @@
  */
 
 #include "altium_pcb.h"
+#include "altium_design_rules.h"
 #include "altium_parser_pcb.h"
 #include <altium_pcb_compound_file.h>
 #include <io/altium/altium_ascii_parser.h>
@@ -69,6 +70,7 @@
 #include <wx/docview.h>
 #include <wx/log.h>
 #include <wx/mstream.h>
+#include <wx/regex.h>
 #include <wx/wfstream.h>
 #include <wx/zstream.h>
 #include <progress_reporter.h>
@@ -124,16 +126,22 @@ static bool IsAltiumScopeAll( const wxString& aExpr )
 
 static bool GetAltiumNetclassScopeName( const ARULE6& aRule, wxString* aNetclassName )
 {
-    static const wxString prefix = wxT( "InNetClass('" );
+    // InNetClass('name') or InNetClass(name), in any case, against All
+    static wxRegEx netclassScope( wxT( "^InNetClass\\((('([^']*)')|([^')]*))\\)$" ), wxRE_ADVANCED | wxRE_ICASE );
 
-    if( !IsAltiumScopeAll( aRule.scope2expr ) || !aRule.scope1expr.StartsWith( prefix )
-        || !aRule.scope1expr.EndsWith( wxT( "')" ) ) )
-    {
+    wxString scope1 = aRule.scope1expr;
+    wxString scope2 = aRule.scope2expr;
+
+    scope1.Trim( true ).Trim( false );
+    scope2.Trim( true ).Trim( false );
+
+    if( !IsAltiumScopeAll( scope2 ) || !netclassScope.Matches( scope1 ) )
         return false;
-    }
 
-    *aNetclassName = aRule.scope1expr.Mid( prefix.Length(),
-                                           aRule.scope1expr.Length() - prefix.Length() - 2 );
+    *aNetclassName = netclassScope.GetMatch( scope1, 3 );
+
+    if( aNetclassName->IsEmpty() )
+        *aNetclassName = netclassScope.GetMatch( scope1, 4 );
 
     return !aNetclassName->IsEmpty();
 }
@@ -161,7 +169,12 @@ void ApplyAltiumNetclassRules( const std::map<ALTIUM_RULE_KIND, std::vector<ARUL
             if( !rule.enabled || !GetAltiumNetclassScopeName( rule, &netclassName ) )
                 continue;
 
-            auto it = netclasses.find( netclassName );
+            // Altium matches class names without regard to case
+            auto it = std::find_if( netclasses.begin(), netclasses.end(),
+                                    [&]( const auto& aEntry )
+                                    {
+                                        return aEntry.first.IsSameAs( netclassName, false );
+                                    } );
 
             if( it == netclasses.end() )
             {
@@ -172,7 +185,7 @@ void ApplyAltiumNetclassRules( const std::map<ALTIUM_RULE_KIND, std::vector<ARUL
             }
 
             // rules are sorted by ascending Altium priority, so the first match is the winner
-            if( !applied.insert( netclassName ).second )
+            if( !applied.insert( it->first ).second )
                 continue;
 
             const std::shared_ptr<NETCLASS>& netclass = it->second;
@@ -1081,8 +1094,51 @@ void ALTIUM_PCB::Parse( const ALTIUM_PCB_COMPOUND_FILE&              altiumPcbFi
     bds.SetAuxOrigin( bds.GetAuxOrigin() + movementVector );
     bds.SetGridOrigin( bds.GetGridOrigin() + movementVector );
 
+    HelperConvertDesignRules();
+
     m_board->m_LegacyDesignSettingsLoaded = true;
     m_board->SetModified();
+}
+
+
+void ALTIUM_PCB::HelperConvertDesignRules()
+{
+    ALTIUM_RULES_BOARD_CONTEXT context = ALTIUM_RULES_BOARD_CONTEXT::FromBoard( *m_board );
+
+    m_designRules = std::make_unique<ALTIUM_DESIGN_RULES>( m_ruleRecords, m_classRecords, context );
+    m_designRules->ApplyBoardMinimums( m_board->GetDesignSettings() );
+
+    if( !m_reporter )
+        return;
+
+    // Rules Altium has switched off are lost to nobody
+    for( const ALTIUM_RULE_OUTCOME& outcome : m_designRules->GetOutcomes() )
+    {
+        if( !outcome.m_Enabled )
+            continue;
+
+        if( outcome.m_Status == wxT( "omitted" ) || outcome.m_Status == wxT( "shadowed" ) )
+        {
+            m_reporter->Report( wxString::Format( _( "Altium %s rule '%s' was not imported: %s." ), outcome.m_Kind,
+                                                  outcome.m_Name, outcome.m_Detail ),
+                                RPT_SEVERITY_INFO );
+        }
+    }
+}
+
+
+wxString ALTIUM_PCB::GetDesignRules( const wxString& aSourceName ) const
+{
+    return m_designRules ? m_designRules->FormatRules( aSourceName ) : wxString();
+}
+
+
+std::vector<std::pair<wxString, std::vector<wxString>>> ALTIUM_PCB::GetDesignRuleComponentClasses() const
+{
+    if( !m_designRules )
+        return {};
+
+    return m_designRules->GetComponentClasses();
 }
 
 
@@ -2695,7 +2751,10 @@ void ALTIUM_PCB::ParseClasses6Data( const ALTIUM_PCB_COMPOUND_FILE&     aAltiumP
         checkpoint();
         ACLASS6 elem( reader );
 
-        if( elem.kind == ALTIUM_CLASS_KIND::NET_CLASS )
+        m_classRecords.push_back( elem );
+
+        // Altium's own classes, such as "All Nets", are not classes a user assigned anything to
+        if( elem.kind == ALTIUM_CLASS_KIND::NET_CLASS && !elem.superClass )
         {
             std::shared_ptr<NETCLASS> nc = std::make_shared<NETCLASS>( elem.name, false );
 
@@ -3981,17 +4040,19 @@ void ALTIUM_PCB::ParseRules6Data( const ALTIUM_PCB_COMPOUND_FILE&     aAltiumPcb
         ARULE6 elem( reader );
 
         m_rules[elem.kind].emplace_back( elem );
+        m_ruleRecords.emplace_back( std::move( elem ) );
     }
 
     // Sort by ARULE6::priority ascending. Altium priority 1 is the most specific, so the
-    // first element after sorting is the highest-priority Altium rule.
+    // first element after sorting is the highest-priority Altium rule.  Rules of one priority
+    // keep the order of the file, so the same rule wins on every import.
     for( std::pair<const ALTIUM_RULE_KIND, std::vector<ARULE6>>& val : m_rules )
     {
-        std::sort( val.second.begin(), val.second.end(),
-                []( const ARULE6& lhs, const ARULE6& rhs )
-                {
-                    return lhs.priority < rhs.priority;
-                } );
+        std::stable_sort( val.second.begin(), val.second.end(),
+                          []( const ARULE6& lhs, const ARULE6& rhs )
+                          {
+                              return lhs.priority < rhs.priority;
+                          } );
     }
 
     const ARULE6* clearanceRule = GetRuleDefault( ALTIUM_RULE_KIND::CLEARANCE );
