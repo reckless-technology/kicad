@@ -153,6 +153,13 @@ struct ALTIUM_SCH_IMPORT_FIXTURE
                + aName;
     }
 
+    wxString wireStyleDataFile( const wxString& aName ) const
+    {
+        return wxString::FromUTF8( KI_TEST::GetEeschemaTestDataDir()
+                                   + "/plugins/altium/wire_style/" )
+               + aName;
+    }
+
     wxString issue16903DataFile( const wxString& aName ) const
     {
         return wxString::FromUTF8( KI_TEST::GetEeschemaTestDataDir()
@@ -1481,6 +1488,54 @@ BOOST_AUTO_TEST_CASE( Issue26128_AltiumSheetSizeAndDate )
 
     BOOST_REQUIRE_EQUAL( texts.size(), 1 );
     BOOST_CHECK_EQUAL( texts.front()->GetText(), wxT( "${ISSUE_DATE}" ) );
+}
+
+
+// Altium gives each wire one of four line widths (Smallest, Small, Medium, Large: 1, 10, 30 and
+// 50 mil) and a colour, dark blue by default. The importer must keep both.
+BOOST_AUTO_TEST_CASE( AltiumWireWidthsAndColours )
+{
+    SCH_IO_ALTIUM plugin;
+
+    SCH_SHEET* rootSheet = plugin.LoadSchematicFile( wireStyleDataFile( wxT( "wire_style.SchDoc" ) ),
+                                                     &m_schematic );
+    BOOST_REQUIRE( rootSheet );
+
+    SCH_SCREEN* screen = rootSheet->GetScreen();
+    BOOST_REQUIRE( screen );
+
+    // Altium y, in 10 mil units, to width in mil and colour
+    const std::map<int, std::pair<int, COLOR4D>> expected = {
+        { 100, { 1, COLOR4D( 1.0, 0.0, 0.0, 1.0 ) } },
+        { 200, { 10, COLOR4D( 0.0, 0.0, 128.0 / 255.0, 1.0 ) } },
+        { 300, { 30, COLOR4D( 0.0, 128.0 / 255.0, 0.0, 1.0 ) } },
+        { 400, { 50, COLOR4D( 0.0, 0.0, 1.0, 1.0 ) } },
+    };
+
+    const int gridPitch = m_schematic.Settings().m_ConnectionGridSize;
+    const int pageHeight = screen->GetPageSettings().GetHeightIU( schIUScale.IU_PER_MILS );
+    const int flipY = ( pageHeight / gridPitch ) * gridPitch;
+
+    int checked = 0;
+
+    for( SCH_ITEM* item : screen->Items().OfType( SCH_LINE_T ) )
+    {
+        SCH_LINE* wire = static_cast<SCH_LINE*>( item );
+        int       altiumY = schIUScale.IUToMils( flipY - wire->GetStartPoint().y ) / 10;
+
+        BOOST_TEST_CONTEXT( "wire at Altium y " << altiumY )
+        {
+            BOOST_REQUIRE( expected.count( altiumY ) );
+
+            const auto& [widthMils, colour] = expected.at( altiumY );
+            BOOST_CHECK_EQUAL( wire->GetStroke().GetWidth(), schIUScale.MilsToIU( widthMils ) );
+            BOOST_CHECK_EQUAL( wire->GetStroke().GetColor(), colour );
+        }
+
+        checked++;
+    }
+
+    BOOST_CHECK_EQUAL( checked, 4 );
 }
 
 
