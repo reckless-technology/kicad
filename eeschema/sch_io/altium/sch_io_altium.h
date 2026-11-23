@@ -23,6 +23,7 @@
 
 #include <memory>
 #include <set>
+#include <tuple>
 #include <sch_sheet_path.h>
 #include <vector>
 #include <sch_io/sch_io.h>
@@ -187,6 +188,47 @@ private:
      */
     void SetTextFont( EDA_TEXT* aText, int aFontId ) const;
 
+    /// The kinds of text KiCad positions differently about their anchor.
+    enum class TEXT_KIND
+    {
+        FREE_TEXT,
+        SYMBOL_FIELD,
+        SHEET_FIELD
+    };
+
+    /**
+     * Find the anchor that puts a text's glyphs where Altium draws them.
+     *
+     * Altium anchors text at a corner, edge or centre of a cell from the font's descender line
+     * to its ascender line. KiCad places the baseline at a distance from the anchor that depends
+     * on the kind of text, its vertical justification and the face's height; those distances
+     * were measured on plotted KiCad text.  Text Altium turns upside down is drawn upright in
+     * the same cell.
+     *
+     * @param aKind is the kind of KiCad text that will hold it.
+     * @param aAnchor is Altium's anchor, in sheet coordinates.
+     * @param aFontId is Altium's font id.
+     * @param aJustification is Altium's justification of the anchor.
+     * @param aOrientation is Altium's text orientation.
+     * @param aPosition receives the KiCad anchor.
+     * @return false, leaving \a aPosition alone, if the font is not an outline font.
+     */
+    bool AltiumTextPosition( TEXT_KIND aKind, const VECTOR2I& aAnchor, int aFontId,
+                             ASCH_LABEL_JUSTIFICATION aJustification, ASCH_RECORD_ORIENTATION aOrientation,
+                             VECTOR2I& aPosition ) const;
+
+    /**
+     * As above, for a font given by its face, its cell height (N * 10 mil for N points) and style.
+     */
+    static bool AltiumTextPosition( TEXT_KIND aKind, const VECTOR2I& aAnchor, const wxString& aFace, int aCellHeight,
+                                    bool aBold, bool aItalic, ASCH_LABEL_JUSTIFICATION aJustification,
+                                    ASCH_RECORD_ORIENTATION aOrientation, VECTOR2I& aPosition );
+
+    /**
+     * As SetTextFont(), for a font given by its face, its cell height and style.
+     */
+    static void SetTextFont( EDA_TEXT* aText, const wxString& aFace, int aCellHeight, bool aBold, bool aItalic );
+
     void AddTextBox( const ASCH_TEXT_FRAME* aElem );
     void AddLibTextBox( const ASCH_TEXT_FRAME* aElem, std::vector<LIB_SYMBOL*>& aSymbol = nullsym,
                         std::vector<int>& aFontSize = nullint );
@@ -294,6 +336,9 @@ private:
         SCH_DIRECTIVE_LABEL*   flag = nullptr;
         std::vector<SCH_ITEM*> decorations;
     };
+
+    /// How many net labels use each font (face, bold, italic), for the label offset
+    std::map<std::tuple<wxString, bool, bool>, int> m_netLabelFonts;
 
     std::map<int, PARAMETER_SET_ITEMS>  m_parameterSets;          // the current sheet's, by record index
     std::set<wxString>                  m_parameterSetNetClasses; // net classes they name
