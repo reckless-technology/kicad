@@ -2637,10 +2637,24 @@ int EESCHEMA_JOBS_HANDLER::JobImport( JOB* aJob )
 
         schematic->SetSheetNumberAndCount();
 
-        // Imported schematics preserve their source page frame as schematic graphics.
-        // Match the editor import path and suppress KiCad's default frame/title block.
-        schematic->Settings().m_SchDrawingSheetFileName = wxS( "empty.kicad_wks" );
-        DS_DATA_MODEL::GetTheInstance().SetEmptyLayout();
+        // An importer that brings the source's page template embeds it and names it as the drawing
+        // sheet; otherwise the source page frame is kept as schematic graphics, and KiCad's default
+        // frame and title block are suppressed.  As the editor's import does.
+        const wxString drawingSheetName = schematic->Settings().m_SchDrawingSheetFileName;
+        const wxString embeddedPrefix = wxS( "kicad-embed://" );
+        const EMBEDDED_FILES::EMBEDDED_FILE* embeddedWorksheet = nullptr;
+
+        if( drawingSheetName.StartsWith( embeddedPrefix ) )
+        {
+            embeddedWorksheet = schematic->GetEmbeddedFiles()->GetEmbeddedFile(
+                    drawingSheetName.Mid( embeddedPrefix.length() ) );
+        }
+
+        if( !embeddedWorksheet || embeddedWorksheet->type != EMBEDDED_FILES::EMBEDDED_FILE::FILE_TYPE::WORKSHEET )
+        {
+            schematic->Settings().m_SchDrawingSheetFileName = wxS( "empty.kicad_wks" );
+            DS_DATA_MODEL::GetTheInstance().SetEmptyLayout();
+        }
 
         if( SCH_SHEET* topSheet = schematic->GetTopLevelSheet() )
             topSheet->SetFileName( outputFn.GetFullName() );
