@@ -1971,4 +1971,43 @@ BOOST_AUTO_TEST_CASE( DuplicatePadNumbersAreJumpers )
 }
 
 
+/**
+ * Altium keeps duplicate primitives, and tracks a few nanometres long that KiCad's 10 nm grid
+ * turns into zero-length ones.  A duplicate, or a dot inside same-net copper, adds nothing and is
+ * dropped; a dot standing alone is real copper and stays.
+ */
+BOOST_AUTO_TEST_CASE( RedundantTracksAreDropped )
+{
+    std::string dataPath = KI_TEST::GetPcbnewTestDataDir()
+                           + "plugins/altium/redundant_tracks/redundant_tracks.PcbDoc";
+
+    std::unique_ptr<BOARD> board = m_altiumPlugin.LoadBoard( dataPath );
+    BOOST_REQUIRE( board );
+
+    int dots = 0;
+    int segments = 0;
+
+    for( PCB_TRACK* track : board->Tracks() )
+    {
+        if( track->Type() != PCB_TRACE_T )
+            continue;
+
+        if( track->GetStart() == track->GetEnd() )
+        {
+            dots++;
+
+            // the one left is the free-standing 0.3 mm dot, not the one inside pad 1
+            BOOST_CHECK_EQUAL( track->GetWidth(), pcbIUScale.mmToIU( 0.3 ) );
+        }
+        else
+        {
+            segments++;
+        }
+    }
+
+    BOOST_CHECK_EQUAL( dots, 1 );
+    BOOST_CHECK_EQUAL( segments, 1 );
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()
