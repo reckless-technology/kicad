@@ -254,7 +254,7 @@ protected:
 
     void DoWithAcceptedFiles() override;
 
-    DECLARE_EVENT_TABLE();
+    DECLARE_EVENT_TABLE()
 
 private:
     void handleActivateEvent( wxActivateEvent& aEvent ) override;
