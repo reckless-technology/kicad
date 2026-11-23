@@ -504,6 +504,80 @@ void ALTIUM_PCB::checkpoint()
     }
 }
 
+// Some libraries draw a courtyard twice, as tracks and as a region over the same rectangle, and
+// KiCad rejects a courtyard of two overlapping outlines.  A courtyard polygon every edge of which is
+// already drawn by a line on the same layer adds nothing, so it goes.
+static void RemoveDuplicateCourtyards( FOOTPRINT& aFootprint )
+{
+    // File coordinates drift by nanometres
+    const int epsilon = pcbIUScale.mmToIU( 0.002 );
+
+    auto near =
+            [&]( const VECTOR2I& aA, const VECTOR2I& aB )
+            {
+                return std::abs( aA.x - aB.x ) <= epsilon && std::abs( aA.y - aB.y ) <= epsilon;
+            };
+
+    std::vector<BOARD_ITEM*> duplicates;
+
+    for( PCB_LAYER_ID courtyard : { F_CrtYd, B_CrtYd } )
+    {
+        std::vector<SEG> lines;
+
+        for( BOARD_ITEM* item : aFootprint.GraphicalItems() )
+        {
+            if( item->Type() == PCB_SHAPE_T && item->GetLayer() == courtyard
+                && static_cast<PCB_SHAPE*>( item )->GetShape() == SHAPE_T::SEGMENT )
+            {
+                PCB_SHAPE* line = static_cast<PCB_SHAPE*>( item );
+                lines.emplace_back( line->GetStart(), line->GetEnd() );
+            }
+        }
+
+        if( lines.empty() )
+            continue;
+
+        for( BOARD_ITEM* item : aFootprint.GraphicalItems() )
+        {
+            if( item->Type() != PCB_SHAPE_T || item->GetLayer() != courtyard
+                || static_cast<PCB_SHAPE*>( item )->GetShape() != SHAPE_T::POLY )
+            {
+                continue;
+            }
+
+            const SHAPE_POLY_SET& poly = static_cast<PCB_SHAPE*>( item )->GetPolyShape();
+
+            if( poly.OutlineCount() != 1 || poly.HoleCount( 0 ) != 0 )
+                continue;
+
+            const SHAPE_LINE_CHAIN& outline = poly.COutline( 0 );
+            bool                    allDrawn = outline.SegmentCount() > 0;
+
+            for( int ii = 0; allDrawn && ii < outline.SegmentCount(); ++ii )
+            {
+                SEG edge = outline.CSegment( ii );
+
+                allDrawn = std::any_of( lines.begin(), lines.end(),
+                        [&]( const SEG& aLine )
+                        {
+                            return ( near( edge.A, aLine.A ) && near( edge.B, aLine.B ) )
+                                   || ( near( edge.A, aLine.B ) && near( edge.B, aLine.A ) );
+                        } );
+            }
+
+            if( allDrawn )
+                duplicates.push_back( item );
+        }
+    }
+
+    for( BOARD_ITEM* item : duplicates )
+    {
+        aFootprint.Remove( item );
+        delete item;
+    }
+}
+
+
 // A courtyard has to be one closed outline, so open pieces on the layer, such as a centre cross,
 // are drawn on the fabrication layer of that side instead.
 static void MoveOpenCourtyardItems( BOARD& aBoard )
@@ -932,6 +1006,8 @@ void ALTIUM_PCB::Parse( const ALTIUM_PCB_COMPOUND_FILE&              altiumPcbFi
     HelperFinishBoardOutline();
 
     HelperPrepareUnfilledPlanes();
+    for( FOOTPRINT* footprint : m_board->Footprints() )
+        RemoveDuplicateCourtyards( *footprint );
 
     MoveOpenCourtyardItems( *m_board );
 
@@ -1515,6 +1591,7 @@ std::unique_ptr<FOOTPRINT> ALTIUM_PCB::ParseFootprint( ALTIUM_PCB_COMPOUND_FILE&
     HelperPlaceUnfoldedCopper();
 
     HelperSetDuplicatePadNumbersAreJumpers( footprint.get() );
+    RemoveDuplicateCourtyards( *footprint );
 
     // Auto-position reference and value
     footprint->AutoPositionFields();

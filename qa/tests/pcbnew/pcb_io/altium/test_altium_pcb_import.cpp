@@ -2163,4 +2163,42 @@ BOOST_AUTO_TEST_CASE( LinkedModelIsKept )
 }
 
 
+/**
+ * A courtyard drawn both as lines and as a region over the same edges is imported once, as the
+ * lines; a courtyard that is only a region keeps it.
+ */
+BOOST_AUTO_TEST_CASE( DuplicateCourtyardIsDropped )
+{
+    std::string dataPath = KI_TEST::GetPcbnewTestDataDir()
+                           + "plugins/altium/duplicate_courtyard/duplicate_courtyard.PcbDoc";
+
+    std::unique_ptr<BOARD> board = m_altiumPlugin.LoadBoard( dataPath );
+    BOOST_REQUIRE( board );
+
+    std::map<wxString, std::pair<int, int>> courtyards; // reference -> (lines, polygons)
+
+    for( FOOTPRINT* footprint : board->Footprints() )
+    {
+        std::pair<int, int>& counts = courtyards[footprint->GetReference()];
+
+        for( BOARD_ITEM* item : footprint->GraphicalItems() )
+        {
+            if( item->Type() != PCB_SHAPE_T || item->GetLayer() != F_CrtYd )
+                continue;
+
+            if( static_cast<PCB_SHAPE*>( item )->GetShape() == SHAPE_T::SEGMENT )
+                counts.first++;
+            else if( static_cast<PCB_SHAPE*>( item )->GetShape() == SHAPE_T::POLY )
+                counts.second++;
+        }
+    }
+
+    BOOST_REQUIRE_EQUAL( courtyards.size(), 2 );
+    BOOST_CHECK_EQUAL( courtyards[wxT( "R24" )].first, 4 );
+    BOOST_CHECK_EQUAL( courtyards[wxT( "R24" )].second, 0 );
+    BOOST_CHECK_EQUAL( courtyards[wxT( "R23" )].first, 0 );
+    BOOST_CHECK_EQUAL( courtyards[wxT( "R23" )].second, 1 );
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()
