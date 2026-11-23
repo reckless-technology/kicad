@@ -6662,6 +6662,11 @@ void SCH_IO_ALTIUM::ParseNetLabel( const std::map<wxString, wxString>& aProperti
 
     wxString kicadText = AltiumSchSpecialStringsToKiCadVariables( elem.text, variableMap );
 
+    // A label whose text is only overline markers (a lone backslash) names nothing and draws
+    // nothing, and KiCad would report it as an empty label
+    if( kicadText.IsEmpty() )
+        return;
+
     SCH_LABEL* label = new SCH_LABEL( elem.location + m_sheetOffset, kicadText );
 
     SCH_SCREEN* screen = getCurrentScreen();
