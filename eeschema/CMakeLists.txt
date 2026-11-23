@@ -72,6 +72,7 @@ set( EESCHEMA_SCH_IO
 
     # Altium IO plugin
     sch_io/altium/altium_parser_sch.cpp
+    sch_io/altium/altium_protel2_schlib.cpp
     sch_io/altium/sch_io_altium.cpp
 
     # Cadstar IO plugin
