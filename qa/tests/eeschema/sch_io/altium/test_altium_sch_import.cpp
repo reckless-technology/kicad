@@ -184,6 +184,11 @@ struct ALTIUM_SCH_IMPORT_FIXTURE
                + aName;
     }
 
+    wxString issue19DataFile( const wxString& aName ) const
+    {
+        return wxString::FromUTF8( KI_TEST::GetEeschemaTestDataDir() + "/plugins/altium/issue19/" ) + aName;
+    }
+
     wxString eDPAdapterDataFile( const wxString& aName ) const
     {
         return wxString::FromUTF8( KI_TEST::GetTestDataRootDir()
@@ -671,6 +676,95 @@ BOOST_AUTO_TEST_CASE( Issue16903_ImportKeepsGeometryOnGrid )
 
     ERC_TESTER tester( &m_schematic );
     BOOST_CHECK_EQUAL( tester.TestOffGridEndpoints(), 0 );
+}
+
+
+// https://github.com/reckless-technology/kicad/issues/19
+// A sheet is parsed on a path of its own and becomes a sub-sheet afterwards, so a symbol on it must be
+// given its instance on the path it ends up on. Otherwise the symbol reads as unannotated there, and
+// the automatic net names of its pins are built from its UUID, which differs on every import.
+static void checkEverySymbolHasInstanceOnItsPath( SCHEMATIC& aSchematic, size_t aMinimumSubSheetSymbols )
+{
+    size_t symbolsOnSubSheets = 0;
+
+    for( const SCH_SHEET_PATH& sheetPath : aSchematic.Hierarchy() )
+    {
+        SCH_SCREEN* screen = sheetPath.LastScreen();
+        BOOST_REQUIRE( screen );
+
+        for( SCH_ITEM* item : screen->Items().OfType( SCH_SYMBOL_T ) )
+        {
+            SCH_SYMBOL*         symbol = static_cast<SCH_SYMBOL*>( item );
+            SCH_SYMBOL_INSTANCE instance;
+
+            BOOST_CHECK_MESSAGE( symbol->GetInstance( instance, sheetPath.Path() ),
+                                 "symbol " << symbol->GetField( FIELD_T::REFERENCE )->GetText()
+                                           << " has no instance on " << sheetPath.PathHumanReadable() );
+
+            const wxString reference = symbol->GetRef( &sheetPath );
+
+            if( !reference.StartsWith( wxT( "#" ) ) )
+            {
+                BOOST_CHECK_MESSAGE( !reference.IsEmpty() && !reference.EndsWith( wxT( "?" ) ),
+                                     "symbol reads as unannotated '" << reference << "' on "
+                                                                     << sheetPath.PathHumanReadable() );
+            }
+
+            if( sheetPath.size() > 1 )
+                symbolsOnSubSheets++;
+        }
+    }
+
+    BOOST_CHECK_GE( symbolsOnSubSheets, aMinimumSubSheetSymbols );
+}
+
+
+BOOST_AUTO_TEST_CASE( SymbolsHaveInstancesOnSubSheets )
+{
+    SCH_IO_ALTIUM plugin;
+
+    SCH_SHEET* rootSheet =
+            plugin.LoadSchematicFile( issue16903DataFile( wxT( "hierarchical_schematic_top.SchDoc" ) ), &m_schematic );
+    BOOST_REQUIRE( rootSheet );
+
+    m_schematic.RefreshHierarchy();
+
+    checkEverySymbolHasInstanceOnItsPath( m_schematic, 1 );
+}
+
+
+// Each of the top sheet's three sheet symbols names a file of its own, so no sub-sheet is repeated
+// and none is handled as a reused sheet. Sub-sheets listed before the sheet that shows them are
+// parsed on their own first, as a project's documents are.
+BOOST_AUTO_TEST_CASE( SymbolsHaveInstancesOnUniqueSubSheets )
+{
+    SCH_IO_ALTIUM plugin;
+
+    std::map<std::string, UTF8> properties;
+    properties.emplace( "project_file", UTF8( issue24861DataFile( wxT( "Repeated_Schematic.PrjPcb" ) ) ) );
+    properties.emplace( "sch0", UTF8( issue19DataFile( wxT( "sub_sheet.SchDoc" ) ) ) );
+    properties.emplace( "sch1", UTF8( issue19DataFile( wxT( "sub_shee2.SchDoc" ) ) ) );
+    properties.emplace( "sch2", UTF8( issue19DataFile( wxT( "sub_shee3.SchDoc" ) ) ) );
+    properties.emplace( "sch3", UTF8( issue19DataFile( wxT( "top.SchDoc" ) ) ) );
+
+    BOOST_REQUIRE( plugin.LoadSchematicFile( wxEmptyString, &m_schematic, nullptr, &properties ) );
+
+    checkEverySymbolHasInstanceOnItsPath( m_schematic, 3 );
+}
+
+
+BOOST_AUTO_TEST_CASE( SymbolsHaveInstancesOnProjectSheets )
+{
+    SCH_IO_ALTIUM plugin;
+
+    std::map<std::string, UTF8> properties;
+    properties.emplace( "project_file", UTF8( issue24861DataFile( wxT( "Repeated_Schematic.PrjPcb" ) ) ) );
+    properties.emplace( "sch0", UTF8( issue24861DataFile( wxT( "Repeated_Schematic.SchDoc" ) ) ) );
+    properties.emplace( "sch1", UTF8( issue24861DataFile( wxT( "Channel.SchDoc" ) ) ) );
+
+    BOOST_REQUIRE( plugin.LoadSchematicFile( wxEmptyString, &m_schematic, nullptr, &properties ) );
+
+    checkEverySymbolHasInstanceOnItsPath( m_schematic, 1 );
 }
 
 
