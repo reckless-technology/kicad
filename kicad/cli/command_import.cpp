@@ -155,6 +155,11 @@ int CLI::IMPORT_COMMAND::doPerform( KIWAY& aKiway )
     std::map<wxString, wxString> netNameMap;
     wxString boardInput;
 
+    // The schematic's netlist, from which the board is linked to its symbols as the project
+    // manager's import links it
+    wxString netlistFile = wxFileName::CreateTempFileName( wxS( "kicad-import-netlist" ) );
+    bool     haveNetlist = false;
+
     // Preserve board-first format detection, but defer loading until the schematic supplies its names.
     for( const wxString& input : inputFiles )
     {
@@ -245,6 +250,7 @@ int CLI::IMPORT_COMMAND::doPerform( KIWAY& aKiway )
             schJob.m_inputFile = input;
             schJob.m_format = JOB_SCH_IMPORT::FORMAT::AUTO;
             schJob.SetConfiguredOutputPath( schFn.GetFullPath() );
+            schJob.m_netlistFile = netlistFile;
 
             int schResult = aKiway.ProcessJob( KIWAY::FACE_SCH, &schJob, &reporter );
 
@@ -252,6 +258,7 @@ int CLI::IMPORT_COMMAND::doPerform( KIWAY& aKiway )
             {
                 haveSch = true;
                 netNameMap = std::move( schJob.m_netNameMap );
+                haveNetlist = !netlistFile.IsEmpty() && wxFileName( netlistFile ).GetSize() > 0;
                 accepted = true;
             }
             else if( schResult != EXIT_CODES::ERR_UNKNOWN_FILE_FORMAT && !accepted )
@@ -285,6 +292,10 @@ int CLI::IMPORT_COMMAND::doPerform( KIWAY& aKiway )
         pcbJob.m_format = JOB_PCB_IMPORT::FORMAT::AUTO;
         pcbJob.m_layerMap = layerMap;
         pcbJob.m_netNameMap = std::move( netNameMap );
+
+        if( haveNetlist )
+            pcbJob.m_netlistFile = netlistFile;
+
         pcbJob.SetConfiguredOutputPath( boardFn.GetFullPath() );
         retCode = aKiway.ProcessJob( KIWAY::FACE_PCB, &pcbJob, &reporter );
     }
@@ -319,6 +330,9 @@ int CLI::IMPORT_COMMAND::doPerform( KIWAY& aKiway )
     }
 
     mgr.UnloadProject( project, false );
+
+    if( !netlistFile.IsEmpty() && wxFileExists( netlistFile ) )
+        wxRemoveFile( netlistFile );
 
     return retCode;
 }
