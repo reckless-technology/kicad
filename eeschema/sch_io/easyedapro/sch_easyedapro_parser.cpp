@@ -47,7 +47,7 @@
 
 
 SCH_EASYEDAPRO_PARSER::SCH_EASYEDAPRO_PARSER( SCHEMATIC*         aSchematic,
-                                              PROGRESS_REPORTER* aProgressReporter )
+                                              PROGRESS_REPORTER* aProgressReporter [[maybe_unused]] )
 {
     m_schematic = aSchematic;
 }
@@ -219,7 +219,7 @@ void SCH_EASYEDAPRO_PARSER::ApplyLineStyle( const std::map<wxString, nlohmann::j
 template <typename T>
 void SCH_EASYEDAPRO_PARSER::ApplyAttrToField( const std::map<wxString, nlohmann::json>& fontStyles,
                                               T* field, const EASYEDAPRO::SCH_ATTR& aAttr,
-                                              bool aIsSym, bool aToSym,
+                                              bool aIsSym, bool aToSym [[maybe_unused]],
                                               const std::map<wxString, wxString>& aDeviceAttributes,
                                               SCH_SYMBOL*                         aParent )
 {

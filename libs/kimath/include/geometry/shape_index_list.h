@@ -84,7 +84,7 @@ public:
             ++m_current;
         }
 
-        iterator& operator++( int aDummy )
+        iterator& operator++( int aDummy [[maybe_unused]] )
         {
             ++m_current;
             return *this;
@@ -155,7 +155,7 @@ public:
              return *this;
         }
 
-        query_iterator& operator++( int aDummy )
+        query_iterator& operator++( int aDummy [[maybe_unused]] )
         {
             ++m_current;
             next();

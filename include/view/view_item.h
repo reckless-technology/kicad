@@ -120,7 +120,7 @@ public:
      * @param aLayer is the current drawing layer.
      * @param aView is a pointer to the #VIEW device we are drawing on.
      */
-    virtual void ViewDraw( int aLayer, VIEW* aView ) const
+    virtual void ViewDraw( int aLayer [[maybe_unused]], VIEW* aView [[maybe_unused]] ) const
     {}
 
     /**
@@ -148,7 +148,7 @@ public:
      * @return the level of detail. 0 always shows the item, because the actual zoom level
      *         (or VIEW scale) is always > 0
      */
-    virtual double ViewGetLOD( int aLayer, const VIEW* aView ) const
+    virtual double ViewGetLOD( int aLayer [[maybe_unused]], const VIEW* aView [[maybe_unused]] ) const
     {
         // By default always show the item
         return LOD_SHOW;

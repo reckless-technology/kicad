@@ -259,7 +259,7 @@ int SCH_TOOL_BASE<T>::InteractiveDelete( const TOOL_EVENT& aEvent )
     picker->ClearHandlers();
 
     picker->SetClickHandler(
-            [this]( const VECTOR2D& aPosition ) -> bool
+            [this]( const VECTOR2D& aPosition [[maybe_unused]] ) -> bool
             {
                 if( m_pickerItem )
                 {
@@ -306,7 +306,7 @@ int SCH_TOOL_BASE<T>::InteractiveDelete( const TOOL_EVENT& aEvent )
             } );
 
     picker->SetFinalizeHandler(
-            [this]( const int& aFinalState )
+            [this]( const int& aFinalState [[maybe_unused]] )
             {
                 if( m_pickerItem )
                     m_toolMgr->GetTool<SCH_SELECTION_TOOL>()->UnbrightenItem( m_pickerItem );
@@ -341,7 +341,7 @@ void SCH_TOOL_BASE<T>::updateItem( EDA_ITEM* aItem, bool aUpdateRTree ) const
 
 
 template <class T>
-void SCH_TOOL_BASE<T>::saveCopyInUndoList( EDA_ITEM* aItem, UNDO_REDO aType, bool aAppend, bool aDirtyConnectivity )
+void SCH_TOOL_BASE<T>::saveCopyInUndoList( EDA_ITEM* aItem, UNDO_REDO aType [[maybe_unused]], bool aAppend, bool aDirtyConnectivity )
 {
     if( !aItem->IsSCH_ITEM() )
         return;

@@ -46,7 +46,7 @@ namespace SIM_MODEL_SUBCKT_SPICE_PARSER
 }
 
 
-std::string SPICE_GENERATOR_SUBCKT::ModelLine( const SPICE_ITEM& aItem ) const
+std::string SPICE_GENERATOR_SUBCKT::ModelLine( const SPICE_ITEM& aItem [[maybe_unused]] ) const
 {
     return "";
 }
@@ -70,7 +70,7 @@ std::vector<std::string> SPICE_GENERATOR_SUBCKT::CurrentNames( const SPICE_ITEM&
 }
 
 
-void SPICE_MODEL_PARSER_SUBCKT::ReadModel( const SIM_LIBRARY_SPICE& aLibrary, const std::string& aSpiceCode )
+void SPICE_MODEL_PARSER_SUBCKT::ReadModel( const SIM_LIBRARY_SPICE& aLibrary [[maybe_unused]], const std::string& aSpiceCode )
 {
     tao::pegtl::string_input<> in( aSpiceCode, "from_content" );
     std::unique_ptr<tao::pegtl::parse_tree::node> root;

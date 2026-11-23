@@ -83,7 +83,7 @@ void PL_EDITOR_FRAME::OnFileHistory( wxCommandEvent& event )
 }
 
 
-void PL_EDITOR_FRAME::OnClearFileHistory( wxCommandEvent& aEvent )
+void PL_EDITOR_FRAME::OnClearFileHistory( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     ClearFileHistory();
 }

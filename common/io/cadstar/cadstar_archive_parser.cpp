@@ -71,7 +71,7 @@ const std::map<CADSTAR_ARCHIVE_PARSER::TEXT_FIELD_NAME, wxString>
                     { TEXT_FIELD_NAME::MACHINE_NAME, wxT( "MACHINE_NAME" ) } };
 
 
-void CADSTAR_ARCHIVE_PARSER::FORMAT::Parse( XNODE* aNode, PARSER_CONTEXT* aContext )
+void CADSTAR_ARCHIVE_PARSER::FORMAT::Parse( XNODE* aNode, PARSER_CONTEXT* aContext [[maybe_unused]] )
 {
     wxASSERT( aNode->GetName() == wxT( "FORMAT" ) );
 
@@ -81,7 +81,7 @@ void CADSTAR_ARCHIVE_PARSER::FORMAT::Parse( XNODE* aNode, PARSER_CONTEXT* aConte
 }
 
 
-void CADSTAR_ARCHIVE_PARSER::TIMESTAMP::Parse( XNODE* aNode, PARSER_CONTEXT* aContext )
+void CADSTAR_ARCHIVE_PARSER::TIMESTAMP::Parse( XNODE* aNode, PARSER_CONTEXT* aContext [[maybe_unused]] )
 {
     wxASSERT( aNode->GetName() == wxT( "TIMESTAMP" ) );
 
@@ -155,7 +155,7 @@ void CADSTAR_ARCHIVE_PARSER::HEADER::Parse( XNODE* aNode, PARSER_CONTEXT* aConte
 }
 
 
-void CADSTAR_ARCHIVE_PARSER::VARIANT::Parse( XNODE* aNode, PARSER_CONTEXT* aContext )
+void CADSTAR_ARCHIVE_PARSER::VARIANT::Parse( XNODE* aNode, PARSER_CONTEXT* aContext [[maybe_unused]] )
 {
     wxASSERT( aNode->GetName() == wxT( "VMASTER" ) || aNode->GetName() == wxT( "VARIANT" ) );
 
@@ -197,7 +197,7 @@ void CADSTAR_ARCHIVE_PARSER::VARIANT_HIERARCHY::Parse( XNODE* aNode, PARSER_CONT
 }
 
 
-void CADSTAR_ARCHIVE_PARSER::LINECODE::Parse( XNODE* aNode, PARSER_CONTEXT* aContext )
+void CADSTAR_ARCHIVE_PARSER::LINECODE::Parse( XNODE* aNode, PARSER_CONTEXT* aContext [[maybe_unused]] )
 {
     wxASSERT( aNode->GetName() == wxT( "LINECODE" ) );
 
@@ -242,7 +242,7 @@ void CADSTAR_ARCHIVE_PARSER::LINECODE::Parse( XNODE* aNode, PARSER_CONTEXT* aCon
 }
 
 
-void CADSTAR_ARCHIVE_PARSER::HATCH::Parse( XNODE* aNode, PARSER_CONTEXT* aContext )
+void CADSTAR_ARCHIVE_PARSER::HATCH::Parse( XNODE* aNode, PARSER_CONTEXT* aContext [[maybe_unused]] )
 {
     wxASSERT( aNode->GetName() == wxT( "HATCH" ) );
 
@@ -283,7 +283,7 @@ void CADSTAR_ARCHIVE_PARSER::HATCHCODE::Parse( XNODE* aNode, PARSER_CONTEXT* aCo
 }
 
 
-void CADSTAR_ARCHIVE_PARSER::FONT::Parse( XNODE* aNode, PARSER_CONTEXT* aContext )
+void CADSTAR_ARCHIVE_PARSER::FONT::Parse( XNODE* aNode, PARSER_CONTEXT* aContext [[maybe_unused]] )
 {
     wxASSERT( aNode->GetName() == wxT( "FONT" ) );
 
@@ -330,7 +330,7 @@ void CADSTAR_ARCHIVE_PARSER::TEXTCODE::Parse( XNODE* aNode, PARSER_CONTEXT* aCon
 }
 
 
-void CADSTAR_ARCHIVE_PARSER::ROUTEREASSIGN::Parse( XNODE* aNode, PARSER_CONTEXT* aContext )
+void CADSTAR_ARCHIVE_PARSER::ROUTEREASSIGN::Parse( XNODE* aNode, PARSER_CONTEXT* aContext [[maybe_unused]] )
 {
     wxASSERT( aNode->GetName() == wxT( "ROUTEREASSIGN" ) );
 
@@ -407,7 +407,7 @@ double CADSTAR_ARCHIVE_PARSER::EVALUE::GetDouble()
 }
 
 
-void CADSTAR_ARCHIVE_PARSER::EVALUE::Parse( XNODE* aNode, PARSER_CONTEXT* aContext )
+void CADSTAR_ARCHIVE_PARSER::EVALUE::Parse( XNODE* aNode, PARSER_CONTEXT* aContext [[maybe_unused]] )
 {
     wxASSERT( aNode->GetName() == wxT( "E" ) );
 
@@ -421,7 +421,7 @@ void CADSTAR_ARCHIVE_PARSER::EVALUE::Parse( XNODE* aNode, PARSER_CONTEXT* aConte
 }
 
 
-void CADSTAR_ARCHIVE_PARSER::POINT::Parse( XNODE* aNode, PARSER_CONTEXT* aContext )
+void CADSTAR_ARCHIVE_PARSER::POINT::Parse( XNODE* aNode, PARSER_CONTEXT* aContext [[maybe_unused]] )
 {
     wxASSERT( aNode->GetName() == wxT( "PT" ) );
 
@@ -430,7 +430,7 @@ void CADSTAR_ARCHIVE_PARSER::POINT::Parse( XNODE* aNode, PARSER_CONTEXT* aContex
 }
 
 
-void CADSTAR_ARCHIVE_PARSER::LONGPOINT::Parse( XNODE* aNode, PARSER_CONTEXT* aContext )
+void CADSTAR_ARCHIVE_PARSER::LONGPOINT::Parse( XNODE* aNode, PARSER_CONTEXT* aContext [[maybe_unused]] )
 {
     wxASSERT( aNode->GetName() == wxT( "PT" ) );
 
@@ -730,7 +730,7 @@ bool CADSTAR_ARCHIVE_PARSER::GRID::IsGrid( XNODE* aNode )
 }
 
 
-void CADSTAR_ARCHIVE_PARSER::GRID::Parse( XNODE* aNode, PARSER_CONTEXT* aContext )
+void CADSTAR_ARCHIVE_PARSER::GRID::Parse( XNODE* aNode, PARSER_CONTEXT* aContext [[maybe_unused]] )
 {
     wxASSERT( IsGrid( aNode ) );
 
@@ -1144,7 +1144,7 @@ CADSTAR_ARCHIVE_PARSER::READABILITY CADSTAR_ARCHIVE_PARSER::ParseReadability( XN
 
 
 void CADSTAR_ARCHIVE_PARSER::ATTRIBUTE_LOCATION::ParseIdentifiers( XNODE* aNode,
-                                                                   PARSER_CONTEXT* aContext )
+                                                                   PARSER_CONTEXT* aContext [[maybe_unused]] )
 {
     TextCodeID = GetXmlAttributeIDString( aNode, 0 );
     LayerID    = GetXmlAttributeIDString( aNode, 1 );
@@ -1197,7 +1197,7 @@ void CADSTAR_ARCHIVE_PARSER::ATTRIBUTE_LOCATION::Parse( XNODE* aNode, PARSER_CON
 }
 
 
-void CADSTAR_ARCHIVE_PARSER::ATTRNAME::COLUMNORDER::Parse( XNODE* aNode, PARSER_CONTEXT* aContext )
+void CADSTAR_ARCHIVE_PARSER::ATTRNAME::COLUMNORDER::Parse( XNODE* aNode, PARSER_CONTEXT* aContext [[maybe_unused]] )
 {
     wxASSERT( aNode->GetName() == wxT( "COLUMNORDER" ) );
 
@@ -1208,7 +1208,7 @@ void CADSTAR_ARCHIVE_PARSER::ATTRNAME::COLUMNORDER::Parse( XNODE* aNode, PARSER_
 }
 
 
-void CADSTAR_ARCHIVE_PARSER::ATTRNAME::COLUMNWIDTH::Parse( XNODE* aNode, PARSER_CONTEXT* aContext )
+void CADSTAR_ARCHIVE_PARSER::ATTRNAME::COLUMNWIDTH::Parse( XNODE* aNode, PARSER_CONTEXT* aContext [[maybe_unused]] )
 {
     wxASSERT( aNode->GetName() == wxT( "COLUMNWIDTH" ) );
 
@@ -1474,7 +1474,7 @@ void CADSTAR_ARCHIVE_PARSER::CADSTAR_NETCLASS::Parse( XNODE* aNode, PARSER_CONTE
 }
 
 
-void CADSTAR_ARCHIVE_PARSER::SPCCLASSNAME::Parse( XNODE* aNode, PARSER_CONTEXT* aContext )
+void CADSTAR_ARCHIVE_PARSER::SPCCLASSNAME::Parse( XNODE* aNode, PARSER_CONTEXT* aContext [[maybe_unused]] )
 {
     wxASSERT( aNode->GetName() == wxT( "SPCCLASSNAME" ) );
 
@@ -1556,7 +1556,7 @@ CADSTAR_ARCHIVE_PARSER::SWAP_RULE CADSTAR_ARCHIVE_PARSER::ParseSwapRule( XNODE* 
 }
 
 
-void CADSTAR_ARCHIVE_PARSER::REUSEBLOCK::Parse( XNODE* aNode, PARSER_CONTEXT* aContext )
+void CADSTAR_ARCHIVE_PARSER::REUSEBLOCK::Parse( XNODE* aNode, PARSER_CONTEXT* aContext [[maybe_unused]] )
 {
     wxASSERT( aNode->GetName() == wxT( "REUSEBLOCK" ) );
 
@@ -1586,7 +1586,7 @@ bool CADSTAR_ARCHIVE_PARSER::REUSEBLOCKREF::IsEmpty()
 }
 
 
-void CADSTAR_ARCHIVE_PARSER::REUSEBLOCKREF::Parse( XNODE* aNode, PARSER_CONTEXT* aContext )
+void CADSTAR_ARCHIVE_PARSER::REUSEBLOCKREF::Parse( XNODE* aNode, PARSER_CONTEXT* aContext [[maybe_unused]] )
 {
     wxASSERT( aNode->GetName() == wxT( "REUSEBLOCKREF" ) );
 
@@ -1738,7 +1738,7 @@ wxString CADSTAR_ARCHIVE_PARSER::SYMDEF::BuildLibName() const
 }
 
 
-void CADSTAR_ARCHIVE_PARSER::SYMDEF::ParseIdentifiers( XNODE* aNode, PARSER_CONTEXT* aContext )
+void CADSTAR_ARCHIVE_PARSER::SYMDEF::ParseIdentifiers( XNODE* aNode, PARSER_CONTEXT* aContext [[maybe_unused]] )
 {
     wxASSERT( aNode->GetName() == wxT( "SYMDEF" ) );
 
@@ -1797,7 +1797,7 @@ bool CADSTAR_ARCHIVE_PARSER::SYMDEF::ParseSubNode( XNODE* aChildNode, PARSER_CON
 }
 
 
-void CADSTAR_ARCHIVE_PARSER::PART::DEFINITION::GATE::Parse( XNODE* aNode, PARSER_CONTEXT* aContext )
+void CADSTAR_ARCHIVE_PARSER::PART::DEFINITION::GATE::Parse( XNODE* aNode, PARSER_CONTEXT* aContext [[maybe_unused]] )
 {
     wxASSERT( aNode->GetName() == wxT( "GATEDEFINITION" ) );
 
@@ -1837,7 +1837,7 @@ CADSTAR_PIN_TYPE CADSTAR_ARCHIVE_PARSER::PART::GetPinType( XNODE* aNode )
 }
 
 
-void CADSTAR_ARCHIVE_PARSER::PART::DEFINITION::PIN::Parse( XNODE* aNode, PARSER_CONTEXT* aContext )
+void CADSTAR_ARCHIVE_PARSER::PART::DEFINITION::PIN::Parse( XNODE* aNode, PARSER_CONTEXT* aContext [[maybe_unused]] )
 {
     wxASSERT( aNode->GetName() == wxT( "PARTDEFINITIONPIN" ) );
 
@@ -1890,7 +1890,7 @@ void CADSTAR_ARCHIVE_PARSER::PART::DEFINITION::PIN::Parse( XNODE* aNode, PARSER_
 }
 
 
-void CADSTAR_ARCHIVE_PARSER::PART::PART_PIN::Parse( XNODE* aNode, PARSER_CONTEXT* aContext )
+void CADSTAR_ARCHIVE_PARSER::PART::PART_PIN::Parse( XNODE* aNode, PARSER_CONTEXT* aContext [[maybe_unused]] )
 {
     wxASSERT( aNode->GetName() == wxT( "PARTPIN" ) );
 
@@ -1915,7 +1915,7 @@ void CADSTAR_ARCHIVE_PARSER::PART::PART_PIN::Parse( XNODE* aNode, PARSER_CONTEXT
 
 
 void CADSTAR_ARCHIVE_PARSER::PART::DEFINITION::PIN_EQUIVALENCE::Parse( XNODE* aNode,
-                                                                       PARSER_CONTEXT* aContext )
+                                                                       PARSER_CONTEXT* aContext [[maybe_unused]] )
 {
     wxASSERT( aNode->GetName() == wxT( "PINEQUIVALENCE" ) );
 
@@ -1939,7 +1939,7 @@ void CADSTAR_ARCHIVE_PARSER::PART::DEFINITION::PIN_EQUIVALENCE::Parse( XNODE* aN
 
 
 void CADSTAR_ARCHIVE_PARSER::PART::DEFINITION::SWAP_GATE::Parse( XNODE* aNode,
-                                                                 PARSER_CONTEXT* aContext )
+                                                                 PARSER_CONTEXT* aContext [[maybe_unused]] )
 {
     wxASSERT( aNode->GetName() == wxT( "SWAPGATE" ) );
 
@@ -2123,7 +2123,7 @@ void CADSTAR_ARCHIVE_PARSER::PARTS::Parse( XNODE* aNode, PARSER_CONTEXT* aContex
 
 
 void CADSTAR_ARCHIVE_PARSER::NET::JUNCTION::ParseIdentifiers( XNODE* aNode,
-                                                              PARSER_CONTEXT* aContext )
+                                                              PARSER_CONTEXT* aContext [[maybe_unused]] )
 {
     wxASSERT( aNode->GetName() == wxT( "JPT" ) );
 
@@ -2168,7 +2168,7 @@ void CADSTAR_ARCHIVE_PARSER::NET::JUNCTION::Parse( XNODE* aNode, PARSER_CONTEXT*
 
 
 void CADSTAR_ARCHIVE_PARSER::NET::CONNECTION::ParseIdentifiers( XNODE* aNode,
-                                                                PARSER_CONTEXT* aContext )
+                                                                PARSER_CONTEXT* aContext [[maybe_unused]] )
 {
     wxASSERT( aNode->GetName() == wxT( "CONN" ) );
 
@@ -2214,7 +2214,7 @@ bool CADSTAR_ARCHIVE_PARSER::NET::CONNECTION::ParseSubNode( XNODE* aChildNode,
 }
 
 
-void CADSTAR_ARCHIVE_PARSER::NET::ParseIdentifiers( XNODE* aNode, PARSER_CONTEXT* aContext )
+void CADSTAR_ARCHIVE_PARSER::NET::ParseIdentifiers( XNODE* aNode, PARSER_CONTEXT* aContext [[maybe_unused]] )
 {
     wxASSERT( aNode->GetName() == wxT( "NET" ) );
 
@@ -2337,7 +2337,7 @@ void CADSTAR_ARCHIVE_PARSER::DOCUMENTATION_SYMBOL::Parse( XNODE* aNode, PARSER_C
 }
 
 
-void CADSTAR_ARCHIVE_PARSER::DFLTSETTINGS::Parse( XNODE* aNode, PARSER_CONTEXT* aContext )
+void CADSTAR_ARCHIVE_PARSER::DFLTSETTINGS::Parse( XNODE* aNode, PARSER_CONTEXT* aContext [[maybe_unused]] )
 {
     wxASSERT( aNode->GetName() == wxT( "DFLTSETTINGS" ) );
 
@@ -2361,7 +2361,7 @@ void CADSTAR_ARCHIVE_PARSER::DFLTSETTINGS::Parse( XNODE* aNode, PARSER_CONTEXT* 
 }
 
 
-void CADSTAR_ARCHIVE_PARSER::ATTRCOL::Parse( XNODE* aNode, PARSER_CONTEXT* aContext )
+void CADSTAR_ARCHIVE_PARSER::ATTRCOL::Parse( XNODE* aNode, PARSER_CONTEXT* aContext [[maybe_unused]] )
 {
     wxASSERT( aNode->GetName() == wxT( "ATTRCOL" ) );
 
@@ -2422,7 +2422,7 @@ void CADSTAR_ARCHIVE_PARSER::ATTRCOLORS::Parse( XNODE* aNode, PARSER_CONTEXT* aC
 }
 
 
-void CADSTAR_ARCHIVE_PARSER::PARTNAMECOL::Parse( XNODE* aNode, PARSER_CONTEXT* aContext )
+void CADSTAR_ARCHIVE_PARSER::PARTNAMECOL::Parse( XNODE* aNode, PARSER_CONTEXT* aContext [[maybe_unused]] )
 {
     wxASSERT( aNode->GetName() == wxT( "PARTNAMECOL" ) );
 

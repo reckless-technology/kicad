@@ -42,7 +42,7 @@ public:
 
     virtual bool NeedsUserInput() const { return false; }
 
-    virtual wxPanel* GetWizardPanel( wxWindow* aParent, STARTWIZARD* aWizard ) { return nullptr; }
+    virtual wxPanel* GetWizardPanel( wxWindow* aParent [[maybe_unused]], STARTWIZARD* aWizard [[maybe_unused]] ) { return nullptr; }
 
     const wxString& GetPageName() const { return m_pageName; }
 

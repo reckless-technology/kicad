@@ -65,7 +65,7 @@ bool X3D::ReadTransform( wxXmlNode* aNode, X3DNODE* aParent, X3D_DICT& aDict )
 }
 
 
-bool X3D::ReadSwitch( wxXmlNode* aNode, X3DNODE* aParent, X3D_DICT& aDict )
+bool X3D::ReadSwitch( wxXmlNode* aNode [[maybe_unused]], X3DNODE* aParent [[maybe_unused]], X3D_DICT& aDict [[maybe_unused]] )
 {
     // XXX - TO BE IMPLEMENTED
     return false;

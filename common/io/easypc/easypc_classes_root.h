@@ -128,7 +128,7 @@ struct SOURCE_DEFAULTS : SOURCE_DESIGN_ITEM
 struct SOURCE_DESIGN : OBJECT
 {
     LOAD_TASK Load( ARCHIVE& aAr ) override;
-    int       ItemFormat( const ARCHIVE& aAr ) const override { return Version; }
+    int       ItemFormat( const ARCHIVE& aAr [[maybe_unused]] ) const override { return Version; }
 
     int32_t Version = 0;
     int32_t Product = PRODUCT_EASYPC;

@@ -147,7 +147,7 @@ bool DIALOG_UPDATE_PCB::TransferDataToWindow()
 }
 
 
-void DIALOG_UPDATE_PCB::OnOptionChanged( wxCommandEvent& event )
+void DIALOG_UPDATE_PCB::OnOptionChanged( wxCommandEvent& event [[maybe_unused]] )
 {
     bool transferGroups = m_cbTransferGroups->GetValue();
 
@@ -165,7 +165,7 @@ void DIALOG_UPDATE_PCB::OnOptionChanged( wxCommandEvent& event )
 }
 
 
-void DIALOG_UPDATE_PCB::OnUpdateClick( wxCommandEvent& event )
+void DIALOG_UPDATE_PCB::OnUpdateClick( wxCommandEvent& event [[maybe_unused]] )
 {
     m_messagePanel->SetLabel( _( "Changes Applied to PCB" ) );
     PerformUpdate( false );

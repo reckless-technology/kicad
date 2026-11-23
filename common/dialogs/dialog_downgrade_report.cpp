@@ -80,7 +80,7 @@ DIALOG_DOWNGRADE_REPORT::DIALOG_DOWNGRADE_REPORT( wxWindow* aParent, const wxStr
 }
 
 
-void DIALOG_DOWNGRADE_REPORT::OnSaveReport( wxCommandEvent& aEvent )
+void DIALOG_DOWNGRADE_REPORT::OnSaveReport( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     wxFileName   fn( m_reportFileName );
     wxFileDialog dlg( this, _( "Save Compatibility Report" ), fn.GetPath(), fn.GetFullName(),

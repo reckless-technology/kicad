@@ -86,7 +86,7 @@ VECTOR2I WX_PT_ENTRY_DIALOG::GetValue()
     return VECTOR2I( m_unit_binder_x.GetIntValue(), m_unit_binder_y.GetIntValue() );
 }
 
-void WX_PT_ENTRY_DIALOG::ResetValues( wxCommandEvent& event )
+void WX_PT_ENTRY_DIALOG::ResetValues( wxCommandEvent& event [[maybe_unused]] )
 {
     m_unit_binder_x.SetValue( 0 );
     m_unit_binder_y.SetValue( 0 );

@@ -142,7 +142,7 @@ public:
     }
 
     /// Return the shape of the line.
-    const SHAPE* Shape( int aLayer ) const override { return &m_line; }
+    const SHAPE* Shape( int aLayer [[maybe_unused]] ) const override { return &m_line; }
 
     /// Modifiable accessor to the underlying shape.
     SHAPE_LINE_CHAIN& Line() { return m_line; }

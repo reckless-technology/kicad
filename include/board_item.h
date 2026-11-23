@@ -236,7 +236,7 @@ public:
      *               as are B_Cu and B_Mask
      * @return true if the object is tented on the given side
      */
-    virtual bool IsTented( PCB_LAYER_ID aLayer ) const
+    virtual bool IsTented( PCB_LAYER_ID aLayer [[maybe_unused]] ) const
     {
         return false;
     }
@@ -276,7 +276,7 @@ public:
      *
      * @note This function should not add or remove items to the parent.
      */
-    virtual void RunOnChildren( const std::function<void( BOARD_ITEM* )>& aFunction, RECURSE_MODE aMode ) const {}
+    virtual void RunOnChildren( const std::function<void( BOARD_ITEM* )>& aFunction [[maybe_unused]], RECURSE_MODE aMode [[maybe_unused]] ) const {}
 
     BOARD_ITEM_CONTAINER* GetParent() const { return (BOARD_ITEM_CONTAINER*) m_parent; }
 
@@ -299,7 +299,7 @@ public:
      * @p aIdMap (old -> new), after a paste/duplicate has re-UUIDed the referenced items.  KIIDs
      * absent from the map are left unchanged.  The default does nothing.
      */
-    virtual void RemapKIIDs( const std::map<KIID, KIID>& aIdMap ) {}
+    virtual void RemapKIIDs( const std::map<KIID, KIID>& aIdMap [[maybe_unused]] ) {}
 
     VECTOR2I GetFPRelativePosition() const;
     void SetFPRelativePosition( const VECTOR2I& aPos );
@@ -455,7 +455,7 @@ public:
 
     int GetMaxError() const;
 
-    virtual void StyleFromSettings( const BOARD_DESIGN_SETTINGS& settings, bool aCheckSide ) { }
+    virtual void StyleFromSettings( const BOARD_DESIGN_SETTINGS& settings [[maybe_unused]], bool aCheckSide [[maybe_unused]] ) { }
 
     /**
      * Delete this object after removing from its parent if it has one.
@@ -467,7 +467,7 @@ public:
      *
      * @param aMoveVector the move vector for this object.
      */
-    virtual void Move( const VECTOR2I& aMoveVector )
+    virtual void Move( const VECTOR2I& aMoveVector [[maybe_unused]] )
     {
         wxFAIL_MSG( wxT( "virtual BOARD_ITEM::Move called for " ) + GetClass() );
     }
@@ -491,8 +491,8 @@ public:
      * @param aParentRotate  current parent rotation. Needed by POLY / BEZIER
      *                       to unrotate before scaling and rotate back.
      */
-    virtual void OnFootprintRescaled( double aRatioX, double aRatioY, double aLinearFactor, const VECTOR2I& aAnchor,
-                                      const EDA_ANGLE& aParentRotate )
+    virtual void OnFootprintRescaled( double aRatioX [[maybe_unused]], double aRatioY [[maybe_unused]], double aLinearFactor [[maybe_unused]], const VECTOR2I& aAnchor [[maybe_unused]],
+                                      const EDA_ANGLE& aParentRotate [[maybe_unused]] )
     {}
 
     /**
@@ -592,7 +592,7 @@ public:
      */
     virtual void TransformShapeToPolySet( SHAPE_POLY_SET& aBuffer, PCB_LAYER_ID aLayer,
                                           int aClearance, int aError, ERROR_LOC aErrorLoc,
-                                          KIGFX::RENDER_SETTINGS* aRenderSettings = nullptr ) const
+                                          KIGFX::RENDER_SETTINGS* aRenderSettings [[maybe_unused]] = nullptr ) const
     {
         TransformShapeToPolygon( aBuffer, aLayer, aClearance, aError, aErrorLoc );
     }
@@ -660,7 +660,7 @@ public:
         BOARD_ITEM( nullptr, NOT_USED )
     {}
 
-    wxString GetItemDescription( UNITS_PROVIDER* aUnitsProvider, bool aFull ) const override
+    wxString GetItemDescription( UNITS_PROVIDER* aUnitsProvider [[maybe_unused]], bool aFull [[maybe_unused]] ) const override
     {
         return _( "(Deleted Item)" );
     }

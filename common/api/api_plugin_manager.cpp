@@ -199,7 +199,7 @@ public:
         return wxDIR_CONTINUE;
     }
 
-    wxDirTraverseResult OnDir( const wxString& dirPath ) override
+    wxDirTraverseResult OnDir( const wxString& dirPath [[maybe_unused]] ) override
     {
         return wxDIR_CONTINUE;
     }
@@ -560,7 +560,7 @@ int API_PLUGIN_MANAGER::doInvokeAction( const wxString& aIdentifier,
         }
 
         [[maybe_unused]] long pid = manager.Execute( pyArgs,
-                [aReporter, actionName = action->name]( int aRetVal, const wxString& aOutput,
+                [aReporter, actionName = action->name]( int aRetVal, const wxString& aOutput [[maybe_unused]],
                                                         const wxString& aError )
                 {
                     wxLogTrace( traceApi,
@@ -672,7 +672,7 @@ int API_PLUGIN_MANAGER::doInvokeAction( const wxString& aIdentifier,
         else
         {
             ACTION_PROCESS* process = new ACTION_PROCESS(
-                    [aReporter, actionName = action->name]( int aRetVal, const wxString& aOutput,
+                    [aReporter, actionName = action->name]( int aRetVal, const wxString& aOutput [[maybe_unused]],
                                                             const wxString& aError )
                     {
                         wxLogTrace( traceApi,
@@ -889,7 +889,7 @@ bool API_PLUGIN_MANAGER::queuePluginDependencies( const API_PLUGIN& aPlugin )
 }
 
 
-void API_PLUGIN_MANAGER::processNextJob( wxCommandEvent& aEvent )
+void API_PLUGIN_MANAGER::processNextJob( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( m_jobs.empty() )
     {
@@ -932,7 +932,7 @@ void API_PLUGIN_MANAGER::processNextJob( wxCommandEvent& aEvent )
             };
 
         long pid = manager.Execute( args,
-                [this, job]( int aRetVal, const wxString& aOutput, const wxString& aError )
+                [this, job]( int aRetVal, const wxString& aOutput [[maybe_unused]], const wxString& aError )
                 {
                     m_runningPids.erase( job.identifier );
 
@@ -1027,7 +1027,7 @@ void API_PLUGIN_MANAGER::processNextJob( wxCommandEvent& aEvent )
                 };
 
             long pid = manager.Execute( args,
-                [this, job]( int aRetVal, const wxString& aOutput, const wxString& aError )
+                [this, job]( int aRetVal, const wxString& aOutput [[maybe_unused]], const wxString& aError )
                 {
                     m_runningPids.erase( job.identifier );
 
@@ -1146,7 +1146,7 @@ void API_PLUGIN_MANAGER::processNextJob( wxCommandEvent& aEvent )
                 };
 
             long pid = manager.Execute( args,
-                [this, job]( int aRetVal, const wxString& aOutput, const wxString& aError )
+                [this, job]( int aRetVal, const wxString& aOutput [[maybe_unused]], const wxString& aError )
                 {
                     m_runningPids.erase( job.identifier );
 

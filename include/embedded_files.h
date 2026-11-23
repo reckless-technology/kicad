@@ -185,7 +185,7 @@ public:
      * Provide access to nested embedded files, such as symbols in schematics and footprints in
      * boards.
      */
-    virtual void RunOnNestedEmbeddedFiles( const std::function<void( EMBEDDED_FILES* )>& aFunction )
+    virtual void RunOnNestedEmbeddedFiles( const std::function<void( EMBEDDED_FILES* )>& aFunction [[maybe_unused]] )
     {
     }
 

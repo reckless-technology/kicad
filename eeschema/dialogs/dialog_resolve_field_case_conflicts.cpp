@@ -162,7 +162,7 @@ void DIALOG_RESOLVE_FIELD_CASE_CONFLICTS::onActionCellChanged( wxGridEvent& even
 }
 
 
-void DIALOG_RESOLVE_FIELD_CASE_CONFLICTS::onApplyAndContinue( wxCommandEvent& event )
+void DIALOG_RESOLVE_FIELD_CASE_CONFLICTS::onApplyAndContinue( wxCommandEvent& event [[maybe_unused]] )
 {
     applyResolutions();
     EndModal( wxID_OK );

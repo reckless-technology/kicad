@@ -817,7 +817,7 @@ void EDA_BASE_FRAME::setupUIConditions()
 {
     // Setup the conditions to check a language menu item
     auto isCurrentLang =
-            [] ( const SELECTION& aSel, int aLangIdentifier )
+            [] ( const SELECTION& aSel [[maybe_unused]], int aLangIdentifier )
             {
                 return Pgm().GetSelectedLanguageIdentifier() == aLangIdentifier;
             };
@@ -1603,7 +1603,7 @@ void EDA_BASE_FRAME::UpdateFileHistory( const wxString& FullFileName, FILE_HISTO
 }
 
 
-wxString EDA_BASE_FRAME::GetFileFromHistory( int cmdId, const wxString& type, FILE_HISTORY* aFileHistory )
+wxString EDA_BASE_FRAME::GetFileFromHistory( int cmdId, const wxString& type [[maybe_unused]], FILE_HISTORY* aFileHistory )
 {
     if( !aFileHistory )
         aFileHistory = m_fileHistory;
@@ -1658,14 +1658,14 @@ void EDA_BASE_FRAME::ClearFileHistory()
 }
 
 
-void EDA_BASE_FRAME::OnKicadAbout( wxCommandEvent& event )
+void EDA_BASE_FRAME::OnKicadAbout( wxCommandEvent& event [[maybe_unused]] )
 {
     void ShowAboutDialog( EDA_BASE_FRAME * aParent ); // See AboutDialog_main.cpp
     ShowAboutDialog( this );
 }
 
 
-void EDA_BASE_FRAME::OnPreferences( wxCommandEvent& event )
+void EDA_BASE_FRAME::OnPreferences( wxCommandEvent& event [[maybe_unused]] )
 {
     ShowPreferences( wxEmptyString, wxEmptyString );
 }

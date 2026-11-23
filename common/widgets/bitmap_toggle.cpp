@@ -46,7 +46,7 @@ BITMAP_TOGGLE::BITMAP_TOGGLE( wxWindow *aParent, wxWindowID aId,
     sizer->Add( m_bitmap, 0, 0 );
 
     m_bitmap->Bind( wxEVT_LEFT_UP,
-                    [&]( wxMouseEvent& event )
+                    [&]( wxMouseEvent& event [[maybe_unused]] )
                     {
                         wxLongLong now = wxGetLocalTimeMillis();
 

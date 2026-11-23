@@ -56,14 +56,14 @@ WRL1SHAPEHINTS::~WRL1SHAPEHINTS()
 }
 
 
-bool WRL1SHAPEHINTS::AddRefNode( WRL1NODE* aNode )
+bool WRL1SHAPEHINTS::AddRefNode( WRL1NODE* aNode [[maybe_unused]] )
 {
     // this node may not own or reference any other node
     wxCHECK_MSG( false, false, wxT( "AddRefNode is not applicable." ) );
 }
 
 
-bool WRL1SHAPEHINTS::AddChildNode( WRL1NODE* aNode )
+bool WRL1SHAPEHINTS::AddChildNode( WRL1NODE* aNode [[maybe_unused]] )
 {
     // this node may not own or reference any other node
     wxCHECK_MSG( false, false, wxT( "AddChildNode is not applicable." ) );
@@ -225,7 +225,7 @@ bool WRL1SHAPEHINTS::Read( WRLPROC& proc, WRL1BASE* aTopNode )
 }
 
 
-SGNODE* WRL1SHAPEHINTS::TranslateToSG( SGNODE* aParent, WRL1STATUS* sp )
+SGNODE* WRL1SHAPEHINTS::TranslateToSG( SGNODE* aParent [[maybe_unused]], WRL1STATUS* sp )
 {
     // note: this is not fully implemented since it is unlikely we shall
     // ever make use of the fields shapeType, faceType, and creaseAngle

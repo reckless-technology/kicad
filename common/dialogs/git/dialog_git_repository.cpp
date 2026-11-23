@@ -146,7 +146,7 @@ void DIALOG_GIT_REPOSITORY::onCbCustom( wxCommandEvent& event )
 }
 
 
-void DIALOG_GIT_REPOSITORY::OnUpdateUI( wxUpdateUIEvent& event )
+void DIALOG_GIT_REPOSITORY::OnUpdateUI( wxUpdateUIEvent& event [[maybe_unused]] )
 {
     // event.Enable( !m_txtName->GetValue().IsEmpty() && !m_txtURL->GetValue().IsEmpty() );
 }
@@ -232,7 +232,7 @@ void DIALOG_GIT_REPOSITORY::updateURLData()
 }
 
 
-void DIALOG_GIT_REPOSITORY::OnTestClick( wxCommandEvent& event )
+void DIALOG_GIT_REPOSITORY::OnTestClick( wxCommandEvent& event [[maybe_unused]] )
 {
     wxString url = GetRepoURL();
 
@@ -433,7 +433,7 @@ static wxString describeUnusableURL( git_repository* aRepo, const wxString& aURL
 }
 
 
-void DIALOG_GIT_REPOSITORY::OnOKClick( wxCommandEvent& event )
+void DIALOG_GIT_REPOSITORY::OnOKClick( wxCommandEvent& event [[maybe_unused]] )
 {
     // Save the repository details
 
@@ -494,7 +494,7 @@ void DIALOG_GIT_REPOSITORY::updateAuthControls()
 }
 
 
-void DIALOG_GIT_REPOSITORY::OnSelectConnType( wxCommandEvent& event )
+void DIALOG_GIT_REPOSITORY::OnSelectConnType( wxCommandEvent& event [[maybe_unused]] )
 {
     updateAuthControls();
 }

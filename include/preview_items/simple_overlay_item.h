@@ -118,7 +118,7 @@ private:
      *
      * Subclasses should implement this in terms of their own graphical data.
      */
-    virtual void drawPreviewShape( KIGFX::VIEW* aView ) const { };
+    virtual void drawPreviewShape( KIGFX::VIEW* aView [[maybe_unused]] ) const { };
 
 
     COLOR4D m_fillColor;

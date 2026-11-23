@@ -503,7 +503,7 @@ GRID_HELPER_GRIDS GRID_HELPER::GetSelectionGrid( const SELECTION& aSelection ) c
 }
 
 
-VECTOR2D GRID_HELPER::GetGridSize( GRID_HELPER_GRIDS aGrid ) const
+VECTOR2D GRID_HELPER::GetGridSize( GRID_HELPER_GRIDS aGrid [[maybe_unused]] ) const
 {
     return m_toolMgr ? m_toolMgr->GetView()->GetGAL()->GetGridSize() : m_manualGrid;
 }

@@ -42,7 +42,7 @@ public:
     ELLIPSE_ARC_DRAW_BEHAVIOR( const ELLIPSE_ARC_DRAW_BEHAVIOR& ) = delete;
     ELLIPSE_ARC_DRAW_BEHAVIOR& operator=( const ELLIPSE_ARC_DRAW_BEHAVIOR& ) = delete;
 
-    bool OnProperties( EDA_SHAPE& aShape ) override
+    bool OnProperties( EDA_SHAPE& aShape [[maybe_unused]] ) override
     {
         return m_manager.GetStep() > KIGFX::PREVIEW::ELLIPSE_GEOM_MANAGER::SET_BBOX_C1;
     }

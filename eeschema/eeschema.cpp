@@ -453,7 +453,7 @@ static struct IFACE : public KIFACE_BASE, public UNITS_PROVIDER
 
     void OnKifaceEnd() override;
 
-    wxWindow* CreateKiWindow( wxWindow* aParent, int aClassId, KIWAY* aKiway, int aCtlBits = 0 ) override
+    wxWindow* CreateKiWindow( wxWindow* aParent, int aClassId, KIWAY* aKiway, int aCtlBits [[maybe_unused]] = 0 ) override
     {
         switch( aClassId )
         {
@@ -795,7 +795,7 @@ KIFACE_BASE& Kiface() { return kiface; }
 
 // KIFACE_GETTER's actual spelling is a substitution macro found in kiway.h.
 // KIFACE_GETTER will not have name mangling due to declaration in kiway.h.
-KIFACE_API KIFACE* KIFACE_GETTER(  int* aKIFACEversion, int aKiwayVersion, PGM_BASE* aProgram )
+KIFACE_API KIFACE* KIFACE_GETTER(  int* aKIFACEversion [[maybe_unused]], int aKiwayVersion [[maybe_unused]], PGM_BASE* aProgram [[maybe_unused]] )
 {
     return &kiface;
 }
@@ -1086,7 +1086,7 @@ void IFACE::SaveFileAs( const wxString& aProjectBasePath, const wxString& aProje
         }
 
         libTable.Save().map_error(
-                [&]( const LIBRARY_ERROR& aError )
+                [&]( const LIBRARY_ERROR& aError [[maybe_unused]] )
                 {
                         wxString msg;
 

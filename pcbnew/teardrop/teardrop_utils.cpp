@@ -818,8 +818,8 @@ static bool isPointOnRoundedCorner( const VECTOR2I& aPoint, const VECTOR2I& aPad
  * For rounded rectangles, control points are computed to be tangent to corner arcs,
  * preventing the teardrop curve from intersecting the pad's corner radius.
  */
-void TEARDROP_MANAGER::computeCurvedForRectShape( const TEARDROP_PARAMETERS& aParams, std::vector<VECTOR2I>& aPoly,
-                                                  int aTdWidth, int aTrackHalfWidth, std::vector<VECTOR2I>& aPts,
+void TEARDROP_MANAGER::computeCurvedForRectShape( const TEARDROP_PARAMETERS& aParams [[maybe_unused]], std::vector<VECTOR2I>& aPoly,
+                                                  int aTdWidth [[maybe_unused]], int aTrackHalfWidth [[maybe_unused]], std::vector<VECTOR2I>& aPts,
                                                   const VECTOR2I& aIntersection, BOARD_ITEM* aOther,
                                                   const VECTOR2I& aOtherPos, PCB_LAYER_ID aLayer ) const
 {

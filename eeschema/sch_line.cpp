@@ -704,9 +704,9 @@ void SCH_LINE::GetEndPoints( std::vector <DANGLING_END_ITEM>& aItemList )
 }
 
 
-bool SCH_LINE::UpdateDanglingState( std::vector<DANGLING_END_ITEM>& aItemListByType,
+bool SCH_LINE::UpdateDanglingState( std::vector<DANGLING_END_ITEM>& aItemListByType [[maybe_unused]],
                                     std::vector<DANGLING_END_ITEM>& aItemListByPos,
-                                    const SCH_SHEET_PATH*           aPath )
+                                    const SCH_SHEET_PATH*           aPath [[maybe_unused]] )
 {
     if( !IsConnectable() )
         return false;
@@ -790,7 +790,7 @@ bool SCH_LINE::CanConnect( const SCH_ITEM* aItem ) const
 }
 
 
-bool SCH_LINE::HasConnectivityChanges( const SCH_ITEM* aItem, const SCH_SHEET_PATH* aInstance ) const
+bool SCH_LINE::HasConnectivityChanges( const SCH_ITEM* aItem, const SCH_SHEET_PATH* aInstance [[maybe_unused]] ) const
 {
     // Do not compare to ourself.
     if( aItem == this || !IsConnectable() )
@@ -837,7 +837,7 @@ void SCH_LINE::GetSelectedPoints( std::vector<VECTOR2I>& aPoints ) const
 }
 
 
-wxString SCH_LINE::GetItemDescription( UNITS_PROVIDER* aUnitsProvider, bool aFull ) const
+wxString SCH_LINE::GetItemDescription( UNITS_PROVIDER* aUnitsProvider, bool aFull [[maybe_unused]] ) const
 {
     wxString txtfmt;
 
@@ -1000,7 +1000,7 @@ bool SCH_LINE::doIsConnected( const VECTOR2I& aPosition ) const
 
 
 void SCH_LINE::Plot( PLOTTER* aPlotter, bool aBackground, const SCH_PLOT_OPTS& aPlotOpts,
-                     int aUnit, int aBodyStyle, const VECTOR2I& aOffset, bool aDimmed )
+                     int aUnit [[maybe_unused]], int aBodyStyle [[maybe_unused]], const VECTOR2I& aOffset [[maybe_unused]], bool aDimmed [[maybe_unused]] )
 {
     if( aBackground )
         return;

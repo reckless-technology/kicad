@@ -60,7 +60,7 @@ NODE::OPT_OBSTACLE WALKAROUND::nearestObstacle( const LINE& aPath )
 
     if( ! m_restrictedSet.empty() )
     {
-        opts.m_filter = [ this ] ( const ITEM* item, const ITEM* aRef ) -> bool
+        opts.m_filter = [ this ] ( const ITEM* item, const ITEM* aRef [[maybe_unused]] ) -> bool
         {
             if( m_restrictedSet.find( item ) != m_restrictedSet.end() )
                 return true;

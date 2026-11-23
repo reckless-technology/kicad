@@ -104,7 +104,7 @@ public:
 
     ITEM* Clone() const override;
 
-    const SHAPE* Shape( int aLayer ) const override { return m_shape; }
+    const SHAPE* Shape( int aLayer [[maybe_unused]] ) const override { return m_shape; }
 
 
     const SHAPE_LINE_CHAIN Hull( int aClearance = 0, int aWalkaroundThickness = 0,

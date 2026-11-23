@@ -51,7 +51,7 @@ WRL1BASE::~WRL1BASE()
 }
 
 
-bool WRL1BASE::SetParent( WRL1NODE* aParent, bool /* doUnlink */ )
+bool WRL1BASE::SetParent( WRL1NODE* aParent [[maybe_unused]], bool /* doUnlink */ )
 {
     wxCHECK_MSG( false, false, wxT( "Attempt to set parent on WRL1BASE node." ) );
 }
@@ -64,7 +64,7 @@ std::string WRL1BASE::GetName( void )
 }
 
 
-bool WRL1BASE::SetName( const std::string& aName )
+bool WRL1BASE::SetName( const std::string& aName [[maybe_unused]] )
 {
     wxCHECK_MSG( false, false, wxT( "Attempt to set name on virtual base node." ) );
 }
@@ -329,7 +329,7 @@ bool WRL1BASE::ReadNode( WRLPROC& proc, WRL1NODE* aParent, WRL1NODE** aNode )
 }
 
 
-bool WRL1BASE::Read( WRLPROC& proc, WRL1BASE* aTopNode )
+bool WRL1BASE::Read( WRLPROC& proc [[maybe_unused]], WRL1BASE* aTopNode [[maybe_unused]] )
 {
     wxCHECK_MSG( false, false, wxT( "This method must never be invoked on a WRL1BASE object" ) );
 }
@@ -512,7 +512,7 @@ bool WRL1BASE::readShapeHints( WRLPROC& proc, WRL1NODE* aParent, WRL1NODE** aNod
 }
 
 
-SGNODE* WRL1BASE::TranslateToSG( SGNODE* aParent, WRL1STATUS* /*sp*/ )
+SGNODE* WRL1BASE::TranslateToSG( SGNODE* aParent [[maybe_unused]], WRL1STATUS* /*sp*/ )
 {
     wxLogTrace( traceVrmlPlugin, wxT( " * [INFO] Translating VRML1 Base with %zu items." ),
                 m_Items.size() );

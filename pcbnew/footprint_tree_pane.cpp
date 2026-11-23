@@ -81,7 +81,7 @@ void FOOTPRINT_TREE_PANE::onMenuClose( wxMenuEvent& aEvent )
 }
 
 
-void FOOTPRINT_TREE_PANE::onComponentSelected( wxCommandEvent& aEvent )
+void FOOTPRINT_TREE_PANE::onComponentSelected( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     m_frame->LoadFootprintFromLibrary( GetLibTree()->GetSelectedLibId() );
     // Make sure current-part highlighting doesn't get lost in seleciton highlighting
@@ -89,7 +89,7 @@ void FOOTPRINT_TREE_PANE::onComponentSelected( wxCommandEvent& aEvent )
 }
 
 
-void FOOTPRINT_TREE_PANE::onUpdateUI( wxUpdateUIEvent& aEvent )
+void FOOTPRINT_TREE_PANE::onUpdateUI( wxUpdateUIEvent& aEvent [[maybe_unused]] )
 {
     if( m_frame->GetCanvas()->HasFocus() )
     {

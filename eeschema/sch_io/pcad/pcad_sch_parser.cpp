@@ -299,7 +299,7 @@ void PCAD_SCH_PARSER::LoadFromFile( const wxString& aFilename, SCHEMATIC& aSchem
 }
 
 
-void PCAD_SCH_PARSER::parseHeader( XNODE* aNode, SCHEMATIC& aSchematic )
+void PCAD_SCH_PARSER::parseHeader( XNODE* aNode, SCHEMATIC& aSchematic [[maybe_unused]] )
 {
     m_isMetric = ( childStr( aNode, wxT( "fileUnits" ) ).CmpNoCase( wxT( "mm" ) ) == 0 );
 }

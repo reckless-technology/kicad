@@ -355,7 +355,7 @@ bool PL_EDIT_TOOL::updateModificationPoint( PL_SELECTION& aSelection )
 }
 
 
-int PL_EDIT_TOOL::ImportDrawingSheetContent( const TOOL_EVENT& aEvent )
+int PL_EDIT_TOOL::ImportDrawingSheetContent( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_toolMgr->RunAction( ACTIONS::cancelInteractive );
 
@@ -366,7 +366,7 @@ int PL_EDIT_TOOL::ImportDrawingSheetContent( const TOOL_EVENT& aEvent )
 }
 
 
-int PL_EDIT_TOOL::DoDelete( const TOOL_EVENT& aEvent )
+int PL_EDIT_TOOL::DoDelete( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     PL_SELECTION& selection = m_selectionTool->RequestSelection();
 
@@ -422,7 +422,7 @@ int PL_EDIT_TOOL::InteractiveDelete( const TOOL_EVENT& aEvent )
     m_pickerItem = nullptr;
 
     picker->SetClickHandler(
-        [this] ( const VECTOR2D& aPosition ) -> bool
+        [this] ( const VECTOR2D& aPosition [[maybe_unused]] ) -> bool
         {
             if( m_pickerItem )
             {
@@ -469,7 +469,7 @@ int PL_EDIT_TOOL::InteractiveDelete( const TOOL_EVENT& aEvent )
         } );
 
     picker->SetFinalizeHandler(
-        [this] ( const int& aFinalState )
+        [this] ( const int& aFinalState [[maybe_unused]] )
         {
             if( m_pickerItem )
                 m_toolMgr->GetTool<PL_SELECTION_TOOL>()->UnbrightenItem( m_pickerItem );
@@ -484,14 +484,14 @@ int PL_EDIT_TOOL::InteractiveDelete( const TOOL_EVENT& aEvent )
 }
 
 
-int PL_EDIT_TOOL::Undo( const TOOL_EVENT& aEvent )
+int PL_EDIT_TOOL::Undo( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->GetLayoutFromUndoList();
     return 0;
 }
 
 
-int PL_EDIT_TOOL::Redo( const TOOL_EVENT& aEvent )
+int PL_EDIT_TOOL::Redo( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->GetLayoutFromRedoList();
     return 0;
@@ -509,7 +509,7 @@ int PL_EDIT_TOOL::Cut( const TOOL_EVENT& aEvent )
 }
 
 
-int PL_EDIT_TOOL::Copy( const TOOL_EVENT& aEvent )
+int PL_EDIT_TOOL::Copy( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     PL_SELECTION&              selection = m_selectionTool->RequestSelection();
     std::vector<DS_DATA_ITEM*> items;
@@ -544,7 +544,7 @@ int PL_EDIT_TOOL::Copy( const TOOL_EVENT& aEvent )
 }
 
 
-int PL_EDIT_TOOL::Paste( const TOOL_EVENT& aEvent )
+int PL_EDIT_TOOL::Paste( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     PL_SELECTION&  selection = m_selectionTool->GetSelection();
     DS_DATA_MODEL& model = DS_DATA_MODEL::GetTheInstance();

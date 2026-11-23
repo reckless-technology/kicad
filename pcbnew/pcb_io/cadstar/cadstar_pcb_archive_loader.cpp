@@ -2820,7 +2820,7 @@ void CADSTAR_PCB_ARCHIVE_LOADER::drawCadstarText( const TEXT& aCadstarText,
 
 void CADSTAR_PCB_ARCHIVE_LOADER::drawCadstarShape( const SHAPE& aCadstarShape, const PCB_LAYER_ID& aKiCadLayer,
                                                    int aLineThickness, LINE_STYLE aLineStyle,
-                                                   const wxString& aShapeName, BOARD_ITEM_CONTAINER* aContainer,
+                                                   const wxString& aShapeName [[maybe_unused]], BOARD_ITEM_CONTAINER* aContainer,
                                                    const GROUP_ID& aCadstarGroupID, const VECTOR2I& aMoveVector,
                                                    double aRotationAngle, double aScalingFactor,
                                                    const VECTOR2I& aTransformCentre, bool aMirrorInvert )

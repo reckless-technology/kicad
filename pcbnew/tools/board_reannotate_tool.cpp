@@ -47,13 +47,13 @@ bool BOARD_REANNOTATE_TOOL::Init()
 }
 
 
-void BOARD_REANNOTATE_TOOL::Reset( RESET_REASON aReason )
+void BOARD_REANNOTATE_TOOL::Reset( RESET_REASON aReason [[maybe_unused]] )
 {
     m_frame = getEditFrame<PCB_EDIT_FRAME>();
 }
 
 
-int BOARD_REANNOTATE_TOOL::ShowReannotateDialog( const TOOL_EVENT& aEvent )
+int BOARD_REANNOTATE_TOOL::ShowReannotateDialog( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     DIALOG_BOARD_REANNOTATE dialog( m_frame );
     dialog.ShowModal();

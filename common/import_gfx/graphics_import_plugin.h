@@ -90,7 +90,7 @@ public:
      *
      * @return false if the plugin cannot load from memory.
      */
-    virtual bool LoadFromMemory( const wxMemoryBuffer& aMemBuffer ) { return false; }
+    virtual bool LoadFromMemory( const wxMemoryBuffer& aMemBuffer [[maybe_unused]] ) { return false; }
 
     /**
      * Return image height from original imported file.
@@ -120,7 +120,7 @@ public:
      */
     virtual bool Import() = 0;
 
-    virtual void SetLineWidthMM( double aLineWidth ) {}
+    virtual void SetLineWidthMM( double aLineWidth [[maybe_unused]] ) {}
 
     /**
      * Collect warning and error messages after loading/importing.

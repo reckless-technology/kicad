@@ -208,7 +208,7 @@ bool DIALOG_PRINT_GENERIC::TransferDataToWindow()
 }
 
 
-void DIALOG_PRINT_GENERIC::onPageSetup( wxCommandEvent& event )
+void DIALOG_PRINT_GENERIC::onPageSetup( wxCommandEvent& event [[maybe_unused]] )
 {
     wxPageSetupDialog pageSetupDialog( this, s_pageSetupData );
     pageSetupDialog.ShowModal();
@@ -218,7 +218,7 @@ void DIALOG_PRINT_GENERIC::onPageSetup( wxCommandEvent& event )
 }
 
 
-void DIALOG_PRINT_GENERIC::onPrintPreview( wxCommandEvent& event )
+void DIALOG_PRINT_GENERIC::onPrintPreview( wxCommandEvent& event [[maybe_unused]] )
 {
     m_settings->m_pageCount = 0;    // it needs to be set by a derived dialog
     saveSettings();
@@ -269,7 +269,7 @@ void DIALOG_PRINT_GENERIC::onPrintPreview( wxCommandEvent& event )
 }
 
 
-void DIALOG_PRINT_GENERIC::onPrintButtonClick( wxCommandEvent& event )
+void DIALOG_PRINT_GENERIC::onPrintButtonClick( wxCommandEvent& event [[maybe_unused]] )
 {
     if( Pgm().m_Printing )
     {
@@ -318,7 +318,7 @@ void DIALOG_PRINT_GENERIC::onPrintButtonClick( wxCommandEvent& event )
 }
 
 
-void DIALOG_PRINT_GENERIC::onCancelButtonClick( wxCommandEvent& event )
+void DIALOG_PRINT_GENERIC::onCancelButtonClick( wxCommandEvent& event [[maybe_unused]] )
 {
     saveSettings();
 
@@ -333,7 +333,7 @@ void DIALOG_PRINT_GENERIC::onClose( wxCloseEvent& event )
 }
 
 
-void DIALOG_PRINT_GENERIC::onSetCustomScale( wxCommandEvent& event )
+void DIALOG_PRINT_GENERIC::onSetCustomScale( wxCommandEvent& event [[maybe_unused]] )
 {
     // Select 'custom scale' radio button when user types in a value in the
     // custom scale text box

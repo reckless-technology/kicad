@@ -112,7 +112,7 @@ void SEARCH_PANE_LISTVIEW::OnItemDeselected( wxListEvent& aEvent )
 }
 
 
-void SEARCH_PANE_LISTVIEW::OnUpdateUI( wxUpdateUIEvent& aEvent )
+void SEARCH_PANE_LISTVIEW::OnUpdateUI( wxUpdateUIEvent& aEvent [[maybe_unused]] )
 {
     if( m_selectionDirty )
     {
@@ -237,7 +237,7 @@ void SEARCH_PANE_LISTVIEW::OnChar( wxKeyEvent& aEvent )
 }
 
 
-void SEARCH_PANE_LISTVIEW::OnContextMenu( wxContextMenuEvent& aEvent )
+void SEARCH_PANE_LISTVIEW::OnContextMenu( wxContextMenuEvent& aEvent [[maybe_unused]] )
 {
     wxMenu menu;
     menu.Append( wxID_COPY, _( "Copy" ) );
@@ -245,7 +245,7 @@ void SEARCH_PANE_LISTVIEW::OnContextMenu( wxContextMenuEvent& aEvent )
 }
 
 
-void SEARCH_PANE_LISTVIEW::OnCopyMenu( wxCommandEvent& aEvent )
+void SEARCH_PANE_LISTVIEW::OnCopyMenu( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     CopySelectionToClipboard();
 }

@@ -128,7 +128,7 @@ public:
      */
     wxDataViewItem GetNextSibling( wxDataViewItem const& aItem );
 
-    void DoSetToolTipText( const wxString &tip ) override {}
+    void DoSetToolTipText( const wxString &tip [[maybe_unused]] ) override {}
 
     void ExpandAll();
     void CollapseAll();

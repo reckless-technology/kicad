@@ -87,7 +87,7 @@ ITEM_SET& ITEM_SET::FilterKinds( int aKindMask, bool aInvert )
 }
 
 
-ITEM_SET& ITEM_SET::FilterMarker( int aMarker, bool aInvert )
+ITEM_SET& ITEM_SET::FilterMarker( int aMarker, bool aInvert [[maybe_unused]] )
 {
     std::vector<ITEM*> newItems;
 

@@ -39,7 +39,7 @@ public:
     virtual ~CONVERT_TOOL();
 
     /// @copydoc TOOL_INTERACTIVE::Reset()
-    void Reset( RESET_REASON aReason ) override {}
+    void Reset( RESET_REASON aReason [[maybe_unused]] ) override {}
 
     /// @copydoc TOOL_INTERACTIVE::Init()
     bool Init() override;

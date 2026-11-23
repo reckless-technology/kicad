@@ -353,7 +353,7 @@ bool DIALOG_EXCHANGE_FOOTPRINTS::confirmPadChanges()
 }
 
 
-void DIALOG_EXCHANGE_FOOTPRINTS::OnOKClicked( wxCommandEvent& aEvent )
+void DIALOG_EXCHANGE_FOOTPRINTS::OnOKClicked( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( m_updateMode && !confirmPadChanges() )
         return;

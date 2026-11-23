@@ -715,7 +715,7 @@ bool ROUTER::ContinueFromEnd( ITEM** aNewStartItem )
 }
 
 
-bool ROUTER::moveDragging( const VECTOR2I& aP, ITEM* aEndItem )
+bool ROUTER::moveDragging( const VECTOR2I& aP, ITEM* aEndItem [[maybe_unused]] )
 {
     m_iface->EraseView();
 

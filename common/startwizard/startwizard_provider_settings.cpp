@@ -123,7 +123,7 @@ private:
 };
 
 
-void PANEL_STARTWIZARD_SETTINGS::OnPrevVerSelected( wxCommandEvent& event )
+void PANEL_STARTWIZARD_SETTINGS::OnPrevVerSelected( wxCommandEvent& event [[maybe_unused]] )
 {
     m_cbPath->Enable();
     m_btnCustomPath->Enable();
@@ -131,19 +131,19 @@ void PANEL_STARTWIZARD_SETTINGS::OnPrevVerSelected( wxCommandEvent& event )
 }
 
 
-void PANEL_STARTWIZARD_SETTINGS::OnPathChanged( wxCommandEvent& event )
+void PANEL_STARTWIZARD_SETTINGS::OnPathChanged( wxCommandEvent& event [[maybe_unused]] )
 {
     validatePath();
 }
 
 
-void PANEL_STARTWIZARD_SETTINGS::OnPathDefocused( wxFocusEvent& event )
+void PANEL_STARTWIZARD_SETTINGS::OnPathDefocused( wxFocusEvent& event [[maybe_unused]] )
 {
     validatePath();
 }
 
 
-void PANEL_STARTWIZARD_SETTINGS::OnChoosePath( wxCommandEvent& event )
+void PANEL_STARTWIZARD_SETTINGS::OnChoosePath( wxCommandEvent& event [[maybe_unused]] )
 {
     wxDirDialog dlg( nullptr, _( "Select Settings Path" ), m_cbPath->GetValue(),
             wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST );
@@ -156,7 +156,7 @@ void PANEL_STARTWIZARD_SETTINGS::OnChoosePath( wxCommandEvent& event )
 }
 
 
-void PANEL_STARTWIZARD_SETTINGS::OnDefaultSelected( wxCommandEvent& event )
+void PANEL_STARTWIZARD_SETTINGS::OnDefaultSelected( wxCommandEvent& event [[maybe_unused]] )
 {
     m_cbPath->Disable();
     m_btnCustomPath->Disable();
@@ -195,7 +195,7 @@ bool STARTWIZARD_PROVIDER_SETTINGS::NeedsUserInput() const
 }
 
 
-wxPanel* STARTWIZARD_PROVIDER_SETTINGS::GetWizardPanel( wxWindow* aParent, STARTWIZARD* aWizard )
+wxPanel* STARTWIZARD_PROVIDER_SETTINGS::GetWizardPanel( wxWindow* aParent, STARTWIZARD* aWizard [[maybe_unused]] )
 {
     m_model = std::make_shared<STARTWIZARD_PROVIDER_SETTINGS_MODEL>();
     return new PANEL_STARTWIZARD_SETTINGS( m_model, aParent );

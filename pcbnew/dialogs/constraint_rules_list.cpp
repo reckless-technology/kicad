@@ -511,7 +511,7 @@ void CONSTRAINT_RULES_LIST::onPrimary( wxCommandEvent& aEvent )
 }
 
 
-void CONSTRAINT_RULES_LIST::onNewRule( wxCommandEvent& aEvent )
+void CONSTRAINT_RULES_LIST::onNewRule( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( !ConfirmPendingRule() )
         return;
@@ -608,19 +608,19 @@ void CONSTRAINT_RULES_LIST::moveSelected( int aDelta )
 }
 
 
-void CONSTRAINT_RULES_LIST::onMoveUp( wxCommandEvent& aEvent )
+void CONSTRAINT_RULES_LIST::onMoveUp( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     moveSelected( -1 );
 }
 
 
-void CONSTRAINT_RULES_LIST::onMoveDown( wxCommandEvent& aEvent )
+void CONSTRAINT_RULES_LIST::onMoveDown( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     moveSelected( 1 );
 }
 
 
-void CONSTRAINT_RULES_LIST::onDuplicate( wxCommandEvent& aEvent )
+void CONSTRAINT_RULES_LIST::onDuplicate( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     int index = selectedIndex();
 
@@ -643,7 +643,7 @@ void CONSTRAINT_RULES_LIST::onDuplicate( wxCommandEvent& aEvent )
 }
 
 
-void CONSTRAINT_RULES_LIST::onRemove( wxCommandEvent& aEvent )
+void CONSTRAINT_RULES_LIST::onRemove( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     int index = selectedIndex();
 

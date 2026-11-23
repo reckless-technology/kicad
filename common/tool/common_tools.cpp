@@ -91,7 +91,7 @@ void COMMON_TOOLS::SetLastUnits( EDA_UNITS aUnit )
 }
 
 
-int COMMON_TOOLS::SelectionTool( const TOOL_EVENT& aEvent )
+int COMMON_TOOLS::SelectionTool( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     // Since selection tools are run permanently underneath the toolStack, this is really
     // just a cancel of whatever other tools might be running.
@@ -224,7 +224,7 @@ int COMMON_TOOLS::PanControl( const TOOL_EVENT& aEvent )
 }
 
 
-int COMMON_TOOLS::ZoomRedraw( const TOOL_EVENT& aEvent )
+int COMMON_TOOLS::ZoomRedraw( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->HardRedraw();
     return 0;
@@ -287,7 +287,7 @@ int COMMON_TOOLS::doZoomInOut( bool aDirection, bool aCenterOnCursor )
 }
 
 
-int COMMON_TOOLS::ZoomCenter( const TOOL_EVENT& aEvent )
+int COMMON_TOOLS::ZoomCenter( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     KIGFX::VIEW_CONTROLS* ctls = getViewControls();
 
@@ -297,19 +297,19 @@ int COMMON_TOOLS::ZoomCenter( const TOOL_EVENT& aEvent )
 }
 
 
-int COMMON_TOOLS::ZoomFitScreen( const TOOL_EVENT& aEvent )
+int COMMON_TOOLS::ZoomFitScreen( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     return doZoomFit( ZOOM_FIT_ALL );
 }
 
 
-int COMMON_TOOLS::ZoomFitObjects( const TOOL_EVENT& aEvent )
+int COMMON_TOOLS::ZoomFitObjects( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     return doZoomFit( ZOOM_FIT_OBJECTS );
 }
 
 
-int COMMON_TOOLS::ZoomFitSelection( const TOOL_EVENT& aEvent )
+int COMMON_TOOLS::ZoomFitSelection( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     return doZoomFit( ZOOM_FIT_SELECTION );
 }
@@ -376,13 +376,13 @@ int COMMON_TOOLS::ZoomFitBox( const BOX2I& aBox, std::optional<double> aMarginSc
 }
 
 
-int COMMON_TOOLS::CenterSelection( const TOOL_EVENT& aEvent )
+int COMMON_TOOLS::CenterSelection( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     return doCenter( CENTER_TYPE::CENTER_SELECTION );
 }
 
 
-int COMMON_TOOLS::CenterContents( const TOOL_EVENT& aEvent )
+int COMMON_TOOLS::CenterContents( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     return doCenter( CENTER_TYPE::CENTER_CONTENTS );
 }
@@ -466,7 +466,7 @@ int COMMON_TOOLS::doZoomToPreset( int idx, bool aCenterOnCursor )
 }
 
 
-int COMMON_TOOLS::GridNext( const TOOL_EVENT& aEvent )
+int COMMON_TOOLS::GridNext( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     int& currentGrid = m_frame->GetWindowSettings( m_toolMgr->GetSettings() )->grid.last_size_idx;
 
@@ -479,7 +479,7 @@ int COMMON_TOOLS::GridNext( const TOOL_EVENT& aEvent )
 }
 
 
-int COMMON_TOOLS::GridPrev( const TOOL_EVENT& aEvent )
+int COMMON_TOOLS::GridPrev( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     int& currentGrid = m_frame->GetWindowSettings( m_toolMgr->GetSettings() )->grid.last_size_idx;
 
@@ -535,19 +535,19 @@ int COMMON_TOOLS::OnGridChanged( bool aFromHotkey )
 }
 
 
-int COMMON_TOOLS::GridFast1( const TOOL_EVENT& aEvent )
+int COMMON_TOOLS::GridFast1( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     return GridPreset( m_frame->GetWindowSettings( m_toolMgr->GetSettings() )->grid.fast_grid_1, true );
 }
 
 
-int COMMON_TOOLS::GridFast2( const TOOL_EVENT& aEvent )
+int COMMON_TOOLS::GridFast2( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     return GridPreset( m_frame->GetWindowSettings( m_toolMgr->GetSettings() )->grid.fast_grid_2, true );
 }
 
 
-int COMMON_TOOLS::GridFastCycle( const TOOL_EVENT& aEvent )
+int COMMON_TOOLS::GridFastCycle( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( m_frame->GetWindowSettings( m_toolMgr->GetSettings() )->grid.last_size_idx
         == m_frame->GetWindowSettings( m_toolMgr->GetSettings() )->grid.fast_grid_1 )
@@ -559,21 +559,21 @@ int COMMON_TOOLS::GridFastCycle( const TOOL_EVENT& aEvent )
 }
 
 
-int COMMON_TOOLS::ToggleGrid( const TOOL_EVENT& aEvent )
+int COMMON_TOOLS::ToggleGrid( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->SetGridVisibility( !m_frame->IsGridVisible() );
     return 0;
 }
 
 
-int COMMON_TOOLS::ToggleGridOverrides( const TOOL_EVENT& aEvent )
+int COMMON_TOOLS::ToggleGridOverrides( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->SetGridOverrides( !m_frame->IsGridOverridden() );
     return 0;
 }
 
 
-int COMMON_TOOLS::GridProperties( const TOOL_EVENT& aEvent )
+int COMMON_TOOLS::GridProperties( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     auto showGridPrefs =
             [this]( const wxString& aParentName )
@@ -601,7 +601,7 @@ int COMMON_TOOLS::GridProperties( const TOOL_EVENT& aEvent )
 }
 
 
-int COMMON_TOOLS::GridOrigin( const TOOL_EVENT& aEvent )
+int COMMON_TOOLS::GridOrigin( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     VECTOR2I           origin = m_frame->GetGridOrigin();
     WX_PT_ENTRY_DIALOG dlg( m_frame, _( "Grid Origin" ), _( "X:" ), _( "Y:" ), origin, true );
@@ -635,7 +635,7 @@ int COMMON_TOOLS::SwitchUnits( const TOOL_EVENT& aEvent )
 }
 
 
-int COMMON_TOOLS::ToggleUnits( const TOOL_EVENT& aEvent )
+int COMMON_TOOLS::ToggleUnits( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->ChangeUserUnits( EDA_UNIT_UTILS::IsImperialUnit( m_frame->GetUserUnits() ) ?
                                       m_metricUnit :
@@ -644,7 +644,7 @@ int COMMON_TOOLS::ToggleUnits( const TOOL_EVENT& aEvent )
 }
 
 
-int COMMON_TOOLS::TogglePolarCoords( const TOOL_EVENT& aEvent )
+int COMMON_TOOLS::TogglePolarCoords( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->SetStatusText( wxEmptyString );
     m_frame->SetShowPolarCoords( !m_frame->GetShowPolarCoords() );
@@ -654,7 +654,7 @@ int COMMON_TOOLS::TogglePolarCoords( const TOOL_EVENT& aEvent )
 }
 
 
-int COMMON_TOOLS::ResetLocalCoords( const TOOL_EVENT& aEvent )
+int COMMON_TOOLS::ResetLocalCoords( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( !m_frame->GetScreen() )     // Can happen in footprint chooser frame
         return 0;
@@ -673,7 +673,7 @@ int COMMON_TOOLS::ResetLocalCoords( const TOOL_EVENT& aEvent )
 }
 
 
-int COMMON_TOOLS::ToggleCursor( const TOOL_EVENT& aEvent )
+int COMMON_TOOLS::ToggleCursor( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     auto& galOpts = m_frame->GetGalDisplayOptions();
 
@@ -685,7 +685,7 @@ int COMMON_TOOLS::ToggleCursor( const TOOL_EVENT& aEvent )
 }
 
 
-int COMMON_TOOLS::CursorSmallCrosshairs( const TOOL_EVENT& aEvent )
+int COMMON_TOOLS::CursorSmallCrosshairs( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     GAL_DISPLAY_OPTIONS_IMPL& galOpts = m_frame->GetGalDisplayOptions();
 
@@ -697,7 +697,7 @@ int COMMON_TOOLS::CursorSmallCrosshairs( const TOOL_EVENT& aEvent )
 }
 
 
-int COMMON_TOOLS::CursorFullCrosshairs( const TOOL_EVENT& aEvent )
+int COMMON_TOOLS::CursorFullCrosshairs( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     GAL_DISPLAY_OPTIONS_IMPL& galOpts = m_frame->GetGalDisplayOptions();
 
@@ -709,7 +709,7 @@ int COMMON_TOOLS::CursorFullCrosshairs( const TOOL_EVENT& aEvent )
 }
 
 
-int COMMON_TOOLS::Cursor45Crosshairs( const TOOL_EVENT& aEvent )
+int COMMON_TOOLS::Cursor45Crosshairs( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     GAL_DISPLAY_OPTIONS_IMPL& galOpts = m_frame->GetGalDisplayOptions();
 
@@ -721,7 +721,7 @@ int COMMON_TOOLS::Cursor45Crosshairs( const TOOL_EVENT& aEvent )
 }
 
 
-int COMMON_TOOLS::ToggleBoundingBoxes( const TOOL_EVENT& aEvent )
+int COMMON_TOOLS::ToggleBoundingBoxes( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     EDA_DRAW_PANEL_GAL* canvas = m_frame->GetCanvas();
 

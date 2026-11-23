@@ -161,7 +161,7 @@ void DIALOG_MICROVIA_STACK::updateEnableState()
 }
 
 
-void DIALOG_MICROVIA_STACK::onTypeChanged( wxCommandEvent& aEvent )
+void DIALOG_MICROVIA_STACK::onTypeChanged( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     updateEnableState();
 }
@@ -176,7 +176,7 @@ void DIALOG_MICROVIA_STACK::showNetclassViaSize()
 }
 
 
-void DIALOG_MICROVIA_STACK::onUseNetclass( wxCommandEvent& aEvent )
+void DIALOG_MICROVIA_STACK::onUseNetclass( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( m_useNetclass->GetValue() )
     {

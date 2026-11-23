@@ -286,7 +286,7 @@ void PCB_VIA_STITCH::InitializeDefaults( BOARD* aBoard )
 }
 
 
-void PCB_VIA_STITCH::EditStart( GENERATOR_TOOL* aTool, BOARD* aBoard, BOARD_COMMIT* aCommit )
+void PCB_VIA_STITCH::EditStart( GENERATOR_TOOL* aTool [[maybe_unused]], BOARD* aBoard, BOARD_COMMIT* aCommit )
 {
     if( aCommit )
     {
@@ -353,7 +353,7 @@ int PCB_VIA_STITCH::defaultViaDrill( const BOARD* aBoard ) const
 }
 
 
-bool PCB_VIA_STITCH::Update( GENERATOR_TOOL* aTool, BOARD* aBoard, BOARD_COMMIT* aCommit )
+bool PCB_VIA_STITCH::Update( GENERATOR_TOOL* aTool [[maybe_unused]], BOARD* aBoard, BOARD_COMMIT* aCommit )
 {
     if( !( GetFlags() & IN_EDIT ) )
         return false;
@@ -842,7 +842,7 @@ bool PCB_VIA_STITCH::Deserialize( const google::protobuf::Any& aContainer )
 }
 
 
-void PCB_VIA_STITCH::EditFinish( GENERATOR_TOOL* aTool, BOARD* aBoard, BOARD_COMMIT* aCommit )
+void PCB_VIA_STITCH::EditFinish( GENERATOR_TOOL* aTool [[maybe_unused]], BOARD* aBoard [[maybe_unused]], BOARD_COMMIT* aCommit )
 {
     if( !( GetFlags() & IN_EDIT ) )
         return;
@@ -861,7 +861,7 @@ void PCB_VIA_STITCH::EditFinish( GENERATOR_TOOL* aTool, BOARD* aBoard, BOARD_COM
 }
 
 
-void PCB_VIA_STITCH::EditCancel( GENERATOR_TOOL* aTool, BOARD* aBoard, BOARD_COMMIT* aCommit )
+void PCB_VIA_STITCH::EditCancel( GENERATOR_TOOL* aTool [[maybe_unused]], BOARD* aBoard [[maybe_unused]], BOARD_COMMIT* aCommit [[maybe_unused]] )
 {
     if( !( GetFlags() & IN_EDIT ) )
         return;
@@ -889,7 +889,7 @@ ACTION_MENU* PCB_VIA_STITCH::GetChildContextMenu( TOOL_INTERACTIVE* aTool ) cons
 }
 
 
-void PCB_VIA_STITCH::Remove( GENERATOR_TOOL* aTool, BOARD* aBoard, BOARD_COMMIT* aCommit )
+void PCB_VIA_STITCH::Remove( GENERATOR_TOOL* aTool [[maybe_unused]], BOARD* aBoard [[maybe_unused]], BOARD_COMMIT* aCommit )
 {
     if( !aCommit )
         return;

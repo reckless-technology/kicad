@@ -192,7 +192,7 @@ bool DIALOG_NON_COPPER_ZONES_EDITOR::TransferDataToWindow()
 }
 
 
-void DIALOG_NON_COPPER_ZONES_EDITOR::OnStyleSelection( wxCommandEvent& event )
+void DIALOG_NON_COPPER_ZONES_EDITOR::OnStyleSelection( wxCommandEvent& event [[maybe_unused]] )
 {
     bool enable = m_GridStyleCtrl->GetSelection() >= 1;
     m_hatchRotation.Enable( enable );

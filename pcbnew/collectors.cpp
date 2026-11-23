@@ -155,7 +155,7 @@ const std::vector<KICAD_T> GENERAL_COLLECTOR::DraggableItems = {
 };
 
 
-INSPECT_RESULT GENERAL_COLLECTOR::Inspect( EDA_ITEM* aTestItem, void* aTestData )
+INSPECT_RESULT GENERAL_COLLECTOR::Inspect( EDA_ITEM* aTestItem, void* aTestData [[maybe_unused]] )
 {
     BOARD_ITEM*         boardItem   = nullptr;
     FOOTPRINT*          footprint   = nullptr;
@@ -570,7 +570,7 @@ void GENERAL_COLLECTOR::Collect( BOARD_ITEM* aItem, const std::vector<KICAD_T>& 
 }
 
 
-INSPECT_RESULT PCB_TYPE_COLLECTOR::Inspect( EDA_ITEM* testItem, void* testData )
+INSPECT_RESULT PCB_TYPE_COLLECTOR::Inspect( EDA_ITEM* testItem, void* testData [[maybe_unused]] )
 {
     // The Visit() function only visits the testItem if its type was in the the scanList,
     // so therefore we can collect anything given to us here.
@@ -587,7 +587,7 @@ void PCB_TYPE_COLLECTOR::Collect( BOARD_ITEM* aBoard, const std::vector<KICAD_T>
 }
 
 
-INSPECT_RESULT PCB_LAYER_COLLECTOR::Inspect( EDA_ITEM* testItem, void* testData )
+INSPECT_RESULT PCB_LAYER_COLLECTOR::Inspect( EDA_ITEM* testItem, void* testData [[maybe_unused]] )
 {
     BOARD_ITEM* item = (BOARD_ITEM*) testItem;
 

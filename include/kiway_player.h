@@ -99,7 +99,7 @@ public:
      * @param aCtl is a set of bit flags ORed together from the set of KICTL_* \#defined above.
      * @return true if all requested files were opened OK, else false.
      */
-    virtual bool OpenProjectFiles( const std::vector<wxString>& aFileList, int aCtl = 0 )
+    virtual bool OpenProjectFiles( const std::vector<wxString>& aFileList [[maybe_unused]], int aCtl [[maybe_unused]] = 0 )
     {
         // overload me for your wxFrame type.
 
@@ -163,7 +163,7 @@ public:
      *
      * Subclasses should override to implement actual command handlers.
      */
-    virtual void ExecuteRemoteCommand( const char* cmdline ){}
+    virtual void ExecuteRemoteCommand( const char* cmdline [[maybe_unused]] ){}
 
 protected:
 

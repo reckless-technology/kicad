@@ -347,7 +347,7 @@ public:
                   const std::string&       aUnit = "",
                   CATEGORY                 aCategory = CATEGORY::PRINCIPAL,
                   const std::string&       aDefaultValue = "",
-                  const std::string&       legacy_unused_value = "",
+                  const std::string&       legacy_unused_value [[maybe_unused]] = "",
                   const std::string&       aDescription = "",
                   bool                     aIsSpiceInstanceParam = false,
                   bool                     aIsInstanceParam = false,
@@ -435,8 +435,8 @@ public:
      * library file and IBIS models emit a per-reference device cache; every other model
      * contributes nothing.  Overrides that resolve library paths need a non-null aSchematic.
      */
-    virtual std::vector<wxString> GetSpiceIncludes( const SPICE_ITEM& aItem, SCHEMATIC* aSchematic,
-                                                    REPORTER& aReporter ) const
+    virtual std::vector<wxString> GetSpiceIncludes( const SPICE_ITEM& aItem [[maybe_unused]], SCHEMATIC* aSchematic [[maybe_unused]],
+                                                    REPORTER& aReporter [[maybe_unused]] ) const
     {
         return {};
     }
@@ -515,7 +515,7 @@ public:
     }
     bool IsStoredInValue() const { return m_isStoredInValue; }
 
-    virtual void SwitchSingleEndedDiff( bool aDiff ) { };
+    virtual void SwitchSingleEndedDiff( bool aDiff [[maybe_unused]] ) { };
 
     /** aPins follows lexical symbol-pin number order, including duplicate numbers. */
     static bool InferSimModel( const wxString& aPrefix, std::span<const wxString> aPins,

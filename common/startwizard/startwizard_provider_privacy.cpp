@@ -89,7 +89,7 @@ bool STARTWIZARD_PROVIDER_PRIVACY::NeedsUserInput() const
 }
 
 
-wxPanel* STARTWIZARD_PROVIDER_PRIVACY::GetWizardPanel( wxWindow* aParent, STARTWIZARD* aWizard )
+wxPanel* STARTWIZARD_PROVIDER_PRIVACY::GetWizardPanel( wxWindow* aParent, STARTWIZARD* aWizard [[maybe_unused]] )
 {
     m_model = std::make_shared<STARTWIZARD_PROVIDER_PRIVACY_MODEL>();
     return new PANEL_STARTWIZARD_PRIVACY( m_model, aParent );

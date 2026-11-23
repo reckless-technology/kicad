@@ -48,7 +48,7 @@ public:
         return { { 20, 55, 32 } };
     }
 
-    std::vector<wxString> GetConstraintClauses( const RULE_GENERATION_CONTEXT& aContext ) const override
+    std::vector<wxString> GetConstraintClauses( const RULE_GENERATION_CONTEXT& aContext [[maybe_unused]] ) const override
     {
         wxString code = GetConstraintCode();
         wxString valueStr;

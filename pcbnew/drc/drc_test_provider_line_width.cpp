@@ -98,7 +98,7 @@ bool DRC_TEST_PROVIDER_LINE_WIDTH::Run()
     static const std::vector<KICAD_T> itemTypes = { PCB_SHAPE_T, PCB_TEXTBOX_T };
 
     forEachGeometryItem( itemTypes, LSET::AllLayersMask(),
-            [&]( BOARD_ITEM* item ) -> bool
+            [&]( BOARD_ITEM* item [[maybe_unused]] ) -> bool
             {
                 ++count;
                 return true;

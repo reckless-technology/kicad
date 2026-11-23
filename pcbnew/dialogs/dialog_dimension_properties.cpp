@@ -163,7 +163,7 @@ DIALOG_DIMENSION_PROPERTIES::DIALOG_DIMENSION_PROPERTIES( PCB_BASE_EDIT_FRAME* a
         m_cbTextOrientation->SetString( ii, wxString::Format( "%.1f", rot_list[ii] ) );
 
     m_choiceValueMode->Bind( wxEVT_CHOICE,
-            [&]( wxCommandEvent& evt )
+            [&]( wxCommandEvent& evt [[maybe_unused]] )
             {
                 // Driven mirrors geometry other modes hold user value
                 DIM_VALUE_MODE mode = selectedValueMode();
@@ -187,7 +187,7 @@ DIALOG_DIMENSION_PROPERTIES::DIALOG_DIMENSION_PROPERTIES( PCB_BASE_EDIT_FRAME* a
             } );
 
     auto updateEventHandler =
-            [&]( wxCommandEvent& evt )
+            [&]( wxCommandEvent& evt [[maybe_unused]] )
             {
                 if( valueFieldTracksMeasurement() )
                     m_txtValue->ChangeValue( m_dimension->GetValueText() );
@@ -206,7 +206,7 @@ DIALOG_DIMENSION_PROPERTIES::DIALOG_DIMENSION_PROPERTIES( PCB_BASE_EDIT_FRAME* a
     m_cbSuppressZeroes->Bind( wxEVT_CHECKBOX, updateEventHandler );
 
     m_cbTextPositionMode->Bind( wxEVT_CHOICE,
-            [&]( wxCommandEvent& aEvt )
+            [&]( wxCommandEvent& aEvt [[maybe_unused]] )
             {
                 // manual mode
                 bool allowPositioning = ( m_cbTextPositionMode->GetSelection() == 2 );
@@ -218,7 +218,7 @@ DIALOG_DIMENSION_PROPERTIES::DIALOG_DIMENSION_PROPERTIES( PCB_BASE_EDIT_FRAME* a
     m_txtTextWidth->Bind( wxEVT_TEXT, &DIALOG_DIMENSION_PROPERTIES::onTextSize, this );
 
     m_cbKeepAligned->Bind( wxEVT_CHECKBOX,
-            [&]( wxCommandEvent& aEvt )
+            [&]( wxCommandEvent& aEvt [[maybe_unused]] )
             {
                 m_cbTextOrientation->Enable( !m_cbKeepAligned->GetValue() );
             } );

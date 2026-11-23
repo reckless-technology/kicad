@@ -94,7 +94,7 @@ PCB_IO_EASYPC::LIBRARY& PCB_IO_EASYPC::library( const wxString& aLibraryPath )
 
 
 void PCB_IO_EASYPC::FootprintEnumerate( wxArrayString& aFootprintNames, const wxString& aLibraryPath, bool aBestEfforts,
-                                        const std::map<std::string, UTF8>* aProperties )
+                                        const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     try
     {
@@ -111,14 +111,14 @@ void PCB_IO_EASYPC::FootprintEnumerate( wxArrayString& aFootprintNames, const wx
 
 
 bool PCB_IO_EASYPC::FootprintExists( const wxString& aLibraryPath, const wxString& aFootprintName,
-                                     const std::map<std::string, UTF8>* aProperties )
+                                     const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     return library( aLibraryPath ).File->HasItem( UnescapeString( aFootprintName ) );
 }
 
 
 const FOOTPRINT* PCB_IO_EASYPC::GetEnumeratedFootprint( const wxString& aLibraryPath, const wxString& aFootprintName,
-                                                        const std::map<std::string, UTF8>* aProperties )
+                                                        const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     LIBRARY& lib = library( aLibraryPath );
 
@@ -161,7 +161,7 @@ const FOOTPRINT* PCB_IO_EASYPC::GetEnumeratedFootprint( const wxString& aLibrary
 
 std::unique_ptr<FOOTPRINT> PCB_IO_EASYPC::FootprintLoad( const wxString& aLibraryPath, const wxString& aFootprintName,
                                                          bool                               aKeepUUID,
-                                                         const std::map<std::string, UTF8>* aProperties )
+                                                         const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     const FOOTPRINT* cached = GetEnumeratedFootprint( aLibraryPath, aFootprintName );
 
@@ -175,8 +175,8 @@ std::unique_ptr<FOOTPRINT> PCB_IO_EASYPC::FootprintLoad( const wxString& aLibrar
 }
 
 
-void PCB_IO_EASYPC::loadBoard( const wxString& aFileName, BOARD& aBoard, bool aIsNewLoad,
-                               const std::map<std::string, UTF8>* aProperties, PROJECT* aProject )
+void PCB_IO_EASYPC::loadBoard( const wxString& aFileName, BOARD& aBoard, bool aIsNewLoad [[maybe_unused]],
+                               const std::map<std::string, UTF8>* aProperties, PROJECT* aProject [[maybe_unused]] )
 {
     m_props = aProperties;
     m_board = &aBoard;

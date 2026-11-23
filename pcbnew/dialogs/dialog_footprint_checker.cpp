@@ -191,7 +191,7 @@ void DIALOG_FOOTPRINT_CHECKER::SelectMarker( const PCB_MARKER* aMarker )
 }
 
 
-void DIALOG_FOOTPRINT_CHECKER::centerMarkerIdleHandler( wxIdleEvent& aEvent )
+void DIALOG_FOOTPRINT_CHECKER::centerMarkerIdleHandler( wxIdleEvent& aEvent [[maybe_unused]] )
 {
     if( m_markersTreeModel->GetView()->IsFrozen() )
         return;
@@ -202,7 +202,7 @@ void DIALOG_FOOTPRINT_CHECKER::centerMarkerIdleHandler( wxIdleEvent& aEvent )
 }
 
 
-void DIALOG_FOOTPRINT_CHECKER::OnRunChecksClick( wxCommandEvent& aEvent )
+void DIALOG_FOOTPRINT_CHECKER::OnRunChecksClick( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     m_checksRun = false;
     runChecks();
@@ -297,7 +297,7 @@ void DIALOG_FOOTPRINT_CHECKER::OnSelectItem( wxDataViewEvent& aEvent )
 }
 
 
-void DIALOG_FOOTPRINT_CHECKER::OnLeftDClickItem( wxMouseEvent& event )
+void DIALOG_FOOTPRINT_CHECKER::OnLeftDClickItem( wxMouseEvent& event [[maybe_unused]] )
 {
     if( m_markersDataView->GetCurrentItem().IsOk() )
     {
@@ -341,7 +341,7 @@ void DIALOG_FOOTPRINT_CHECKER::OnSeverity( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_FOOTPRINT_CHECKER::OnCancelClick( wxCommandEvent& aEvent )
+void DIALOG_FOOTPRINT_CHECKER::OnCancelClick( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     m_frame->ClearFocus();
 
@@ -353,7 +353,7 @@ void DIALOG_FOOTPRINT_CHECKER::OnCancelClick( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_FOOTPRINT_CHECKER::OnClose( wxCloseEvent& aEvent )
+void DIALOG_FOOTPRINT_CHECKER::OnClose( wxCloseEvent& aEvent [[maybe_unused]] )
 {
     wxCommandEvent dummy;
     OnCancelClick( dummy );
@@ -368,7 +368,7 @@ void DIALOG_FOOTPRINT_CHECKER::refreshEditor()
 }
 
 
-void DIALOG_FOOTPRINT_CHECKER::OnDeleteOneClick( wxCommandEvent& aEvent )
+void DIALOG_FOOTPRINT_CHECKER::OnDeleteOneClick( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     // Clear the selection.  It may be the selected DRC marker.
     m_frame->GetToolManager()->RunAction( ACTIONS::selectionClear );
@@ -382,7 +382,7 @@ void DIALOG_FOOTPRINT_CHECKER::OnDeleteOneClick( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_FOOTPRINT_CHECKER::OnDeleteAllClick( wxCommandEvent& event )
+void DIALOG_FOOTPRINT_CHECKER::OnDeleteAllClick( wxCommandEvent& event [[maybe_unused]] )
 {
     deleteAllMarkers();
 

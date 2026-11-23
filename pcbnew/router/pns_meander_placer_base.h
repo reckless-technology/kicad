@@ -122,7 +122,7 @@ public:
      * @param aShape the shape to check.
      * @return true if the shape fits.
      */
-    virtual bool CheckFit( MEANDER_SHAPE* aShape )
+    virtual bool CheckFit( MEANDER_SHAPE* aShape [[maybe_unused]] )
     {
         return false;
     }

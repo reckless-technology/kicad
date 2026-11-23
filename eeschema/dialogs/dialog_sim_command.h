@@ -122,7 +122,7 @@ private:
     void updateDCUnits( wxChar aType, wxStaticText* aStartValUnit, wxStaticText* aEndValUnit,
                         wxStaticText* aStepUnit );
 
-    virtual void onInitDlg( wxInitDialogEvent& event ) override
+    virtual void onInitDlg( wxInitDialogEvent& event [[maybe_unused]] ) override
     {
         // Call the default wxDialog handler of a wxInitDialogEvent
         TransferDataToWindow();
@@ -145,7 +145,7 @@ private:
      */
     void parseCommand( const wxString& aCommand );
 
-    void onLoadDirectives( wxCommandEvent& event ) override
+    void onLoadDirectives( wxCommandEvent& event [[maybe_unused]] ) override
     {
         loadDirectives();
     }

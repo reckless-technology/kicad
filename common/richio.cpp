@@ -48,7 +48,7 @@
 #endif
 
 
-wxString SafeReadFile( const wxString& aFilePath, const wxString& aReadType )
+wxString SafeReadFile( const wxString& aFilePath, const wxString& aReadType [[maybe_unused]] )
 {
     // Check the path exists as a file first
     // the IsOpened check would be logical, but on linux you can fopen (in read mode) a directory

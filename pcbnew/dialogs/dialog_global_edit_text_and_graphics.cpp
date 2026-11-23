@@ -82,15 +82,15 @@ protected:
     void onAutoTextThickness( wxCommandEvent& aEvent ) override;
     void onTextSize( wxCommandEvent& aEvent ) override;
 
-    void OnLayerFilterSelect( wxCommandEvent& event ) override
+    void OnLayerFilterSelect( wxCommandEvent& event [[maybe_unused]] ) override
     {
         m_layerFilterOpt->SetValue( true );
     }
-    void OnReferenceFilterText( wxCommandEvent& event ) override
+    void OnReferenceFilterText( wxCommandEvent& event [[maybe_unused]] ) override
     {
         m_referenceFilterOpt->SetValue( true );
     }
-    void OnFootprintFilterText( wxCommandEvent& event ) override
+    void OnFootprintFilterText( wxCommandEvent& event [[maybe_unused]] ) override
     {
         m_footprintFilterOpt->SetValue( true );
     }
@@ -280,7 +280,7 @@ bool DIALOG_GLOBAL_EDIT_TEXT_AND_GRAPHICS::TransferDataToWindow()
 }
 
 
-void DIALOG_GLOBAL_EDIT_TEXT_AND_GRAPHICS::onActionButtonChange( wxCommandEvent& event )
+void DIALOG_GLOBAL_EDIT_TEXT_AND_GRAPHICS::onActionButtonChange( wxCommandEvent& event [[maybe_unused]] )
 {
     // Update the UNIT_BINDER controls if the action to take is changed
     bool enable = m_setToSpecifiedValues->GetValue();
@@ -310,7 +310,7 @@ void DIALOG_GLOBAL_EDIT_TEXT_AND_GRAPHICS::onSpecifiedValueUpdateUI( wxUpdateUIE
 }
 
 
-void DIALOG_GLOBAL_EDIT_TEXT_AND_GRAPHICS::onDimensionItemCheckbox( wxCommandEvent& aEvent )
+void DIALOG_GLOBAL_EDIT_TEXT_AND_GRAPHICS::onDimensionItemCheckbox( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( m_footprintDimensions->GetValue() || m_boardDimensions->GetValue() )
         m_setToLayerDefaults->SetLabel( _( "Set to layer and dimension default values:" ) );
@@ -341,7 +341,7 @@ void DIALOG_GLOBAL_EDIT_TEXT_AND_GRAPHICS::onAutoTextThickness( wxCommandEvent& 
 }
 
 
-void DIALOG_GLOBAL_EDIT_TEXT_AND_GRAPHICS::onTextSize( wxCommandEvent& aEvent )
+void DIALOG_GLOBAL_EDIT_TEXT_AND_GRAPHICS::onTextSize( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( !m_autoTextThickness->IsChecked() )
         return;
@@ -627,7 +627,7 @@ bool DIALOG_GLOBAL_EDIT_TEXT_AND_GRAPHICS::TransferDataFromWindow()
 }
 
 
-int GLOBAL_EDIT_TOOL::EditTextAndGraphics( const TOOL_EVENT& aEvent )
+int GLOBAL_EDIT_TOOL::EditTextAndGraphics( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     PCB_EDIT_FRAME* editFrame = getEditFrame<PCB_EDIT_FRAME>();
     DIALOG_GLOBAL_EDIT_TEXT_AND_GRAPHICS dlg( editFrame );
@@ -637,7 +637,7 @@ int GLOBAL_EDIT_TOOL::EditTextAndGraphics( const TOOL_EVENT& aEvent )
 }
 
 
-int FOOTPRINT_EDITOR_CONTROL::EditTextAndGraphics( const TOOL_EVENT& aEvent )
+int FOOTPRINT_EDITOR_CONTROL::EditTextAndGraphics( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     FOOTPRINT_EDIT_FRAME* editFrame = getEditFrame<FOOTPRINT_EDIT_FRAME>();
     DIALOG_GLOBAL_EDIT_TEXT_AND_GRAPHICS dlg( editFrame );

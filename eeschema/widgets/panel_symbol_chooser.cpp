@@ -59,7 +59,7 @@ PANEL_SYMBOL_CHOOSER::PANEL_SYMBOL_CHOOSER( SCH_BASE_FRAME* aFrame, wxWindow* aP
                                             const SYMBOL_LIBRARY_FILTER* aFilter,
                                             std::vector<PICKED_SYMBOL>&  aHistoryList,
                                             std::vector<PICKED_SYMBOL>&  aAlreadyPlaced,
-                                            bool aAllowFieldEdits, bool aShowFootprints, bool& aCancelled,
+                                            bool aAllowFieldEdits, bool aShowFootprints, bool& aCancelled [[maybe_unused]],
                                             std::function<void()> aAcceptHandler,
                                             std::function<void()> aEscapeHandler ) :
         wxPanel( aParent, wxID_ANY, wxDefaultPosition, wxDefaultSize ),
@@ -554,7 +554,7 @@ void PANEL_SYMBOL_CHOOSER::updateBodyStyleChoice( LIB_SYMBOL* aSymbol )
 }
 
 
-void PANEL_SYMBOL_CHOOSER::onSelectBodyStyle( wxCommandEvent& aEvent )
+void PANEL_SYMBOL_CHOOSER::onSelectBodyStyle( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     int selection = m_bodyStyleChoice->GetSelection();
 
@@ -583,7 +583,7 @@ void PANEL_SYMBOL_CHOOSER::ShutdownCanvases()
 }
 
 
-void PANEL_SYMBOL_CHOOSER::onCloseTimer( wxTimerEvent& aEvent )
+void PANEL_SYMBOL_CHOOSER::onCloseTimer( wxTimerEvent& aEvent [[maybe_unused]] )
 {
     // Hack because of eaten MouseUp event. See PANEL_SYMBOL_CHOOSER::onSymbolChosen
     // for the beginning of this spaghetti noodle.
@@ -603,7 +603,7 @@ void PANEL_SYMBOL_CHOOSER::onCloseTimer( wxTimerEvent& aEvent )
 }
 
 
-void PANEL_SYMBOL_CHOOSER::onOpenLibsTimer( wxTimerEvent& aEvent )
+void PANEL_SYMBOL_CHOOSER::onOpenLibsTimer( wxTimerEvent& aEvent [[maybe_unused]] )
 {
     if( EESCHEMA_SETTINGS* cfg = dynamic_cast<EESCHEMA_SETTINGS*>( Kiface().KifaceSettings() ) )
         m_adapter->OpenLibs( cfg->m_LibTree.open_libs );
@@ -731,7 +731,7 @@ void PANEL_SYMBOL_CHOOSER::onFootprintSelected( wxCommandEvent& aEvent )
 }
 
 
-void PANEL_SYMBOL_CHOOSER::onSymbolSelected( wxCommandEvent& aEvent )
+void PANEL_SYMBOL_CHOOSER::onSymbolSelected( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     LIB_TREE_NODE* node = m_tree->GetCurrentTreeNode();
     bool           sameSymbolDifferentUnit = false;
@@ -798,7 +798,7 @@ void PANEL_SYMBOL_CHOOSER::onSymbolSelected( wxCommandEvent& aEvent )
 }
 
 
-void PANEL_SYMBOL_CHOOSER::onSymbolChosen( wxCommandEvent& aEvent )
+void PANEL_SYMBOL_CHOOSER::onSymbolChosen( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( m_tree->GetSelectedLibId().IsValid() )
     {

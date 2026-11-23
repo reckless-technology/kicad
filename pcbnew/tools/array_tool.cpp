@@ -80,7 +80,7 @@ bool ARRAY_TOOL::Init()
 }
 
 
-int ARRAY_TOOL::CreateArray( const TOOL_EVENT& aEvent )
+int ARRAY_TOOL::CreateArray( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     PCB_SELECTION_TOOL* selectionTool = m_toolMgr->GetTool<PCB_SELECTION_TOOL>();
 
@@ -120,7 +120,7 @@ int ARRAY_TOOL::CreateArray( const TOOL_EVENT& aEvent )
     return 0;
 }
 
-void ARRAY_TOOL::onDialogClosed( wxCloseEvent& aEvent )
+void ARRAY_TOOL::onDialogClosed( wxCloseEvent& aEvent [[maybe_unused]] )
 {
     // Now that the dialog has served it's purpose, we can get rid of it
     m_dialog->Destroy();

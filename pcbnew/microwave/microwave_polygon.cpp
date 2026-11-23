@@ -196,7 +196,7 @@ bool MWAVE_POLYGONAL_SHAPE_DLG::TransferDataFromWindow()
 }
 
 
-void MWAVE_POLYGONAL_SHAPE_DLG::ReadDataShapeDescr( wxCommandEvent& event )
+void MWAVE_POLYGONAL_SHAPE_DLG::ReadDataShapeDescr( wxCommandEvent& event [[maybe_unused]] )
 {
     static wxString s_lastpath;       // To remember the last open path during a session
     wxString fullFileName;

@@ -65,7 +65,7 @@ Handle( TDF_Attribute ) KICAD3D_INFO::NewEmpty() const
 
 
 void KICAD3D_INFO::Paste( const Handle( TDF_Attribute ) & aAttribute,
-                          const Handle( TDF_RelocationTable ) & aRelocationTable ) const
+                          const Handle( TDF_RelocationTable ) & aRelocationTable [[maybe_unused]] ) const
 {
     Handle( KICAD3D_INFO ) that = Handle( KICAD3D_INFO )::DownCast( aAttribute );
 

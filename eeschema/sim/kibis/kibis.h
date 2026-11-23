@@ -89,13 +89,13 @@ public:
     };
 
     // Check function if using waveform data
-    virtual bool Check( const IbisWaveform* aRisingWf, const IbisWaveform* aFallingWf ) const
+    virtual bool Check( const IbisWaveform* aRisingWf [[maybe_unused]], const IbisWaveform* aFallingWf [[maybe_unused]] ) const
     {
         return true;
     };
 
     // Check function if using ramp data
-    virtual bool Check( const dvdtTypMinMax& aRisingRp, const dvdtTypMinMax& aFallingRp ) const
+    virtual bool Check( const dvdtTypMinMax& aRisingRp [[maybe_unused]], const dvdtTypMinMax& aFallingRp [[maybe_unused]] ) const
     {
         return true;
     };

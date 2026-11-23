@@ -43,7 +43,7 @@ public:
             wxVListBox( aParent, aId, aPos, aSize, aFlags | wxLB_OWNERDRAW )
     {
         m_displayStyleCallback =
-                []( const wxString& aItem ) -> int
+                []( const wxString& aItem [[maybe_unused]] ) -> int
                 {
                     return 0;
                 };

@@ -123,7 +123,7 @@ int CLI::COMMAND::Perform( KIWAY& aKiway )
 }
 
 
-int CLI::COMMAND::doPerform( KIWAY& aKiway )
+int CLI::COMMAND::doPerform( KIWAY& aKiway [[maybe_unused]] )
 {
     // default case if we aren't overloaded, just print the help
     PrintHelp();

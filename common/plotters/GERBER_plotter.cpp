@@ -196,7 +196,7 @@ void GERBER_PLOTTER::StartBlock( void* aData )
 }
 
 
-void GERBER_PLOTTER::EndBlock( void* aData )
+void GERBER_PLOTTER::EndBlock( void* aData [[maybe_unused]] )
 {
     // Remove all net attributes from object attributes dictionary
     clearNetAttribute();
@@ -237,7 +237,7 @@ void GERBER_PLOTTER::formatNetAttribute( GBR_NETLIST_METADATA* aData )
 }
 
 
-bool GERBER_PLOTTER::StartPlot( const wxString& aPageNumber )
+bool GERBER_PLOTTER::StartPlot( const wxString& aPageNumber [[maybe_unused]] )
 {
     m_hasApertureRoundRect = false;     // true is at least one round rect aperture is in use
     m_hasApertureRotOval = false;       // true is at least one oval rotated aperture is in use
@@ -1552,7 +1552,7 @@ void GERBER_PLOTTER::plotRoundRectAsRegion( const VECTOR2I& aRectCenter, const V
 }
 
 
-void GERBER_PLOTTER::FlashPadCustom( const VECTOR2I& aPadPos, const VECTOR2I& aSize,
+void GERBER_PLOTTER::FlashPadCustom( const VECTOR2I& aPadPos, const VECTOR2I& aSize [[maybe_unused]],
                                      const EDA_ANGLE& aOrient, SHAPE_POLY_SET* aPolygons,
                                      void* aData )
 {

@@ -87,7 +87,7 @@ void MICROSTRIP::Analyse()
 }
 
 
-bool MICROSTRIP::Synthesize( const SYNTHESIZE_OPTS aOpts )
+bool MICROSTRIP::Synthesize( const SYNTHESIZE_OPTS aOpts [[maybe_unused]] )
 {
     const double z0_dest = GetParameter( TCP::Z0 );
     const double angl_dest = GetParameter( TCP::ANG_L );

@@ -248,19 +248,19 @@ bool DIALOG_ANNOTATE::TransferDataToWindow()
 
 
 // This is a modeless dialog so we have to handle these ourselves.
-void DIALOG_ANNOTATE::OnCloseClick( wxCommandEvent& event )
+void DIALOG_ANNOTATE::OnCloseClick( wxCommandEvent& event [[maybe_unused]] )
 {
     Close();
 }
 
 
-void DIALOG_ANNOTATE::OnClose( wxCloseEvent& event )
+void DIALOG_ANNOTATE::OnClose( wxCloseEvent& event [[maybe_unused]] )
 {
     Destroy();
 }
 
 
-void DIALOG_ANNOTATE::OnAnnotateClick( wxCommandEvent& event )
+void DIALOG_ANNOTATE::OnAnnotateClick( wxCommandEvent& event [[maybe_unused]] )
 {
     SCH_COMMIT commit( m_Parent );
 
@@ -284,7 +284,7 @@ void DIALOG_ANNOTATE::OnAnnotateClick( wxCommandEvent& event )
 }
 
 
-void DIALOG_ANNOTATE::OnClearAnnotationClick( wxCommandEvent& event )
+void DIALOG_ANNOTATE::OnClearAnnotationClick( wxCommandEvent& event [[maybe_unused]] )
 {
     m_MessageWindow->Clear();
     m_Parent->DeleteAnnotation( GetScope(), m_checkRecursive->GetValue(), m_MessageWindow->Reporter() );
@@ -293,7 +293,7 @@ void DIALOG_ANNOTATE::OnClearAnnotationClick( wxCommandEvent& event )
 }
 
 
-void DIALOG_ANNOTATE::OnOptionChanged( wxCommandEvent& event )
+void DIALOG_ANNOTATE::OnOptionChanged( wxCommandEvent& event [[maybe_unused]] )
 {
     m_checkRegroupUnits->Enable( m_rbReset_Annotations->GetValue() );
 

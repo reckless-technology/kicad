@@ -29,7 +29,7 @@
 #include <xnode.h>
 
 
-bool NETLIST_EXPORTER_KICAD::writeNetlist( const wxString& aOutFileName, unsigned aNetlistOptions,
+bool NETLIST_EXPORTER_KICAD::writeNetlist( const wxString& aOutFileName, unsigned aNetlistOptions [[maybe_unused]],
                                            REPORTER& aReporter )
 {
     try

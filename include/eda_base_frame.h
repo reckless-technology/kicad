@@ -177,7 +177,7 @@ public:
 
     SETTINGS_MANAGER* GetSettingsManager() const { return m_settingsManager; }
 
-    virtual SEVERITY GetSeverity( int aErrorCode ) const { return RPT_SEVERITY_UNDEFINED; }
+    virtual SEVERITY GetSeverity( int aErrorCode [[maybe_unused]] ) const { return RPT_SEVERITY_UNDEFINED; }
 
     /**
      * Override the default process event handler to implement the auto save feature.
@@ -602,7 +602,7 @@ public:
      * @param aItemCount number of old commands to delete. -1 to remove all old commands
      *                   this will empty the list of commands.
      */
-    virtual void ClearUndoORRedoList( UNDO_REDO_LIST aList, int aItemCount = -1 )
+    virtual void ClearUndoORRedoList( UNDO_REDO_LIST aList [[maybe_unused]], int aItemCount [[maybe_unused]] = -1 )
     { }
 
     /**
@@ -660,7 +660,7 @@ public:
         return Close( aForce );
     }
 
-    virtual void ClearToolbarControl( int aId ) { }
+    virtual void ClearToolbarControl( int aId [[maybe_unused]] ) { }
 
     /**
      * Update the UI in response to a change in the system colors.
@@ -697,7 +697,7 @@ protected:
      *
      * @param aEvent is the data for the event.
      */
-    virtual void handleIconizeEvent( wxIconizeEvent& aEvent ) {}
+    virtual void handleIconizeEvent( wxIconizeEvent& aEvent [[maybe_unused]] ) {}
     void         onIconize( wxIconizeEvent& aEvent );
 
     /**
@@ -746,7 +746,7 @@ protected:
      */
     void CheckForAutosaveFiles( const wxString& aProjectPath, const std::vector<wxString>& aExtensions, int aCtl );
 
-    virtual bool canCloseWindow( wxCloseEvent& aCloseEvent ) { return true; }
+    virtual bool canCloseWindow( wxCloseEvent& aCloseEvent [[maybe_unused]] ) { return true; }
     virtual void doCloseWindow() { }
 
     /**

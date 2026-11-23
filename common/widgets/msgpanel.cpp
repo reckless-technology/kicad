@@ -99,7 +99,7 @@ void EDA_MSG_PANEL::rebuildItems()
 }
 
 
-void EDA_MSG_PANEL::OnSize( wxSizeEvent& aEvent )
+void EDA_MSG_PANEL::OnSize( wxSizeEvent& aEvent [[maybe_unused]] )
 {
     rebuildItems();
 }
@@ -150,7 +150,7 @@ void EDA_MSG_PANEL::updateItemPos( MSG_PANEL_ITEM& item )
 }
 
 
-void EDA_MSG_PANEL::AppendMessage( const wxString& aUpperText, const wxString& aLowerText, int aPadding )
+void EDA_MSG_PANEL::AppendMessage( const wxString& aUpperText, const wxString& aLowerText, int aPadding [[maybe_unused]] )
 {
     MSG_PANEL_ITEM item;
 

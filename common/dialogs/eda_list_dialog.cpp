@@ -180,7 +180,7 @@ void EDA_LIST_DIALOG::HideFilter()
 }
 
 
-void EDA_LIST_DIALOG::textChangeInFilterBox( wxCommandEvent& event )
+void EDA_LIST_DIALOG::textChangeInFilterBox( wxCommandEvent& event [[maybe_unused]] )
 {
     wxString filter;
     wxString itemName;
@@ -286,7 +286,7 @@ void EDA_LIST_DIALOG::InsertItems( const std::vector< wxArrayString >& itemList,
 }
 
 
-void EDA_LIST_DIALOG::onListItemActivated( wxListEvent& event )
+void EDA_LIST_DIALOG::onListItemActivated( wxListEvent& event [[maybe_unused]] )
 {
     wxPostEvent( this, wxCommandEvent( wxEVT_COMMAND_BUTTON_CLICKED, wxID_OK ) );
 }

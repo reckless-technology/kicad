@@ -79,7 +79,7 @@ bool DRC_CACHE_GENERATOR::Run()
                 bool hasMatchingItems = false;
 
                 forEachGeometryItem( { PCB_BARCODE_T }, LSET::AllLayersMask(),
-                                     [&]( BOARD_ITEM* item ) -> bool
+                                     [&]( BOARD_ITEM* item [[maybe_unused]] ) -> bool
                                      {
                                          hasMatchingItems = true;
                                          return false;
@@ -161,7 +161,7 @@ bool DRC_CACHE_GENERATOR::Run()
     std::atomic<size_t> done( 1 );
 
     auto countItems =
-            [&]( BOARD_ITEM* item ) -> bool
+            [&]( BOARD_ITEM* item [[maybe_unused]] ) -> bool
             {
                 ++count;
                 return true;

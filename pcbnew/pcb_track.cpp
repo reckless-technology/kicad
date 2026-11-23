@@ -193,7 +193,7 @@ EDA_ITEM* PCB_VIA::Clone() const
 }
 
 
-wxString PCB_VIA::GetItemDescription( UNITS_PROVIDER* aUnitsProvider, bool aFull ) const
+wxString PCB_VIA::GetItemDescription( UNITS_PROVIDER* aUnitsProvider [[maybe_unused]], bool aFull [[maybe_unused]] ) const
 {
     wxString formatStr;
 
@@ -2966,7 +2966,7 @@ wxString PCB_VIA::LayerMaskDescribe() const
 }
 
 
-double PCB_TRACK::GetCoverageArea( int aTextMargin ) const
+double PCB_TRACK::GetCoverageArea( int aTextMargin [[maybe_unused]] ) const
 {
     // Width squared, so a long track does not outrank a short one it happens to cross
     const double width = GetWidth();
@@ -3114,7 +3114,7 @@ bool PCB_TRACK::HitTest( const SHAPE_LINE_CHAIN& aPoly, bool aContained ) const
 }
 
 
-wxString PCB_TRACK::GetItemDescription( UNITS_PROVIDER* aUnitsProvider, bool aFull ) const
+wxString PCB_TRACK::GetItemDescription( UNITS_PROVIDER* aUnitsProvider, bool aFull [[maybe_unused]] ) const
 {
     return wxString::Format( Type() == PCB_ARC_T ? _("Track (arc) %s on %s, length %s" )
                                                  : _("Track %s on %s, length %s" ),

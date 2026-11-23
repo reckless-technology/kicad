@@ -28,19 +28,19 @@ int ORIGIN_TRANSFORMS::ToDisplay( int aValue, COORD_TYPES_T aCoordType ) const
 }
 
 
-long long int ORIGIN_TRANSFORMS::ToDisplay( long long int aValue, COORD_TYPES_T aCoordType ) const
+long long int ORIGIN_TRANSFORMS::ToDisplay( long long int aValue, COORD_TYPES_T aCoordType [[maybe_unused]] ) const
 {
     return aValue;
 }
 
 
-double ORIGIN_TRANSFORMS::ToDisplay( double aValue, COORD_TYPES_T aCoordType ) const
+double ORIGIN_TRANSFORMS::ToDisplay( double aValue, COORD_TYPES_T aCoordType [[maybe_unused]] ) const
 {
     return aValue;
 }
 
 
-double ORIGIN_TRANSFORMS::ToDisplay( const EDA_ANGLE& aValue, COORD_TYPES_T aCoordType ) const
+double ORIGIN_TRANSFORMS::ToDisplay( const EDA_ANGLE& aValue, COORD_TYPES_T aCoordType [[maybe_unused]] ) const
 {
     return aValue.AsDegrees();
 }
@@ -52,19 +52,19 @@ int ORIGIN_TRANSFORMS::FromDisplay( int aValue, COORD_TYPES_T aCoordType ) const
 }
 
 
-long long int ORIGIN_TRANSFORMS::FromDisplay( long long int aValue, COORD_TYPES_T aCoordType ) const
+long long int ORIGIN_TRANSFORMS::FromDisplay( long long int aValue, COORD_TYPES_T aCoordType [[maybe_unused]] ) const
 {
     return aValue;
 }
 
 
-double ORIGIN_TRANSFORMS::FromDisplay( double aValue, COORD_TYPES_T aCoordType ) const
+double ORIGIN_TRANSFORMS::FromDisplay( double aValue, COORD_TYPES_T aCoordType [[maybe_unused]] ) const
 {
     return aValue;
 }
 
 
-EDA_ANGLE ORIGIN_TRANSFORMS::FromDisplay( const EDA_ANGLE& aValue, COORD_TYPES_T aCoordType ) const
+EDA_ANGLE ORIGIN_TRANSFORMS::FromDisplay( const EDA_ANGLE& aValue, COORD_TYPES_T aCoordType [[maybe_unused]] ) const
 {
     return aValue;
 }

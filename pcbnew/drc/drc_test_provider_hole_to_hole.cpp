@@ -93,7 +93,7 @@ bool DRC_TEST_PROVIDER_HOLE_TO_HOLE::Run()
     m_holeTree.clear();
 
     forEachGeometryItem( { PCB_PAD_T, PCB_VIA_T }, LSET::AllLayersMask(),
-            [&]( BOARD_ITEM* item ) -> bool
+            [&]( BOARD_ITEM* item [[maybe_unused]] ) -> bool
             {
                 ++count;
                 return true;

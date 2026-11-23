@@ -41,7 +41,7 @@ DIALOG_SCH_IMPORT_SETTINGS::DIALOG_SCH_IMPORT_SETTINGS( wxWindow* aParent, SCH_E
 }
 
 
-void DIALOG_SCH_IMPORT_SETTINGS::OnBrowseClicked( wxCommandEvent& event )
+void DIALOG_SCH_IMPORT_SETTINGS::OnBrowseClicked( wxCommandEvent& event [[maybe_unused]] )
 {
     wxFileName fn = m_frame->Schematic().Root().GetFileName();
     fn.SetExt( FILEEXT::ProjectFileExtension );
@@ -69,7 +69,7 @@ bool DIALOG_SCH_IMPORT_SETTINGS::TransferDataFromWindow()
 }
 
 
-void DIALOG_SCH_IMPORT_SETTINGS::OnSelectAll( wxCommandEvent& event )
+void DIALOG_SCH_IMPORT_SETTINGS::OnSelectAll( wxCommandEvent& event [[maybe_unused]] )
 {
     m_FormattingOpt->SetValue( true );
     m_annotationOpt->SetValue( true );

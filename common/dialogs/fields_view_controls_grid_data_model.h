@@ -45,12 +45,12 @@ public:
 
     wxString GetColLabelValue( int aCol ) override;
 
-    bool IsEmptyCell( int aRow, int aCol ) override
+    bool IsEmptyCell( int aRow [[maybe_unused]], int aCol [[maybe_unused]] ) override
     {
         return false; // don't allow adjacent cell overflow, even if we are actually empty
     }
 
-    bool CanGetValueAs( int aRow, int aCol, const wxString& aTypeName ) override
+    bool CanGetValueAs( int aRow [[maybe_unused]], int aCol, const wxString& aTypeName ) override
     {
         switch( aCol )
         {

@@ -313,7 +313,7 @@ void SCH_TEXTBOX::Rotate( const VECTOR2I& aCenter, bool aRotateCCW )
 }
 
 
-void SCH_TEXTBOX::Rotate90( bool aClockwise )
+void SCH_TEXTBOX::Rotate90( bool aClockwise [[maybe_unused]] )
 {
     SetTextAngle( GetTextAngle() == ANGLE_VERTICAL ? ANGLE_HORIZONTAL : ANGLE_VERTICAL );
 }
@@ -521,7 +521,7 @@ bool SCH_TEXTBOX::HasHoveredHypertext() const
 }
 
 
-void SCH_TEXTBOX::DoHypertextAction( EDA_DRAW_FRAME* aFrame, const VECTOR2I& aMousePos ) const
+void SCH_TEXTBOX::DoHypertextAction( EDA_DRAW_FRAME* aFrame, const VECTOR2I& aMousePos [[maybe_unused]] ) const
 {
     SCH_NAVIGATE_TOOL* navTool = aFrame->GetToolManager()->GetTool<SCH_NAVIGATE_TOOL>();
 
@@ -532,7 +532,7 @@ void SCH_TEXTBOX::DoHypertextAction( EDA_DRAW_FRAME* aFrame, const VECTOR2I& aMo
 }
 
 
-wxString SCH_TEXTBOX::GetItemDescription( UNITS_PROVIDER* aUnitsProvider, bool aFull ) const
+wxString SCH_TEXTBOX::GetItemDescription( UNITS_PROVIDER* aUnitsProvider [[maybe_unused]], bool aFull ) const
 {
     return wxString::Format( _( "Text box '%s'" ), aFull ? GetShownText( FOR_GUI )
                                                          : KIUI::EllipsizeMenuText( GetText() ) );

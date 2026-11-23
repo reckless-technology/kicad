@@ -50,7 +50,7 @@ bool EMBED_TOOL::Init()
 }
 
 
-void EMBED_TOOL::Reset( RESET_REASON aReason )
+void EMBED_TOOL::Reset( RESET_REASON aReason [[maybe_unused]] )
 {
     EDA_ITEM* model = getModel<EDA_ITEM>();
     m_files = model ? model->GetEmbeddedFiles() : nullptr;

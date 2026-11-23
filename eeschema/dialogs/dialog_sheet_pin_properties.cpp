@@ -172,13 +172,13 @@ void DIALOG_SHEET_PIN_PROPERTIES::onOKButton( wxCommandEvent& event )
 }
 
 
-void DIALOG_SHEET_PIN_PROPERTIES::OnSyntaxHelp( wxHyperlinkEvent& aEvent )
+void DIALOG_SHEET_PIN_PROPERTIES::OnSyntaxHelp( wxHyperlinkEvent& aEvent [[maybe_unused]] )
 {
     m_helpWindow = SCH_LABEL_BASE::ShowSyntaxHelp( this );
 }
 
 
-void DIALOG_SHEET_PIN_PROPERTIES::onComboBox( wxCommandEvent& aEvent )
+void DIALOG_SHEET_PIN_PROPERTIES::onComboBox( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     SCH_SCREEN* screen = m_sheetPin->GetParent()->GetScreen();
 

@@ -82,7 +82,7 @@ DIALOG_CONFIG_EQUFILES::DIALOG_CONFIG_EQUFILES( wxWindow* aParent ) :
 }
 
 
-void DIALOG_CONFIG_EQUFILES::OnEditEquFile( wxCommandEvent& event )
+void DIALOG_CONFIG_EQUFILES::OnEditEquFile( wxCommandEvent& event [[maybe_unused]] )
 {
     wxString editorname = Pgm().GetTextEditor();
 
@@ -100,7 +100,7 @@ void DIALOG_CONFIG_EQUFILES::OnEditEquFile( wxCommandEvent& event )
 }
 
 
-void DIALOG_CONFIG_EQUFILES::OnOkClick( wxCommandEvent& event )
+void DIALOG_CONFIG_EQUFILES::OnOkClick( wxCommandEvent& event [[maybe_unused]] )
 {
     PROJECT_FILE& project = Prj().GetProjectFile();
 
@@ -116,13 +116,13 @@ void DIALOG_CONFIG_EQUFILES::OnOkClick( wxCommandEvent& event )
 }
 
 
-void DIALOG_CONFIG_EQUFILES::OnCloseWindow( wxCloseEvent& event )
+void DIALOG_CONFIG_EQUFILES::OnCloseWindow( wxCloseEvent& event [[maybe_unused]] )
 {
     EndModal( wxID_CANCEL );
 }
 
 
-void DIALOG_CONFIG_EQUFILES::OnButtonMoveUp( wxCommandEvent& event )
+void DIALOG_CONFIG_EQUFILES::OnButtonMoveUp( wxCommandEvent& event [[maybe_unused]] )
 {
     wxArrayInt selections;
     m_filesListBox->GetSelections( selections );
@@ -152,7 +152,7 @@ void DIALOG_CONFIG_EQUFILES::OnButtonMoveUp( wxCommandEvent& event )
 }
 
 
-void DIALOG_CONFIG_EQUFILES::OnButtonMoveDown( wxCommandEvent& event )
+void DIALOG_CONFIG_EQUFILES::OnButtonMoveDown( wxCommandEvent& event [[maybe_unused]] )
 {
     wxArrayInt selections;
     m_filesListBox->GetSelections( selections );
@@ -186,7 +186,7 @@ void DIALOG_CONFIG_EQUFILES::OnButtonMoveDown( wxCommandEvent& event )
 /* Remove a library to the library list.
  * The real list (g_LibName_List) is not changed, so the change can be canceled
  */
-void DIALOG_CONFIG_EQUFILES::OnRemoveFiles( wxCommandEvent& event )
+void DIALOG_CONFIG_EQUFILES::OnRemoveFiles( wxCommandEvent& event [[maybe_unused]] )
 {
     wxArrayInt selections;
     m_filesListBox->GetSelections( selections );
@@ -201,7 +201,7 @@ void DIALOG_CONFIG_EQUFILES::OnRemoveFiles( wxCommandEvent& event )
 }
 
 
-void DIALOG_CONFIG_EQUFILES::OnAddFiles( wxCommandEvent& event )
+void DIALOG_CONFIG_EQUFILES::OnAddFiles( wxCommandEvent& event [[maybe_unused]] )
 {
     // Get a default path to open the file dialog:
     wxArrayInt selectedRows	= m_gridEnvVars->GetSelectedRows();

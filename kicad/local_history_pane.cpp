@@ -198,7 +198,7 @@ void LOCAL_HISTORY_PANE::OnRefreshEvent( wxCommandEvent& aEvent )
 }
 
 
-void LOCAL_HISTORY_PANE::OnRefreshTimer( wxTimerEvent& aEvent )
+void LOCAL_HISTORY_PANE::OnRefreshTimer( wxTimerEvent& aEvent [[maybe_unused]] )
 {
     // Refresh the history to show updates from autosave
     RefreshHistory( m_frame->Prj().GetProjectPath() );

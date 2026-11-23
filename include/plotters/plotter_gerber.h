@@ -49,11 +49,11 @@ public:
     virtual void SetCurrentLineWidth( int aLineWidth, void* aData = nullptr ) override;
 
     // RS274X has no dashing, nor colors
-    virtual void SetDash( int aLineWidth, LINE_STYLE aLineStyle ) override
+    virtual void SetDash( int aLineWidth [[maybe_unused]], LINE_STYLE aLineStyle [[maybe_unused]] ) override
     {
     }
 
-    virtual void SetColor( const COLOR4D& aColor ) override {}
+    virtual void SetColor( const COLOR4D& aColor [[maybe_unused]] ) override {}
 
     // Currently, aScale and aMirror are not used in gerber plotter
     virtual void SetViewport( const VECTOR2I& aOffset, double aIusPerDecimil,

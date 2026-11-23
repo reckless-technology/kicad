@@ -45,7 +45,7 @@ public:
     // Just take all constructors
     using wxMenuBar::wxMenuBar;
 
-    void SetAcceleratorTable( const wxAcceleratorTable& aTable ) override
+    void SetAcceleratorTable( const wxAcceleratorTable& aTable [[maybe_unused]] ) override
     {
         // Don't use the passed in accelerator table, create a new empty one
         wxMenuBar::SetAcceleratorTable( wxAcceleratorTable() );

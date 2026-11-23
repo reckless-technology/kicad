@@ -39,7 +39,7 @@
 
 using namespace KIGFX;
 
-VIEW_GROUP::VIEW_GROUP( VIEW* aView ) :
+VIEW_GROUP::VIEW_GROUP( VIEW* aView [[maybe_unused]] ) :
     VIEW_ITEM(),
     m_layer( LAYER_SELECT_OVERLAY )
 {
@@ -111,7 +111,7 @@ const BOX2I VIEW_GROUP::ViewBBox() const
 }
 
 
-void VIEW_GROUP::ViewDraw( int aLayer, VIEW* aView ) const
+void VIEW_GROUP::ViewDraw( int aLayer [[maybe_unused]], VIEW* aView ) const
 {
     KIGFX::GAL* gal = aView->GetGAL();
     PAINTER*    painter = aView->GetPainter();

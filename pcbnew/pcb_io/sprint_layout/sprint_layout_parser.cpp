@@ -1472,7 +1472,7 @@ void SPRINT_LAYOUT_PARSER::processLine( BOARD_ITEM_CONTAINER* aContainer, const 
 
 void SPRINT_LAYOUT_PARSER::processSegment( BOARD_ITEM_CONTAINER* aContainer, const SPRINT_LAYOUT::OBJECT& aObj,
                                            std::vector<std::vector<VECTOR2I>>& aOutlineSegments,
-                                           const uint8_t aGroundPlane[7], NETINFO_ITEM* aGndPlaneNet,
+                                           const uint8_t aGroundPlane[7], NETINFO_ITEM* aGndPlaneNet [[maybe_unused]],
                                            std::map<uint32_t, std::set<BOARD_ITEM*>>& aGidToItems )
 {
     PCB_LAYER_ID layer = mapLayer( aObj.layer );

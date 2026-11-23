@@ -427,7 +427,7 @@ void LAYER_PROPERTIES_GRID_TABLE::AddItem( PCB_LAYER_ID aLayer, const ZONE_LAYER
 }
 
 
-bool LAYER_PROPERTIES_GRID_TABLE::AppendRows( size_t aNumRows )
+bool LAYER_PROPERTIES_GRID_TABLE::AppendRows( size_t aNumRows [[maybe_unused]] )
 {
     PCB_LAYER_ID next = UNDEFINED_LAYER;
 

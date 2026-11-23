@@ -257,7 +257,7 @@ public:
      * @param nestLevel A multiple of the number of spaces to precede the output with.
      * @throw IO_ERROR if a system error writing the output, such as a full disk.
      */
-    virtual void FormatContents( OUTPUTFORMATTER* out, int nestLevel )
+    virtual void FormatContents( OUTPUTFORMATTER* out [[maybe_unused]], int nestLevel [[maybe_unused]] )
     {
         // overridden in ELEM_HOLDER
     }

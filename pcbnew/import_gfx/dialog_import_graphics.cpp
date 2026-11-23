@@ -183,7 +183,7 @@ bool DIALOG_IMPORT_GRAPHICS::TransferDataToWindow()
 }
 
 
-void DIALOG_IMPORT_GRAPHICS::onFilenameChanged( wxCommandEvent& event )
+void DIALOG_IMPORT_GRAPHICS::onFilenameChanged( wxCommandEvent& event [[maybe_unused]] )
 {
     loadSourceFile();
 
@@ -319,7 +319,7 @@ void DIALOG_IMPORT_GRAPHICS::scaleFromSize( bool aFromWidth )
 }
 
 
-void DIALOG_IMPORT_GRAPHICS::onScaleChanged( wxCommandEvent& event )
+void DIALOG_IMPORT_GRAPHICS::onScaleChanged( wxCommandEvent& event [[maybe_unused]] )
 {
     const double scale = EDA_UNIT_UTILS::UI::DoubleValueFromString( m_importScaleCtrl->GetValue() );
 
@@ -333,19 +333,19 @@ void DIALOG_IMPORT_GRAPHICS::onScaleChanged( wxCommandEvent& event )
 }
 
 
-void DIALOG_IMPORT_GRAPHICS::onWidthChanged( wxCommandEvent& event )
+void DIALOG_IMPORT_GRAPHICS::onWidthChanged( wxCommandEvent& event [[maybe_unused]] )
 {
     scaleFromSize( true );
 }
 
 
-void DIALOG_IMPORT_GRAPHICS::onHeightChanged( wxCommandEvent& event )
+void DIALOG_IMPORT_GRAPHICS::onHeightChanged( wxCommandEvent& event [[maybe_unused]] )
 {
     scaleFromSize( false );
 }
 
 
-void DIALOG_IMPORT_GRAPHICS::onLockAspectChanged( wxCommandEvent& event )
+void DIALOG_IMPORT_GRAPHICS::onLockAspectChanged( wxCommandEvent& event [[maybe_unused]] )
 {
     // Locking the ratio again keeps the width and brings the height back into step.
     if( m_aspectRatioCheckbox->IsChecked() )
@@ -389,19 +389,19 @@ void DIALOG_IMPORT_GRAPHICS::updatePreview()
 }
 
 
-void DIALOG_IMPORT_GRAPHICS::onThresholdChanged( wxScrollEvent& event )
+void DIALOG_IMPORT_GRAPHICS::onThresholdChanged( wxScrollEvent& event [[maybe_unused]] )
 {
     updatePreview();
 }
 
 
-void DIALOG_IMPORT_GRAPHICS::onInvertChanged( wxCommandEvent& event )
+void DIALOG_IMPORT_GRAPHICS::onInvertChanged( wxCommandEvent& event [[maybe_unused]] )
 {
     updatePreview();
 }
 
 
-void DIALOG_IMPORT_GRAPHICS::onBrowseFiles( wxCommandEvent& event )
+void DIALOG_IMPORT_GRAPHICS::onBrowseFiles( wxCommandEvent& event [[maybe_unused]] )
 {
     wxString path;
     wxString filename = m_textCtrlFileName->GetValue();
@@ -564,7 +564,7 @@ bool DIALOG_IMPORT_GRAPHICS::TransferDataFromWindow()
 }
 
 
-void DIALOG_IMPORT_GRAPHICS::onUpdateUI( wxUpdateUIEvent& event )
+void DIALOG_IMPORT_GRAPHICS::onUpdateUI( wxUpdateUIEvent& event [[maybe_unused]] )
 {
     m_xOrigin.Enable( m_placeAtCheckbox->GetValue() );
     m_yOrigin.Enable( m_placeAtCheckbox->GetValue() );

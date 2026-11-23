@@ -258,7 +258,7 @@ void DIALOG_SCHEMATIC_SETUP::onPageChanged( wxBookCtrlEvent& aEvent )
 }
 
 
-void DIALOG_SCHEMATIC_SETUP::onAuxiliaryAction( wxCommandEvent& event )
+void DIALOG_SCHEMATIC_SETUP::onAuxiliaryAction( wxCommandEvent& event [[maybe_unused]] )
 {
     SETTINGS_MANAGER*          mgr = m_frame->GetSettingsManager();
     DIALOG_SCH_IMPORT_SETTINGS importDlg( this, m_frame );

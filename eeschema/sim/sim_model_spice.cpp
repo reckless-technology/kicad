@@ -52,7 +52,7 @@ std::string SPICE_GENERATOR_SPICE::Preview( const SPICE_ITEM& aItem ) const
 
 std::unique_ptr<SIM_MODEL_SPICE> SIM_MODEL_SPICE::Create( const SIM_LIBRARY_SPICE& aLibrary,
                                                           const std::string& aSpiceCode,
-                                                          bool aFirstPass, REPORTER& aReporter )
+                                                          bool aFirstPass, REPORTER& aReporter [[maybe_unused]] )
 {
     SIM_MODEL::TYPE type = SIM_MODEL::TYPE::NONE;
 

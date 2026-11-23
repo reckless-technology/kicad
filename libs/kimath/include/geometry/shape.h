@@ -110,7 +110,7 @@ public:
 
     virtual size_t GetIndexableSubshapeCount() const { return 0; }
 
-    virtual void GetIndexableSubshapes( std::vector<const SHAPE*>& aSubshapes ) const { }
+    virtual void GetIndexableSubshapes( std::vector<const SHAPE*>& aSubshapes [[maybe_unused]] ) const { }
 
 protected:
     /// type of our shape
@@ -297,7 +297,7 @@ public:
     virtual VECTOR2I GetEnd() const { return {}; }
 
     virtual int GetWidth() const { return 0; }
-    virtual void SetWidth( int aWidth ) {}
+    virtual void SetWidth( int aWidth [[maybe_unused]] ) {}
 
     virtual void Move( const VECTOR2I& aVector ) = 0;
 
@@ -381,8 +381,8 @@ public:
 
     virtual BOX2I* GetCachedBBox() const { return nullptr; }
 
-    void TransformToPolygon( SHAPE_POLY_SET& aBuffer, int aError,
-                             ERROR_LOC aErrorLoc ) const override
+    void TransformToPolygon( SHAPE_POLY_SET& aBuffer [[maybe_unused]], int aError [[maybe_unused]],
+                             ERROR_LOC aErrorLoc [[maybe_unused]] ) const override
     {}
 };
 

@@ -990,14 +990,14 @@ void DIALOG_LIB_SYMBOL_PROPERTIES::OnGridCellChanging( wxGridEvent& event )
 }
 
 
-void DIALOG_LIB_SYMBOL_PROPERTIES::OnGridCellChanged( wxGridEvent& event )
+void DIALOG_LIB_SYMBOL_PROPERTIES::OnGridCellChanged( wxGridEvent& event [[maybe_unused]] )
 {
     m_grid->ForceRefresh();
     OnModify();
 }
 
 
-void DIALOG_LIB_SYMBOL_PROPERTIES::OnSymbolNameText( wxCommandEvent& event )
+void DIALOG_LIB_SYMBOL_PROPERTIES::OnSymbolNameText( wxCommandEvent& event [[maybe_unused]] )
 {
     OnModify();
 }
@@ -1024,7 +1024,7 @@ void DIALOG_LIB_SYMBOL_PROPERTIES::OnSymbolNameKillFocus( wxFocusEvent& event )
 }
 
 
-void DIALOG_LIB_SYMBOL_PROPERTIES::OnAddField( wxCommandEvent& event )
+void DIALOG_LIB_SYMBOL_PROPERTIES::OnAddField( wxCommandEvent& event [[maybe_unused]] )
 {
     m_grid->OnAddRow(
             [&]() -> std::pair<int, int>
@@ -1048,7 +1048,7 @@ void DIALOG_LIB_SYMBOL_PROPERTIES::OnAddField( wxCommandEvent& event )
 }
 
 
-void DIALOG_LIB_SYMBOL_PROPERTIES::OnDeleteField( wxCommandEvent& event )
+void DIALOG_LIB_SYMBOL_PROPERTIES::OnDeleteField( wxCommandEvent& event [[maybe_unused]] )
 {
     m_grid->OnDeleteRows(
             [&]( int row )
@@ -1076,7 +1076,7 @@ void DIALOG_LIB_SYMBOL_PROPERTIES::OnDeleteField( wxCommandEvent& event )
 }
 
 
-void DIALOG_LIB_SYMBOL_PROPERTIES::OnMoveUp( wxCommandEvent& event )
+void DIALOG_LIB_SYMBOL_PROPERTIES::OnMoveUp( wxCommandEvent& event [[maybe_unused]] )
 {
     m_grid->OnMoveRowUp(
             [&]( int row )
@@ -1092,7 +1092,7 @@ void DIALOG_LIB_SYMBOL_PROPERTIES::OnMoveUp( wxCommandEvent& event )
 }
 
 
-void DIALOG_LIB_SYMBOL_PROPERTIES::OnMoveDown( wxCommandEvent& event )
+void DIALOG_LIB_SYMBOL_PROPERTIES::OnMoveDown( wxCommandEvent& event [[maybe_unused]] )
 {
     m_grid->OnMoveRowDown(
             [&]( int row )
@@ -1108,7 +1108,7 @@ void DIALOG_LIB_SYMBOL_PROPERTIES::OnMoveDown( wxCommandEvent& event )
 }
 
 
-void DIALOG_LIB_SYMBOL_PROPERTIES::OnAddBodyStyle( wxCommandEvent& event )
+void DIALOG_LIB_SYMBOL_PROPERTIES::OnAddBodyStyle( wxCommandEvent& event [[maybe_unused]] )
 {
     m_bodyStyleNamesGrid->OnAddRow(
             [&]() -> std::pair<int, int>
@@ -1121,7 +1121,7 @@ void DIALOG_LIB_SYMBOL_PROPERTIES::OnAddBodyStyle( wxCommandEvent& event )
 }
 
 
-void DIALOG_LIB_SYMBOL_PROPERTIES::OnDeleteBodyStyle( wxCommandEvent& event )
+void DIALOG_LIB_SYMBOL_PROPERTIES::OnDeleteBodyStyle( wxCommandEvent& event [[maybe_unused]] )
 {
     m_bodyStyleNamesGrid->OnDeleteRows(
             [&]( int row )
@@ -1133,7 +1133,7 @@ void DIALOG_LIB_SYMBOL_PROPERTIES::OnDeleteBodyStyle( wxCommandEvent& event )
 }
 
 
-void DIALOG_LIB_SYMBOL_PROPERTIES::OnBodyStyleMoveUp( wxCommandEvent& event )
+void DIALOG_LIB_SYMBOL_PROPERTIES::OnBodyStyleMoveUp( wxCommandEvent& event [[maybe_unused]] )
 {
     m_bodyStyleNamesGrid->OnMoveRowUp(
             [&]( int row )
@@ -1144,7 +1144,7 @@ void DIALOG_LIB_SYMBOL_PROPERTIES::OnBodyStyleMoveUp( wxCommandEvent& event )
 }
 
 
-void DIALOG_LIB_SYMBOL_PROPERTIES::OnBodyStyleMoveDown( wxCommandEvent& event )
+void DIALOG_LIB_SYMBOL_PROPERTIES::OnBodyStyleMoveDown( wxCommandEvent& event [[maybe_unused]] )
 {
     m_bodyStyleNamesGrid->OnMoveRowDown(
             [&]( int row )
@@ -1155,7 +1155,7 @@ void DIALOG_LIB_SYMBOL_PROPERTIES::OnBodyStyleMoveDown( wxCommandEvent& event )
 }
 
 
-void DIALOG_LIB_SYMBOL_PROPERTIES::OnEditSpiceModel( wxCommandEvent& event )
+void DIALOG_LIB_SYMBOL_PROPERTIES::OnEditSpiceModel( wxCommandEvent& event [[maybe_unused]] )
 {
     if( !m_grid->CommitPendingChanges() )
         return;
@@ -1228,7 +1228,7 @@ void DIALOG_LIB_SYMBOL_PROPERTIES::OnEditSpiceModel( wxCommandEvent& event )
 }
 
 
-void DIALOG_LIB_SYMBOL_PROPERTIES::OnCancelButtonClick( wxCommandEvent& event )
+void DIALOG_LIB_SYMBOL_PROPERTIES::OnCancelButtonClick( wxCommandEvent& event [[maybe_unused]] )
 {
     // Running the Footprint Browser gums up the works and causes the automatic cancel
     // stuff to no longer work.  So we do it here ourselves.
@@ -1258,7 +1258,7 @@ void DIALOG_LIB_SYMBOL_PROPERTIES::assignFootprintToField( const wxString& aFoot
 }
 
 
-void DIALOG_LIB_SYMBOL_PROPERTIES::OnUpdateUI( wxUpdateUIEvent& event )
+void DIALOG_LIB_SYMBOL_PROPERTIES::OnUpdateUI( wxUpdateUIEvent& event [[maybe_unused]] )
 {
     m_OptionPartsInterchangeable->Enable( !m_libEntry->IsDerived() && m_unitSpinCtrl->GetValue() > 1 );
     m_pinNameOffset.Enable( m_PinsNameInsideButt->GetValue() );
@@ -1354,7 +1354,7 @@ void DIALOG_LIB_SYMBOL_PROPERTIES::syncBodyStyleControls()
 }
 
 
-void DIALOG_LIB_SYMBOL_PROPERTIES::onPowerCheckBox( wxCommandEvent& aEvent )
+void DIALOG_LIB_SYMBOL_PROPERTIES::onPowerCheckBox( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( m_OptionPower->IsChecked() )
     {
@@ -1401,13 +1401,13 @@ void DIALOG_LIB_SYMBOL_PROPERTIES::OnText( wxCommandEvent& event )
 }
 
 
-void DIALOG_LIB_SYMBOL_PROPERTIES::OnCombobox( wxCommandEvent& event )
+void DIALOG_LIB_SYMBOL_PROPERTIES::OnCombobox( wxCommandEvent& event [[maybe_unused]] )
 {
     OnModify();
 }
 
 
-void DIALOG_LIB_SYMBOL_PROPERTIES::OnCheckBox( wxCommandEvent& event )
+void DIALOG_LIB_SYMBOL_PROPERTIES::OnCheckBox( wxCommandEvent& event [[maybe_unused]] )
 {
     OnModify();
 }
@@ -1440,27 +1440,27 @@ bool DIALOG_LIB_SYMBOL_PROPERTIES::updateUnitCount()
 }
 
 
-void DIALOG_LIB_SYMBOL_PROPERTIES::OnUnitSpinCtrl( wxSpinEvent& event )
+void DIALOG_LIB_SYMBOL_PROPERTIES::OnUnitSpinCtrl( wxSpinEvent& event [[maybe_unused]] )
 {
     if( updateUnitCount() )
         OnModify();
 }
 
 
-void DIALOG_LIB_SYMBOL_PROPERTIES::OnUnitSpinCtrlText( wxCommandEvent& event )
+void DIALOG_LIB_SYMBOL_PROPERTIES::OnUnitSpinCtrlText( wxCommandEvent& event [[maybe_unused]] )
 {
     // wait for kill focus to update unit count
 }
 
 
-void DIALOG_LIB_SYMBOL_PROPERTIES::OnUnitSpinCtrlEnter( wxCommandEvent& event )
+void DIALOG_LIB_SYMBOL_PROPERTIES::OnUnitSpinCtrlEnter( wxCommandEvent& event [[maybe_unused]] )
 {
     if( updateUnitCount() )
         OnModify();
 }
 
 
-void DIALOG_LIB_SYMBOL_PROPERTIES::OnUnitSpinCtrlKillFocus( wxFocusEvent& event )
+void DIALOG_LIB_SYMBOL_PROPERTIES::OnUnitSpinCtrlKillFocus( wxFocusEvent& event [[maybe_unused]] )
 {
     if( updateUnitCount() )
         OnModify();
@@ -1474,7 +1474,7 @@ void DIALOG_LIB_SYMBOL_PROPERTIES::OnPageChanging( wxBookCtrlEvent& aEvent )
 }
 
 
-void DIALOG_LIB_SYMBOL_PROPERTIES::OnAddJumperGroup( wxCommandEvent& event )
+void DIALOG_LIB_SYMBOL_PROPERTIES::OnAddJumperGroup( wxCommandEvent& event [[maybe_unused]] )
 {
     m_jumperGroupsGrid->OnAddRow(
             [&]() -> std::pair<int, int>
@@ -1487,7 +1487,7 @@ void DIALOG_LIB_SYMBOL_PROPERTIES::OnAddJumperGroup( wxCommandEvent& event )
 }
 
 
-void DIALOG_LIB_SYMBOL_PROPERTIES::OnRemoveJumperGroup( wxCommandEvent& event )
+void DIALOG_LIB_SYMBOL_PROPERTIES::OnRemoveJumperGroup( wxCommandEvent& event [[maybe_unused]] )
 {
     m_jumperGroupsGrid->OnDeleteRows(
             [&]( int row )

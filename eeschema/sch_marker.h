@@ -65,8 +65,8 @@ public:
 
     SEVERITY GetSeverity() const override;
 
-    void Plot( PLOTTER* aPlotter, bool aBackground, const SCH_PLOT_OPTS& aPlotOpts,
-               int aUnit, int aBodyStyle, const VECTOR2I& aOffset, bool aDimmed ) override
+    void Plot( PLOTTER* aPlotter [[maybe_unused]], bool aBackground [[maybe_unused]], const SCH_PLOT_OPTS& aPlotOpts [[maybe_unused]],
+               int aUnit [[maybe_unused]], int aBodyStyle [[maybe_unused]], const VECTOR2I& aOffset [[maybe_unused]], bool aDimmed [[maybe_unused]] ) override
     {
         // SCH_MARKERs should not be plotted. However, SCH_ITEM will fail an assertion if we
         // do not confirm this by locally implementing a no-op Plot().
@@ -96,7 +96,7 @@ public:
 
     void GetMsgPanelInfo( EDA_DRAW_FRAME* aFrame, std::vector<MSG_PANEL_ITEM>& aList ) override;
 
-    wxString GetItemDescription( UNITS_PROVIDER* aUnitsProvider, bool aFull ) const override
+    wxString GetItemDescription( UNITS_PROVIDER* aUnitsProvider [[maybe_unused]], bool aFull [[maybe_unused]] ) const override
     {
         return wxString( _( "ERC Marker" ) );
     }
@@ -110,12 +110,12 @@ public:
 
     EDA_ITEM* Clone() const override;
 
-    double Similarity( const SCH_ITEM& aOther ) const override
+    double Similarity( const SCH_ITEM& aOther [[maybe_unused]] ) const override
     {
         return 0.0;
     }
 
-    bool operator==( const SCH_ITEM& aOther ) const override
+    bool operator==( const SCH_ITEM& aOther [[maybe_unused]] ) const override
     {
         return false;
     }

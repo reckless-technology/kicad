@@ -64,13 +64,13 @@ void DIALOG_UNUSED_PAD_LAYERS::updateImage()
 }
 
 
-void DIALOG_UNUSED_PAD_LAYERS::syncImages( wxCommandEvent& aEvent )
+void DIALOG_UNUSED_PAD_LAYERS::syncImages( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     updateImage();
 }
 
 
-void DIALOG_UNUSED_PAD_LAYERS::onApply( wxCommandEvent& event )
+void DIALOG_UNUSED_PAD_LAYERS::onApply( wxCommandEvent& event [[maybe_unused]] )
 {
     updatePadsAndVias( false );
     EndModal( wxID_APPLY );

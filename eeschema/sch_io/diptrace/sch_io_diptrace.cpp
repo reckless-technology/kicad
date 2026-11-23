@@ -57,7 +57,7 @@ bool SCH_IO_DIPTRACE::CanReadSchematicFile( const wxString& aFileName ) const
 SCH_SHEET* SCH_IO_DIPTRACE::LoadSchematicFile( const wxString& aFileName,
                                                 SCHEMATIC* aSchematic,
                                                 SCH_SHEET* aAppendToMe,
-                                                const std::map<std::string, UTF8>* aProperties )
+                                                const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     wxASSERT( !aFileName.IsEmpty() && aSchematic != nullptr );
 

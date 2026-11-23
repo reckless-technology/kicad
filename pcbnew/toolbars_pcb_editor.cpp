@@ -624,7 +624,7 @@ void PCB_EDIT_FRAME::SetCurrentVariant( const wxString& aVariantName )
 }
 
 
-void PCB_EDIT_FRAME::onVariantSelected( wxCommandEvent& aEvent )
+void PCB_EDIT_FRAME::onVariantSelected( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( !m_CurrentVariantCtrl )
         return;

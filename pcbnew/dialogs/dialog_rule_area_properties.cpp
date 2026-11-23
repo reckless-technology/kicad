@@ -210,19 +210,19 @@ DIALOG_RULE_AREA_PROPERTIES::~DIALOG_RULE_AREA_PROPERTIES()
 }
 
 
-void DIALOG_RULE_AREA_PROPERTIES::OnSheetNameClicked( wxCommandEvent& event )
+void DIALOG_RULE_AREA_PROPERTIES::OnSheetNameClicked( wxCommandEvent& event [[maybe_unused]] )
 {
     m_lastPlacementSourceType = PLACEMENT_SOURCE_T::SHEETNAME;
 }
 
 
-void DIALOG_RULE_AREA_PROPERTIES::OnComponentClassClicked( wxCommandEvent& event )
+void DIALOG_RULE_AREA_PROPERTIES::OnComponentClassClicked( wxCommandEvent& event [[maybe_unused]] )
 {
     m_lastPlacementSourceType = PLACEMENT_SOURCE_T::COMPONENT_CLASS;
 }
 
 
-void DIALOG_RULE_AREA_PROPERTIES::OnGroupClicked( wxCommandEvent& event )
+void DIALOG_RULE_AREA_PROPERTIES::OnGroupClicked( wxCommandEvent& event [[maybe_unused]] )
 {
     m_lastPlacementSourceType = PLACEMENT_SOURCE_T::GROUP_PLACEMENT;
 }

@@ -314,7 +314,7 @@ LIB_ID PANEL_FOOTPRINT_CHOOSER::GetSelectedLibId() const
 }
 
 
-void PANEL_FOOTPRINT_CHOOSER::onCloseTimer( wxTimerEvent& aEvent )
+void PANEL_FOOTPRINT_CHOOSER::onCloseTimer( wxTimerEvent& aEvent [[maybe_unused]] )
 {
     // Hack because of eaten MouseUp event. See PANEL_FOOTPRINT_CHOOSER::onFootprintChosen
     // for the beginning of this spaghetti noodle.
@@ -336,7 +336,7 @@ void PANEL_FOOTPRINT_CHOOSER::onCloseTimer( wxTimerEvent& aEvent )
 
 #include <footprint_preview_panel.h>
 
-void PANEL_FOOTPRINT_CHOOSER::onOpenLibsTimer( wxTimerEvent& aEvent )
+void PANEL_FOOTPRINT_CHOOSER::onOpenLibsTimer( wxTimerEvent& aEvent [[maybe_unused]] )
 {
     // Freeze across both steps so the expand and the re-scroll paint as a single final
     // state, otherwise the selected row visibly shifts and snaps back.
@@ -353,7 +353,7 @@ void PANEL_FOOTPRINT_CHOOSER::onOpenLibsTimer( wxTimerEvent& aEvent )
 }
 
 
-void PANEL_FOOTPRINT_CHOOSER::onFootprintSelected( wxCommandEvent& aEvent )
+void PANEL_FOOTPRINT_CHOOSER::onFootprintSelected( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( !m_preview_ctrl || !m_preview_ctrl->IsInitialized() )
         return;
@@ -380,7 +380,7 @@ void PANEL_FOOTPRINT_CHOOSER::onFootprintSelected( wxCommandEvent& aEvent )
 }
 
 
-void PANEL_FOOTPRINT_CHOOSER::onFootprintChosen( wxCommandEvent& aEvent )
+void PANEL_FOOTPRINT_CHOOSER::onFootprintChosen( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( m_tree->GetSelectedLibId().IsValid() )
     {

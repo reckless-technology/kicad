@@ -27,7 +27,7 @@
 
 
 void NETLIST_EXPORTER_SPICE_MODEL::WriteHead( OUTPUTFORMATTER& aFormatter,
-                                              unsigned aNetlistOptions )
+                                              unsigned aNetlistOptions [[maybe_unused]] )
 {
     aFormatter.Print( 0, "*\n" );
     aFormatter.Print( 0, "\n" );
@@ -55,7 +55,7 @@ void NETLIST_EXPORTER_SPICE_MODEL::WriteHead( OUTPUTFORMATTER& aFormatter,
 
 
 void NETLIST_EXPORTER_SPICE_MODEL::WriteTail( OUTPUTFORMATTER& aFormatter,
-                                              unsigned aNetlistOptions )
+                                              unsigned aNetlistOptions [[maybe_unused]] )
 {
     aFormatter.Print( 0, "\n.ends\n" );
 }

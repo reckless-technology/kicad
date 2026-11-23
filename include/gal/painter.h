@@ -96,7 +96,7 @@ public:
      * Return false when drawing the item on the given layer emits more than one colour, so
      * a cached group of it cannot be recoloured in place and must be repainted instead.
      */
-    virtual bool HasUniformColor( const VIEW_ITEM* aItem, int aLayer ) const { return true; }
+    virtual bool HasUniformColor( const VIEW_ITEM* aItem [[maybe_unused]], int aLayer [[maybe_unused]] ) const { return true; }
 
 protected:
     /// Instance of graphic abstraction layer that gives an interface to call

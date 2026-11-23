@@ -332,7 +332,7 @@ bool DIALOG_LINE_PROPERTIES::TransferDataToWindow()
 }
 
 
-void DIALOG_LINE_PROPERTIES::resetDefaults( wxCommandEvent& event )
+void DIALOG_LINE_PROPERTIES::resetDefaults( wxCommandEvent& event [[maybe_unused]] )
 {
     m_width.SetValue( 0 );
     m_colorSwatch->SetSwatchColor( COLOR4D::UNSPECIFIED, false );

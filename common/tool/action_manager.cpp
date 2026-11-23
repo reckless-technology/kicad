@@ -115,7 +115,7 @@ const ACTION_CONDITIONS* ACTION_MANAGER::GetCondition( const TOOL_ACTION& aActio
 }
 
 
-int ACTION_MANAGER::MakeActionId( const std::string& aActionName )
+int ACTION_MANAGER::MakeActionId( const std::string& aActionName [[maybe_unused]] )
 {
     static int currentActionId = 1;
 

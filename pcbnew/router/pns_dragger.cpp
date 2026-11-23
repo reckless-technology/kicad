@@ -153,7 +153,7 @@ bool DRAGGER::startDragSegment( const VECTOR2D& aP, SEGMENT* aSeg )
 }
 
 
-bool DRAGGER::startDragArc( const VECTOR2D& aP, ARC* aArc )
+bool DRAGGER::startDragArc( const VECTOR2D& aP [[maybe_unused]], ARC* aArc )
 {
     EDA_ANGLE maxDeviation( ADVANCED_CFG::GetCfg().m_MaxTangentAngleDeviation, DEGREES_T );
 

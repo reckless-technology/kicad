@@ -77,7 +77,7 @@ public:
      * @param aPoints The final positions of the edit points.
      * @param aCommit The commit object to use to modify the item.
      */
-    virtual void FinalizeItem( EDIT_POINTS& aPoints, COMMIT& aCommit ) {};
+    virtual void FinalizeItem( EDIT_POINTS& aPoints [[maybe_unused]], COMMIT& aCommit [[maybe_unused]] ) {};
 
     /**
      * Update the item with the new positions of the edit points.
@@ -112,8 +112,8 @@ public:
      * If you want to actively disable constraining, return the aEditedPoint
      * position.
      */
-    virtual OPT_VECTOR2I Get45DegreeConstrainer( const EDIT_POINT& aEditedPoint,
-                                                 EDIT_POINTS&      aPoints ) const
+    virtual OPT_VECTOR2I Get45DegreeConstrainer( const EDIT_POINT& aEditedPoint [[maybe_unused]],
+                                                 EDIT_POINTS&      aPoints [[maybe_unused]] ) const
     {
         // By default, no constrainer is defined and the caller must decide
         return std::nullopt;
@@ -186,8 +186,8 @@ public:
         return true;
     }
 
-    void UpdateItem( const EDIT_POINT& aEditedPoint, EDIT_POINTS& aPoints, COMMIT& aCommit,
-                     std::vector<EDA_ITEM*>& aUpdatedItems ) override
+    void UpdateItem( const EDIT_POINT& aEditedPoint, EDIT_POINTS& aPoints, COMMIT& aCommit [[maybe_unused]],
+                     std::vector<EDA_ITEM*>& aUpdatedItems [[maybe_unused]] ) override
     {
         UpdateOutlineFromPoints( m_polygon, aEditedPoint, aPoints );
     }
@@ -232,8 +232,8 @@ public:
         return true;
     }
 
-    void UpdateItem( const EDIT_POINT& aEditedPoint, EDIT_POINTS& aPoints, COMMIT& aCommit,
-                     std::vector<EDA_ITEM*>& aUpdatedItems ) override
+    void UpdateItem( const EDIT_POINT& aEditedPoint, EDIT_POINTS& aPoints, COMMIT& aCommit [[maybe_unused]],
+                     std::vector<EDA_ITEM*>& aUpdatedItems [[maybe_unused]] ) override
     {
         POLYGON_POINT_EDIT_BEHAVIOR::UpdateOutlineFromPoints(
                 m_shape.GetPolyShape(), aEditedPoint, aPoints );
@@ -241,7 +241,7 @@ public:
 
     bool UpdateItemAppliesAllPoints() const override { return true; }
 
-    void FinalizeItem( EDIT_POINTS& aPoints, COMMIT& aCommit ) override
+    void FinalizeItem( EDIT_POINTS& aPoints [[maybe_unused]], COMMIT& aCommit [[maybe_unused]] ) override
     {
         POLYGON_POINT_EDIT_BEHAVIOR::RemoveNullSegmentsIfPolygonSurvives( m_shape.GetPolyShape() );
     }

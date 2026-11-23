@@ -146,70 +146,70 @@ SELECTION_CONDITION EDITOR_CONDITIONS::BoundingBoxes()
 }
 
 
-bool EDITOR_CONDITIONS::contentModifiedFunc( const SELECTION& aSelection, EDA_BASE_FRAME* aFrame )
+bool EDITOR_CONDITIONS::contentModifiedFunc( const SELECTION& aSelection [[maybe_unused]], EDA_BASE_FRAME* aFrame )
 {
     return aFrame->IsContentModified();
 }
 
 
-bool EDITOR_CONDITIONS::undoFunc( const SELECTION& aSelection, EDA_BASE_FRAME* aFrame )
+bool EDITOR_CONDITIONS::undoFunc( const SELECTION& aSelection [[maybe_unused]], EDA_BASE_FRAME* aFrame )
 {
     return aFrame->GetUndoCommandCount() > 0;
 }
 
 
-bool EDITOR_CONDITIONS::redoFunc( const SELECTION& aSelection, EDA_BASE_FRAME* aFrame )
+bool EDITOR_CONDITIONS::redoFunc( const SELECTION& aSelection [[maybe_unused]], EDA_BASE_FRAME* aFrame )
 {
     return aFrame->GetRedoCommandCount() > 0;
 }
 
 
-bool EDITOR_CONDITIONS::unitsFunc( const SELECTION& aSelection, EDA_BASE_FRAME* aFrame,
+bool EDITOR_CONDITIONS::unitsFunc( const SELECTION& aSelection [[maybe_unused]], EDA_BASE_FRAME* aFrame,
                                    EDA_UNITS aUnits )
 {
     return aFrame->GetUserUnits() == aUnits;
 }
 
 
-bool EDITOR_CONDITIONS::toolFunc( const SELECTION& aSelection, EDA_BASE_FRAME* aFrame,
+bool EDITOR_CONDITIONS::toolFunc( const SELECTION& aSelection [[maybe_unused]], EDA_BASE_FRAME* aFrame,
                                   const TOOL_ACTION& aTool )
 {
     return aFrame->IsCurrentTool( aTool );
 }
 
 
-bool EDITOR_CONDITIONS::noToolFunc( const SELECTION& aSelection, EDA_BASE_FRAME* aFrame )
+bool EDITOR_CONDITIONS::noToolFunc( const SELECTION& aSelection [[maybe_unused]], EDA_BASE_FRAME* aFrame )
 {
     return aFrame->ToolStackIsEmpty();
 }
 
 
-bool EDITOR_CONDITIONS::gridFunc( const SELECTION& aSelection, EDA_DRAW_FRAME* aFrame )
+bool EDITOR_CONDITIONS::gridFunc( const SELECTION& aSelection [[maybe_unused]], EDA_DRAW_FRAME* aFrame )
 {
     return aFrame->IsGridVisible();
 }
 
 
-bool EDITOR_CONDITIONS::gridOverridesFunc( const SELECTION& aSelection, EDA_DRAW_FRAME* aFrame )
+bool EDITOR_CONDITIONS::gridOverridesFunc( const SELECTION& aSelection [[maybe_unused]], EDA_DRAW_FRAME* aFrame )
 {
     return aFrame->IsGridOverridden();
 }
 
 
-bool EDITOR_CONDITIONS::polarCoordFunc( const SELECTION& aSelection, EDA_DRAW_FRAME* aFrame )
+bool EDITOR_CONDITIONS::polarCoordFunc( const SELECTION& aSelection [[maybe_unused]], EDA_DRAW_FRAME* aFrame )
 {
     return aFrame->GetShowPolarCoords();
 }
 
 
-bool EDITOR_CONDITIONS::cursorFunc( const SELECTION& aSelection, EDA_DRAW_FRAME* aFrame,
+bool EDITOR_CONDITIONS::cursorFunc( const SELECTION& aSelection [[maybe_unused]], EDA_DRAW_FRAME* aFrame,
                                     KIGFX::CROSS_HAIR_MODE aMode )
 {
     return aFrame->GetGalDisplayOptions().GetCursorMode() == aMode;
 }
 
 
-bool EDITOR_CONDITIONS::bboxesFunc( const SELECTION& aSelection, EDA_DRAW_FRAME* aFrame )
+bool EDITOR_CONDITIONS::bboxesFunc( const SELECTION& aSelection [[maybe_unused]], EDA_DRAW_FRAME* aFrame )
 {
     return aFrame->GetCanvas()->GetView()->GetPainter()->GetSettings()->GetDrawBoundingBoxes();
 }

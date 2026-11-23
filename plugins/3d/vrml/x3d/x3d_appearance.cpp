@@ -212,13 +212,13 @@ bool X3DAPP::SetParent( X3DNODE* aParent, bool doUnlink )
 }
 
 
-bool X3DAPP::AddChildNode( X3DNODE* aNode )
+bool X3DAPP::AddChildNode( X3DNODE* aNode [[maybe_unused]] )
 {
     return false;
 }
 
 
-bool X3DAPP::AddRefNode( X3DNODE* aNode )
+bool X3DAPP::AddRefNode( X3DNODE* aNode [[maybe_unused]] )
 {
     return false;
 }

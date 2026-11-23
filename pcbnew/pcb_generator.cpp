@@ -59,27 +59,27 @@ PCB_GENERATOR* PCB_GENERATOR::DeepClone() const
 }
 
 
-std::vector<EDA_ITEM*> PCB_GENERATOR::GetPreviewItems( GENERATOR_TOOL* aTool,
-                                                       PCB_BASE_EDIT_FRAME* aFrame,
-                                                       bool aStatusItemsOnly )
+std::vector<EDA_ITEM*> PCB_GENERATOR::GetPreviewItems( GENERATOR_TOOL* aTool [[maybe_unused]],
+                                                       PCB_BASE_EDIT_FRAME* aFrame [[maybe_unused]],
+                                                       bool aStatusItemsOnly [[maybe_unused]] )
 {
     return std::vector<EDA_ITEM*>();
 }
 
 
-bool PCB_GENERATOR::MakeEditPoints( EDIT_POINTS& aEditPoints ) const
+bool PCB_GENERATOR::MakeEditPoints( EDIT_POINTS& aEditPoints [[maybe_unused]] ) const
 {
     return true;
 }
 
 
-bool PCB_GENERATOR::UpdateFromEditPoints( EDIT_POINTS& aEditPoints )
+bool PCB_GENERATOR::UpdateFromEditPoints( EDIT_POINTS& aEditPoints [[maybe_unused]] )
 {
     return true;
 }
 
 
-bool PCB_GENERATOR::UpdateEditPoints( EDIT_POINTS& aEditPoints )
+bool PCB_GENERATOR::UpdateEditPoints( EDIT_POINTS& aEditPoints [[maybe_unused]] )
 {
     return true;
 }
@@ -185,7 +185,7 @@ std::vector<std::pair<wxString, wxVariant>> PCB_GENERATOR::GetRowData()
 }
 
 
-wxString PCB_GENERATOR::GetItemDescription( UNITS_PROVIDER* aUnitsProvider, bool aFull ) const
+wxString PCB_GENERATOR::GetItemDescription( UNITS_PROVIDER* aUnitsProvider [[maybe_unused]], bool aFull [[maybe_unused]] ) const
 {
     return wxString( _( "Generator" ) );
 }

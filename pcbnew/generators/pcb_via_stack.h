@@ -58,7 +58,7 @@ public:
     // must not be taken from whichever member the loader sees first.
     bool LayerFollowsMembers() const override { return false; }
 
-    wxString GetItemDescription( UNITS_PROVIDER* aUnitsProvider, bool aFull ) const override
+    wxString GetItemDescription( UNITS_PROVIDER* aUnitsProvider [[maybe_unused]], bool aFull [[maybe_unused]] ) const override
     {
         return _( "Microvia Stack" );
     }

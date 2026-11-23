@@ -493,32 +493,32 @@ bool PANEL_FP_LIB_TABLE::verifyTables()
 }
 
 
-void PANEL_FP_LIB_TABLE::appendRowHandler( wxCommandEvent& event )
+void PANEL_FP_LIB_TABLE::appendRowHandler( wxCommandEvent& event [[maybe_unused]] )
 {
     LIB_TABLE_GRID_TRICKS::AppendRowHandler( cur_grid(), PCB_IO_MGR::ShowType( PCB_IO_MGR::KICAD_SEXP ) );
 }
 
 
-void PANEL_FP_LIB_TABLE::deleteRowHandler( wxCommandEvent& event )
+void PANEL_FP_LIB_TABLE::deleteRowHandler( wxCommandEvent& event [[maybe_unused]] )
 {
     LIB_TABLE_GRID_TRICKS::DeleteRowHandler( cur_grid() );
 }
 
 
-void PANEL_FP_LIB_TABLE::moveUpHandler( wxCommandEvent& event )
+void PANEL_FP_LIB_TABLE::moveUpHandler( wxCommandEvent& event [[maybe_unused]] )
 {
     LIB_TABLE_GRID_TRICKS::MoveUpHandler( cur_grid() );
 }
 
 
-void PANEL_FP_LIB_TABLE::moveDownHandler( wxCommandEvent& event )
+void PANEL_FP_LIB_TABLE::moveDownHandler( wxCommandEvent& event [[maybe_unused]] )
 {
     LIB_TABLE_GRID_TRICKS::MoveDownHandler( cur_grid() );
 }
 
 
 // @todo refactor this function into single location shared with PANEL_SYM_LIB_TABLE
-void PANEL_FP_LIB_TABLE::onMigrateLibraries( wxCommandEvent& event )
+void PANEL_FP_LIB_TABLE::onMigrateLibraries( wxCommandEvent& event [[maybe_unused]] )
 {
     if( !cur_grid()->CommitPendingChanges() )
         return;
@@ -794,7 +794,7 @@ void PANEL_FP_LIB_TABLE::onSizeGrid( wxSizeEvent& event )
 }
 
 
-void PANEL_FP_LIB_TABLE::onReset( wxCommandEvent& event )
+void PANEL_FP_LIB_TABLE::onReset( wxCommandEvent& event [[maybe_unused]] )
 {
     if( !cur_grid()->CommitPendingChanges() )
         return;
@@ -871,7 +871,7 @@ void PANEL_FP_LIB_TABLE::onNotebookPageChangeRequest( wxAuiNotebookEvent& aEvent
 }
 
 
-void PANEL_FP_LIB_TABLE::onPageChange( wxAuiNotebookEvent& event )
+void PANEL_FP_LIB_TABLE::onPageChange( wxAuiNotebookEvent& event [[maybe_unused]] )
 {
     m_resetGlobal->Enable( m_notebook->GetSelection() == 0 );
 }

@@ -261,38 +261,38 @@ public:
     bool IsLocked() const override;
     void SetLocked( bool aLocked ) override { m_isLocked = aLocked; }
 
-    virtual void SetExcludedFromSim( bool aExclude, const SCH_SHEET_PATH* aInstance = nullptr,
-                                     const wxString& aVariantName = wxEmptyString ) { }
-    virtual bool GetExcludedFromSim( const SCH_SHEET_PATH* aInstance = nullptr,
-                                     const wxString& aVariantName = wxEmptyString ) const { return false; }
+    virtual void SetExcludedFromSim( bool aExclude [[maybe_unused]], const SCH_SHEET_PATH* aInstance [[maybe_unused]] = nullptr,
+                                     const wxString& aVariantName [[maybe_unused]] = wxEmptyString ) { }
+    virtual bool GetExcludedFromSim( const SCH_SHEET_PATH* aInstance [[maybe_unused]] = nullptr,
+                                     const wxString& aVariantName [[maybe_unused]] = wxEmptyString ) const { return false; }
     bool ResolveExcludedFromSim( const SCH_SHEET_PATH* aInstance = nullptr,
                                  const wxString& aVariantName = wxEmptyString ) const;
 
-    virtual void SetExcludedFromBOM( bool aExcludeFromBOM, const SCH_SHEET_PATH* aInstance = nullptr,
-                                     const wxString& aVariantName = wxEmptyString ) { }
-    virtual bool GetExcludedFromBOM( const SCH_SHEET_PATH* aInstance = nullptr,
-                                     const wxString& aVariantName = wxEmptyString ) const { return false; }
+    virtual void SetExcludedFromBOM( bool aExcludeFromBOM [[maybe_unused]], const SCH_SHEET_PATH* aInstance [[maybe_unused]] = nullptr,
+                                     const wxString& aVariantName [[maybe_unused]] = wxEmptyString ) { }
+    virtual bool GetExcludedFromBOM( const SCH_SHEET_PATH* aInstance [[maybe_unused]] = nullptr,
+                                     const wxString& aVariantName [[maybe_unused]] = wxEmptyString ) const { return false; }
     bool ResolveExcludedFromBOM( const SCH_SHEET_PATH* aInstance = nullptr,
                                  const wxString& aVariantName = wxEmptyString ) const;
 
-    virtual void SetExcludedFromBoard( bool aExclude, const SCH_SHEET_PATH* aInstance = nullptr,
-                                        const wxString& aVariantName = wxEmptyString ) { }
-    virtual bool GetExcludedFromBoard( const SCH_SHEET_PATH* aInstance = nullptr,
-                                       const wxString& aVariantName = wxEmptyString ) const { return false; }
+    virtual void SetExcludedFromBoard( bool aExclude [[maybe_unused]], const SCH_SHEET_PATH* aInstance [[maybe_unused]] = nullptr,
+                                        const wxString& aVariantName [[maybe_unused]] = wxEmptyString ) { }
+    virtual bool GetExcludedFromBoard( const SCH_SHEET_PATH* aInstance [[maybe_unused]] = nullptr,
+                                       const wxString& aVariantName [[maybe_unused]] = wxEmptyString ) const { return false; }
     bool ResolveExcludedFromBoard( const SCH_SHEET_PATH* aInstance = nullptr,
                                    const wxString& aVariantName = wxEmptyString ) const;
 
-    virtual void SetExcludedFromPosFiles( bool aExclude, const SCH_SHEET_PATH* aInstance = nullptr,
-                                          const wxString& aVariantName = wxEmptyString ) { }
-    virtual bool GetExcludedFromPosFiles( const SCH_SHEET_PATH* aInstance = nullptr,
-                                          const wxString& aVariantName = wxEmptyString ) const { return false; }
+    virtual void SetExcludedFromPosFiles( bool aExclude [[maybe_unused]], const SCH_SHEET_PATH* aInstance [[maybe_unused]] = nullptr,
+                                          const wxString& aVariantName [[maybe_unused]] = wxEmptyString ) { }
+    virtual bool GetExcludedFromPosFiles( const SCH_SHEET_PATH* aInstance [[maybe_unused]] = nullptr,
+                                          const wxString& aVariantName [[maybe_unused]] = wxEmptyString ) const { return false; }
     bool ResolveExcludedFromPosFiles( const SCH_SHEET_PATH* aInstance = nullptr,
                                       const wxString& aVariantName = wxEmptyString ) const;
 
-    virtual void SetDNP( bool aDNP, const SCH_SHEET_PATH* aInstance = nullptr,
-                         const wxString& aVariantName = wxEmptyString ) { }
-    virtual bool GetDNP( const SCH_SHEET_PATH* aInstance = nullptr,
-                         const wxString& aVariantName = wxEmptyString ) const { return false; }
+    virtual void SetDNP( bool aDNP [[maybe_unused]], const SCH_SHEET_PATH* aInstance [[maybe_unused]] = nullptr,
+                         const wxString& aVariantName [[maybe_unused]] = wxEmptyString ) { }
+    virtual bool GetDNP( const SCH_SHEET_PATH* aInstance [[maybe_unused]] = nullptr,
+                         const wxString& aVariantName [[maybe_unused]] = wxEmptyString ) const { return false; }
     bool ResolveDNP( const SCH_SHEET_PATH* aInstance = nullptr,
                      const wxString& aVariantName = wxEmptyString ) const;
 
@@ -345,7 +345,7 @@ public:
      */
     virtual bool HasHoveredHypertext() const { return HasHypertext() && IsRollover(); }
 
-    virtual void DoHypertextAction( EDA_DRAW_FRAME* aFrame, const VECTOR2I& aMousePos ) const { }
+    virtual void DoHypertextAction( EDA_DRAW_FRAME* aFrame [[maybe_unused]], const VECTOR2I& aMousePos [[maybe_unused]] ) const { }
 
     /**
      * Return the layer this item is on.
@@ -390,7 +390,7 @@ public:
      *
      * The scale runs from 0.0 (definitely different objects) to 1.0 (same)
      */
-    virtual double Similarity( const SCH_ITEM& aItem ) const
+    virtual double Similarity( const SCH_ITEM& aItem [[maybe_unused]] ) const
     {
         wxCHECK_MSG( false, 0.0, wxT( "Similarity not implemented in " ) + GetClass() );
     }
@@ -419,7 +419,7 @@ public:
     /**
      * Move the item by \a aMoveVector to a new position.
      */
-    virtual void Move( const VECTOR2I& aMoveVector )
+    virtual void Move( const VECTOR2I& aMoveVector [[maybe_unused]] )
     {
         wxCHECK_MSG( false, /*void*/, wxT( "Move not implemented in " ) + GetClass() );
     }
@@ -427,7 +427,7 @@ public:
     /**
      * Mirror item horizontally about \a aCenter.
      */
-    virtual void MirrorHorizontally( int aCenter )
+    virtual void MirrorHorizontally( int aCenter [[maybe_unused]] )
     {
         wxCHECK_MSG( false, /*void*/, wxT( "MirrorHorizontally not implemented in " ) + GetClass() );
     }
@@ -435,7 +435,7 @@ public:
     /**
      * Mirror item vertically about \a aCenter.
      */
-    virtual void MirrorVertically( int aCenter )
+    virtual void MirrorVertically( int aCenter [[maybe_unused]] )
     {
         wxCHECK_MSG( false, /*void*/, wxT( "MirrorVertically not implemented in " ) + GetClass() );
     }
@@ -443,7 +443,7 @@ public:
     /**
      * Rotate the item around \a aCenter 90 degrees in the clockwise direction.
      */
-    virtual void Rotate( const VECTOR2I& aCenter, bool aRotateCCW )
+    virtual void Rotate( const VECTOR2I& aCenter [[maybe_unused]], bool aRotateCCW [[maybe_unused]] )
     {
         wxCHECK_MSG( false, /*void*/, wxT( "Rotate not implemented in " ) + GetClass() );
     }
@@ -457,7 +457,7 @@ public:
      * @param aPosition The position in drawing coordinates where the drawing was started.
      *                  May or may not be required depending on the item being drawn.
      */
-    virtual void BeginEdit( const VECTOR2I& aPosition ) {}
+    virtual void BeginEdit( const VECTOR2I& aPosition [[maybe_unused]] ) {}
 
     /**
      * Continue an edit in progress at \a aPosition.
@@ -469,14 +469,14 @@ public:
      * @param aPosition The position of the mouse left click in drawing coordinates.
      * @return True if additional mouse clicks are required to complete the edit in progress.
      */
-    virtual bool ContinueEdit( const VECTOR2I& aPosition ) { return false; }
+    virtual bool ContinueEdit( const VECTOR2I& aPosition [[maybe_unused]] ) { return false; }
 
     /**
      * End an object editing action.
      *
      * This is used to end or abort an edit action in progress initiated by BeginEdit().
      */
-    virtual void EndEdit( bool aClosed = false ) {}
+    virtual void EndEdit( bool aClosed [[maybe_unused]] = false ) {}
 
     /**
      * Calculate the attributes of an item at \a aPosition when it is being edited.
@@ -487,7 +487,7 @@ public:
      *
      * @param aPosition The current mouse position in drawing coordinates.
      */
-    virtual void CalcEdit( const VECTOR2I& aPosition ) {}
+    virtual void CalcEdit( const VECTOR2I& aPosition [[maybe_unused]] ) {}
 
     /**
      * Add the schematic item end points to \a aItemList if the item has end points.
@@ -499,7 +499,7 @@ public:
      *
      * @param aItemList is the list of DANGLING_END_ITEMS to add to.
      */
-    virtual void GetEndPoints( std::vector< DANGLING_END_ITEM >& aItemList ) {}
+    virtual void GetEndPoints( std::vector< DANGLING_END_ITEM >& aItemList [[maybe_unused]] ) {}
 
     /**
      * Test the schematic item to \a aItemList to check if it's dangling state has changed.
@@ -519,9 +519,9 @@ public:
      * @param aSheet is the sheet path to update connections for.
      * @return True if the dangling state has changed from it's current setting.
      */
-    virtual bool UpdateDanglingState( std::vector<DANGLING_END_ITEM>& aItemListByType,
-                                      std::vector<DANGLING_END_ITEM>& aItemListByPos,
-                                      const SCH_SHEET_PATH*           aSheet = nullptr )
+    virtual bool UpdateDanglingState( std::vector<DANGLING_END_ITEM>& aItemListByType [[maybe_unused]],
+                                      std::vector<DANGLING_END_ITEM>& aItemListByPos [[maybe_unused]],
+                                      const SCH_SHEET_PATH*           aSheet [[maybe_unused]] = nullptr )
     {
         return false;
     }
@@ -538,7 +538,7 @@ public:
      * @retval true if \a aPt is an end point.
      * @retval false if \a aPt is not an end point.
      */
-    virtual bool IsEndPoint( const VECTOR2I& aPt ) const { return false; }
+    virtual bool IsEndPoint( const VECTOR2I& aPt [[maybe_unused]] ) const { return false; }
 
     virtual bool IsDangling() const { return false; }
 
@@ -553,7 +553,7 @@ public:
      * @return true if the given point can start drawing (usually means the anchor is
      *         unused/free/dangling).
      */
-    virtual bool IsPointClickableAnchor( const VECTOR2I& aPos ) const { return false; }
+    virtual bool IsPointClickableAnchor( const VECTOR2I& aPos [[maybe_unused]] ) const { return false; }
 
     /**
      * Add all the connection points for this item to \a aPoints.
@@ -630,7 +630,7 @@ public:
     /**
      * Return true if this item should propagate connection info to \a aItem.
      */
-    virtual bool ConnectionPropagatesTo( const EDA_ITEM* aItem ) const { return true; }
+    virtual bool ConnectionPropagatesTo( const EDA_ITEM* aItem [[maybe_unused]] ) const { return true; }
 
     bool IsConnectivityDirty() const { return m_connectivity_dirty; }
 
@@ -656,8 +656,8 @@ public:
      *
      * @return true if there are connectivity changes otherwise false.
      */
-    virtual bool HasConnectivityChanges( const SCH_ITEM* aItem,
-                                         const SCH_SHEET_PATH* aInstance = nullptr ) const
+    virtual bool HasConnectivityChanges( const SCH_ITEM* aItem [[maybe_unused]],
+                                         const SCH_SHEET_PATH* aInstance [[maybe_unused]] = nullptr ) const
     {
         return false;
     }
@@ -668,7 +668,7 @@ public:
     virtual bool HasCachedDriverName() const { return false; }
     virtual const wxString& GetCachedDriverName() const;
 
-    virtual void SetLastResolvedState( const SCH_ITEM* aItem ) { }
+    virtual void SetLastResolvedState( const SCH_ITEM* aItem [[maybe_unused]] ) { }
 
     std::shared_ptr<NETCLASS> GetEffectiveNetClass( const SCH_SHEET_PATH* aSheet = nullptr ) const;
 
@@ -678,9 +678,9 @@ public:
     AUTOPLACE_ALGO GetFieldsAutoplaced() const { return m_fieldsAutoplaced; }
     void SetFieldsAutoplaced( AUTOPLACE_ALGO aAlgo ) { m_fieldsAutoplaced = aAlgo; }
 
-    virtual void AutoplaceFields( SCH_SCREEN* aScreen, AUTOPLACE_ALGO aAlgo ) { }
+    virtual void AutoplaceFields( SCH_SCREEN* aScreen [[maybe_unused]], AUTOPLACE_ALGO aAlgo [[maybe_unused]] ) { }
 
-    virtual void RunOnChildren( const std::function<void( SCH_ITEM* )>& aFunction, RECURSE_MODE aMode ) { }
+    virtual void RunOnChildren( const std::function<void( SCH_ITEM* )>& aFunction [[maybe_unused]], RECURSE_MODE aMode [[maybe_unused]] ) { }
 
     virtual void ClearCaches();
 
@@ -695,7 +695,7 @@ public:
 
     virtual STROKE_PARAMS GetStroke() const { wxCHECK( false, STROKE_PARAMS() ); }
 
-    virtual void SetStroke( const STROKE_PARAMS& aStroke ) { wxCHECK( false, /* void */ ); }
+    virtual void SetStroke( const STROKE_PARAMS& aStroke [[maybe_unused]] ) { wxCHECK( false, /* void */ ); }
 
     void GetMsgPanelInfo( EDA_DRAW_FRAME* aFrame, std::vector<MSG_PANEL_ITEM>& aList ) override;
 
@@ -711,8 +711,8 @@ public:
      * @param aOffset is a relative offset.
      * @param aDimmed to reduce brightness of item.
      */
-    virtual void Plot( PLOTTER* aPlotter, bool aBackground, const SCH_PLOT_OPTS& aPlotOpts,
-                       int aUnit, int aBodyStyle, const VECTOR2I& aOffset, bool aDimmed)
+    virtual void Plot( PLOTTER* aPlotter [[maybe_unused]], bool aBackground [[maybe_unused]], const SCH_PLOT_OPTS& aPlotOpts [[maybe_unused]],
+                       int aUnit [[maybe_unused]], int aBodyStyle [[maybe_unused]], const VECTOR2I& aOffset [[maybe_unused]], bool aDimmed [[maybe_unused]])
     {
         wxCHECK_MSG( false, /*void*/, wxT( "Plot not implemented in " ) + GetClass() );
     }
@@ -837,7 +837,7 @@ private:
      * @param aPosition is a reference to a VECTOR2I object containing the test position.
      * @return True if connection to \a aPosition exists.
      */
-    virtual bool doIsConnected( const VECTOR2I& aPosition ) const { return false; }
+    virtual bool doIsConnected( const VECTOR2I& aPosition [[maybe_unused]] ) const { return false; }
 
 protected:
     SCH_LAYER_ID      m_layer;

@@ -235,7 +235,7 @@ static bool undoListContainsDrillMap( const PICKED_ITEMS_LIST* aList )
 }
 
 
-void PCB_BASE_EDIT_FRAME::RestoreCopyFromUndoList( wxCommandEvent& aEvent )
+void PCB_BASE_EDIT_FRAME::RestoreCopyFromUndoList( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( UndoRedoBlocked() )
         return;
@@ -281,7 +281,7 @@ void PCB_BASE_EDIT_FRAME::RestoreCopyFromUndoList( wxCommandEvent& aEvent )
 }
 
 
-void PCB_BASE_EDIT_FRAME::RestoreCopyFromRedoList( wxCommandEvent& aEvent )
+void PCB_BASE_EDIT_FRAME::RestoreCopyFromRedoList( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( UndoRedoBlocked() )
         return;

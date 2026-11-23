@@ -105,14 +105,14 @@ public:
     bool HasHoveredHypertext() const override;
     void DoHypertextAction( EDA_DRAW_FRAME* aFrame, const VECTOR2I& aMousePos ) const override;
 
-    void SetExcludedFromSim( bool aExclude, const SCH_SHEET_PATH* aInstance = nullptr,
-                             const wxString& aVariantName = wxEmptyString ) override
+    void SetExcludedFromSim( bool aExclude, const SCH_SHEET_PATH* aInstance [[maybe_unused]] = nullptr,
+                             const wxString& aVariantName [[maybe_unused]] = wxEmptyString ) override
     {
         m_excludedFromSim = aExclude;
     }
 
-    bool GetExcludedFromSim( const SCH_SHEET_PATH* aInstance = nullptr,
-                             const wxString& aVariantName = wxEmptyString ) const override
+    bool GetExcludedFromSim( const SCH_SHEET_PATH* aInstance [[maybe_unused]] = nullptr,
+                             const wxString& aVariantName [[maybe_unused]] = wxEmptyString ) const override
     {
         return m_excludedFromSim;
     }
@@ -136,12 +136,12 @@ public:
     bool HitTest( const BOX2I& aRect, bool aContained, int aAccuracy = 0 ) const override;
     bool HitTest( const SHAPE_LINE_CHAIN& aPoly, bool aContained ) const override;
 
-    bool Matches( const EDA_SEARCH_DATA& aSearchData, void* aAuxData ) const override
+    bool Matches( const EDA_SEARCH_DATA& aSearchData, void* aAuxData [[maybe_unused]] ) const override
     {
         return SCH_ITEM::Matches( GetText(), aSearchData );
     }
 
-    bool Replace( const EDA_SEARCH_DATA& aSearchData, void* aAuxData ) override
+    bool Replace( const EDA_SEARCH_DATA& aSearchData, void* aAuxData [[maybe_unused]] ) override
     {
         return EDA_TEXT::Replace( aSearchData );
     }

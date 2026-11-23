@@ -1243,7 +1243,7 @@ void DIALOG_FP_EDIT_PAD_TABLE::OnSelectCell( wxGridEvent& aEvent )
 }
 
 
-void DIALOG_FP_EDIT_PAD_TABLE::OnUpdateUI( wxUpdateUIEvent& aEvent )
+void DIALOG_FP_EDIT_PAD_TABLE::OnUpdateUI( wxUpdateUIEvent& aEvent [[maybe_unused]] )
 {
     if( m_summaryDirty )
     {
@@ -1589,7 +1589,7 @@ void DIALOG_FP_EDIT_PAD_TABLE::OnImportButtonClick( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_FP_EDIT_PAD_TABLE::OnAddRow( wxCommandEvent& aEvent )
+void DIALOG_FP_EDIT_PAD_TABLE::OnAddRow( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( !m_footprint )
         return;
@@ -1634,7 +1634,7 @@ void DIALOG_FP_EDIT_PAD_TABLE::OnAddRow( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_FP_EDIT_PAD_TABLE::OnDeleteRow( wxCommandEvent& aEvent )
+void DIALOG_FP_EDIT_PAD_TABLE::OnDeleteRow( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( !m_footprint )
         return;

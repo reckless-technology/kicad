@@ -115,7 +115,7 @@ public:
 
     void GetMsgPanelInfo( EDA_DRAW_FRAME* aFrame, std::vector<MSG_PANEL_ITEM>& aList ) override;
 
-    bool Matches( const EDA_SEARCH_DATA& aSearchData, void* aAuxData ) const override
+    bool Matches( const EDA_SEARCH_DATA& aSearchData, void* aAuxData [[maybe_unused]] ) const override
     {
         return BOARD_ITEM::Matches( m_rcItem->GetErrorMessage( true ), aSearchData );
     }
@@ -134,12 +134,12 @@ public:
 
     SEVERITY GetSeverity() const override;
 
-    double Similarity( const BOARD_ITEM& aBoardItem ) const override
+    double Similarity( const BOARD_ITEM& aBoardItem [[maybe_unused]] ) const override
     {
         return 0.0;
     }
 
-    bool operator==( const BOARD_ITEM& aBoardItem ) const override
+    bool operator==( const BOARD_ITEM& aBoardItem [[maybe_unused]] ) const override
     {
         return false;
     }

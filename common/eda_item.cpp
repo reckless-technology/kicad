@@ -311,7 +311,7 @@ INSPECT_RESULT EDA_ITEM::Visit( INSPECTOR inspector, void* testData,
 }
 
 
-wxString EDA_ITEM::GetItemDescription( UNITS_PROVIDER* aUnitsProvider, bool aFull ) const
+wxString EDA_ITEM::GetItemDescription( UNITS_PROVIDER* aUnitsProvider [[maybe_unused]], bool aFull [[maybe_unused]] ) const
 {
     wxFAIL_MSG( wxT( "GetItemDescription() was not overridden for item type " ) + GetClass() );
 
@@ -486,7 +486,7 @@ bool EDA_ITEM::Replace( const EDA_SEARCH_DATA& aSearchData, wxString& aText )
 }
 
 
-bool EDA_ITEM::operator<( const EDA_ITEM& aItem ) const
+bool EDA_ITEM::operator<( const EDA_ITEM& aItem [[maybe_unused]] ) const
 {
     wxFAIL_MSG( wxString::Format( wxT( "Less than operator not defined for item type %s." ),
                                   GetClass() ) );

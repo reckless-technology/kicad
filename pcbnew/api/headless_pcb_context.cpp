@@ -164,7 +164,7 @@ bool HEADLESS_PCB_CONTEXT::SaveBoardAs( const wxString& aFileName )
 }
 
 
-bool HEADLESS_PCB_CONTEXT::SavePcbCopy( const wxString& aFileName, bool aCreateProject, bool aHeadless )
+bool HEADLESS_PCB_CONTEXT::SavePcbCopy( const wxString& aFileName, bool aCreateProject, bool aHeadless [[maybe_unused]] )
 {
     if( !m_board || aFileName.IsEmpty() )
         return false;

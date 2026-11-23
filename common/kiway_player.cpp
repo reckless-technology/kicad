@@ -88,7 +88,7 @@ KIWAY_PLAYER::~KIWAY_PLAYER() throw()
 }
 
 
-void KIWAY_PLAYER::KiwayMailIn( KIWAY_MAIL_EVENT& aEvent )
+void KIWAY_PLAYER::KiwayMailIn( KIWAY_MAIL_EVENT& aEvent [[maybe_unused]] )
 {
     // override this in derived classes.
 }

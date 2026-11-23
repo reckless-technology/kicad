@@ -41,7 +41,7 @@ PCB_IO_SPRINT_LAYOUT::PCB_IO_SPRINT_LAYOUT() :
 
 
 void PCB_IO_SPRINT_LAYOUT::FootprintEnumerate( wxArrayString& aFootprintNames, const wxString& aLibraryPath,
-                                               bool aBestEfforts, const std::map<std::string, UTF8>* aProperties )
+                                               bool aBestEfforts [[maybe_unused]], const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     wxFileName libFn( aLibraryPath );
 
@@ -71,8 +71,8 @@ void PCB_IO_SPRINT_LAYOUT::FootprintEnumerate( wxArrayString& aFootprintNames, c
 
 
 std::unique_ptr<FOOTPRINT> PCB_IO_SPRINT_LAYOUT::FootprintLoad( const wxString& aLibraryPath,
-                                                                const wxString& aFootprintName, bool aKeepUUID,
-                                                                const std::map<std::string, UTF8>* aProperties )
+                                                                const wxString& aFootprintName, bool aKeepUUID [[maybe_unused]],
+                                                                const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     wxFileName libFn( aLibraryPath );
     wxFileName lmkPath;
@@ -145,7 +145,7 @@ bool PCB_IO_SPRINT_LAYOUT::CanReadBoard( const wxString& aFileName ) const
 
 
 void PCB_IO_SPRINT_LAYOUT::loadBoard( const wxString& aFileName, BOARD& aBoard, bool aIsNewLoad,
-                                      const std::map<std::string, UTF8>* aProperties, PROJECT* aProject )
+                                      const std::map<std::string, UTF8>* aProperties, PROJECT* aProject [[maybe_unused]] )
 {
     FONTCONFIG_REPORTER_SCOPE fontconfigScope( &LOAD_INFO_REPORTER::GetInstance() );
 

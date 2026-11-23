@@ -82,12 +82,12 @@ DIALOG_TEXT_PROPERTIES::DIALOG_TEXT_PROPERTIES( PCB_BASE_EDIT_FRAME* aParent, PC
     m_scintillaTricks = new SCINTILLA_TRICKS(
             m_MultiLineText, wxT( "{}" ), false,
             // onAcceptFn
-            [this]( wxKeyEvent& aEvent )
+            [this]( wxKeyEvent& aEvent [[maybe_unused]] )
             {
                 wxPostEvent( this, wxCommandEvent( wxEVT_COMMAND_BUTTON_CLICKED, wxID_OK ) );
             },
             // onCharFn
-            [this]( wxStyledTextEvent& aEvent )
+            [this]( wxStyledTextEvent& aEvent [[maybe_unused]] )
             {
                 m_scintillaTricks->DoTextVarAutocomplete(
                         // getTokensFn
@@ -409,7 +409,7 @@ void DIALOG_TEXT_PROPERTIES::onValignButton( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_TEXT_PROPERTIES::onTextSize( wxCommandEvent& aEvent )
+void DIALOG_TEXT_PROPERTIES::onTextSize( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( m_autoTextThickness->IsChecked() )
         m_thickness.SetValue( GetPenSizeForNormal( m_textWidth.GetValue() ) );
@@ -564,7 +564,7 @@ void DIALOG_TEXT_PROPERTIES::onMultiLineTCLostFocus( wxFocusEvent& event )
 }
 
 
-void DIALOG_TEXT_PROPERTIES::onSyntaxHelp( wxHyperlinkEvent& aEvent )
+void DIALOG_TEXT_PROPERTIES::onSyntaxHelp( wxHyperlinkEvent& aEvent [[maybe_unused]] )
 {
     m_helpWindow = PCB_TEXT::ShowSyntaxHelp( this );
 }

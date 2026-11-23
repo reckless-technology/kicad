@@ -48,7 +48,7 @@ public:
 
     bool CanReadBoard( const wxString& aFileName ) const override;
 
-    long long GetLibraryTimestamp( const wxString& aLibraryPath ) const override { return 0; }
+    long long GetLibraryTimestamp( const wxString& aLibraryPath [[maybe_unused]] ) const override { return 0; }
 
     wxString GetImportedDesignRules() const override { return m_importedDesignRules; }
 

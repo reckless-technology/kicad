@@ -204,7 +204,7 @@ void SCH_IO_KICAD_SEXPR_LIB_CACHE::Load()
 }
 
 
-void SCH_IO_KICAD_SEXPR_LIB_CACHE::Save( const std::optional<bool>& aOpt )
+void SCH_IO_KICAD_SEXPR_LIB_CACHE::Save( const std::optional<bool>& aOpt [[maybe_unused]] )
 {
     if( !m_isModified )
         return;

@@ -888,7 +888,7 @@ void DIALOG_DATABASE_LIB_SETTINGS::onCloseWindow( wxCloseEvent& aEvent )
 }
 
 
-void DIALOG_DATABASE_LIB_SETTINGS::OnSettingChanged( wxCommandEvent& aEvent )
+void DIALOG_DATABASE_LIB_SETTINGS::OnSettingChanged( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( m_loading )
         return;
@@ -952,7 +952,7 @@ void DIALOG_DATABASE_LIB_SETTINGS::updateDsnDriver()
 }
 
 
-void DIALOG_DATABASE_LIB_SETTINGS::OnManageDataSources( wxCommandEvent& aEvent )
+void DIALOG_DATABASE_LIB_SETTINGS::OnManageDataSources( wxCommandEvent& aEvent [[maybe_unused]] )
 {
 #ifdef __WXMSW__
     // Waits so that the list can show what was added
@@ -1018,7 +1018,7 @@ void DIALOG_DATABASE_LIB_SETTINGS::selectBackend( DATABASE_SOURCE_TYPE aType )
 }
 
 
-void DIALOG_DATABASE_LIB_SETTINGS::onProviderTimer( wxTimerEvent& aEvent )
+void DIALOG_DATABASE_LIB_SETTINGS::onProviderTimer( wxTimerEvent& aEvent [[maybe_unused]] )
 {
     const ACCESS_PROVIDER provider = accessProvider();
 
@@ -1098,14 +1098,14 @@ void DIALOG_DATABASE_LIB_SETTINGS::updateSourceControls()
 }
 
 
-void DIALOG_DATABASE_LIB_SETTINGS::OnBackendChanged( wxCommandEvent& aEvent )
+void DIALOG_DATABASE_LIB_SETTINGS::OnBackendChanged( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     updateSourceControls();
     sourceEdited();
 }
 
 
-void DIALOG_DATABASE_LIB_SETTINGS::OnFileTextChanged( wxCommandEvent& aEvent )
+void DIALOG_DATABASE_LIB_SETTINGS::OnFileTextChanged( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( m_loading )
         return;
@@ -1120,7 +1120,7 @@ void DIALOG_DATABASE_LIB_SETTINGS::OnFileTextChanged( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_DATABASE_LIB_SETTINGS::OnBrowseFile( wxCommandEvent& aEvent )
+void DIALOG_DATABASE_LIB_SETTINGS::OnBrowseFile( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     wxString dir = wxPathOnly( m_dbFile );
 
@@ -1154,7 +1154,7 @@ void DIALOG_DATABASE_LIB_SETTINGS::OnSourceTypeChanged( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_DATABASE_LIB_SETTINGS::OnSourceChanged( wxCommandEvent& aEvent )
+void DIALOG_DATABASE_LIB_SETTINGS::OnSourceChanged( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     sourceEdited();
 }
@@ -1182,7 +1182,7 @@ void DIALOG_DATABASE_LIB_SETTINGS::OnSourceSpinChanged( wxSpinEvent& aEvent )
 }
 
 
-void DIALOG_DATABASE_LIB_SETTINGS::OnInsertDriver( wxCommandEvent& aEvent )
+void DIALOG_DATABASE_LIB_SETTINGS::OnInsertDriver( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     wxString driver = wxString::Format( wxS( "Driver={%s};" ), m_choiceDriver->GetStringSelection() );
     wxString text = m_txtConnectionString->GetValue();
@@ -1195,7 +1195,7 @@ void DIALOG_DATABASE_LIB_SETTINGS::OnInsertDriver( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_DATABASE_LIB_SETTINGS::OnTestConnection( wxCommandEvent& aEvent )
+void DIALOG_DATABASE_LIB_SETTINGS::OnTestConnection( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( m_connectJob )
     {
@@ -1588,7 +1588,7 @@ void DIALOG_DATABASE_LIB_SETTINGS::storeLibrary()
 }
 
 
-void DIALOG_DATABASE_LIB_SETTINGS::OnLibrarySelected( wxCommandEvent& aEvent )
+void DIALOG_DATABASE_LIB_SETTINGS::OnLibrarySelected( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( !m_fieldsGrid->CommitPendingChanges() )
         return;
@@ -1599,7 +1599,7 @@ void DIALOG_DATABASE_LIB_SETTINGS::OnLibrarySelected( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_DATABASE_LIB_SETTINGS::OnAddLibrary( wxCommandEvent& aEvent )
+void DIALOG_DATABASE_LIB_SETTINGS::OnAddLibrary( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     storeLibrary();
     m_flagMissing = false;
@@ -1611,7 +1611,7 @@ void DIALOG_DATABASE_LIB_SETTINGS::OnAddLibrary( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_DATABASE_LIB_SETTINGS::OnDuplicateLibrary( wxCommandEvent& aEvent )
+void DIALOG_DATABASE_LIB_SETTINGS::OnDuplicateLibrary( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     storeLibrary();
 
@@ -1645,19 +1645,19 @@ void DIALOG_DATABASE_LIB_SETTINGS::moveLibrary( int aDelta )
 }
 
 
-void DIALOG_DATABASE_LIB_SETTINGS::OnMoveLibraryUp( wxCommandEvent& aEvent )
+void DIALOG_DATABASE_LIB_SETTINGS::OnMoveLibraryUp( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     moveLibrary( -1 );
 }
 
 
-void DIALOG_DATABASE_LIB_SETTINGS::OnMoveLibraryDown( wxCommandEvent& aEvent )
+void DIALOG_DATABASE_LIB_SETTINGS::OnMoveLibraryDown( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     moveLibrary( 1 );
 }
 
 
-void DIALOG_DATABASE_LIB_SETTINGS::OnRemoveLibrary( wxCommandEvent& aEvent )
+void DIALOG_DATABASE_LIB_SETTINGS::OnRemoveLibrary( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( !currentLibrary() )
         return;
@@ -1698,7 +1698,7 @@ void DIALOG_DATABASE_LIB_SETTINGS::OnLibraryChanged( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_DATABASE_LIB_SETTINGS::OnTableChanged( wxCommandEvent& aEvent )
+void DIALOG_DATABASE_LIB_SETTINGS::OnTableChanged( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( m_loading )
         return;
@@ -1926,7 +1926,7 @@ void DIALOG_DATABASE_LIB_SETTINGS::OnFieldCellChanged( wxGridEvent& aEvent )
 }
 
 
-void DIALOG_DATABASE_LIB_SETTINGS::OnAddField( wxCommandEvent& aEvent )
+void DIALOG_DATABASE_LIB_SETTINGS::OnAddField( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     DATABASE_LIB_TABLE* lib = currentLibrary();
 
@@ -1943,14 +1943,14 @@ void DIALOG_DATABASE_LIB_SETTINGS::OnAddField( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_DATABASE_LIB_SETTINGS::OnMoveFieldUp( wxCommandEvent& aEvent )
+void DIALOG_DATABASE_LIB_SETTINGS::OnMoveFieldUp( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( DATABASE_LIB_TABLE* lib = currentLibrary() )
         m_fieldsGrid->OnMoveRowUp( [&]( int row ) { swapFields( *lib, row, row - 1 ); } );
 }
 
 
-void DIALOG_DATABASE_LIB_SETTINGS::OnMoveFieldDown( wxCommandEvent& aEvent )
+void DIALOG_DATABASE_LIB_SETTINGS::OnMoveFieldDown( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( DATABASE_LIB_TABLE* lib = currentLibrary() )
         m_fieldsGrid->OnMoveRowDown( [&]( int row ) { swapFields( *lib, row, row + 1 ); } );
@@ -1965,7 +1965,7 @@ void DIALOG_DATABASE_LIB_SETTINGS::swapFields( DATABASE_LIB_TABLE& aLib, int aRo
 }
 
 
-void DIALOG_DATABASE_LIB_SETTINGS::OnRemoveField( wxCommandEvent& aEvent )
+void DIALOG_DATABASE_LIB_SETTINGS::OnRemoveField( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( DATABASE_LIB_TABLE* lib = currentLibrary() )
     {
@@ -1982,7 +1982,7 @@ void DIALOG_DATABASE_LIB_SETTINGS::OnRemoveField( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_DATABASE_LIB_SETTINGS::OnAddUnmappedColumns( wxCommandEvent& aEvent )
+void DIALOG_DATABASE_LIB_SETTINGS::OnAddUnmappedColumns( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     DATABASE_LIB_TABLE* lib = currentLibrary();
 
@@ -2247,7 +2247,7 @@ void DIALOG_DATABASE_LIB_SETTINGS::showInfo( const wxString& aMessage, int aIcon
 }
 
 
-void DIALOG_DATABASE_LIB_SETTINGS::onSplitterIdle( wxIdleEvent& aEvent )
+void DIALOG_DATABASE_LIB_SETTINGS::onSplitterIdle( wxIdleEvent& aEvent [[maybe_unused]] )
 {
     m_splitter->Unbind( wxEVT_IDLE, &DIALOG_DATABASE_LIB_SETTINGS::onSplitterIdle, this );
 

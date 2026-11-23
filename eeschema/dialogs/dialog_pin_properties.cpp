@@ -39,7 +39,7 @@
 class ALT_PIN_DATA_MODEL : public WX_GRID_TABLE_BASE, public std::vector<SCH_PIN::ALT>
 {
 public:
-    ALT_PIN_DATA_MODEL( EDA_UNITS aUserUnits )
+    ALT_PIN_DATA_MODEL( EDA_UNITS aUserUnits [[maybe_unused]] )
     {
     }
 
@@ -57,7 +57,7 @@ public:
         }
     }
 
-    bool IsEmptyCell( int row, int col ) override
+    bool IsEmptyCell( int row [[maybe_unused]], int col [[maybe_unused]] ) override
     {
         return false;   // don't allow adjacent cell overflow, even if we are actually empty
     }
@@ -227,7 +227,7 @@ DIALOG_PIN_PROPERTIES::DIALOG_PIN_PROPERTIES( SYMBOL_EDIT_FRAME* parent, SCH_PIN
         m_lowerSizer->Add( m_alternatesTurndown, 1, wxEXPAND | wxLEFT | wxRIGHT, 10 );
 
         m_alternatesTurndown->Bind( WX_COLLAPSIBLE_PANE_CHANGED,
-                                    [this]( wxCommandEvent& aEvent )
+                                    [this]( wxCommandEvent& aEvent [[maybe_unused]] )
                                     {
                                         Freeze();
                                         m_alternatesTurndown->GetPane()->Fit();
@@ -381,7 +381,7 @@ bool DIALOG_PIN_PROPERTIES::TransferDataToWindow()
     {
         m_infoBar->RemoveAllButtons();
         m_infoBar->AddLink( _( "Exit sync pins mode" ),
-                            [&]( wxHyperlinkEvent& aEvent )
+                            [&]( wxHyperlinkEvent& aEvent [[maybe_unused]] )
                             {
                                 if( SYMBOL_EDITOR_SETTINGS* cfg = m_frame->GetSettings() )
                                     cfg->m_SyncPinEdit = !cfg->m_SyncPinEdit;
@@ -520,7 +520,7 @@ wxString DIALOG_PIN_PROPERTIES::getSyncPinsMessage()
 }
 
 
-void DIALOG_PIN_PROPERTIES::onAddAlternate( wxCommandEvent& event )
+void DIALOG_PIN_PROPERTIES::onAddAlternate( wxCommandEvent& event [[maybe_unused]] )
 {
     if( !m_alternatesGrid->CommitPendingChanges() )
         return;
@@ -539,7 +539,7 @@ void DIALOG_PIN_PROPERTIES::onAddAlternate( wxCommandEvent& event )
 }
 
 
-void DIALOG_PIN_PROPERTIES::onDeleteAlternate( wxCommandEvent& event )
+void DIALOG_PIN_PROPERTIES::onDeleteAlternate( wxCommandEvent& event [[maybe_unused]] )
 {
     m_alternatesGrid->OnDeleteRows(
             [&]( int row )
@@ -582,7 +582,7 @@ void DIALOG_PIN_PROPERTIES::OnSize( wxSizeEvent& event )
 }
 
 
-void DIALOG_PIN_PROPERTIES::OnUpdateUI( wxUpdateUIEvent& event )
+void DIALOG_PIN_PROPERTIES::OnUpdateUI( wxUpdateUIEvent& event [[maybe_unused]] )
 {
     // Handle a delayed focus
     if( m_delayedFocusRow >= 0 && m_alternatesTurndown )

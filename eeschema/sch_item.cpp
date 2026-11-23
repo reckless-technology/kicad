@@ -831,7 +831,7 @@ const wxString& SCH_ITEM::GetCachedDriverName() const
 }
 
 
-void SCH_ITEM::swapData( SCH_ITEM* aItem )
+void SCH_ITEM::swapData( SCH_ITEM* aItem [[maybe_unused]] )
 {
     UNIMPLEMENTED_FOR( GetClass() );
 }
@@ -1071,7 +1071,7 @@ double SCH_ITEM::BitmapWorldScaleLimit() const
 }
 
 
-void SCH_ITEM::GetMsgPanelInfo( EDA_DRAW_FRAME* aFrame, std::vector<MSG_PANEL_ITEM>& aList )
+void SCH_ITEM::GetMsgPanelInfo( EDA_DRAW_FRAME* aFrame [[maybe_unused]], std::vector<MSG_PANEL_ITEM>& aList )
 {
     if( SYMBOL* symbol = GetParentSymbol() )
     {

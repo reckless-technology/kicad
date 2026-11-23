@@ -57,7 +57,7 @@ static const std::vector<wxString> c_attributesWhitelist = { "Datasheet",
 // clang-format on
 
 
-SCH_EASYEDA_PARSER::SCH_EASYEDA_PARSER( SCHEMATIC* aSchematic, PROGRESS_REPORTER* aProgressReporter,
+SCH_EASYEDA_PARSER::SCH_EASYEDA_PARSER( SCHEMATIC* aSchematic, PROGRESS_REPORTER* aProgressReporter [[maybe_unused]],
                                         REPORTER* aReporter )
 {
     m_schematic = aSchematic;
@@ -417,7 +417,7 @@ VECTOR2I HelperGeneratePowerPortGraphics( LIB_SYMBOL* aKsymbol, EASYEDA::POWER_F
 
 
 void SCH_EASYEDA_PARSER::ParseSymbolShapes( LIB_SYMBOL*                  aSymbol,
-                                            std::map<wxString, wxString> paramMap,
+                                            std::map<wxString, wxString> paramMap [[maybe_unused]],
                                             wxArrayString                aShapes )
 {
     for( wxString shapeStr : aShapes )
@@ -1104,7 +1104,7 @@ std::pair<LIB_SYMBOL*, bool> SCH_EASYEDA_PARSER::MakePowerSymbol( const wxString
 }
 
 void SCH_EASYEDA_PARSER::ParseSchematic( SCHEMATIC* aSchematic, SCH_SHEET* aRootSheet,
-                                         const wxString& aFileName, wxArrayString aShapes )
+                                         const wxString& aFileName [[maybe_unused]], wxArrayString aShapes )
 {
     std::map<wxString, std::unique_ptr<LIB_SYMBOL>> loadedSymbols;
     std::map<wxString, int>                         namesCounter;

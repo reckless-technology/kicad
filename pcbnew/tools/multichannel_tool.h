@@ -119,7 +119,7 @@ public:
                       wxString* aErrorOut = nullptr );
     int AutogenerateRuleAreas( const TOOL_EVENT& aEvent );
 
-    void UpdatePickedPoint( const std::optional<VECTOR2I>& aPoint ) override {};
+    void UpdatePickedPoint( const std::optional<VECTOR2I>& aPoint [[maybe_unused]] ) override {};
     void UpdatePickedItem( const EDA_ITEM* aItem ) override;
 
     void ShowMismatchDetails( wxWindow* aParent, const wxString& aSummary,

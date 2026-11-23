@@ -138,7 +138,7 @@ void PANEL_SCH_DATA_SOURCES::populateInstalledSources()
 }
 
 
-void PANEL_SCH_DATA_SOURCES::OnManageDataSources( wxCommandEvent& aEvent )
+void PANEL_SCH_DATA_SOURCES::OnManageDataSources( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     EDA_BASE_FRAME* parentFrame = m_frame ? m_frame
                                           : dynamic_cast<EDA_BASE_FRAME*>( wxGetTopLevelParent( this ) );

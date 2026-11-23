@@ -76,7 +76,7 @@ namespace
 } // namespace
 
 
-LOAD_TASK OBJECT::Load( ARCHIVE& aAr )
+LOAD_TASK OBJECT::Load( ARCHIVE& aAr [[maybe_unused]] )
 {
     co_return;
 }
@@ -322,13 +322,13 @@ bool ARCHIVE::OBJECT_AWAITER::await_ready()
 }
 
 
-void ARCHIVE::OBJECT_AWAITER::await_suspend( std::coroutine_handle<> aAwaiting )
+void ARCHIVE::OBJECT_AWAITER::await_suspend( std::coroutine_handle<> aAwaiting [[maybe_unused]] )
 {
     m_archive.pushObjectLoad( *m_object, m_object->Schema );
 }
 
 
-void ARCHIVE::EMBEDDED_AWAITER::await_suspend( std::coroutine_handle<> aAwaiting )
+void ARCHIVE::EMBEDDED_AWAITER::await_suspend( std::coroutine_handle<> aAwaiting [[maybe_unused]] )
 {
     m_object.Offset = m_archive.m_pos;
 
@@ -337,7 +337,7 @@ void ARCHIVE::EMBEDDED_AWAITER::await_suspend( std::coroutine_handle<> aAwaiting
 }
 
 
-void LOAD_TASK::await_suspend( std::coroutine_handle<> aAwaiting )
+void LOAD_TASK::await_suspend( std::coroutine_handle<> aAwaiting [[maybe_unused]] )
 {
     m_handle.promise().m_archive->pushTask( Release() );
 }

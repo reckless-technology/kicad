@@ -2224,7 +2224,7 @@ static wxString formatBBox( const BOX2I& aBBox )
 
 
 static bool makeWireFromChain( BRepLib_MakeWire& aMkWire, const SHAPE_LINE_CHAIN& aChain,
-                               double aMergeOCCMaxDist, double aZposition, const VECTOR2D& aOrigin,
+                               double aMergeOCCMaxDist [[maybe_unused]], double aZposition, const VECTOR2D& aOrigin,
                                REPORTER* aReporter )
 {
     auto toPoint =
@@ -2448,7 +2448,7 @@ bool STEP_PCB_MODEL::MakeShapes( std::vector<TopoDS_Shape>& aShapes, const SHAPE
         SHAPE_POLY_SET::POLYGON& polygon = workingPoly.Polygon( polyId );
 
         auto tryMakeWire = [this, &aZposition,
-                            &aOrigin]( const SHAPE_LINE_CHAIN& aContour, bool aAllowRetry ) -> TopoDS_Wire
+                            &aOrigin]( const SHAPE_LINE_CHAIN& aContour, bool aAllowRetry [[maybe_unused]] ) -> TopoDS_Wire
         {
             TopoDS_Wire      wire;
             BRepLib_MakeWire mkWire;
@@ -4065,7 +4065,7 @@ bool STEP_PCB_MODEL::readSTEP( Handle( TDocStd_Document )& doc, const char* fnam
 }
 
 
-bool STEP_PCB_MODEL::readVRML( Handle( TDocStd_Document ) & doc, const char* fname )
+bool STEP_PCB_MODEL::readVRML( Handle( TDocStd_Document ) & doc [[maybe_unused]], const char* fname [[maybe_unused]] )
 {
 #if OCC_VERSION_HEX >= 0x070700
     VrmlAPI_CafReader                reader;
@@ -4228,7 +4228,7 @@ bool STEP_PCB_MODEL::WriteGLTF( const wxString& aFileName )
 }
 
 
-bool STEP_PCB_MODEL::WritePLY( const wxString& aFileName )
+bool STEP_PCB_MODEL::WritePLY( const wxString& aFileName [[maybe_unused]] )
 {
 #if OCC_VERSION_HEX < 0x070700
     m_reporter->Report( wxT( "PLY export is not supported before OCCT 7.7.0" ), RPT_SEVERITY_ERROR );

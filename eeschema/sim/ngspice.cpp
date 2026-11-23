@@ -93,7 +93,7 @@ void NGSPICE::updateNgspiceSettings()
 }
 
 
-void NGSPICE::Init( const SPICE_SETTINGS* aSettings )
+void NGSPICE::Init( const SPICE_SETTINGS* aSettings [[maybe_unused]] )
 {
     Command( "reset" );
     updateNgspiceSettings();
@@ -772,7 +772,7 @@ static SEVERITY classifySpiceLine( const wxString& aText, bool aStderr, SEVERITY
 }
 
 
-int NGSPICE::cbSendChar( char* aWhat, int aId, void* aUser )
+int NGSPICE::cbSendChar( char* aWhat, int aId [[maybe_unused]], void* aUser )
 {
     NGSPICE* sim = reinterpret_cast<NGSPICE*>( aUser );
 
@@ -802,13 +802,13 @@ int NGSPICE::cbSendChar( char* aWhat, int aId, void* aUser )
 }
 
 
-int NGSPICE::cbSendStat( char *aWhat, int aId, void* aUser )
+int NGSPICE::cbSendStat( char *aWhat [[maybe_unused]], int aId [[maybe_unused]], void* aUser [[maybe_unused]] )
 {
     return 0;
 }
 
 
-int NGSPICE::cbBGThreadRunning( NG_BOOL aFinished, int aId, void* aUser )
+int NGSPICE::cbBGThreadRunning( NG_BOOL aFinished, int aId [[maybe_unused]], void* aUser )
 {
     NGSPICE* sim = reinterpret_cast<NGSPICE*>( aUser );
 
@@ -829,7 +829,7 @@ int NGSPICE::cbBGThreadRunning( NG_BOOL aFinished, int aId, void* aUser )
 }
 
 
-int NGSPICE::cbControlledExit( int aStatus, NG_BOOL aImmediate, NG_BOOL aExitOnQuit, int aId,
+int NGSPICE::cbControlledExit( int aStatus [[maybe_unused]], NG_BOOL aImmediate [[maybe_unused]], NG_BOOL aExitOnQuit, int aId [[maybe_unused]],
                                void* aUser )
 {
     NGSPICE* sim = reinterpret_cast<NGSPICE*>( aUser );

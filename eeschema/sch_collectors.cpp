@@ -116,7 +116,7 @@ const std::vector<KICAD_T> SCH_COLLECTOR::DeletableItems =
 };
 
 
-INSPECT_RESULT SCH_COLLECTOR::Inspect( EDA_ITEM* aItem, void* aTestData )
+INSPECT_RESULT SCH_COLLECTOR::Inspect( EDA_ITEM* aItem, void* aTestData [[maybe_unused]] )
 {
     if( m_Unit || m_BodyStyle )
     {

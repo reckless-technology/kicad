@@ -373,7 +373,7 @@ void CADSTAR_PCB_ARCHIVE_PARSER::MATERIAL::Parse( XNODE* aNode, PARSER_CONTEXT* 
 }
 
 
-void CADSTAR_PCB_ARCHIVE_PARSER::LAYER::Parse( XNODE* aNode, PARSER_CONTEXT* aContext )
+void CADSTAR_PCB_ARCHIVE_PARSER::LAYER::Parse( XNODE* aNode, PARSER_CONTEXT* aContext [[maybe_unused]] )
 {
     wxASSERT( aNode->GetName() == wxT( "LAYER" ) );
 
@@ -583,7 +583,7 @@ void CADSTAR_PCB_ARCHIVE_PARSER::LAYER::Parse( XNODE* aNode, PARSER_CONTEXT* aCo
 }
 
 
-void CADSTAR_PCB_ARCHIVE_PARSER::COPREASSIGN::Parse( XNODE* aNode, PARSER_CONTEXT* aContext )
+void CADSTAR_PCB_ARCHIVE_PARSER::COPREASSIGN::Parse( XNODE* aNode, PARSER_CONTEXT* aContext [[maybe_unused]] )
 {
     wxASSERT( aNode->GetName() == wxT( "COPREASSIGN" ) );
 
@@ -621,7 +621,7 @@ void CADSTAR_PCB_ARCHIVE_PARSER::COPPERCODE::Parse( XNODE* aNode, PARSER_CONTEXT
 
 
 void CADSTAR_PCB_ARCHIVE_PARSER::SPACINGCODE::REASSIGN::Parse( XNODE* aNode,
-                                                               PARSER_CONTEXT* aContext )
+                                                               PARSER_CONTEXT* aContext [[maybe_unused]] )
 {
     wxASSERT( aNode->GetName() == wxT( "SPACEREASSIGN" ) );
 
@@ -680,7 +680,7 @@ bool CADSTAR_PCB_ARCHIVE_PARSER::CADSTAR_PAD_SHAPE::IsPadShape( XNODE* aNode )
 }
 
 
-void CADSTAR_PCB_ARCHIVE_PARSER::CADSTAR_PAD_SHAPE::Parse( XNODE* aNode, PARSER_CONTEXT* aContext )
+void CADSTAR_PCB_ARCHIVE_PARSER::CADSTAR_PAD_SHAPE::Parse( XNODE* aNode, PARSER_CONTEXT* aContext [[maybe_unused]] )
 {
     wxASSERT( IsPadShape( aNode ) );
 
@@ -928,7 +928,7 @@ void CADSTAR_PCB_ARCHIVE_PARSER::VIACODE::Parse( XNODE* aNode, PARSER_CONTEXT* a
 }
 
 
-void CADSTAR_PCB_ARCHIVE_PARSER::LAYERPAIR::Parse( XNODE* aNode, PARSER_CONTEXT* aContext )
+void CADSTAR_PCB_ARCHIVE_PARSER::LAYERPAIR::Parse( XNODE* aNode, PARSER_CONTEXT* aContext [[maybe_unused]] )
 {
     wxASSERT( aNode->GetName() == wxT( "LAYERPAIR" ) );
 
@@ -956,7 +956,7 @@ void CADSTAR_PCB_ARCHIVE_PARSER::LAYERPAIR::Parse( XNODE* aNode, PARSER_CONTEXT*
 }
 
 
-void CADSTAR_PCB_ARCHIVE_PARSER::SPCCLASSSPACE::Parse( XNODE* aNode, PARSER_CONTEXT* aContext )
+void CADSTAR_PCB_ARCHIVE_PARSER::SPCCLASSSPACE::Parse( XNODE* aNode, PARSER_CONTEXT* aContext [[maybe_unused]] )
 {
     wxASSERT( aNode->GetName() == wxT( "SPCCLASSSPACE" ) );
 
@@ -1151,7 +1151,7 @@ void CADSTAR_PCB_ARCHIVE_PARSER::COMPONENT_AREA::Parse( XNODE* aNode, PARSER_CON
 }
 
 
-void CADSTAR_PCB_ARCHIVE_PARSER::PAD_EXITS::Parse( XNODE* aNode, PARSER_CONTEXT* aContext )
+void CADSTAR_PCB_ARCHIVE_PARSER::PAD_EXITS::Parse( XNODE* aNode, PARSER_CONTEXT* aContext [[maybe_unused]] )
 {
     wxASSERT( aNode->GetName() == wxT( "EXITS" ) );
 
@@ -1224,7 +1224,7 @@ void CADSTAR_PCB_ARCHIVE_PARSER::COMPONENT_PAD::Parse( XNODE* aNode, PARSER_CONT
 }
 
 
-void CADSTAR_PCB_ARCHIVE_PARSER::DIMENSION::ARROW::Parse( XNODE* aNode, PARSER_CONTEXT* aContext )
+void CADSTAR_PCB_ARCHIVE_PARSER::DIMENSION::ARROW::Parse( XNODE* aNode, PARSER_CONTEXT* aContext [[maybe_unused]] )
 {
     wxASSERT( aNode->GetName() == wxT( "DIMARROW" ) );
     bool arrowStyleInitialised = false;
@@ -1284,7 +1284,7 @@ void CADSTAR_PCB_ARCHIVE_PARSER::DIMENSION::ARROW::Parse( XNODE* aNode, PARSER_C
 
 
 void CADSTAR_PCB_ARCHIVE_PARSER::DIMENSION::TEXTFORMAT::Parse( XNODE* aNode,
-                                                               PARSER_CONTEXT* aContext )
+                                                               PARSER_CONTEXT* aContext [[maybe_unused]] )
 {
     wxASSERT( aNode->GetName() == wxT( "DIMTEXT" ) );
 
@@ -1989,7 +1989,7 @@ CADSTAR_PCB_ARCHIVE_PARSER::TESTLAND_SIDE CADSTAR_PCB_ARCHIVE_PARSER::ParseTestl
 }
 
 
-void CADSTAR_PCB_ARCHIVE_PARSER::TRUNK::Parse( XNODE* aNode, PARSER_CONTEXT* aContext )
+void CADSTAR_PCB_ARCHIVE_PARSER::TRUNK::Parse( XNODE* aNode, PARSER_CONTEXT* aContext [[maybe_unused]] )
 {
     wxASSERT( aNode->GetName() == wxT( "TRUNK" ) );
 
@@ -1998,7 +1998,7 @@ void CADSTAR_PCB_ARCHIVE_PARSER::TRUNK::Parse( XNODE* aNode, PARSER_CONTEXT* aCo
 }
 
 
-void CADSTAR_PCB_ARCHIVE_PARSER::NET_PCB::PIN::Parse( XNODE* aNode, PARSER_CONTEXT* aContext )
+void CADSTAR_PCB_ARCHIVE_PARSER::NET_PCB::PIN::Parse( XNODE* aNode, PARSER_CONTEXT* aContext [[maybe_unused]] )
 {
     wxASSERT( aNode->GetName() == wxT( "PIN" ) );
 
@@ -2060,7 +2060,7 @@ void CADSTAR_PCB_ARCHIVE_PARSER::NET_PCB::VIA::Parse( XNODE* aNode, PARSER_CONTE
 
 
 void CADSTAR_PCB_ARCHIVE_PARSER::NET_PCB::COPPER_TERMINAL::Parse( XNODE* aNode,
-                                                                  PARSER_CONTEXT* aContext )
+                                                                  PARSER_CONTEXT* aContext [[maybe_unused]] )
 {
     wxASSERT( aNode->GetName() == wxT( "COPTERM" ) );
 
@@ -2263,7 +2263,7 @@ void CADSTAR_PCB_ARCHIVE_PARSER::NET_PCB::Parse( XNODE* aNode, PARSER_CONTEXT* a
 }
 
 
-void CADSTAR_PCB_ARCHIVE_PARSER::TEMPLATE::POURING::Parse( XNODE* aNode, PARSER_CONTEXT* aContext )
+void CADSTAR_PCB_ARCHIVE_PARSER::TEMPLATE::POURING::Parse( XNODE* aNode, PARSER_CONTEXT* aContext [[maybe_unused]] )
 {
     wxASSERT( aNode->GetName() == wxT( "POURING" ) );
 

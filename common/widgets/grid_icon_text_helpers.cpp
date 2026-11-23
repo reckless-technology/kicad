@@ -179,8 +179,8 @@ void GRID_CELL_ICON_RENDERER::Draw( wxGrid& aGrid, wxGridCellAttr& aAttr, wxDC& 
 }
 
 
-wxSize GRID_CELL_ICON_RENDERER::GetBestSize( wxGrid& grid, wxGridCellAttr& attr, wxDC& dc,
-                                             int row, int col )
+wxSize GRID_CELL_ICON_RENDERER::GetBestSize( wxGrid& grid, wxGridCellAttr& attr [[maybe_unused]], wxDC& dc [[maybe_unused]],
+                                             int row [[maybe_unused]], int col [[maybe_unused]] )
 {
     wxSize size = m_icon.GetDefaultSize();
     size.IncBy( 6, 4 );
@@ -239,8 +239,8 @@ void GRID_CELL_STATUS_ICON_RENDERER::Draw( wxGrid& aGrid, wxGridCellAttr& aAttr,
 }
 
 
-wxSize GRID_CELL_STATUS_ICON_RENDERER::GetBestSize( wxGrid& grid, wxGridCellAttr& attr, wxDC& dc,
-                                                    int row, int col )
+wxSize GRID_CELL_STATUS_ICON_RENDERER::GetBestSize( wxGrid& grid, wxGridCellAttr& attr [[maybe_unused]], wxDC& dc [[maybe_unused]],
+                                                    int row [[maybe_unused]], int col [[maybe_unused]] )
 {
     wxSize size = m_bitmap.GetDefaultSize();
     size.IncBy( 6, 4 );

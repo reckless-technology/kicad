@@ -556,7 +556,7 @@ void ROUTER_PREVIEW_ITEM::drawShape( const SHAPE* aShape, KIGFX::GAL* gal ) cons
 }
 
 
-void ROUTER_PREVIEW_ITEM::ViewDraw( int aLayer, KIGFX::VIEW* aView ) const
+void ROUTER_PREVIEW_ITEM::ViewDraw( int aLayer [[maybe_unused]], KIGFX::VIEW* aView ) const
 {
     GAL* gal = aView->GetGAL();
 

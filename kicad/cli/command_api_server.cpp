@@ -137,7 +137,7 @@ int CLI::API_SERVER_COMMAND::doPerform( KIWAY& aKiway )
     };
 
     auto closeAllDocuments =
-            [&]( const commands::CloseAllDocuments& aRequest ) -> HANDLER_RESULT<google::protobuf::Empty>
+            [&]( const commands::CloseAllDocuments& aRequest [[maybe_unused]] ) -> HANDLER_RESULT<google::protobuf::Empty>
     {
         wxString errors;
 

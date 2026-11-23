@@ -121,7 +121,7 @@ void FOOTPRINT_PREVIEW_PANEL::renderFootprint( std::shared_ptr<FOOTPRINT> aFootp
     m_dummyBoard->Add( aFootprint.get() );
 
     INSPECTOR_FUNC inspector =
-            [&]( EDA_ITEM* descendant, void* aTestData )
+            [&]( EDA_ITEM* descendant, void* aTestData [[maybe_unused]] )
             {
                 static_cast<PCB_DIMENSION_BASE*>( descendant )->UpdateUnits();
                 return INSPECT_RESULT::CONTINUE;

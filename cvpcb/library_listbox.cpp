@@ -82,7 +82,7 @@ void LIBRARY_LISTBOX::AppendLine( const wxString& text )
 }
 
 
-wxString LIBRARY_LISTBOX::OnGetItemText( long item, long column ) const
+wxString LIBRARY_LISTBOX::OnGetItemText( long item, long column [[maybe_unused]] ) const
 {
     return m_libraryList.Item( item );
 }

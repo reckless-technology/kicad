@@ -74,7 +74,7 @@ public:
      * @return a non-owning ACTION_MENU* to display, or nullptr to fall through to the
      *         standard selection menu.
      */
-    virtual ACTION_MENU* GetChildContextMenu( TOOL_INTERACTIVE* aTool ) const { return nullptr; }
+    virtual ACTION_MENU* GetChildContextMenu( TOOL_INTERACTIVE* aTool [[maybe_unused]] ) const { return nullptr; }
 
     /**
      * @return true if children of this generator should be treated as
@@ -97,7 +97,7 @@ public:
      * @param aName Template name
      * @param aItem The parsed item
      */
-    virtual void SetTemplateItem( const wxString& aName, std::unique_ptr<BOARD_ITEM> aItem ) {}
+    virtual void SetTemplateItem( const wxString& aName [[maybe_unused]], std::unique_ptr<BOARD_ITEM> aItem [[maybe_unused]] ) {}
 
 #define STATUS_ITEMS_ONLY true
 
@@ -143,7 +143,7 @@ public:
 
     virtual std::vector<std::pair<wxString, wxVariant>> GetRowData();
 
-    virtual void ShowPropertiesDialog( PCB_BASE_EDIT_FRAME* aEditFrame ) {};
+    virtual void ShowPropertiesDialog( PCB_BASE_EDIT_FRAME* aEditFrame [[maybe_unused]] ) {};
 
     wxString GetItemDescription( UNITS_PROVIDER* aUnitsProvider, bool aFull ) const override;
 
@@ -174,7 +174,7 @@ public:
     /**
      * Callback to be informed zones have changed
      */
-    virtual void OnZoneFillChanged( const std::vector<ZONE*>& aZones ) {}
+    virtual void OnZoneFillChanged( const std::vector<ZONE*>& aZones [[maybe_unused]] ) {}
 
     /**
      * Zones that need to be refilled after the generator runs Update()

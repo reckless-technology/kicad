@@ -524,7 +524,7 @@ bool MULTI_DRAGGER::Start( const VECTOR2I& aP, ITEM_SET& aPrimitives )
 }
 
 
-void MULTI_DRAGGER::SetMode( PNS::DRAG_MODE aMode )
+void MULTI_DRAGGER::SetMode( PNS::DRAG_MODE aMode [[maybe_unused]] )
 {
 }
 
@@ -606,7 +606,7 @@ const std::vector<NET_HANDLE> MULTI_DRAGGER::CurrentNets() const
 
 // this is what ultimately gets called when the user clicks/releases the mouse button
 // during drag.
-bool MULTI_DRAGGER::FixRoute( bool aForceCommit )
+bool MULTI_DRAGGER::FixRoute( bool aForceCommit [[maybe_unused]] )
 {
     NODE* node = CurrentNode();
 

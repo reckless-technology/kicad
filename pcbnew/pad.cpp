@@ -2491,8 +2491,8 @@ void PAD::rebakePrimitiveToFootprint( PCB_SHAPE* aPrimitive ) const
 }
 
 
-void PAD::OnFootprintRescaled( double aRatioX, double aRatioY, double aLinearFactor, const VECTOR2I& aAnchor,
-                               const EDA_ANGLE& aParentRotate )
+void PAD::OnFootprintRescaled( double aRatioX [[maybe_unused]], double aRatioY [[maybe_unused]], double aLinearFactor [[maybe_unused]], const VECTOR2I& aAnchor [[maybe_unused]],
+                               const EDA_ANGLE& aParentRotate [[maybe_unused]] )
 {
     // Pad size, drill, and offset auto-derive from lib-frame padstack values
     // through the parent transform on read. Custom-shape primitives carry their
@@ -2573,7 +2573,7 @@ wxString PAD::ShowPadAttr() const
 }
 
 
-wxString PAD::GetItemDescription( UNITS_PROVIDER* aUnitsProvider, bool aFull ) const
+wxString PAD::GetItemDescription( UNITS_PROVIDER* aUnitsProvider [[maybe_unused]], bool aFull [[maybe_unused]] ) const
 {
     FOOTPRINT* parentFP = GetParentFootprint();
 
@@ -3017,7 +3017,7 @@ bool PAD::TransformHoleToPolygon( SHAPE_POLY_SET& aBuffer, int aClearance, int a
 }
 
 
-double PAD::GetCoverageArea( int aTextMargin ) const
+double PAD::GetCoverageArea( int aTextMargin [[maybe_unused]] ) const
 {
     SHAPE_POLY_SET poly;
 
@@ -3034,7 +3034,7 @@ double PAD::GetCoverageArea( int aTextMargin ) const
 
 
 void PAD::TransformShapeToPolygon( SHAPE_POLY_SET& aBuffer, PCB_LAYER_ID aLayer, int aClearance,
-                                   int aMaxError, ERROR_LOC aErrorLoc, bool ignoreLineWidth ) const
+                                   int aMaxError, ERROR_LOC aErrorLoc, bool ignoreLineWidth [[maybe_unused]] ) const
 {
     wxASSERT_MSG( aLayer != UNDEFINED_LAYER,
                   wxT( "UNDEFINED_LAYER is no longer allowed for PAD::TransformShapeToPolygon" ) );
@@ -3679,7 +3679,7 @@ static struct PAD_DESC
                     &PAD::SetPinType, &PAD::GetPinType ),
                     groupPad )
                 .SetIsHiddenFromLibraryEditors()
-                .SetChoicesFunc( []( INSPECTABLE* aItem )
+                .SetChoicesFunc( []( INSPECTABLE* aItem [[maybe_unused]] )
                                  {
                                      wxPGChoices choices;
 

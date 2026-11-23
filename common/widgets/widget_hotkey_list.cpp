@@ -221,7 +221,7 @@ protected:
         m_event = aEvent;
     }
 
-    void OnKeyUp( wxKeyEvent& aEvent )
+    void OnKeyUp( wxKeyEvent& aEvent [[maybe_unused]] )
     {
         // If dialog opened using Enter key, prevent closing when releasing Enter.
         if( m_event.GetEventType() != wxEVT_NULL )
@@ -231,7 +231,7 @@ protected:
         }
     }
 
-    void onResetButton( wxCommandEvent& aEvent )
+    void onResetButton( wxCommandEvent& aEvent [[maybe_unused]] )
     {
         m_resetkey = true;
         wxPostEvent( this, wxCommandEvent( wxEVT_COMMAND_BUTTON_CLICKED, wxID_OK ) );

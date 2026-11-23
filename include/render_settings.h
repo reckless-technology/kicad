@@ -55,7 +55,7 @@ public:
     RENDER_SETTINGS();
     virtual ~RENDER_SETTINGS();
 
-    virtual void LoadColors( const COLOR_SETTINGS* aSettings ) { }
+    virtual void LoadColors( const COLOR_SETTINGS* aSettings [[maybe_unused]] ) { }
 
     /**
      * Set the specified layer as high-contrast.
@@ -211,13 +211,13 @@ public:
      * @param aKeep receives the share of each colour kept, 1 when the layer is not dimmed.
      * @return false for a layer whose items GetColor dims itself.
      */
-    virtual bool GetLayerDim( int aLayer, COLOR4D& aToward, double& aKeep ) const { return false; }
+    virtual bool GetLayerDim( int aLayer [[maybe_unused]], COLOR4D& aToward [[maybe_unused]], double& aKeep [[maybe_unused]] ) const { return false; }
 
     /**
      * Return true for an item that keeps its colour on a layer the canvas fades, such as a
      * selected item in high contrast.
      */
-    virtual bool IsDimExempt( const VIEW_ITEM* aItem ) const { return false; }
+    virtual bool IsDimExempt( const VIEW_ITEM* aItem [[maybe_unused]] ) const { return false; }
 
     float GetDrawingSheetLineWidth() const { return m_drawingSheetLineWidth; }
 

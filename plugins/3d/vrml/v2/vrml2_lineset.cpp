@@ -338,7 +338,7 @@ bool WRL2LINESET::Read( WRLPROC& proc, WRL2BASE* aTopNode )
 }
 
 
-SGNODE* WRL2LINESET::TranslateToSG( SGNODE* aParent )
+SGNODE* WRL2LINESET::TranslateToSG( SGNODE* aParent [[maybe_unused]] )
 {
     // note: there are no plans to support drawing of lines
     return nullptr;

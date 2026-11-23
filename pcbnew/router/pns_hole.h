@@ -66,7 +66,7 @@ public:
 
     int Radius() const;
 
-    const SHAPE* Shape( int aLayer ) const override { return m_holeShape; }
+    const SHAPE* Shape( int aLayer [[maybe_unused]] ) const override { return m_holeShape; }
 
     void SetParentPadVia( ITEM* aParent ) { m_parentPadVia = aParent; }
     ITEM* ParentPadVia() const override { return m_parentPadVia; }

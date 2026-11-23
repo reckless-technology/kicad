@@ -468,7 +468,7 @@ bool MULTICHANNEL_TOOL::findComponentsInRuleArea( RULE_AREA*            aRuleAre
     PCBEXPR_CONTEXT  ctx, preflightCtx;
 
     auto reportError =
-            [&]( const wxString& aMessage, int aOffset )
+            [&]( const wxString& aMessage, int aOffset [[maybe_unused]] )
             {
                 wxLogTrace( traceMultichannelTool, wxT( "ERROR: %s"), aMessage );
             };
@@ -652,7 +652,7 @@ bool MULTICHANNEL_TOOL::findOtherItemsInRuleArea( RULE_AREA* aRuleArea, std::set
     PCBEXPR_CONTEXT  ctx, preflightCtx;
 
     auto reportError =
-            [&]( const wxString& aMessage, int aOffset )
+            [&]( const wxString& aMessage, int aOffset [[maybe_unused]] )
             {
                 wxLogTrace( traceMultichannelTool, wxT( "ERROR: %s"), aMessage );
             };
@@ -1005,7 +1005,7 @@ void MULTICHANNEL_TOOL::UpdatePickedItem( const EDA_ITEM* aItem )
 }
 
 
-int MULTICHANNEL_TOOL::repeatLayout( const TOOL_EVENT& aEvent )
+int MULTICHANNEL_TOOL::repeatLayout( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     std::vector<ZONE*> refRAs;
 
@@ -1704,13 +1704,13 @@ std::set<FOOTPRINT*> MULTICHANNEL_TOOL::ExpandToMatchingTopology( const std::set
 }
 
 
-int MULTICHANNEL_TOOL::expandToMatchingTopology( const TOOL_EVENT& aEvent )
+int MULTICHANNEL_TOOL::expandToMatchingTopology( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     return expandSelection( false );
 }
 
 
-int MULTICHANNEL_TOOL::expandToLargestTopology( const TOOL_EVENT& aEvent )
+int MULTICHANNEL_TOOL::expandToLargestTopology( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     return expandSelection( true );
 }
@@ -2315,7 +2315,7 @@ void MULTICHANNEL_TOOL::closeRepeatDialog()
 }
 
 
-void MULTICHANNEL_TOOL::onRepeatDialogClosed( wxCloseEvent& aEvent )
+void MULTICHANNEL_TOOL::onRepeatDialogClosed( wxCloseEvent& aEvent [[maybe_unused]] )
 {
     clearRepeatPreview();
     m_focusArea = nullptr;
@@ -2481,7 +2481,7 @@ bool MULTICHANNEL_TOOL::resolveTopologies( const wxString& aTitle, const std::ve
 }
 
 
-int MULTICHANNEL_TOOL::RepeatLayout( const TOOL_EVENT& aEvent, RULE_AREA& aRefArea, RULE_AREA& aTargetArea,
+int MULTICHANNEL_TOOL::RepeatLayout( const TOOL_EVENT& aEvent [[maybe_unused]], RULE_AREA& aRefArea, RULE_AREA& aTargetArea,
                                      REPEAT_LAYOUT_OPTIONS& aOptions, BOARD_COMMIT* aExternalCommit,
                                      wxString* aErrorOut )
 {
@@ -2624,7 +2624,7 @@ int MULTICHANNEL_TOOL::applyRepeat( BOARD_COMMIT& aCommit )
 }
 
 
-int MULTICHANNEL_TOOL::RepeatLayout( const TOOL_EVENT& aEvent, ZONE* aRefZone )
+int MULTICHANNEL_TOOL::RepeatLayout( const TOOL_EVENT& aEvent [[maybe_unused]], ZONE* aRefZone )
 {
     BOARD_COMMIT commit( GetManager(), true, false );
     int          totalCopied = applyRepeat( commit );
@@ -2731,7 +2731,7 @@ bool MULTICHANNEL_TOOL::routerBusy() const
 }
 
 
-int MULTICHANNEL_TOOL::updateLinkedLayouts( const TOOL_EVENT& aEvent )
+int MULTICHANNEL_TOOL::updateLinkedLayouts( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     std::set<ZONE*> sources = linkedAreasIn( selection() );
 
@@ -2755,7 +2755,7 @@ int MULTICHANNEL_TOOL::updateLinkedLayouts( const TOOL_EVENT& aEvent )
 }
 
 
-int MULTICHANNEL_TOOL::unlinkLayout( const TOOL_EVENT& aEvent )
+int MULTICHANNEL_TOOL::unlinkLayout( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     std::set<ZONE*> members = linkedAreasIn( selection() );
 
@@ -3074,7 +3074,7 @@ int MULTICHANNEL_TOOL::findRoutingInRuleArea( RULE_AREA* aRuleArea, std::set<BOA
     PCBEXPR_CONTEXT  ctx, preflightCtx;
 
     auto reportError =
-            [&]( const wxString& aMessage, int aOffset )
+            [&]( const wxString& aMessage, int aOffset [[maybe_unused]] )
             {
                 wxLogTrace( traceMultichannelTool, wxT( "ERROR: %s" ), aMessage );
             };
@@ -4227,7 +4227,7 @@ bool MULTICHANNEL_TOOL::pruneExistingGroups( COMMIT& aCommit,
 }
 
 
-int MULTICHANNEL_TOOL::AutogenerateRuleAreas( const TOOL_EVENT& aEvent )
+int MULTICHANNEL_TOOL::AutogenerateRuleAreas( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     closeRepeatDialog();
 

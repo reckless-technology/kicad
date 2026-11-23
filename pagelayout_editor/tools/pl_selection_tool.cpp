@@ -77,7 +77,7 @@ void PL_SELECTION_TOOL::Reset( RESET_REASON aReason )
 }
 
 
-int PL_SELECTION_TOOL::Main( const TOOL_EVENT& aEvent )
+int PL_SELECTION_TOOL::Main( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     // Main loop: keep receiving events
     while( TOOL_EVENT* evt = Wait() )
@@ -209,7 +209,7 @@ int PL_SELECTION_TOOL::Main( const TOOL_EVENT& aEvent )
 }
 
 
-int PL_SELECTION_TOOL::disambiguateCursor( const TOOL_EVENT& aEvent )
+int PL_SELECTION_TOOL::disambiguateCursor( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     wxMouseState keyboardState = wxGetMouseState();
 
@@ -439,14 +439,14 @@ bool PL_SELECTION_TOOL::selectMultiple()
 }
 
 
-int PL_SELECTION_TOOL::ClearSelection( const TOOL_EVENT& aEvent )
+int PL_SELECTION_TOOL::ClearSelection( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     ClearSelection();
     return 0;
 }
 
 
-int PL_SELECTION_TOOL::SelectAll( const TOOL_EVENT& aEvent )
+int PL_SELECTION_TOOL::SelectAll( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     for( DS_DATA_ITEM* dataItem : DS_DATA_MODEL::GetTheInstance().GetItems() )
     {

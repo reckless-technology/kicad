@@ -217,7 +217,7 @@ void OPTIMIZER::ClearCache( bool aStaticOnly )
 }
 
 
-bool AREA_CONSTRAINT::Check( int aVertex1, int aVertex2, const LINE* aOriginLine,
+bool AREA_CONSTRAINT::Check( int aVertex1, int aVertex2, const LINE* aOriginLine [[maybe_unused]],
                              const SHAPE_LINE_CHAIN& aCurrentPath,
                              const SHAPE_LINE_CHAIN& aReplacement )
 {
@@ -247,7 +247,7 @@ bool AREA_CONSTRAINT::Check( int aVertex1, int aVertex2, const LINE* aOriginLine
 }
 
 
-bool PRESERVE_VERTEX_CONSTRAINT::Check( int aVertex1, int aVertex2, const LINE* aOriginLine,
+bool PRESERVE_VERTEX_CONSTRAINT::Check( int aVertex1, int aVertex2, const LINE* aOriginLine [[maybe_unused]],
                                         const SHAPE_LINE_CHAIN& aCurrentPath,
                                         const SHAPE_LINE_CHAIN& aReplacement )
 {
@@ -279,9 +279,9 @@ bool PRESERVE_VERTEX_CONSTRAINT::Check( int aVertex1, int aVertex2, const LINE* 
 }
 
 
-bool PRESERVE_SEGMENTS_CONSTRAINT::Check( int aVertex1, int aVertex2, const LINE* aOriginLine,
+bool PRESERVE_SEGMENTS_CONSTRAINT::Check( int aVertex1, int aVertex2, const LINE* aOriginLine [[maybe_unused]],
                                         const SHAPE_LINE_CHAIN& aCurrentPath,
-                                        const SHAPE_LINE_CHAIN& aReplacement )
+                                        const SHAPE_LINE_CHAIN& aReplacement [[maybe_unused]] )
 {
     
     /*
@@ -310,9 +310,9 @@ bool PRESERVE_SEGMENTS_CONSTRAINT::Check( int aVertex1, int aVertex2, const LINE
 
 
 
-bool RESTRICT_VERTEX_RANGE_CONSTRAINT::Check( int aVertex1, int aVertex2, const LINE* aOriginLine,
-                                              const SHAPE_LINE_CHAIN& aCurrentPath,
-                                              const SHAPE_LINE_CHAIN& aReplacement )
+bool RESTRICT_VERTEX_RANGE_CONSTRAINT::Check( int aVertex1 [[maybe_unused]], int aVertex2 [[maybe_unused]], const LINE* aOriginLine [[maybe_unused]],
+                                              const SHAPE_LINE_CHAIN& aCurrentPath [[maybe_unused]],
+                                              const SHAPE_LINE_CHAIN& aReplacement [[maybe_unused]] )
 {
     return true;
 }
@@ -336,7 +336,7 @@ bool CORNER_COUNT_LIMIT_CONSTRAINT::Check( int aVertex1, int aVertex2, const LIN
     return true;
 }
 
-bool OBTUSE_ONLY_CONSTRAINT::Check( int aVertex1, int aVertex2, const LINE* aOriginLine,
+bool OBTUSE_ONLY_CONSTRAINT::Check( int aVertex1, int aVertex2, const LINE* aOriginLine [[maybe_unused]],
                                     const SHAPE_LINE_CHAIN& aCurrentPath,
                                     const SHAPE_LINE_CHAIN& aReplacement )
 {
@@ -458,7 +458,7 @@ static bool pointInside2( const SHAPE_LINE_CHAIN& aL, const VECTOR2I& aP )
 
 
 bool KEEP_TOPOLOGY_CONSTRAINT::Check( int aVertex1, int aVertex2, const LINE* aOriginLine,
-                                      const SHAPE_LINE_CHAIN& aCurrentPath,
+                                      const SHAPE_LINE_CHAIN& aCurrentPath [[maybe_unused]],
                                       const SHAPE_LINE_CHAIN& aReplacement )
 {
     SHAPE_LINE_CHAIN encPoly = aOriginLine->CLine().Slice( aVertex1, aVertex2 );
@@ -505,7 +505,7 @@ bool KEEP_TOPOLOGY_CONSTRAINT::Check( int aVertex1, int aVertex2, const LINE* aO
 }
 
 
-bool OPTIMIZER::checkColliding( ITEM* aItem, bool aUpdateCache )
+bool OPTIMIZER::checkColliding( ITEM* aItem, bool aUpdateCache [[maybe_unused]] )
 {
     return static_cast<bool>( m_world->CheckColliding( aItem, m_collisionKindMask ) );
 }
@@ -958,8 +958,8 @@ bool OPTIMIZER::mergeStep( LINE* aLine, SHAPE_LINE_CHAIN& aCurrentPath, int step
 }
 
 
-OPTIMIZER::BREAKOUT_LIST OPTIMIZER::circleBreakouts( int aWidth, const SHAPE* aShape,
-                                                     bool aPermitDiagonal ) const
+OPTIMIZER::BREAKOUT_LIST OPTIMIZER::circleBreakouts( int aWidth [[maybe_unused]], const SHAPE* aShape,
+                                                     bool aPermitDiagonal [[maybe_unused]] ) const
 {
     BREAKOUT_LIST breakouts;
 
@@ -981,7 +981,7 @@ OPTIMIZER::BREAKOUT_LIST OPTIMIZER::circleBreakouts( int aWidth, const SHAPE* aS
 }
 
 
-OPTIMIZER::BREAKOUT_LIST OPTIMIZER::customBreakouts( int aWidth, const ITEM* aItem,
+OPTIMIZER::BREAKOUT_LIST OPTIMIZER::customBreakouts( int aWidth [[maybe_unused]], const ITEM* aItem,
                                                      bool aPermitDiagonal ) const
 {
     BREAKOUT_LIST breakouts;
@@ -1610,7 +1610,7 @@ static int64_t shovedArea( const SHAPE_LINE_CHAIN& aOld, const SHAPE_LINE_CHAIN&
 }
 
 
-bool tightenSegment( bool dir, NODE *aNode, const LINE& cur, const SHAPE_LINE_CHAIN& in,
+bool tightenSegment( bool dir [[maybe_unused]], NODE *aNode, const LINE& cur, const SHAPE_LINE_CHAIN& in,
                      SHAPE_LINE_CHAIN& out )
 {
     SEG a = in.CSegment(0);

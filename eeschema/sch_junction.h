@@ -96,7 +96,7 @@ public:
                                         || aItem->Type() == SCH_DIRECTIVE_LABEL_T );
     }
 
-    wxString GetItemDescription( UNITS_PROVIDER* aUnitsProvider, bool aFull ) const override
+    wxString GetItemDescription( UNITS_PROVIDER* aUnitsProvider [[maybe_unused]], bool aFull [[maybe_unused]] ) const override
     {
         return wxString( _( "Junction" ) );
     }
@@ -106,7 +106,7 @@ public:
     VECTOR2I GetPosition() const override { return m_pos; }
     void     SetPosition( const VECTOR2I& aPosition ) override { m_pos = aPosition; }
 
-    bool IsPointClickableAnchor( const VECTOR2I& aPos ) const override { return false; }
+    bool IsPointClickableAnchor( const VECTOR2I& aPos [[maybe_unused]] ) const override { return false; }
 
     int GetEffectiveDiameter() const;
 

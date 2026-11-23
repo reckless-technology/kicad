@@ -825,7 +825,7 @@ double VIEW::ToScreen( double aSize ) const
 }
 
 
-void VIEW::CopySettings( const VIEW* aOtherView )
+void VIEW::CopySettings( const VIEW* aOtherView [[maybe_unused]] )
 {
     wxASSERT_MSG( false, wxT( "This is not implemented" ) );
 }

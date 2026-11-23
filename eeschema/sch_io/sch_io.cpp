@@ -60,14 +60,14 @@ bool SCH_IO::CanReadSchematicFile( const wxString& aFileName ) const
 }
 
 
-void SCH_IO::SaveLibrary( const wxString& aFileName, const std::map<std::string, UTF8>* aProperties )
+void SCH_IO::SaveLibrary( const wxString& aFileName [[maybe_unused]], const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     NOT_IMPLEMENTED( __FUNCTION__ );
 }
 
 
-SCH_SHEET* SCH_IO::LoadSchematicFile( const wxString& aFileName, SCHEMATIC* aSchematic,
-                                      SCH_SHEET* aAppendToMe, const std::map<std::string, UTF8>* aProperties )
+SCH_SHEET* SCH_IO::LoadSchematicFile( const wxString& aFileName [[maybe_unused]], SCHEMATIC* aSchematic [[maybe_unused]],
+                                      SCH_SHEET* aAppendToMe [[maybe_unused]], const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     NOT_IMPLEMENTED( __FUNCTION__ );
 }
@@ -79,26 +79,26 @@ std::vector<LIB_SYMBOL*> SCH_IO::GetImportedCachedLibrarySymbols()
 }
 
 
-void SCH_IO::SaveSchematicFile( const wxString& aFileName, SCH_SHEET* aSheet, SCHEMATIC* aSchematic,
-                                const std::map<std::string, UTF8>* aProperties )
+void SCH_IO::SaveSchematicFile( const wxString& aFileName [[maybe_unused]], SCH_SHEET* aSheet [[maybe_unused]], SCHEMATIC* aSchematic [[maybe_unused]],
+                                const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     // not pure virtual so that plugins only have to implement subset of the SCH_IO interface.
     NOT_IMPLEMENTED( __FUNCTION__ );
 }
 
 
-void SCH_IO::EnumerateSymbolLib( wxArrayString&    aAliasNameList,
-                                 const wxString&   aLibraryPath,
-                                 const std::map<std::string, UTF8>* aProperties )
+void SCH_IO::EnumerateSymbolLib( wxArrayString&    aAliasNameList [[maybe_unused]],
+                                 const wxString&   aLibraryPath [[maybe_unused]],
+                                 const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     // not pure virtual so that plugins only have to implement subset of the SCH_IO interface.
     NOT_IMPLEMENTED( __FUNCTION__ );
 }
 
 
-void SCH_IO::EnumerateSymbolLib( std::vector<LIB_SYMBOL*>& aSymbolList,
-                                 const wxString&   aLibraryPath,
-                                 const std::map<std::string, UTF8>* aProperties )
+void SCH_IO::EnumerateSymbolLib( std::vector<LIB_SYMBOL*>& aSymbolList [[maybe_unused]],
+                                 const wxString&   aLibraryPath [[maybe_unused]],
+                                 const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     // not pure virtual so that plugins only have to implement subset of the SCH_IO interface.
     NOT_IMPLEMENTED( __FUNCTION__ );
@@ -113,24 +113,24 @@ void SCH_IO::CheckLibrary( const wxString& aLibraryPath,
 }
 
 
-LIB_SYMBOL* SCH_IO::LoadSymbol( const wxString& aLibraryPath, const wxString& aSymbolName,
-                                const std::map<std::string, UTF8>* aProperties )
+LIB_SYMBOL* SCH_IO::LoadSymbol( const wxString& aLibraryPath [[maybe_unused]], const wxString& aSymbolName [[maybe_unused]],
+                                const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     // not pure virtual so that plugins only have to implement subset of the SCH_IO interface.
     NOT_IMPLEMENTED( __FUNCTION__ );
 }
 
 
-void SCH_IO::SaveSymbol( const wxString& aLibraryPath, std::unique_ptr<LIB_SYMBOL> aSymbol,
-                         const std::map<std::string, UTF8>* aProperties )
+void SCH_IO::SaveSymbol( const wxString& aLibraryPath [[maybe_unused]], std::unique_ptr<LIB_SYMBOL> aSymbol [[maybe_unused]],
+                         const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     // not pure virtual so that plugins only have to implement subset of the SCH_IO interface.
     NOT_IMPLEMENTED( __FUNCTION__ );
 }
 
 
-void SCH_IO::DeleteSymbol( const wxString& aLibraryPath, const wxString& aSymbolName,
-                           const std::map<std::string, UTF8>* aProperties )
+void SCH_IO::DeleteSymbol( const wxString& aLibraryPath [[maybe_unused]], const wxString& aSymbolName [[maybe_unused]],
+                           const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     // not pure virtual so that plugins only have to implement subset of the SCH_IO interface.
     NOT_IMPLEMENTED( __FUNCTION__ );

@@ -191,7 +191,7 @@ PCB_ONE_LAYER_SELECTOR::~PCB_ONE_LAYER_SELECTOR()
 }
 
 
-void PCB_ONE_LAYER_SELECTOR::OnMouseMove( wxUpdateUIEvent& aEvent )
+void PCB_ONE_LAYER_SELECTOR::OnMouseMove( wxUpdateUIEvent& aEvent [[maybe_unused]] )
 {
     /// We have to assign this in UpdateUI events because the wxGrid is not properly receiving
     /// MouseMove events.  It seems to only get them on the edges.  So, for now we use this
@@ -553,7 +553,7 @@ public:
                           } );
 
         m_layerPairSettings.Bind( PCB_CURRENT_LAYER_PAIR_CHANGED,
-                                  [this]( wxCommandEvent& aEvent )
+                                  [this]( wxCommandEvent& aEvent [[maybe_unused]] )
                                   {
                                       const LAYER_PAIR& newPair = m_layerPairSettings.GetCurrentLayerPair();
                                       setCurrentSelection( rowForLayer( newPair.GetLayerA() ),
@@ -696,14 +696,14 @@ public:
         m_deleteRowButton->SetBitmap( KiBitmapBundle( BITMAPS::small_trash ) );
 
         m_addToPresetsButton->Bind( wxEVT_BUTTON,
-                                    [this]( wxCommandEvent& aEvent )
+                                    [this]( wxCommandEvent& aEvent [[maybe_unused]] )
                                     {
                                         const LAYER_PAIR newPair = m_dialogPairSettings.GetCurrentLayerPair();
                                         m_presetsGridController.OnLayerPairAdded( newPair );
                                     } );
 
         m_deleteRowButton->Bind( wxEVT_BUTTON,
-                                 [this]( wxCommandEvent& aEvent )
+                                 [this]( wxCommandEvent& aEvent [[maybe_unused]] )
                                  {
                                      m_presetsGridController.OnDeleteSelectedLayerPairs();
                                  } );
@@ -752,7 +752,7 @@ private:
 };
 
 
-int ROUTER_TOOL::SelectCopperLayerPair( const TOOL_EVENT& aEvent )
+int ROUTER_TOOL::SelectCopperLayerPair( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     LAYER_PAIR_SETTINGS* const boardSettings = frame()->GetLayerPairSettings();
 

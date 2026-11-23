@@ -89,7 +89,7 @@ void DIALOG_EXPORT_IDF3::onRadioButtonsChanged( wxCommandEvent& event )
 }
 
 
-void DIALOG_EXPORT_IDF3::OnOKButton( wxCommandEvent& event )
+void DIALOG_EXPORT_IDF3::OnOKButton( wxCommandEvent& event [[maybe_unused]] )
 {
     if( m_job )
     {
@@ -394,7 +394,7 @@ void DIALOG_EXPORT_IDF3::doExport()
 }
 
 
-int BOARD_EDITOR_CONTROL::ExportIDF( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::ExportIDF( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     DIALOG_EXPORT_IDF3 dlg( m_frame );
     dlg.ShowModal();

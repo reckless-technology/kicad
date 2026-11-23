@@ -457,7 +457,7 @@ bool SYMBOL_EDITOR_MOVE_TOOL::doMoveSelection( const TOOL_EVENT& aEvent, SCH_COM
 }
 
 
-int SYMBOL_EDITOR_MOVE_TOOL::AlignElements( const TOOL_EVENT& aEvent )
+int SYMBOL_EDITOR_MOVE_TOOL::AlignElements( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     EE_GRID_HELPER grid( m_toolMgr);
     SCH_SELECTION& selection = m_selectionTool->RequestSelection();

@@ -87,7 +87,7 @@ public:
 
 
     // Writing to CADSTAR libraries is not supported
-    bool IsLibraryWritable( const wxString& aLibraryPath ) override { return false; }
+    bool IsLibraryWritable( const wxString& aLibraryPath [[maybe_unused]] ) override { return false; }
 
     void GetLibraryOptions( std::map<std::string, UTF8>* aListToAppendTo ) const override;
 

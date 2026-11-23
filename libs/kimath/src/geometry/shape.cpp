@@ -33,14 +33,14 @@
 #include <convert_basic_shapes_to_polygon.h>
 
 
-bool SHAPE::Parse( std::stringstream& aStream )
+bool SHAPE::Parse( std::stringstream& aStream [[maybe_unused]] )
 {
     assert( false );
     return false;
 }
 
 
-const std::string SHAPE::Format( bool aCplusPlus ) const
+const std::string SHAPE::Format( bool aCplusPlus [[maybe_unused]] ) const
 {
     std::stringstream ss;
     ss << "shape " << m_type;
@@ -132,8 +132,8 @@ bool SHAPE::PointInside( const VECTOR2I& aPt, int aAccuracy, bool aUseBBoxCache 
 }
 
 
-void SHAPE_SIMPLE::TransformToPolygon( SHAPE_POLY_SET& aBuffer, int aError,
-                                       ERROR_LOC aErrorLoc ) const
+void SHAPE_SIMPLE::TransformToPolygon( SHAPE_POLY_SET& aBuffer, int aError [[maybe_unused]],
+                                       ERROR_LOC aErrorLoc [[maybe_unused]] ) const
 {
     aBuffer.AddOutline( m_points );
 }

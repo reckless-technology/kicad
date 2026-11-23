@@ -698,7 +698,7 @@ void FEATURES_MANAGER::AddZone( PCB_LAYER_ID aLayer, ZONE* zone )
 };
 
 
-void FEATURES_MANAGER::AddText( PCB_LAYER_ID aLayer, BOARD_ITEM* item, RESOLUTION_CONTEXT aContext )
+void FEATURES_MANAGER::AddText( PCB_LAYER_ID aLayer [[maybe_unused]], BOARD_ITEM* item, RESOLUTION_CONTEXT aContext )
 {
     EDA_TEXT* text_item = nullptr;
 

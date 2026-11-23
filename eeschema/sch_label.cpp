@@ -702,7 +702,7 @@ double SCH_LABEL_BASE::Similarity( const SCH_ITEM& aOther ) const
 }
 
 
-void SCH_LABEL_BASE::AutoplaceFields( SCH_SCREEN* aScreen, AUTOPLACE_ALGO aAlgo )
+void SCH_LABEL_BASE::AutoplaceFields( SCH_SCREEN* aScreen [[maybe_unused]], AUTOPLACE_ALGO aAlgo )
 {
     int margin = GetTextOffset() * 2;
     int labelLen = GetBodyBoundingBox( nullptr ).GetSizeMax();
@@ -1055,7 +1055,7 @@ wxString SCH_LABEL_BASE::GetShownText( const SCH_SHEET_PATH* aPath, RESOLUTION_C
 }
 
 
-void SCH_LABEL_BASE::RunOnChildren( const std::function<void( SCH_ITEM* )>& aFunction, RECURSE_MODE aMode )
+void SCH_LABEL_BASE::RunOnChildren( const std::function<void( SCH_ITEM* )>& aFunction, RECURSE_MODE aMode [[maybe_unused]] )
 {
     for( SCH_FIELD& field : m_fields )
         aFunction( &field );
@@ -1077,7 +1077,7 @@ bool SCH_LABEL_BASE::Matches( const EDA_SEARCH_DATA& aSearchData, void* aAuxData
 }
 
 
-bool SCH_LABEL_BASE::Replace( const EDA_SEARCH_DATA& aSearchData, void* aAuxData )
+bool SCH_LABEL_BASE::Replace( const EDA_SEARCH_DATA& aSearchData, void* aAuxData [[maybe_unused]] )
 {
     EDA_SEARCH_DATA localSearchData( aSearchData );
     localSearchData.findString = EscapeString( aSearchData.findString, CTX_NETNAME );
@@ -1087,7 +1087,7 @@ bool SCH_LABEL_BASE::Replace( const EDA_SEARCH_DATA& aSearchData, void* aAuxData
 }
 
 
-INSPECT_RESULT SCH_LABEL_BASE::Visit( INSPECTOR aInspector, void* testData, const std::vector<KICAD_T>& aScanTypes )
+INSPECT_RESULT SCH_LABEL_BASE::Visit( INSPECTOR aInspector, void* testData [[maybe_unused]], const std::vector<KICAD_T>& aScanTypes )
 {
     if( IsType( aScanTypes ) )
     {
@@ -1781,7 +1781,7 @@ const BOX2I SCH_LABEL::GetBodyBoundingBox( const RENDER_SETTINGS* aSettings ) co
 }
 
 
-wxString SCH_LABEL::GetItemDescription( UNITS_PROVIDER* aUnitsProvider, bool aFull ) const
+wxString SCH_LABEL::GetItemDescription( UNITS_PROVIDER* aUnitsProvider [[maybe_unused]], bool aFull ) const
 {
     return wxString::Format( _( "Label '%s'" ), aFull ? GetShownText( FOR_GUI )
                                                       : KIUI::EllipsizeMenuText( GetText() ) );
@@ -1977,7 +1977,7 @@ void SCH_DIRECTIVE_LABEL::MirrorVertically( int aCenter )
 }
 
 
-void SCH_DIRECTIVE_LABEL::CreateGraphicShape( const RENDER_SETTINGS* aRenderSettings, std::vector<VECTOR2I>& aPoints,
+void SCH_DIRECTIVE_LABEL::CreateGraphicShape( const RENDER_SETTINGS* aRenderSettings [[maybe_unused]], std::vector<VECTOR2I>& aPoints,
                                               const VECTOR2I& aPos ) const
 {
     int symbolSize = m_symbolSize;
@@ -2043,7 +2043,7 @@ void SCH_DIRECTIVE_LABEL::CreateGraphicShape( const RENDER_SETTINGS* aRenderSett
 }
 
 
-void SCH_DIRECTIVE_LABEL::AutoplaceFields( SCH_SCREEN* aScreen, AUTOPLACE_ALGO aAlgo )
+void SCH_DIRECTIVE_LABEL::AutoplaceFields( SCH_SCREEN* aScreen [[maybe_unused]], AUTOPLACE_ALGO aAlgo )
 {
     int margin = GetTextOffset();
     int symbolWidth = m_symbolSize;
@@ -2097,7 +2097,7 @@ void SCH_DIRECTIVE_LABEL::AutoplaceFields( SCH_SCREEN* aScreen, AUTOPLACE_ALGO a
 }
 
 
-wxString SCH_DIRECTIVE_LABEL::GetItemDescription( UNITS_PROVIDER* aUnitsProvider, bool aFull ) const
+wxString SCH_DIRECTIVE_LABEL::GetItemDescription( UNITS_PROVIDER* aUnitsProvider [[maybe_unused]], bool aFull ) const
 {
     if( m_fields.empty() )
     {
@@ -2437,7 +2437,7 @@ void SCH_GLOBALLABEL::CreateGraphicShape( const RENDER_SETTINGS* aRenderSettings
 }
 
 
-wxString SCH_GLOBALLABEL::GetItemDescription( UNITS_PROVIDER* aUnitsProvider, bool aFull ) const
+wxString SCH_GLOBALLABEL::GetItemDescription( UNITS_PROVIDER* aUnitsProvider [[maybe_unused]], bool aFull ) const
 {
     return wxString::Format( _( "Global Label '%s'" ), aFull ? GetShownText( FOR_GUI )
                                                              : KIUI::EllipsizeMenuText( GetText() ) );
@@ -2505,7 +2505,7 @@ void SCH_HIERLABEL::CreateGraphicShape( const RENDER_SETTINGS* aSettings, std::v
 }
 
 
-void SCH_HIERLABEL::CreateGraphicShape( const RENDER_SETTINGS* aSettings, std::vector<VECTOR2I>& aPoints,
+void SCH_HIERLABEL::CreateGraphicShape( const RENDER_SETTINGS* aSettings [[maybe_unused]], std::vector<VECTOR2I>& aPoints,
                                         const VECTOR2I& aPos, LABEL_FLAG_SHAPE aShape ) const
 {
     int* Template = TemplateShape[static_cast<int>( aShape )][static_cast<int>( GetSpinStyle() )];
@@ -2602,7 +2602,7 @@ VECTOR2I SCH_HIERLABEL::GetSchematicTextOffset( const RENDER_SETTINGS* aSettings
 }
 
 
-wxString SCH_HIERLABEL::GetItemDescription( UNITS_PROVIDER* aUnitsProvider, bool aFull ) const
+wxString SCH_HIERLABEL::GetItemDescription( UNITS_PROVIDER* aUnitsProvider [[maybe_unused]], bool aFull ) const
 {
     return wxString::Format( _( "Hierarchical Label '%s'" ), aFull ? GetShownText( FOR_GUI )
                                                                    : KIUI::EllipsizeMenuText( GetText() ) );

@@ -125,7 +125,7 @@ private:
     /**
      * Timer expiry callback in the UI thread.
      */
-    void onTimerExpiry( wxTimerEvent& aEvent )
+    void onTimerExpiry( wxTimerEvent& aEvent [[maybe_unused]] )
     {
         acceptPendingProposal();
     }

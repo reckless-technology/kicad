@@ -159,7 +159,7 @@ SELECT_LAYER_DIALOG::SELECT_LAYER_DIALOG( GERBVIEW_FRAME* parent, int aDefaultLa
 }
 
 
-void SELECT_LAYER_DIALOG::OnLayerSelected( wxCommandEvent& event )
+void SELECT_LAYER_DIALOG::OnLayerSelected( wxCommandEvent& event [[maybe_unused]] )
 {
     wxPostEvent( this, wxCommandEvent( wxEVT_COMMAND_BUTTON_CLICKED, wxID_OK ) );
 }

@@ -58,7 +58,7 @@ bool VIA_STITCH_TOOL::Init()
 }
 
 
-int VIA_STITCH_TOOL::ExcludeStitchVia( const TOOL_EVENT& aEvent )
+int VIA_STITCH_TOOL::ExcludeStitchVia( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     PCB_SELECTION_TOOL*  selTool = m_toolMgr->GetTool<PCB_SELECTION_TOOL>();
     const PCB_SELECTION& sel = selTool->GetSelection();
@@ -109,7 +109,7 @@ int VIA_STITCH_TOOL::ExcludeStitchVia( const TOOL_EVENT& aEvent )
 }
 
 
-int VIA_STITCH_TOOL::ClearStitchViaExclusions( const TOOL_EVENT& aEvent )
+int VIA_STITCH_TOOL::ClearStitchViaExclusions( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     PCB_SELECTION_TOOL*  selTool = m_toolMgr->GetTool<PCB_SELECTION_TOOL>();
     const PCB_SELECTION& sel = selTool->GetSelection();

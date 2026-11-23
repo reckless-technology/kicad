@@ -265,7 +265,7 @@ void WX_INFOBAR::Dismiss()
 }
 
 
-void WX_INFOBAR::onThemeChange( wxSysColourChangedEvent& aEvent )
+void WX_INFOBAR::onThemeChange( wxSysColourChangedEvent& aEvent [[maybe_unused]] )
 {
     wxColour fg, bg;
     KIPLATFORM::UI::GetInfoBarColours( fg, bg );
@@ -569,19 +569,19 @@ void WX_INFOBAR::onShowInfoBar( wxCommandEvent& aEvent )
 }
 
 
-void WX_INFOBAR::onDismissInfoBar( wxCommandEvent& aEvent )
+void WX_INFOBAR::onDismissInfoBar( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     Dismiss();
 }
 
 
-void WX_INFOBAR::onCloseButton( wxCommandEvent& aEvent )
+void WX_INFOBAR::onCloseButton( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     Dismiss();
 }
 
 
-void WX_INFOBAR::onTimer( wxTimerEvent& aEvent )
+void WX_INFOBAR::onTimer( wxTimerEvent& aEvent [[maybe_unused]] )
 {
     // Reset and clear the timer
     m_showTimer->Stop();

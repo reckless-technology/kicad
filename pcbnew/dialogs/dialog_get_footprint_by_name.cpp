@@ -54,7 +54,7 @@ static wxString GetFootprintName( const wxString& aOptionCtrlString )
 }
 
 
-void DIALOG_GET_FOOTPRINT_BY_NAME::OnSelectFootprint( wxCommandEvent& aEvent )
+void DIALOG_GET_FOOTPRINT_BY_NAME::OnSelectFootprint( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     const int selection = m_choiceFpList->GetSelection();
     if( selection >= 0 )
@@ -64,7 +64,7 @@ void DIALOG_GET_FOOTPRINT_BY_NAME::OnSelectFootprint( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_GET_FOOTPRINT_BY_NAME::OnSearchInputChanged( wxCommandEvent& event )
+void DIALOG_GET_FOOTPRINT_BY_NAME::OnSearchInputChanged( wxCommandEvent& event [[maybe_unused]] )
 {
     // Find the matching footprint in the list if there is one
     const wxString entry = m_SearchTextCtrl->GetValue().Trim( true ).Trim( false );

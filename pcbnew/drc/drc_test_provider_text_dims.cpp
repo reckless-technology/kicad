@@ -240,7 +240,7 @@ bool DRC_TEST_PROVIDER_TEXT_DIMS::Run()
     };
 
     forEachGeometryItem( itemTypes, LSET::AllLayersMask(),
-            [&]( BOARD_ITEM* item ) -> bool
+            [&]( BOARD_ITEM* item [[maybe_unused]] ) -> bool
             {
                 ++count;
                 return true;

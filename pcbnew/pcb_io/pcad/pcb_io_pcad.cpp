@@ -56,8 +56,8 @@ bool PCB_IO_PCAD::CanReadBoard( const wxString& aFileName ) const
 }
 
 
-void PCB_IO_PCAD::loadBoard( const wxString& aFileName, BOARD& aBoard, bool aIsNewLoad,
-                             const std::map<std::string, UTF8>* aProperties, PROJECT* aProject )
+void PCB_IO_PCAD::loadBoard( const wxString& aFileName, BOARD& aBoard, bool aIsNewLoad [[maybe_unused]],
+                             const std::map<std::string, UTF8>* aProperties, PROJECT* aProject [[maybe_unused]] )
 {
     wxXmlDocument   xmlDoc;
 

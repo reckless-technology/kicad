@@ -130,7 +130,7 @@ PANEL_SETUP_TRACKS_AND_VIAS::~PANEL_SETUP_TRACKS_AND_VIAS()
 }
 
 
-void PANEL_SETUP_TRACKS_AND_VIAS::OnSortTrackWidthsClick( wxCommandEvent& aEvent )
+void PANEL_SETUP_TRACKS_AND_VIAS::OnSortTrackWidthsClick( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( m_trackWidthsGrid->GetNumberRows() < 2 )
         return;
@@ -159,7 +159,7 @@ void PANEL_SETUP_TRACKS_AND_VIAS::OnSortTrackWidthsClick( wxCommandEvent& aEvent
 }
 
 
-void PANEL_SETUP_TRACKS_AND_VIAS::OnSortViaSizesClick( wxCommandEvent& aEvent )
+void PANEL_SETUP_TRACKS_AND_VIAS::OnSortViaSizesClick( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( m_viaSizesGrid->GetNumberRows() < 2 )
         return;
@@ -198,7 +198,7 @@ void PANEL_SETUP_TRACKS_AND_VIAS::OnSortViaSizesClick( wxCommandEvent& aEvent )
 }
 
 
-void PANEL_SETUP_TRACKS_AND_VIAS::OnSortDiffPairsClick( wxCommandEvent& aEvent )
+void PANEL_SETUP_TRACKS_AND_VIAS::OnSortDiffPairsClick( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( m_diffPairsGrid->GetNumberRows() < 2 )
         return;
@@ -510,7 +510,7 @@ void PANEL_SETUP_TRACKS_AND_VIAS::AppendDiffPairs( int aWidth, int aGap, int aVi
 }
 
 
-void PANEL_SETUP_TRACKS_AND_VIAS::OnAddTrackWidthsClick( wxCommandEvent& aEvent )
+void PANEL_SETUP_TRACKS_AND_VIAS::OnAddTrackWidthsClick( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     m_trackWidthsGrid->OnAddRow(
             [&]() -> std::pair<int, int>
@@ -521,7 +521,7 @@ void PANEL_SETUP_TRACKS_AND_VIAS::OnAddTrackWidthsClick( wxCommandEvent& aEvent 
 }
 
 
-void PANEL_SETUP_TRACKS_AND_VIAS::OnRemoveTrackWidthsClick( wxCommandEvent& event )
+void PANEL_SETUP_TRACKS_AND_VIAS::OnRemoveTrackWidthsClick( wxCommandEvent& event [[maybe_unused]] )
 {
     m_trackWidthsGrid->OnDeleteRows(
             [&]( int row )
@@ -531,7 +531,7 @@ void PANEL_SETUP_TRACKS_AND_VIAS::OnRemoveTrackWidthsClick( wxCommandEvent& even
 }
 
 
-void PANEL_SETUP_TRACKS_AND_VIAS::OnAddViaSizesClick( wxCommandEvent& event )
+void PANEL_SETUP_TRACKS_AND_VIAS::OnAddViaSizesClick( wxCommandEvent& event [[maybe_unused]] )
 {
     m_viaSizesGrid->OnAddRow(
             [&]() -> std::pair<int, int>
@@ -542,7 +542,7 @@ void PANEL_SETUP_TRACKS_AND_VIAS::OnAddViaSizesClick( wxCommandEvent& event )
 }
 
 
-void PANEL_SETUP_TRACKS_AND_VIAS::OnRemoveViaSizesClick( wxCommandEvent& event )
+void PANEL_SETUP_TRACKS_AND_VIAS::OnRemoveViaSizesClick( wxCommandEvent& event [[maybe_unused]] )
 {
     m_viaSizesGrid->OnDeleteRows(
             [&]( int row )
@@ -552,7 +552,7 @@ void PANEL_SETUP_TRACKS_AND_VIAS::OnRemoveViaSizesClick( wxCommandEvent& event )
 }
 
 
-void PANEL_SETUP_TRACKS_AND_VIAS::OnAddDiffPairsClick( wxCommandEvent& event )
+void PANEL_SETUP_TRACKS_AND_VIAS::OnAddDiffPairsClick( wxCommandEvent& event [[maybe_unused]] )
 {
     m_diffPairsGrid->OnAddRow(
             [&]() -> std::pair<int, int>
@@ -563,7 +563,7 @@ void PANEL_SETUP_TRACKS_AND_VIAS::OnAddDiffPairsClick( wxCommandEvent& event )
 }
 
 
-void PANEL_SETUP_TRACKS_AND_VIAS::OnRemoveDiffPairsClick( wxCommandEvent& event )
+void PANEL_SETUP_TRACKS_AND_VIAS::OnRemoveDiffPairsClick( wxCommandEvent& event [[maybe_unused]] )
 {
     m_diffPairsGrid->OnDeleteRows(
             [&]( int row )

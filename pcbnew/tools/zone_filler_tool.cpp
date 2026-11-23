@@ -57,7 +57,7 @@ ZONE_FILLER_TOOL::~ZONE_FILLER_TOOL()
 }
 
 
-void ZONE_FILLER_TOOL::Reset( RESET_REASON aReason )
+void ZONE_FILLER_TOOL::Reset( RESET_REASON aReason [[maybe_unused]] )
 {
 }
 
@@ -208,7 +208,7 @@ bool ZONE_FILLER_TOOL::FillAllZones( wxWindow* aCaller, PROGRESS_REPORTER* aRepo
 
         infobar->RemoveAllButtons();
         infobar->AddLink( _( "Show DRC rules" ),
-                      [frame]( wxHyperlinkEvent& aEvent )
+                      [frame]( wxHyperlinkEvent& aEvent [[maybe_unused]] )
                       {
                           frame->ShowBoardSetupDialog( _( "Rules" ) );
                       } );
@@ -270,7 +270,7 @@ bool ZONE_FILLER_TOOL::FillAllZones( wxWindow* aCaller, PROGRESS_REPORTER* aRepo
 }
 
 
-int ZONE_FILLER_TOOL::ZoneFillDirty( const TOOL_EVENT& aEvent )
+int ZONE_FILLER_TOOL::ZoneFillDirty( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     PCB_EDIT_FRAME*    frame = getEditFrame<PCB_EDIT_FRAME>();
     std::vector<ZONE*> toFill;
@@ -307,7 +307,7 @@ int ZONE_FILLER_TOOL::ZoneFillDirty( const TOOL_EVENT& aEvent )
         infobar->RemoveAllButtons();
 
         infobar->AddLink( _( "Show DRC rules" ),
-                      [frame]( wxHyperlinkEvent& aLocEvent )
+                      [frame]( wxHyperlinkEvent& aLocEvent [[maybe_unused]] )
                       {
                           frame->ShowBoardSetupDialog( _( "Rules" ) );
                       } );
@@ -403,7 +403,7 @@ int ZONE_FILLER_TOOL::ZoneFill( const TOOL_EVENT& aEvent )
     else
     {
         const PCB_SELECTION& sel = m_toolMgr->GetTool<PCB_SELECTION_TOOL>()->RequestSelection(
-                []( const VECTOR2I& aPt, GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
+                []( const VECTOR2I& aPt [[maybe_unused]], GENERAL_COLLECTOR& aCollector [[maybe_unused]], PCB_SELECTION_TOOL* sTool [[maybe_unused]] )
                 {
                 } );
 
@@ -449,17 +449,17 @@ int ZONE_FILLER_TOOL::ZoneFill( const TOOL_EVENT& aEvent )
 }
 
 
-int ZONE_FILLER_TOOL::ZoneFillAll( const TOOL_EVENT& aEvent )
+int ZONE_FILLER_TOOL::ZoneFillAll( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     FillAllZones( frame() );
     return 0;
 }
 
 
-int ZONE_FILLER_TOOL::ZoneUnfill( const TOOL_EVENT& aEvent )
+int ZONE_FILLER_TOOL::ZoneUnfill( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     const PCB_SELECTION& sel = m_toolMgr->GetTool<PCB_SELECTION_TOOL>()->RequestSelection(
-            []( const VECTOR2I& aPt, GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
+            []( const VECTOR2I& aPt [[maybe_unused]], GENERAL_COLLECTOR& aCollector [[maybe_unused]], PCB_SELECTION_TOOL* sTool [[maybe_unused]] )
             {
             } );
 
@@ -495,7 +495,7 @@ int ZONE_FILLER_TOOL::ZoneUnfill( const TOOL_EVENT& aEvent )
 }
 
 
-int ZONE_FILLER_TOOL::ZoneUnfillAll( const TOOL_EVENT& aEvent )
+int ZONE_FILLER_TOOL::ZoneUnfillAll( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     BOARD_COMMIT commit( this );
 

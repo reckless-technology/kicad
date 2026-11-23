@@ -146,7 +146,7 @@ void GERBVIEW_FRAME::configureToolbars()
 
                 // UI update handler for the control
                 aToolbar->Bind( wxEVT_UPDATE_UI,
-                                [this]( wxUpdateUIEvent& aEvent )
+                                [this]( wxUpdateUIEvent& aEvent [[maybe_unused]] )
                                     {
                                         if( m_SelLayerBox->GetCount() )
                                         {

@@ -385,7 +385,7 @@ void KICAD_MANAGER_FRAME::HideTabsIfNeeded()
 }
 
 
-void KICAD_MANAGER_FRAME::onNotebookPageCountChanged( wxAuiNotebookEvent& evt )
+void KICAD_MANAGER_FRAME::onNotebookPageCountChanged( wxAuiNotebookEvent& evt [[maybe_unused]] )
 {
     HideTabsIfNeeded();
 }
@@ -417,8 +417,8 @@ void KICAD_MANAGER_FRAME::onNotebookPageCloseRequest( wxAuiNotebookEvent& evt )
 }
 
 
-wxStatusBar* KICAD_MANAGER_FRAME::OnCreateStatusBar( int number, long style, wxWindowID id,
-                                                     const wxString& name )
+wxStatusBar* KICAD_MANAGER_FRAME::OnCreateStatusBar( int number, long style [[maybe_unused]], wxWindowID id,
+                                                     const wxString& name [[maybe_unused]] )
 {
     KISTATUSBAR* sb = new KISTATUSBAR( number, this, id,
                                        static_cast<KISTATUSBAR::STYLE_FLAGS>( KISTATUSBAR::NOTIFICATION_ICON
@@ -835,7 +835,7 @@ void KICAD_MANAGER_FRAME::SaveOpenJobSetsToLocalSettings( bool aIsExplicitUserSa
 }
 
 
-void KICAD_MANAGER_FRAME::OnExit( wxCommandEvent& event )
+void KICAD_MANAGER_FRAME::OnExit( wxCommandEvent& event [[maybe_unused]] )
 {
     Close( false );
 }
@@ -1222,7 +1222,7 @@ void KICAD_MANAGER_FRAME::CreateNewProject( const wxFileName& aProjectFileName, 
 }
 
 
-void KICAD_MANAGER_FRAME::OnCompareProjectBranches( wxCommandEvent& event )
+void KICAD_MANAGER_FRAME::OnCompareProjectBranches( wxCommandEvent& event [[maybe_unused]] )
 {
     std::shared_ptr<KIGIT_COMMON> gitCommon = Prj().GetGitCommon();
     git_repository*               repo = gitCommon->GetRepo();
@@ -1251,7 +1251,7 @@ void KICAD_MANAGER_FRAME::OnCompareProjectBranches( wxCommandEvent& event )
 }
 
 
-void KICAD_MANAGER_FRAME::OnOpenFileInTextEditor( wxCommandEvent& event )
+void KICAD_MANAGER_FRAME::OnOpenFileInTextEditor( wxCommandEvent& event [[maybe_unused]] )
 {
     // show all files in file dialog (in Kicad all files are editable texts):
     wxString wildcard = FILEEXT::AllFilesWildcard();
@@ -1438,7 +1438,7 @@ bool KICAD_MANAGER_FRAME::IsProjectActive()
 }
 
 
-void KICAD_MANAGER_FRAME::OnIdle( wxIdleEvent& aEvent )
+void KICAD_MANAGER_FRAME::OnIdle( wxIdleEvent& aEvent [[maybe_unused]] )
 {
     /**
      * We start loading the saved previously open windows on idle to avoid locking up the GUI

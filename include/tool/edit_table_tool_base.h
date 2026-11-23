@@ -117,7 +117,7 @@ protected:
         selToolMenu.AddSeparator( 100 );
     }
 
-    int doAddRowAbove( const TOOL_EVENT& aEvent )
+    int doAddRowAbove( const TOOL_EVENT& aEvent [[maybe_unused]] )
     {
         if( !selectionAllowsStructureEdits( getTableCellSelection() ) )
             return 0;
@@ -169,7 +169,7 @@ protected:
         return 0;
     }
 
-    int doAddRowBelow( const TOOL_EVENT& aEvent )
+    int doAddRowBelow( const TOOL_EVENT& aEvent [[maybe_unused]] )
     {
         if( !selectionAllowsStructureEdits( getTableCellSelection() ) )
             return 0;
@@ -224,7 +224,7 @@ protected:
         return 0;
     }
 
-    int doAddColumnBefore( const TOOL_EVENT& aEvent )
+    int doAddColumnBefore( const TOOL_EVENT& aEvent [[maybe_unused]] )
     {
         if( !selectionAllowsStructureEdits( getTableCellSelection() ) )
             return 0;
@@ -278,7 +278,7 @@ protected:
         return 0;
     }
 
-    int doAddColumnAfter( const TOOL_EVENT& aEvent )
+    int doAddColumnAfter( const TOOL_EVENT& aEvent [[maybe_unused]] )
     {
         if( !selectionAllowsStructureEdits( getTableCellSelection() ) )
             return 0;
@@ -332,7 +332,7 @@ protected:
         return 0;
     }
 
-    int doDeleteRows( const TOOL_EVENT& aEvent )
+    int doDeleteRows( const TOOL_EVENT& aEvent [[maybe_unused]] )
     {
         if( !selectionAllowsStructureEdits( getTableCellSelection() ) )
             return 0;
@@ -419,7 +419,7 @@ protected:
         return 0;
     }
 
-    int doDeleteColumns( const TOOL_EVENT& aEvent )
+    int doDeleteColumns( const TOOL_EVENT& aEvent [[maybe_unused]] )
     {
         if( !selectionAllowsStructureEdits( getTableCellSelection() ) )
             return 0;
@@ -500,7 +500,7 @@ protected:
         return 0;
     }
 
-    int doMergeCells( const TOOL_EVENT& aEvent )
+    int doMergeCells( const TOOL_EVENT& aEvent [[maybe_unused]] )
     {
         if( !selectionAllowsStructureEdits( getTableCellSelection() ) )
             return 0;
@@ -572,7 +572,7 @@ protected:
         return 0;
     }
 
-    int doUnmergeCells( const TOOL_EVENT& aEvent )
+    int doUnmergeCells( const TOOL_EVENT& aEvent [[maybe_unused]] )
     {
         if( !selectionAllowsStructureEdits( getTableCellSelection() ) )
             return 0;
@@ -841,7 +841,7 @@ public:
      * False for a table whose rows, columns and cell text something else owns, such as one
      * generated from the board. Formatting its cells stays allowed.
      */
-    virtual bool canEditTableStructure( const T_TABLE* aTable ) const { return true; }
+    virtual bool canEditTableStructure( const T_TABLE* aTable [[maybe_unused]] ) const { return true; }
 
     /**
      * True when no cell in \a aSel belongs to a table #canEditTableStructure refuses.

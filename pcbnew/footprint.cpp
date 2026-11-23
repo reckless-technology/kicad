@@ -1949,7 +1949,7 @@ void FOOTPRINT::ClearAllNets()
 }
 
 
-void FOOTPRINT::Add( BOARD_ITEM* aBoardItem, ADD_MODE aMode, bool aSkipConnectivity )
+void FOOTPRINT::Add( BOARD_ITEM* aBoardItem, ADD_MODE aMode, bool aSkipConnectivity [[maybe_unused]] )
 {
     switch( aBoardItem->Type() )
     {
@@ -2056,7 +2056,7 @@ void FOOTPRINT::Add( BOARD_ITEM* aBoardItem, ADD_MODE aMode, bool aSkipConnectiv
 }
 
 
-void FOOTPRINT::Remove( BOARD_ITEM* aBoardItem, REMOVE_MODE aMode )
+void FOOTPRINT::Remove( BOARD_ITEM* aBoardItem, REMOVE_MODE aMode [[maybe_unused]] )
 {
     switch( aBoardItem->Type() )
     {
@@ -3245,7 +3245,7 @@ void FOOTPRINT::ClearBody()
         Remove( m_bodies.back() );
 }
 
-bool FOOTPRINT::Matches( const EDA_SEARCH_DATA& aSearchData, void* aAuxData ) const
+bool FOOTPRINT::Matches( const EDA_SEARCH_DATA& aSearchData, void* aAuxData [[maybe_unused]] ) const
 {
     if( aSearchData.searchMetadata )
     {
@@ -3361,7 +3361,7 @@ INSPECT_RESULT FOOTPRINT::Visit( INSPECTOR inspector, void* testData,
 }
 
 
-wxString FOOTPRINT::GetItemDescription( UNITS_PROVIDER* aUnitsProvider, bool aFull ) const
+wxString FOOTPRINT::GetItemDescription( UNITS_PROVIDER* aUnitsProvider [[maybe_unused]], bool aFull [[maybe_unused]] ) const
 {
     wxString reference = GetReference();
 
@@ -4192,7 +4192,7 @@ void FOOTPRINT::IncrementReference( int aDelta )
 }
 
 
-double FOOTPRINT::GetCoverageArea( int aTextMargin ) const
+double FOOTPRINT::GetCoverageArea( int aTextMargin [[maybe_unused]] ) const
 {
     SHAPE_POLY_SET hull = GetBoundingHull();
     return polygonArea( hull );

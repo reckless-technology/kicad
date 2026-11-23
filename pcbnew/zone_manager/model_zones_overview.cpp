@@ -163,7 +163,7 @@ void MODEL_ZONES_OVERVIEW::SetLayerFilter( PCB_LAYER_ID aLayer )
 }
 
 
-bool MODEL_ZONES_OVERVIEW::SetValueByRow( const wxVariant& aVariant, unsigned aRow, unsigned aCol )
+bool MODEL_ZONES_OVERVIEW::SetValueByRow( const wxVariant& aVariant [[maybe_unused]], unsigned aRow [[maybe_unused]], unsigned aCol [[maybe_unused]] )
 {
     return {};
 }

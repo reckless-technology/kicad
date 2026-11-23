@@ -48,18 +48,18 @@ public:
      */
     void Reload();
 
-    void OnBoardItemAdded( BOARD& aBoard, BOARD_ITEM* aItem ) override { scheduleReload(); }
-    void OnBoardItemsAdded( BOARD& aBoard, std::vector<BOARD_ITEM*>& aItems ) override
+    void OnBoardItemAdded( BOARD& aBoard [[maybe_unused]], BOARD_ITEM* aItem [[maybe_unused]] ) override { scheduleReload(); }
+    void OnBoardItemsAdded( BOARD& aBoard [[maybe_unused]], std::vector<BOARD_ITEM*>& aItems [[maybe_unused]] ) override
     {
         scheduleReload();
     }
-    void OnBoardItemRemoved( BOARD& aBoard, BOARD_ITEM* aItem ) override { scheduleReload(); }
-    void OnBoardItemsRemoved( BOARD& aBoard, std::vector<BOARD_ITEM*>& aItems ) override
+    void OnBoardItemRemoved( BOARD& aBoard [[maybe_unused]], BOARD_ITEM* aItem [[maybe_unused]] ) override { scheduleReload(); }
+    void OnBoardItemsRemoved( BOARD& aBoard [[maybe_unused]], std::vector<BOARD_ITEM*>& aItems [[maybe_unused]] ) override
     {
         scheduleReload();
     }
-    void OnBoardItemChanged( BOARD& aBoard, BOARD_ITEM* aItem ) override { scheduleReload(); }
-    void OnBoardItemsChanged( BOARD& aBoard, std::vector<BOARD_ITEM*>& aItems ) override
+    void OnBoardItemChanged( BOARD& aBoard [[maybe_unused]], BOARD_ITEM* aItem [[maybe_unused]] ) override { scheduleReload(); }
+    void OnBoardItemsChanged( BOARD& aBoard [[maybe_unused]], std::vector<BOARD_ITEM*>& aItems [[maybe_unused]] ) override
     {
         scheduleReload();
     }

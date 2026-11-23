@@ -112,7 +112,7 @@ bool approxSegOverlaps( const SEG& aA, const SEG& aB, int aThreshold, int& aOver
 }
 
 
-bool TRACKS_SPREADER::Move( const VECTOR2I& aP, ITEM* aEndItem )
+bool TRACKS_SPREADER::Move( const VECTOR2I& aP, ITEM* aEndItem [[maybe_unused]] )
 {
     auto rnearest = m_rootLine.CLine().NearestPoint( aP );
 
@@ -160,7 +160,7 @@ bool TRACKS_SPREADER::Move( const VECTOR2I& aP, ITEM* aEndItem )
     std::unordered_set<ITEM*> processedItems;
 
     auto spreadClearanceFunc =
-            [&]( const ITEM* aA, const ITEM* aB, CLEARANCE_ASPECT aAspect ) -> int
+            [&]( const ITEM* aA, const ITEM* aB, CLEARANCE_ASPECT aAspect [[maybe_unused]] ) -> int
             {
                 const LINKED_ITEM* lnkA = static_cast<const LINKED_ITEM*>( aA );
                 const LINKED_ITEM* lnkB = static_cast<const LINKED_ITEM*>( aB );
@@ -360,7 +360,7 @@ bool TRACKS_SPREADER::Move( const VECTOR2I& aP, ITEM* aEndItem )
 }
 
 
-bool TRACKS_SPREADER::FixRoute( const VECTOR2I& aP, ITEM* aEndItem, bool aForceFinish )
+bool TRACKS_SPREADER::FixRoute( const VECTOR2I& aP [[maybe_unused]], ITEM* aEndItem [[maybe_unused]], bool aForceFinish [[maybe_unused]] )
 {
     if( !m_currentNode )
         return false;
@@ -395,7 +395,7 @@ bool TRACKS_SPREADER::HasPlacedAnything() const
 }
 
 
-NODE* TRACKS_SPREADER::CurrentNode( bool aLoopsRemoved ) const
+NODE* TRACKS_SPREADER::CurrentNode( bool aLoopsRemoved [[maybe_unused]] ) const
 {
     return m_currentNode ? m_currentNode : Router()->GetWorld();
 }

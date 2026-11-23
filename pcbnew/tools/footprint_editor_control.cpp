@@ -79,7 +79,7 @@ FOOTPRINT_EDITOR_CONTROL::FOOTPRINT_EDITOR_CONTROL() :
 }
 
 
-void FOOTPRINT_EDITOR_CONTROL::Reset( RESET_REASON aReason )
+void FOOTPRINT_EDITOR_CONTROL::Reset( RESET_REASON aReason [[maybe_unused]] )
 {
     m_frame = getEditFrame<FOOTPRINT_EDIT_FRAME>();
 
@@ -97,7 +97,7 @@ bool FOOTPRINT_EDITOR_CONTROL::Init()
     CONDITIONAL_MENU& ctxMenu = m_menu->GetMenu();
 
     auto libSelectedCondition =
-            [this]( const SELECTION& aSel )
+            [this]( const SELECTION& aSel [[maybe_unused]] )
             {
                 LIB_ID sel = m_frame->GetLibTree()->GetSelectedLibId();
                 return !sel.GetLibNickname().empty() && sel.GetLibItemName().empty();
@@ -107,28 +107,28 @@ bool FOOTPRINT_EDITOR_CONTROL::Init()
     // symbol selected (in other words, when we know the library context even if the library
     // itself isn't selected.
     auto libInferredCondition =
-            [this]( const SELECTION& aSel )
+            [this]( const SELECTION& aSel [[maybe_unused]] )
             {
                 LIB_ID sel = m_frame->GetLibTree()->GetSelectedLibId();
                 return !sel.GetLibNickname().empty();
             };
 
     auto fpSelectedCondition =
-            [this]( const SELECTION& aSel )
+            [this]( const SELECTION& aSel [[maybe_unused]] )
             {
                 LIB_ID sel = m_frame->GetLibTree()->GetSelectedLibId();
                 return !sel.GetLibNickname().empty() && !sel.GetLibItemName().empty();
             };
 
     auto fpExportCondition =
-            [this]( const SELECTION& aSel )
+            [this]( const SELECTION& aSel [[maybe_unused]] )
             {
                 FOOTPRINT* fp = m_frame->GetBoard()->GetFirstFootprint();
                 return fp != nullptr;
             };
 
     auto canOpenExternally =
-            [this]( const SELECTION& aSel )
+            [this]( const SELECTION& aSel [[maybe_unused]] )
             {
                 // The option is shown if the editor has no current edits,
                 // dumb/simple guard against opening a new file that does not exist on disk
@@ -225,7 +225,7 @@ void FOOTPRINT_EDITOR_CONTROL::tryToSaveFootprintInLibrary( FOOTPRINT&    aFootp
 }
 
 
-int FOOTPRINT_EDITOR_CONTROL::NewFootprint( const TOOL_EVENT& aEvent )
+int FOOTPRINT_EDITOR_CONTROL::NewFootprint( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     const LIB_ID   selected = m_frame->GetTargetFPID();
     const wxString libraryName = selected.GetUniStringLibNickname();
@@ -274,7 +274,7 @@ int FOOTPRINT_EDITOR_CONTROL::NewFootprint( const TOOL_EVENT& aEvent )
 }
 
 
-int FOOTPRINT_EDITOR_CONTROL::CreateFootprintFromWizard( const TOOL_EVENT& aEvent )
+int FOOTPRINT_EDITOR_CONTROL::CreateFootprintFromWizard( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     const LIB_ID selected = m_frame->GetTargetFPID();
 
@@ -330,7 +330,7 @@ int FOOTPRINT_EDITOR_CONTROL::CreateFootprintFromWizard( const TOOL_EVENT& aEven
 }
 
 
-int FOOTPRINT_EDITOR_CONTROL::Save( const TOOL_EVENT& aEvent )
+int FOOTPRINT_EDITOR_CONTROL::Save( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( !footprint() )     // no loaded footprint
         return 0;
@@ -355,7 +355,7 @@ int FOOTPRINT_EDITOR_CONTROL::Save( const TOOL_EVENT& aEvent )
 }
 
 
-int FOOTPRINT_EDITOR_CONTROL::SaveAs( const TOOL_EVENT& aEvent )
+int FOOTPRINT_EDITOR_CONTROL::SaveAs( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( m_frame->GetTargetFPID().GetLibItemName().empty() )
     {
@@ -404,7 +404,7 @@ int FOOTPRINT_EDITOR_CONTROL::SaveAs( const TOOL_EVENT& aEvent )
 }
 
 
-int FOOTPRINT_EDITOR_CONTROL::Revert( const TOOL_EVENT& aEvent )
+int FOOTPRINT_EDITOR_CONTROL::Revert( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     getEditFrame<FOOTPRINT_EDIT_FRAME>()->RevertFootprint();
     return 0;
@@ -432,7 +432,7 @@ int FOOTPRINT_EDITOR_CONTROL::CutCopyFootprint( const TOOL_EVENT& aEvent )
 }
 
 
-int FOOTPRINT_EDITOR_CONTROL::PasteFootprint( const TOOL_EVENT& aEvent )
+int FOOTPRINT_EDITOR_CONTROL::PasteFootprint( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( m_copiedFootprint && !m_frame->GetLibTree()->GetSelectedLibId().GetLibNickname().empty() )
     {
@@ -455,7 +455,7 @@ int FOOTPRINT_EDITOR_CONTROL::PasteFootprint( const TOOL_EVENT& aEvent )
 }
 
 
-int FOOTPRINT_EDITOR_CONTROL::DuplicateFootprint( const TOOL_EVENT& aEvent )
+int FOOTPRINT_EDITOR_CONTROL::DuplicateFootprint( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     LIB_ID     fpID = m_frame->GetLibTree()->GetSelectedLibId();
     FOOTPRINT* footprint;
@@ -477,7 +477,7 @@ int FOOTPRINT_EDITOR_CONTROL::DuplicateFootprint( const TOOL_EVENT& aEvent )
 }
 
 
-int FOOTPRINT_EDITOR_CONTROL::RenameFootprint( const TOOL_EVENT& aEvent )
+int FOOTPRINT_EDITOR_CONTROL::RenameFootprint( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     LIBRARY_EDITOR_CONTROL* libTool   = m_toolMgr->GetTool<LIBRARY_EDITOR_CONTROL>();
     FOOTPRINT_LIBRARY_ADAPTER* adapter = PROJECT_PCB::FootprintLibAdapter( &m_frame->Prj() );
@@ -582,7 +582,7 @@ int FOOTPRINT_EDITOR_CONTROL::RenameFootprint( const TOOL_EVENT& aEvent )
 }
 
 
-int FOOTPRINT_EDITOR_CONTROL::DeleteFootprint( const TOOL_EVENT& aEvent )
+int FOOTPRINT_EDITOR_CONTROL::DeleteFootprint( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     FOOTPRINT_EDIT_FRAME* frame = getEditFrame<FOOTPRINT_EDIT_FRAME>();
     const LIB_ID          fpID = frame->GetTargetFPID();
@@ -599,7 +599,7 @@ int FOOTPRINT_EDITOR_CONTROL::DeleteFootprint( const TOOL_EVENT& aEvent )
 }
 
 
-int FOOTPRINT_EDITOR_CONTROL::ImportFootprint( const TOOL_EVENT& aEvent )
+int FOOTPRINT_EDITOR_CONTROL::ImportFootprint( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     bool is_last_fp_from_brd = m_frame->IsCurrentFPFromBoard();
 
@@ -627,7 +627,7 @@ int FOOTPRINT_EDITOR_CONTROL::ImportFootprint( const TOOL_EVENT& aEvent )
 }
 
 
-int FOOTPRINT_EDITOR_CONTROL::ExportForOlderVersion( const TOOL_EVENT& aEvent )
+int FOOTPRINT_EDITOR_CONTROL::ExportForOlderVersion( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     const wxString title = _( "Export for Older KiCad Version" );
     wxString       libName = m_frame->GetTargetFPID().GetLibNickname();
@@ -673,7 +673,7 @@ int FOOTPRINT_EDITOR_CONTROL::ExportForOlderVersion( const TOOL_EVENT& aEvent )
 }
 
 
-int FOOTPRINT_EDITOR_CONTROL::ExportFootprint( const TOOL_EVENT& aEvent )
+int FOOTPRINT_EDITOR_CONTROL::ExportFootprint( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( FOOTPRINT* fp = m_frame->GetBoard()->GetFirstFootprint() )
         m_frame->ExportFootprint( fp );
@@ -682,7 +682,7 @@ int FOOTPRINT_EDITOR_CONTROL::ExportFootprint( const TOOL_EVENT& aEvent )
 }
 
 
-int FOOTPRINT_EDITOR_CONTROL::ExportFootprintAsSVG( const TOOL_EVENT& aEvent )
+int FOOTPRINT_EDITOR_CONTROL::ExportFootprintAsSVG( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     FOOTPRINT* fp = m_frame->GetBoard()->GetFirstFootprint();
 
@@ -717,7 +717,7 @@ int FOOTPRINT_EDITOR_CONTROL::ExportFootprintAsSVG( const TOOL_EVENT& aEvent )
 }
 
 
-int FOOTPRINT_EDITOR_CONTROL::CompareLibraryWithFile( const TOOL_EVENT& aEvent )
+int FOOTPRINT_EDITOR_CONTROL::CompareLibraryWithFile( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     wxCHECK( m_frame, 0 );
 
@@ -835,7 +835,7 @@ int FOOTPRINT_EDITOR_CONTROL::CompareLibraryWithFile( const TOOL_EVENT& aEvent )
 }
 
 
-int FOOTPRINT_EDITOR_CONTROL::OpenDirectory( const TOOL_EVENT& aEvent )
+int FOOTPRINT_EDITOR_CONTROL::OpenDirectory( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     // No check for multi selection since the context menu option must be hidden in that case
     LIB_ID        libId = m_frame->GetTargetFPID();
@@ -895,7 +895,7 @@ int FOOTPRINT_EDITOR_CONTROL::OpenDirectory( const TOOL_EVENT& aEvent )
 }
 
 
-int FOOTPRINT_EDITOR_CONTROL::OpenWithTextEditor( const TOOL_EVENT& aEvent )
+int FOOTPRINT_EDITOR_CONTROL::OpenWithTextEditor( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     wxString fullEditorName = Pgm().GetTextEditor();
 
@@ -932,7 +932,7 @@ int FOOTPRINT_EDITOR_CONTROL::OpenWithTextEditor( const TOOL_EVENT& aEvent )
 }
 
 
-int FOOTPRINT_EDITOR_CONTROL::ShowDatasheet( const TOOL_EVENT& aEvent )
+int FOOTPRINT_EDITOR_CONTROL::ShowDatasheet( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( FOOTPRINT* footprint = m_frame->GetBoard()->GetFirstFootprint() )
     {
@@ -954,14 +954,14 @@ int FOOTPRINT_EDITOR_CONTROL::ShowDatasheet( const TOOL_EVENT& aEvent )
 }
 
 
-int FOOTPRINT_EDITOR_CONTROL::EditFootprint( const TOOL_EVENT& aEvent )
+int FOOTPRINT_EDITOR_CONTROL::EditFootprint( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->LoadFootprintFromLibrary( m_frame->GetLibTree()->GetSelectedLibId() );
     return 0;
 }
 
 
-int FOOTPRINT_EDITOR_CONTROL::EditLibraryFootprint( const TOOL_EVENT& aEvent )
+int FOOTPRINT_EDITOR_CONTROL::EditLibraryFootprint( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     FOOTPRINT* footprint = m_frame->GetBoard()->GetFirstFootprint();
 
@@ -980,14 +980,14 @@ int FOOTPRINT_EDITOR_CONTROL::EditLibraryFootprint( const TOOL_EVENT& aEvent )
 }
 
 
-int FOOTPRINT_EDITOR_CONTROL::ToggleLayersManager( const TOOL_EVENT& aEvent )
+int FOOTPRINT_EDITOR_CONTROL::ToggleLayersManager( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->ToggleLayersManager();
     return 0;
 }
 
 
-int FOOTPRINT_EDITOR_CONTROL::ToggleProperties( const TOOL_EVENT& aEvent )
+int FOOTPRINT_EDITOR_CONTROL::ToggleProperties( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->ToggleProperties();
     return 0;
@@ -1082,7 +1082,7 @@ void FOOTPRINT_EDITOR_CONTROL::editFootprintPropertiesFromLibrary( const LIB_ID&
 }
 
 
-int FOOTPRINT_EDITOR_CONTROL::CleanupGraphics( const TOOL_EVENT& aEvent )
+int FOOTPRINT_EDITOR_CONTROL::CleanupGraphics( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     FOOTPRINT_EDIT_FRAME* editFrame = getEditFrame<FOOTPRINT_EDIT_FRAME>();
     DIALOG_CLEANUP_GRAPHICS dlg( editFrame, true );
@@ -1092,7 +1092,7 @@ int FOOTPRINT_EDITOR_CONTROL::CleanupGraphics( const TOOL_EVENT& aEvent )
 }
 
 
-int FOOTPRINT_EDITOR_CONTROL::CheckFootprint( const TOOL_EVENT& aEvent )
+int FOOTPRINT_EDITOR_CONTROL::CheckFootprint( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( !m_checkerDialog )
     {
@@ -1108,7 +1108,7 @@ int FOOTPRINT_EDITOR_CONTROL::CheckFootprint( const TOOL_EVENT& aEvent )
 }
 
 
-int FOOTPRINT_EDITOR_CONTROL::ShowFootprintUsers( const TOOL_EVENT& aEvent )
+int FOOTPRINT_EDITOR_CONTROL::ShowFootprintUsers( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     const FOOTPRINT* footprint = m_frame->GetBoard()->GetFirstFootprint();
 
@@ -1144,7 +1144,7 @@ void FOOTPRINT_EDITOR_CONTROL::DestroyCheckerDialog()
 }
 
 
-int FOOTPRINT_EDITOR_CONTROL::RepairFootprint( const TOOL_EVENT& aEvent )
+int FOOTPRINT_EDITOR_CONTROL::RepairFootprint( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     FOOTPRINT* footprint = board()->Footprints().front();
     int        errors = 0;
@@ -1231,7 +1231,7 @@ static bool appearancePanelHasFocus( FOOTPRINT_EDIT_FRAME* aFrame )
 }
 
 
-int FOOTPRINT_EDITOR_CONTROL::NextTab( const TOOL_EVENT& aEvent )
+int FOOTPRINT_EDITOR_CONTROL::NextTab( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( appearancePanelHasFocus( m_frame ) )
         return 0;
@@ -1241,7 +1241,7 @@ int FOOTPRINT_EDITOR_CONTROL::NextTab( const TOOL_EVENT& aEvent )
 }
 
 
-int FOOTPRINT_EDITOR_CONTROL::PrevTab( const TOOL_EVENT& aEvent )
+int FOOTPRINT_EDITOR_CONTROL::PrevTab( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( appearancePanelHasFocus( m_frame ) )
         return 0;
@@ -1251,14 +1251,14 @@ int FOOTPRINT_EDITOR_CONTROL::PrevTab( const TOOL_EVENT& aEvent )
 }
 
 
-int FOOTPRINT_EDITOR_CONTROL::CloseTab( const TOOL_EVENT& aEvent )
+int FOOTPRINT_EDITOR_CONTROL::CloseTab( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->CloseActiveFootprintTab();
     return 0;
 }
 
 
-int FOOTPRINT_EDITOR_CONTROL::ShowLibraryFieldsTable( const TOOL_EVENT& aEvent )
+int FOOTPRINT_EDITOR_CONTROL::ShowLibraryFieldsTable( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( m_frame->GetTargetFPID().GetLibNickname().empty() )
         return 0;
@@ -1342,7 +1342,7 @@ int FOOTPRINT_EDITOR_CONTROL::ChangeLineMode( const TOOL_EVENT& aEvent )
     return 0;
 }
 
-int FOOTPRINT_EDITOR_CONTROL::OnAngleSnapModeChanged( const TOOL_EVENT& aEvent )
+int FOOTPRINT_EDITOR_CONTROL::OnAngleSnapModeChanged( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     FOOTPRINT_EDIT_FRAME* f = getEditFrame<FOOTPRINT_EDIT_FRAME>();
 

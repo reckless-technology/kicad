@@ -711,7 +711,7 @@ protected:
      *
      * @return Correct field vertical position
      */
-    int fieldVPlacement( SCH_FIELD* aField, const BOX2I& aFieldBox, int* aAccumulatedPosition,
+    int fieldVPlacement( SCH_FIELD* aField, const BOX2I& aFieldBox [[maybe_unused]], int* aAccumulatedPosition,
                          bool aDynamic )
     {
         int field_height;

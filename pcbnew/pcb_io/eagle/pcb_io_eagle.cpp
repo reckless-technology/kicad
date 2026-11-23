@@ -332,8 +332,8 @@ VECTOR2I inline PCB_IO_EAGLE::kicad_fontsize( const ECOORD& d, int aTextThicknes
 }
 
 
-void PCB_IO_EAGLE::loadBoard( const wxString& aFileName, BOARD& aBoard, bool aIsNewLoad,
-                              const std::map<std::string, UTF8>* aProperties, PROJECT* aProject )
+void PCB_IO_EAGLE::loadBoard( const wxString& aFileName, BOARD& aBoard, bool aIsNewLoad [[maybe_unused]],
+                              const std::map<std::string, UTF8>* aProperties, PROJECT* aProject [[maybe_unused]] )
 {
     wxXmlNode*      doc;
 
@@ -1773,7 +1773,7 @@ void PCB_IO_EAGLE::orientFootprintAndText( FOOTPRINT* aFootprint, const EELEMENT
 }
 
 
-void PCB_IO_EAGLE::orientFPText( FOOTPRINT* aFootprint, const EELEMENT& e, PCB_TEXT* aFPText, const EATTR* aAttr,
+void PCB_IO_EAGLE::orientFPText( FOOTPRINT* aFootprint [[maybe_unused]], const EELEMENT& e, PCB_TEXT* aFPText, const EATTR* aAttr,
                                  double aTextDefAngle, bool aTextDefMirror, bool aTextDefSpin )
 {
     // Smashed part ?
@@ -3401,7 +3401,7 @@ void PCB_IO_EAGLE::FootprintEnumerate( wxArrayString& aFootprintNames, const wxS
 
 
 std::unique_ptr<FOOTPRINT> PCB_IO_EAGLE::FootprintLoad( const wxString& aLibraryPath, const wxString& aFootprintName,
-                                                        bool aKeepUUID, const std::map<std::string, UTF8>* aProperties )
+                                                        bool aKeepUUID [[maybe_unused]], const std::map<std::string, UTF8>* aProperties )
 {
     init( aProperties );
     cacheLib( aLibraryPath );

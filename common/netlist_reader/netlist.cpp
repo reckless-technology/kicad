@@ -28,7 +28,7 @@
 #include <wx/log.h>
 
 
-int COMPONENT_NET::Format( OUTPUTFORMATTER* aOut, int aNestLevel, int aCtl )
+int COMPONENT_NET::Format( OUTPUTFORMATTER* aOut, int aNestLevel, int aCtl [[maybe_unused]] )
 {
     return aOut->Print( aNestLevel, "(pin_net %s %s)",
                         aOut->Quotew( m_pinName ).c_str(),

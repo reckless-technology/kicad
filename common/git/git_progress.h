@@ -60,7 +60,7 @@ public:
         return true;
     }
 
-    virtual void UpdateProgress( int aCurrent, int aTotal, const wxString& aMessage ) {};
+    virtual void UpdateProgress( int aCurrent [[maybe_unused]], int aTotal [[maybe_unused]], const wxString& aMessage [[maybe_unused]] ) {};
 
 
 protected:

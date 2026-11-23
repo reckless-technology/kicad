@@ -858,7 +858,7 @@ bool JSON_SETTINGS::Migrate()
 }
 
 
-bool JSON_SETTINGS::MigrateFromLegacy( wxConfigBase* aLegacyConfig )
+bool JSON_SETTINGS::MigrateFromLegacy( wxConfigBase* aLegacyConfig [[maybe_unused]] )
 {
     wxLogTrace( traceSettings, wxT( "MigrateFromLegacy() not implemented for %s" ), typeid( *this ).name() );
     return false;

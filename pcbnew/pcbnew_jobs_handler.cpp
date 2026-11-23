@@ -182,7 +182,7 @@ PCBNEW_JOBS_HANDLER::PCBNEW_JOBS_HANDLER( KIWAY* aKiway ) :
         m_toolManager( nullptr )
 {
     Register( "bom", std::bind( &PCBNEW_JOBS_HANDLER::JobExportBom, this, std::placeholders::_1 ),
-              [aKiway]( JOB* job, wxWindow* aParent ) -> bool
+              [aKiway]( JOB* job, wxWindow* aParent [[maybe_unused]] ) -> bool
               {
                   JOB_EXPORT_BOM* bomJob = dynamic_cast<JOB_EXPORT_BOM*>( job );
 
@@ -221,17 +221,17 @@ PCBNEW_JOBS_HANDLER::PCBNEW_JOBS_HANDLER( KIWAY* aKiway ) :
                   return dlg.ShowModal() == wxID_OK;
               } );
     Register( "upgrade", std::bind( &PCBNEW_JOBS_HANDLER::JobUpgrade, this, std::placeholders::_1 ),
-              []( JOB* job, wxWindow* aParent ) -> bool
+              []( JOB* job [[maybe_unused]], wxWindow* aParent [[maybe_unused]] ) -> bool
               {
                   return true;
               } );
     Register( "downgrade", std::bind( &PCBNEW_JOBS_HANDLER::JobDowngrade, this, std::placeholders::_1 ),
-              []( JOB* job, wxWindow* aParent ) -> bool
+              []( JOB* job [[maybe_unused]], wxWindow* aParent [[maybe_unused]] ) -> bool
               {
                   return true;
               } );
     Register( "pcb_import", std::bind( &PCBNEW_JOBS_HANDLER::JobImport, this, std::placeholders::_1 ),
-              []( JOB* job, wxWindow* aParent ) -> bool
+              []( JOB* job [[maybe_unused]], wxWindow* aParent [[maybe_unused]] ) -> bool
               {
                   return true;
               } );
@@ -249,7 +249,7 @@ PCBNEW_JOBS_HANDLER::PCBNEW_JOBS_HANDLER( KIWAY* aKiway ) :
                   return dlg.ShowModal() == wxID_OK;
               } );
     Register( "gencad", std::bind( &PCBNEW_JOBS_HANDLER::JobExportGencad, this, std::placeholders::_1 ),
-              [aKiway]( JOB* job, wxWindow* aParent ) -> bool
+              [aKiway]( JOB* job, wxWindow* aParent [[maybe_unused]] ) -> bool
               {
                   JOB_EXPORT_PCB_GENCAD* gencadJob = dynamic_cast<JOB_EXPORT_PCB_GENCAD*>( job );
 
@@ -263,7 +263,7 @@ PCBNEW_JOBS_HANDLER::PCBNEW_JOBS_HANDLER( KIWAY* aKiway ) :
               } );
     Register( "specctra_dsn",
               std::bind( &PCBNEW_JOBS_HANDLER::JobExportSpecctraDsn, this, std::placeholders::_1 ),
-              []( JOB* job, wxWindow* aParent ) -> bool
+              []( JOB* job [[maybe_unused]], wxWindow* aParent [[maybe_unused]] ) -> bool
               {
                   return true;
               } );
@@ -453,13 +453,13 @@ PCBNEW_JOBS_HANDLER::PCBNEW_JOBS_HANDLER( KIWAY* aKiway ) :
               } );
     Register(
             "hpgl",
-            [&]( JOB* aJob )
+            [&]( JOB* aJob [[maybe_unused]] )
             {
                 m_reporter->Report( _( "Plotting to HPGL is no longer supported as of KiCad 10.0.\n" ),
                                     RPT_SEVERITY_ERROR );
                 return CLI::EXIT_CODES::ERR_ARGS;
             },
-            [aKiway]( JOB* job, wxWindow* aParent ) -> bool
+            [aKiway]( JOB* job [[maybe_unused]], wxWindow* aParent [[maybe_unused]] ) -> bool
             {
                 PCB_EDIT_FRAME* editFrame = dynamic_cast<PCB_EDIT_FRAME*>( aKiway->Player( FRAME_PCB_EDITOR, false ) );
 
@@ -495,27 +495,27 @@ PCBNEW_JOBS_HANDLER::PCBNEW_JOBS_HANDLER( KIWAY* aKiway ) :
                   return dlg.ShowModal() == wxID_OK;
               } );
     Register( "fpupgrade", std::bind( &PCBNEW_JOBS_HANDLER::JobExportFpUpgrade, this, std::placeholders::_1 ),
-              []( JOB* job, wxWindow* aParent ) -> bool
+              []( JOB* job [[maybe_unused]], wxWindow* aParent [[maybe_unused]] ) -> bool
               {
                   return true;
               } );
     Register( "fpdowngrade", std::bind( &PCBNEW_JOBS_HANDLER::JobFpDowngrade, this, std::placeholders::_1 ),
-              []( JOB* job, wxWindow* aParent ) -> bool
+              []( JOB* job [[maybe_unused]], wxWindow* aParent [[maybe_unused]] ) -> bool
               {
                   return true;
               } );
     Register( "fpsvg", std::bind( &PCBNEW_JOBS_HANDLER::JobExportFpSvg, this, std::placeholders::_1 ),
-              []( JOB* job, wxWindow* aParent ) -> bool
+              []( JOB* job [[maybe_unused]], wxWindow* aParent [[maybe_unused]] ) -> bool
               {
                   return true;
               } );
     Register( "pcb_diff", std::bind( &PCBNEW_JOBS_HANDLER::JobDiff, this, std::placeholders::_1 ),
-              []( JOB* job, wxWindow* aParent ) -> bool
+              []( JOB* job [[maybe_unused]], wxWindow* aParent [[maybe_unused]] ) -> bool
               {
                   return true;
               } );
     Register( "fp_diff", std::bind( &PCBNEW_JOBS_HANDLER::JobFpDiff, this, std::placeholders::_1 ),
-              []( JOB* job, wxWindow* aParent ) -> bool
+              []( JOB* job [[maybe_unused]], wxWindow* aParent [[maybe_unused]] ) -> bool
               {
                   return true;
               } );
@@ -546,7 +546,7 @@ PCBNEW_JOBS_HANDLER::PCBNEW_JOBS_HANDLER( KIWAY* aKiway ) :
                   return dlg.ShowModal() == wxID_OK;
               } );
     Register( "ipcd356", std::bind( &PCBNEW_JOBS_HANDLER::JobExportIpcD356, this, std::placeholders::_1 ),
-              []( JOB* job, wxWindow* aParent ) -> bool
+              []( JOB* job [[maybe_unused]], wxWindow* aParent [[maybe_unused]] ) -> bool
               {
                   return true;
               } );

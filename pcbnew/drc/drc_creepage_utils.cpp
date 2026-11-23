@@ -271,7 +271,7 @@ bool areEquivalent( const CREEP_SHAPE* a, const CREEP_SHAPE* b )
 }
 
 
-std::vector<PATH_CONNECTION> BE_SHAPE_POINT::Paths( const BE_SHAPE_POINT& aS2, double aMaxWeight,
+std::vector<PATH_CONNECTION> BE_SHAPE_POINT::Paths( const BE_SHAPE_POINT& aS2, double aMaxWeight [[maybe_unused]],
                                                     double aMaxSquaredWeight ) const
 {
     std::vector<PATH_CONNECTION> result;
@@ -291,7 +291,7 @@ std::vector<PATH_CONNECTION> BE_SHAPE_POINT::Paths( const BE_SHAPE_POINT& aS2, d
 }
 
 
-std::vector<PATH_CONNECTION> BE_SHAPE_POINT::Paths( const BE_SHAPE_CIRCLE& aS2, double aMaxWeight,
+std::vector<PATH_CONNECTION> BE_SHAPE_POINT::Paths( const BE_SHAPE_CIRCLE& aS2, double aMaxWeight [[maybe_unused]],
                                                     double aMaxSquaredWeight ) const
 {
     std::vector<PATH_CONNECTION> result;
@@ -533,7 +533,7 @@ std::vector<PATH_CONNECTION> BE_SHAPE_ARC::Paths( const BE_SHAPE_ARC& aS2, doubl
 }
 
 
-std::vector<PATH_CONNECTION> BE_SHAPE_CIRCLE::Paths( const BE_SHAPE_CIRCLE& aS2, double aMaxWeight,
+std::vector<PATH_CONNECTION> BE_SHAPE_CIRCLE::Paths( const BE_SHAPE_CIRCLE& aS2, double aMaxWeight [[maybe_unused]],
                                                      double aMaxSquaredWeight ) const
 {
     std::vector<PATH_CONNECTION> result;
@@ -904,14 +904,14 @@ void GRAPH_CONNECTION::GetShapes( std::vector<PCB_SHAPE>& aShapes )
 }
 
 
-void CREEP_SHAPE::ConnectChildren( std::shared_ptr<GRAPH_NODE>& a1, std::shared_ptr<GRAPH_NODE>&,
-                                   CREEPAGE_GRAPH&              aG ) const
+void CREEP_SHAPE::ConnectChildren( std::shared_ptr<GRAPH_NODE>& a1 [[maybe_unused]], std::shared_ptr<GRAPH_NODE>&,
+                                   CREEPAGE_GRAPH&              aG [[maybe_unused]] ) const
 {
 }
 
 
-void BE_SHAPE_POINT::ConnectChildren( std::shared_ptr<GRAPH_NODE>& a1, std::shared_ptr<GRAPH_NODE>&,
-                                      CREEPAGE_GRAPH&              aG ) const
+void BE_SHAPE_POINT::ConnectChildren( std::shared_ptr<GRAPH_NODE>& a1 [[maybe_unused]], std::shared_ptr<GRAPH_NODE>&,
+                                      CREEPAGE_GRAPH&              aG [[maybe_unused]] ) const
 {
 }
 
@@ -1074,7 +1074,7 @@ void CREEPAGE_GRAPH::SetTarget( double aTarget )
 }
 
 
-std::vector<PATH_CONNECTION> CU_SHAPE_SEGMENT::Paths( const BE_SHAPE_POINT& aS2, double aMaxWeight,
+std::vector<PATH_CONNECTION> CU_SHAPE_SEGMENT::Paths( const BE_SHAPE_POINT& aS2, double aMaxWeight [[maybe_unused]],
                                                       double aMaxSquaredWeight ) const
 {
     std::vector<PATH_CONNECTION> result;
@@ -1354,7 +1354,7 @@ std::vector<PATH_CONNECTION> CU_SHAPE_CIRCLE::Paths( const BE_SHAPE_ARC& aS2, do
 }
 
 
-std::vector<PATH_CONNECTION> CU_SHAPE_ARC::Paths( const BE_SHAPE_CIRCLE& aS2, double aMaxWeight,
+std::vector<PATH_CONNECTION> CU_SHAPE_ARC::Paths( const BE_SHAPE_CIRCLE& aS2 [[maybe_unused]], double aMaxWeight,
                                                   double aMaxSquaredWeight ) const
 {
     std::vector<PATH_CONNECTION> result;
@@ -1427,7 +1427,7 @@ std::vector<PATH_CONNECTION> CU_SHAPE_ARC::Paths( const BE_SHAPE_ARC& aS2, doubl
 
 
 std::vector<PATH_CONNECTION> CU_SHAPE_CIRCLE::Paths( const BE_SHAPE_POINT& aS2, double aMaxWeight,
-                                                     double aMaxSquaredWeight ) const
+                                                     double aMaxSquaredWeight [[maybe_unused]] ) const
 {
     std::vector<PATH_CONNECTION> result;
 
@@ -1450,7 +1450,7 @@ std::vector<PATH_CONNECTION> CU_SHAPE_CIRCLE::Paths( const BE_SHAPE_POINT& aS2, 
 
 
 std::vector<PATH_CONNECTION> CU_SHAPE_CIRCLE::Paths( const CU_SHAPE_CIRCLE& aS2, double aMaxWeight,
-                                                     double aMaxSquaredWeight ) const
+                                                     double aMaxSquaredWeight [[maybe_unused]] ) const
 {
     std::vector<PATH_CONNECTION> result;
 
@@ -1707,7 +1707,7 @@ VECTOR2I closestPointOnSegment( const VECTOR2I& A, const VECTOR2I& B, const VECT
 
 std::vector<PATH_CONNECTION> CU_SHAPE_SEGMENT::Paths( const CU_SHAPE_SEGMENT& aS2,
                                                       double                  aMaxWeight,
-                                                      double aMaxSquaredWeight ) const
+                                                      double aMaxSquaredWeight [[maybe_unused]] ) const
 {
     std::vector<PATH_CONNECTION> result;
 
@@ -1771,7 +1771,7 @@ std::vector<PATH_CONNECTION> CU_SHAPE_SEGMENT::Paths( const CU_SHAPE_SEGMENT& aS
 
 
 std::vector<PATH_CONNECTION> CU_SHAPE_CIRCLE::Paths( const BE_SHAPE_CIRCLE& aS2, double aMaxWeight,
-                                                     double aMaxSquaredWeight ) const
+                                                     double aMaxSquaredWeight [[maybe_unused]] ) const
 {
     std::vector<PATH_CONNECTION> result;
 
@@ -3121,7 +3121,7 @@ std::shared_ptr<GRAPH_NODE> CREEPAGE_GRAPH::FindNode( GRAPH_NODE::TYPE aType, CR
 
 
 std::shared_ptr<GRAPH_NODE> CREEPAGE_GRAPH::AddNetElements( int aNetCode, PCB_LAYER_ID aLayer,
-                                                            int aMaxCreepage )
+                                                            int aMaxCreepage [[maybe_unused]] )
 {
     std::shared_ptr<GRAPH_NODE> virtualNode = AddNodeVirtual();
     virtualNode->m_net = aNetCode;

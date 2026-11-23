@@ -130,7 +130,7 @@ public:
     //void DeleteSymbol( const wxString& aLibraryPath, const wxString& aAliasName,
     //                   const PROPERTIES* aProperties = NULL ) override;
 
-    bool IsLibraryWritable( const wxString& aLibraryPath ) override { return false; }
+    bool IsLibraryWritable( const wxString& aLibraryPath [[maybe_unused]] ) override { return false; }
 
     /**
      * @return true if \a aNickname, an Altium source library's name, already belongs to a library

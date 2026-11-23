@@ -181,7 +181,7 @@ void DIALOG_COPPER_ZONE::OnLayerSelection( wxDataViewEvent& event )
 }
 
 
-void DIALOG_COPPER_ZONE::onZoneManager( wxCommandEvent& event )
+void DIALOG_COPPER_ZONE::onZoneManager( wxCommandEvent& event [[maybe_unused]] )
 {
     if( TransferDataFromWindow() )
     {

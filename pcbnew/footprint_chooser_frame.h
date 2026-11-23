@@ -67,7 +67,7 @@ public:
     bool Show( bool show ) override;
 
     // We don't have a status bar
-    void SetStatusText( const wxString& aText, int aNumber = 0 ) override {}
+    void SetStatusText( const wxString& aText [[maybe_unused]], int aNumber [[maybe_unused]] = 0 ) override {}
     void UpdateStatusBar() override {}
 
 protected:

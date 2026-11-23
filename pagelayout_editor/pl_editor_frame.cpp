@@ -368,7 +368,7 @@ void PL_EDITOR_FRAME::setupUIConditions()
 }
 
 
-bool PL_EDITOR_FRAME::OpenProjectFiles( const std::vector<wxString>& aFileSet, int aCtl )
+bool PL_EDITOR_FRAME::OpenProjectFiles( const std::vector<wxString>& aFileSet, int aCtl [[maybe_unused]] )
 {
     wxString fn = aFileSet[0];
 
@@ -416,7 +416,7 @@ void PL_EDITOR_FRAME::OnExit( wxCommandEvent& aEvent )
 }
 
 
-bool PL_EDITOR_FRAME::canCloseWindow( wxCloseEvent& aEvent )
+bool PL_EDITOR_FRAME::canCloseWindow( wxCloseEvent& aEvent [[maybe_unused]] )
 {
     // Shutdown blocks must be determined and vetoed as early as possible
     if( isBlockableSessionEnd() && IsContentModified() )
@@ -456,7 +456,7 @@ void PL_EDITOR_FRAME::doCloseWindow()
 }
 
 
-void PL_EDITOR_FRAME::OnSelectPage( wxCommandEvent& event )
+void PL_EDITOR_FRAME::OnSelectPage( wxCommandEvent& event [[maybe_unused]] )
 {
     KIGFX::VIEW* view = GetCanvas()->GetView();
     view->SetLayerVisible( LAYER_DRAWINGSHEET_PAGE1, m_pageSelectBox->GetSelection() == 0 );
@@ -465,7 +465,7 @@ void PL_EDITOR_FRAME::OnSelectPage( wxCommandEvent& event )
 }
 
 
-void PL_EDITOR_FRAME::OnSelectCoordOriginCorner( wxCommandEvent& event )
+void PL_EDITOR_FRAME::OnSelectCoordOriginCorner( wxCommandEvent& event [[maybe_unused]] )
 {
     m_originSelectChoice = m_originSelectBox->GetSelection();
     UpdateStatusBar();  // Update grid origin
@@ -519,7 +519,7 @@ void PL_EDITOR_FRAME::ToPrinter( bool doPreview )
 }
 
 
-const BOX2I PL_EDITOR_FRAME::GetDocumentExtents( bool aIncludeAllVisible ) const
+const BOX2I PL_EDITOR_FRAME::GetDocumentExtents( bool aIncludeAllVisible [[maybe_unused]] ) const
 {
     BOX2I rv( VECTOR2I( 0, 0 ), GetPageLayout().GetPageSettings().GetSizeIU( drawSheetIUScale.IU_PER_MILS ) );
     return rv;

@@ -35,7 +35,7 @@ public:
 
     void LoadColors( const COLOR_SETTINGS* aSettings ) override;
 
-    virtual COLOR4D GetColor( const KIGFX::VIEW_ITEM* aItem, int aLayer ) const override
+    virtual COLOR4D GetColor( const KIGFX::VIEW_ITEM* aItem [[maybe_unused]], int aLayer ) const override
     {
         auto it = m_layerColors.find( aLayer );
         return it == m_layerColors.end() ? COLOR4D::WHITE : it->second;

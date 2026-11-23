@@ -272,7 +272,7 @@ void DIALOG_MAP_LAYERS::AutoMatchLayers()
 }
 
 
-void DIALOG_MAP_LAYERS::OnAutoMatchLayersClicked( wxCommandEvent& event )
+void DIALOG_MAP_LAYERS::OnAutoMatchLayersClicked( wxCommandEvent& event [[maybe_unused]] )
 {
     AutoMatchLayers();
 }
@@ -546,7 +546,7 @@ void DIALOG_MAP_LAYERS::UpdateNameWarning()
 }
 
 
-void DIALOG_MAP_LAYERS::OnRenameClicked( wxCommandEvent& event )
+void DIALOG_MAP_LAYERS::OnRenameClicked( wxCommandEvent& event [[maybe_unused]] )
 {
     long row = m_matched_layers_list->GetNextItem( -1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED );
 

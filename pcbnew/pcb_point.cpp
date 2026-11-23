@@ -156,7 +156,7 @@ std::vector<int> PCB_POINT::ViewGetLayers() const
 }
 
 
-double PCB_POINT::ViewGetLOD( int aLayer, const KIGFX::VIEW* aView ) const
+double PCB_POINT::ViewGetLOD( int aLayer [[maybe_unused]], const KIGFX::VIEW* aView ) const
 {
     // All points hidden
     if( !aView->IsLayerVisible( LAYER_POINTS ) )
@@ -215,13 +215,13 @@ const BOX2I PCB_POINT::GetBoundingBox() const
 }
 
 
-std::shared_ptr<SHAPE> PCB_POINT::GetEffectiveShape( PCB_LAYER_ID aLayer, FLASHING, DRC_CONSTRAINT_T ) const
+std::shared_ptr<SHAPE> PCB_POINT::GetEffectiveShape( PCB_LAYER_ID aLayer [[maybe_unused]], FLASHING, DRC_CONSTRAINT_T ) const
 {
     return std::make_shared<SHAPE_RECT>( GetBoundingBox() );
 }
 
 
-wxString PCB_POINT::GetItemDescription( UNITS_PROVIDER* aUnitsProvider, bool aFull ) const
+wxString PCB_POINT::GetItemDescription( UNITS_PROVIDER* aUnitsProvider [[maybe_unused]], bool aFull [[maybe_unused]] ) const
 {
     return _( "Point" );
 }
@@ -306,9 +306,9 @@ void PCB_POINT::GetMsgPanelInfo( EDA_DRAW_FRAME* aFrame, std::vector<MSG_PANEL_I
 }
 
 
-void PCB_POINT::TransformShapeToPolygon( SHAPE_POLY_SET& aBuffer, PCB_LAYER_ID aLayer,
-                                          int aClearance, int aError, ERROR_LOC aErrorLoc,
-                                          bool ignoreLineWidth ) const
+void PCB_POINT::TransformShapeToPolygon( SHAPE_POLY_SET& aBuffer [[maybe_unused]], PCB_LAYER_ID aLayer [[maybe_unused]],
+                                          int aClearance [[maybe_unused]], int aError [[maybe_unused]], ERROR_LOC aErrorLoc [[maybe_unused]],
+                                          bool ignoreLineWidth [[maybe_unused]] ) const
 {
 }
 

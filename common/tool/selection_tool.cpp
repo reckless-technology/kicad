@@ -229,7 +229,7 @@ void SELECTION_TOOL::UnbrightenItem( EDA_ITEM* aItem )
 }
 
 
-void SELECTION_TOOL::onDisambiguationExpire( wxTimerEvent& aEvent )
+void SELECTION_TOOL::onDisambiguationExpire( wxTimerEvent& aEvent [[maybe_unused]] )
 {
     // If there is a multiple selection then it's more likely that we're seeing a paused drag
     // than a long-click.

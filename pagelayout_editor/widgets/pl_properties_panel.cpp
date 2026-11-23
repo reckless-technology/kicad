@@ -55,7 +55,7 @@ public:
     }
 
 protected:
-    bool DisplayEditorDialog( wxPropertyGrid* aGrid, wxVariant& aValue ) override
+    bool DisplayEditorDialog( wxPropertyGrid* aGrid [[maybe_unused]], wxVariant& aValue ) override
     {
         DIALOG_SHIM       dlg( m_frame, wxID_ANY, _( "Edit Text" ), wxDefaultPosition, wxDefaultSize,
                                wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER );
@@ -208,7 +208,7 @@ void PL_PROPERTIES_PANEL::UpdateData()
 }
 
 
-void PL_PROPERTIES_PANEL::rebuildProperties( const SELECTION& aSelection )
+void PL_PROPERTIES_PANEL::rebuildProperties( const SELECTION& aSelection [[maybe_unused]] )
 {
     // The base class may defer a rebuild until a property event has finished.  Resolve the
     // current selection again; rendered drawing-sheet items may have been replaced meanwhile.

@@ -60,7 +60,7 @@ public:
 
     virtual ~COLLECTOR() {}
 
-    virtual INSPECT_RESULT Inspect( EDA_ITEM* aTestItem, void* aTestData )
+    virtual INSPECT_RESULT Inspect( EDA_ITEM* aTestItem [[maybe_unused]], void* aTestData [[maybe_unused]] )
     {
         return INSPECT_RESULT::QUIT;
     };

@@ -60,14 +60,14 @@ bool WRL2COORDS::isDangling( void )
 }
 
 
-bool WRL2COORDS::AddRefNode( WRL2NODE* aNode )
+bool WRL2COORDS::AddRefNode( WRL2NODE* aNode [[maybe_unused]] )
 {
     // this node may not own or reference any other node
     wxCHECK_MSG( false, false, wxT( "AddRefNode is not applicable." ) );
 }
 
 
-bool WRL2COORDS::AddChildNode( WRL2NODE* aNode )
+bool WRL2COORDS::AddChildNode( WRL2NODE* aNode [[maybe_unused]] )
 {
     // this node may not own or reference any other node
     wxCHECK_MSG( false, false, wxT( "AddChildNode is not applicable." ) );
@@ -185,7 +185,7 @@ void WRL2COORDS::GetCoords( WRLVEC3F*& aCoordList, size_t& aListSize )
 }
 
 
-SGNODE* WRL2COORDS::TranslateToSG( SGNODE* aParent )
+SGNODE* WRL2COORDS::TranslateToSG( SGNODE* aParent [[maybe_unused]] )
 {
     // any data manipulation must be performed by the parent node
     return nullptr;

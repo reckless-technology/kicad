@@ -655,7 +655,7 @@ BITMAP_BASE* CONSTRAINT_BADGE_ITEM::disc( const KIGFX::COLOR4D& aColor ) const
 }
 
 
-void CONSTRAINT_BADGE_ITEM::ViewDraw( int aLayer, KIGFX::VIEW* aView ) const
+void CONSTRAINT_BADGE_ITEM::ViewDraw( int aLayer [[maybe_unused]], KIGFX::VIEW* aView ) const
 {
     KIGFX::GAL*  gal = aView->GetGAL();
 

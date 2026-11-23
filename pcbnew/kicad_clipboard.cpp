@@ -500,7 +500,7 @@ BOARD_ITEM* CLIPBOARD_IO::Parse()
 }
 
 
-void CLIPBOARD_IO::SaveBoard( const wxString& aFileName, BOARD& aBoard,
+void CLIPBOARD_IO::SaveBoard( const wxString& aFileName [[maybe_unused]], BOARD& aBoard,
                               const std::map<std::string, UTF8>* aProperties )
 {
     init( aProperties );

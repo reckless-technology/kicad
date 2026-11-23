@@ -128,7 +128,7 @@ private:
             m_properties->Check( ii, aChecked );
     }
 
-    void onContextMenu( wxContextMenuEvent& aEvent )
+    void onContextMenu( wxContextMenuEvent& aEvent [[maybe_unused]] )
     {
         wxMenu menu;
 

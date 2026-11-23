@@ -40,7 +40,7 @@ public:
     bool CanReadBoard( const wxString& aFileName ) const override;
     bool CanReadLibrary( const wxString& aFileName ) const override;
 
-    long long GetLibraryTimestamp( const wxString& aLibraryPath ) const override { return 0; }
+    long long GetLibraryTimestamp( const wxString& aLibraryPath [[maybe_unused]] ) const override { return 0; }
 
     // void FootprintEnumerate( wxArrayString& aFootprintNames, const wxString& aLibraryPath,
     //                          bool aBestEfforts, const std::map<std::string, UTF8>* aProperties = nullptr ) override;
@@ -52,7 +52,7 @@ public:
 
     //bool FootprintExists( const wxString& aLibraryPath, const wxString& aFootprintName, const PROPERTIES* aProperties = nullptr );
 
-    bool IsLibraryWritable( const wxString& aLibraryPath ) override { return false; }
+    bool IsLibraryWritable( const wxString& aLibraryPath [[maybe_unused]] ) override { return false; }
 
     // -----</PUBLIC PCB_IO API>-------------------------------------------------
 

@@ -67,14 +67,14 @@ WRL1MATERIAL::~WRL1MATERIAL()
 }
 
 
-bool WRL1MATERIAL::AddRefNode( WRL1NODE* aNode )
+bool WRL1MATERIAL::AddRefNode( WRL1NODE* aNode [[maybe_unused]] )
 {
     // this node may not own or reference any other node
     wxCHECK_MSG( false, false, wxT( "AddRefNode is not applicable." ) );
 }
 
 
-bool WRL1MATERIAL::AddChildNode( WRL1NODE* aNode )
+bool WRL1MATERIAL::AddChildNode( WRL1NODE* aNode [[maybe_unused]] )
 {
     // this node may not own or reference any other node
     wxCHECK_MSG( false, false, wxT( "AddChildNode is not applicable." ) );
@@ -238,7 +238,7 @@ bool WRL1MATERIAL::Read( WRLPROC& proc, WRL1BASE* aTopNode )
 }
 
 
-SGNODE* WRL1MATERIAL::TranslateToSG( SGNODE* aParent, WRL1STATUS* sp )
+SGNODE* WRL1MATERIAL::TranslateToSG( SGNODE* aParent [[maybe_unused]], WRL1STATUS* sp )
 {
     wxCHECK_MSG( sp, nullptr, wxT( "Bad model: no base data given." ) );
 

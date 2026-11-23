@@ -64,8 +64,8 @@ void SHEET_SYNCHRONIZATION_MODEL::GetValueByRow( wxVariant& aVariant, unsigned r
 }
 
 
-bool SHEET_SYNCHRONIZATION_MODEL::SetValueByRow( const wxVariant& aVariant, unsigned row,
-                                                 unsigned col )
+bool SHEET_SYNCHRONIZATION_MODEL::SetValueByRow( const wxVariant& aVariant [[maybe_unused]], unsigned row [[maybe_unused]],
+                                                 unsigned col [[maybe_unused]] )
 {
     WXUNUSED( aVariant )
     WXUNUSED( row )
@@ -75,7 +75,7 @@ bool SHEET_SYNCHRONIZATION_MODEL::SetValueByRow( const wxVariant& aVariant, unsi
 }
 
 
-bool SHEET_SYNCHRONIZATION_MODEL::GetAttrByRow( unsigned row, unsigned int col,
+bool SHEET_SYNCHRONIZATION_MODEL::GetAttrByRow( unsigned row, unsigned int col [[maybe_unused]],
                                                 wxDataViewItemAttr& attr ) const
 {
     if( m_selectedIndex.has_value() && row == m_selectedIndex )

@@ -287,7 +287,7 @@ bool WRL2POINTSET::Read( WRLPROC& proc, WRL2BASE* aTopNode )
 }
 
 
-SGNODE* WRL2POINTSET::TranslateToSG( SGNODE* aParent )
+SGNODE* WRL2POINTSET::TranslateToSG( SGNODE* aParent [[maybe_unused]] )
 {
     // note: there are no plans to support drawing of points
     return nullptr;

@@ -361,26 +361,26 @@ void PCB_MARKER::GetMsgPanelInfo( EDA_DRAW_FRAME* aFrame, std::vector<MSG_PANEL_
 }
 
 
-void PCB_MARKER::Rotate( const VECTOR2I& aRotCentre, const EDA_ANGLE& aAngle )
+void PCB_MARKER::Rotate( const VECTOR2I& aRotCentre [[maybe_unused]], const EDA_ANGLE& aAngle [[maybe_unused]] )
 {
     // Marker geometry isn't user-editable
 }
 
 
-void PCB_MARKER::Flip( const VECTOR2I& aCentre, FLIP_DIRECTION aFlipDirection )
+void PCB_MARKER::Flip( const VECTOR2I& aCentre [[maybe_unused]], FLIP_DIRECTION aFlipDirection [[maybe_unused]] )
 {
     // Marker geometry isn't user-editable
 }
 
 
-std::shared_ptr<SHAPE> PCB_MARKER::GetEffectiveShape( PCB_LAYER_ID aLayer, FLASHING, DRC_CONSTRAINT_T ) const
+std::shared_ptr<SHAPE> PCB_MARKER::GetEffectiveShape( PCB_LAYER_ID aLayer [[maybe_unused]], FLASHING, DRC_CONSTRAINT_T ) const
 {
     // Markers do not participate in the board geometry space, and therefore have no effective shape.
     return std::make_shared<SHAPE_NULL>();
 }
 
 
-double PCB_MARKER::GetCoverageArea( int aTextMargin ) const
+double PCB_MARKER::GetCoverageArea( int aTextMargin [[maybe_unused]] ) const
 {
     SHAPE_LINE_CHAIN markerShape;
     ShapeToPolygon( markerShape );
@@ -388,14 +388,14 @@ double PCB_MARKER::GetCoverageArea( int aTextMargin ) const
 }
 
 
-void PCB_MARKER::TransformShapeToPolygon( SHAPE_POLY_SET& aBuffer, PCB_LAYER_ID aLayer, int aClearance,
-                                          int aError, ERROR_LOC aErrorLoc, bool ignoreLineWidth ) const
+void PCB_MARKER::TransformShapeToPolygon( SHAPE_POLY_SET& aBuffer [[maybe_unused]], PCB_LAYER_ID aLayer [[maybe_unused]], int aClearance [[maybe_unused]],
+                                          int aError [[maybe_unused]], ERROR_LOC aErrorLoc [[maybe_unused]], bool ignoreLineWidth [[maybe_unused]] ) const
 {
     // Markers do not participate in the board geometry space, and therefore have no shape.
 };
 
 
-wxString PCB_MARKER::GetItemDescription( UNITS_PROVIDER* aUnitsProvider, bool aFull ) const
+wxString PCB_MARKER::GetItemDescription( UNITS_PROVIDER* aUnitsProvider [[maybe_unused]], bool aFull ) const
 {
     return wxString::Format( _( "Marker (%s)" ), aFull ? m_rcItem->GetErrorMessage( true )
                                                        : m_rcItem->GetErrorText( true ) );

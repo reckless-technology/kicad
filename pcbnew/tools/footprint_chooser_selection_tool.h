@@ -39,7 +39,7 @@ public:
     bool Init() override;
 
     /// @copydoc TOOL_BASE::Reset()
-    void Reset( RESET_REASON aReason ) override {}
+    void Reset( RESET_REASON aReason [[maybe_unused]] ) override {}
 
     /**
      * Selections aren't currently supported in the footprint viewer.

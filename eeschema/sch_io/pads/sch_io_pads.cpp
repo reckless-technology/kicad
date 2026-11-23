@@ -1293,7 +1293,7 @@ SCH_SHEET* SCH_IO_PADS::LoadSchematicFile( const wxString& aFileName, SCHEMATIC*
 
 SCH_SHEET* SCH_IO_PADS::loadBinarySchematicFile( const wxString& aFileName, SCHEMATIC* aSchematic,
                                                  SCH_SHEET*                         aAppendToMe,
-                                                 const std::map<std::string, UTF8>* aProperties )
+                                                 const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     std::vector<uint8_t> data;
 
@@ -1386,7 +1386,7 @@ void SCH_IO_PADS::EnumerateSymbolLib( std::vector<LIB_SYMBOL*>& aSymbolList, con
 
 
 LIB_SYMBOL* SCH_IO_PADS::LoadSymbol( const wxString& aLibraryPath, const wxString& aPartName,
-                                     const std::map<std::string, UTF8>* aProperties )
+                                     const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     ensureLoadedLibrary( aLibraryPath );
 

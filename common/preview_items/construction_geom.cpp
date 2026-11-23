@@ -94,7 +94,7 @@ const BOX2I CONSTRUCTION_GEOM::ViewBBox() const
 }
 
 
-void CONSTRUCTION_GEOM::ViewDraw( int aLayer, VIEW* aView ) const
+void CONSTRUCTION_GEOM::ViewDraw( int aLayer [[maybe_unused]], VIEW* aView ) const
 {
     GAL& gal = *aView->GetGAL();
 

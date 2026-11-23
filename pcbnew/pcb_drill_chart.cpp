@@ -162,7 +162,7 @@ bool PCB_DRILL_CHART::IsDataRow( int aRow ) const
 }
 
 
-wxString PCB_DRILL_CHART::GetItemDescription( UNITS_PROVIDER* aUnitsProvider, bool aFull ) const
+wxString PCB_DRILL_CHART::GetItemDescription( UNITS_PROVIDER* aUnitsProvider [[maybe_unused]], bool aFull [[maybe_unused]] ) const
 {
     return wxString::Format( _( "Drill Chart (%d rows)" ), GetRowCount() );
 }

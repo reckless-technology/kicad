@@ -391,7 +391,7 @@ int DIALOG_DRC::getSeverities()
 }
 
 
-void DIALOG_DRC::OnMenu( wxCommandEvent& event )
+void DIALOG_DRC::OnMenu( wxCommandEvent& event [[maybe_unused]] )
 {
     // Build a pop menu:
     wxMenu menu;
@@ -431,7 +431,7 @@ void DIALOG_DRC::OnMenu( wxCommandEvent& event )
 }
 
 
-void DIALOG_DRC::OnErrorLinkClicked( wxHtmlLinkEvent& event )
+void DIALOG_DRC::OnErrorLinkClicked( wxHtmlLinkEvent& event [[maybe_unused]] )
 {
     m_frame->ShowBoardSetupDialog( _( "Custom Rules" ), this );
 }
@@ -459,7 +459,7 @@ void DIALOG_DRC::OnCharHook( wxKeyEvent& aEvt )
 }
 
 
-void DIALOG_DRC::OnRunDRCClick( wxCommandEvent& aEvent )
+void DIALOG_DRC::OnRunDRCClick( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     TOOL_MANAGER*     toolMgr              = m_frame->GetToolManager();
     DRC_TOOL*         drcTool              = toolMgr->GetTool<DRC_TOOL>();
@@ -1184,7 +1184,7 @@ void DIALOG_DRC::OnIgnoredItemRClick( wxListEvent& event )
 }
 
 
-void DIALOG_DRC::OnEditViolationSeverities( wxHyperlinkEvent& aEvent )
+void DIALOG_DRC::OnEditViolationSeverities( wxHyperlinkEvent& aEvent [[maybe_unused]] )
 {
     m_frame->ShowBoardSetupDialog( _( "Violation Severity" ), this );
 }
@@ -1203,7 +1203,7 @@ void DIALOG_DRC::OnSeverity( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_DRC::OnSaveReport( wxCommandEvent& aEvent )
+void DIALOG_DRC::OnSaveReport( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     wxFileName fn( "DRC." + FILEEXT::ReportFileExtension );
 
@@ -1244,14 +1244,14 @@ void DIALOG_DRC::OnSaveReport( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_DRC::OnClose( wxCloseEvent& aEvent )
+void DIALOG_DRC::OnClose( wxCloseEvent& aEvent [[maybe_unused]] )
 {
     wxCommandEvent dummy;
     OnCancelClick( dummy );
 }
 
 
-void DIALOG_DRC::OnCancelClick( wxCommandEvent& aEvent )
+void DIALOG_DRC::OnCancelClick( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( m_running )
     {
@@ -1386,7 +1386,7 @@ void DIALOG_DRC::deleteAllMarkers( bool aIncludeExclusions )
 }
 
 
-void DIALOG_DRC::OnDeleteOneClick( wxCommandEvent& aEvent )
+void DIALOG_DRC::OnDeleteOneClick( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( m_Notebook->GetSelection() == 0 )
     {
@@ -1411,7 +1411,7 @@ void DIALOG_DRC::OnDeleteOneClick( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_DRC::OnDeleteAllClick( wxCommandEvent& aEvent )
+void DIALOG_DRC::OnDeleteAllClick( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     static bool s_includeExclusions = false;
 

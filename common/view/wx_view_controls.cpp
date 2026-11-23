@@ -56,7 +56,7 @@ using namespace KIGFX;
 const wxEventType WX_VIEW_CONTROLS::EVT_REFRESH_MOUSE = wxNewEventType();
 
 
-static std::unique_ptr<ZOOM_CONTROLLER> GetZoomControllerForPlatform( bool aAcceleration )
+static std::unique_ptr<ZOOM_CONTROLLER> GetZoomControllerForPlatform( bool aAcceleration [[maybe_unused]] )
 {
 #ifdef __WXMAC__
     // On Apple pointer devices, wheel events occur frequently and with
@@ -646,7 +646,7 @@ void WX_VIEW_CONTROLS::onButton( wxMouseEvent& aEvent )
 }
 
 
-void WX_VIEW_CONTROLS::onEnter( wxMouseEvent& aEvent )
+void WX_VIEW_CONTROLS::onEnter( wxMouseEvent& aEvent [[maybe_unused]] )
 {
     m_parentPanel->SetCursorInCanvas( true );
 
@@ -694,7 +694,7 @@ void WX_VIEW_CONTROLS::onLeave( wxMouseEvent& aEvent )
 }
 
 
-void WX_VIEW_CONTROLS::onCaptureLost( wxMouseEvent& aEvent )
+void WX_VIEW_CONTROLS::onCaptureLost( wxMouseEvent& aEvent [[maybe_unused]] )
 {
     // This method must be present to suppress the capture-lost assertion
 
@@ -722,7 +722,7 @@ bool WX_VIEW_CONTROLS::isPointerOverCanvas() const
 }
 
 
-void WX_VIEW_CONTROLS::onTimer( wxTimerEvent& aEvent )
+void WX_VIEW_CONTROLS::onTimer( wxTimerEvent& aEvent [[maybe_unused]] )
 {
     switch( m_state )
     {

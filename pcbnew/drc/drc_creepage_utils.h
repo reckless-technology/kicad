@@ -305,50 +305,50 @@ public:
         return r;
     }
 
-    std::vector<PATH_CONNECTION> Paths( const CREEP_SHAPE& aS2, double aMaxWeight,
-                                        double aMaxSquaredWeight ) const
+    std::vector<PATH_CONNECTION> Paths( const CREEP_SHAPE& aS2 [[maybe_unused]], double aMaxWeight [[maybe_unused]],
+                                        double aMaxSquaredWeight [[maybe_unused]] ) const
     {
         std::vector<PATH_CONNECTION> a;
         return a;
     };
 
-    virtual std::vector<PATH_CONNECTION> Paths( const BE_SHAPE_POINT& aS2, double aMaxWeight,
-                                                double aMaxSquaredWeight ) const
+    virtual std::vector<PATH_CONNECTION> Paths( const BE_SHAPE_POINT& aS2 [[maybe_unused]], double aMaxWeight [[maybe_unused]],
+                                                double aMaxSquaredWeight [[maybe_unused]] ) const
     {
         std::vector<PATH_CONNECTION> a;
         return a;
     };
 
-    virtual std::vector<PATH_CONNECTION> Paths( const BE_SHAPE_CIRCLE& aS2, double aMaxWeight,
-                                                double aMaxSquaredWeight ) const
+    virtual std::vector<PATH_CONNECTION> Paths( const BE_SHAPE_CIRCLE& aS2 [[maybe_unused]], double aMaxWeight [[maybe_unused]],
+                                                double aMaxSquaredWeight [[maybe_unused]] ) const
     {
         std::vector<PATH_CONNECTION> a;
         return a;
     };
 
-    virtual std::vector<PATH_CONNECTION> Paths( const BE_SHAPE_ARC& aS2, double aMaxWeight,
-                                                double aMaxSquaredWeight ) const
+    virtual std::vector<PATH_CONNECTION> Paths( const BE_SHAPE_ARC& aS2 [[maybe_unused]], double aMaxWeight [[maybe_unused]],
+                                                double aMaxSquaredWeight [[maybe_unused]] ) const
     {
         std::vector<PATH_CONNECTION> a;
         return a;
     };
 
-    virtual std::vector<PATH_CONNECTION> Paths( const CU_SHAPE_SEGMENT& aS2, double aMaxWeight,
-                                                double aMaxSquaredWeight ) const
+    virtual std::vector<PATH_CONNECTION> Paths( const CU_SHAPE_SEGMENT& aS2 [[maybe_unused]], double aMaxWeight [[maybe_unused]],
+                                                double aMaxSquaredWeight [[maybe_unused]] ) const
     {
         std::vector<PATH_CONNECTION> a;
         return a;
     };
 
-    virtual std::vector<PATH_CONNECTION> Paths( const CU_SHAPE_CIRCLE& aS2, double aMaxWeight,
-                                                double aMaxSquaredWeight ) const
+    virtual std::vector<PATH_CONNECTION> Paths( const CU_SHAPE_CIRCLE& aS2 [[maybe_unused]], double aMaxWeight [[maybe_unused]],
+                                                double aMaxSquaredWeight [[maybe_unused]] ) const
     {
         std::vector<PATH_CONNECTION> a;
         return a;
     };
 
-    virtual std::vector<PATH_CONNECTION> Paths( const CU_SHAPE_ARC& aS2, double aMaxWeight,
-                                                double aMaxSquaredWeight ) const
+    virtual std::vector<PATH_CONNECTION> Paths( const CU_SHAPE_ARC& aS2 [[maybe_unused]], double aMaxWeight [[maybe_unused]],
+                                                double aMaxSquaredWeight [[maybe_unused]] ) const
     {
         std::vector<PATH_CONNECTION> a;
         return a;

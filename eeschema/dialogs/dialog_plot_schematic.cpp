@@ -194,7 +194,7 @@ bool DIALOG_PLOT_SCHEMATIC::TransferDataToWindow()
  * @todo Copy of DIALOG_PLOT::onOutputDirectoryBrowseClicked in dialog_plot.cpp, maybe merge to
  *       a common method.
  */
-void DIALOG_PLOT_SCHEMATIC::onOutputDirectoryBrowseClicked( wxCommandEvent& event )
+void DIALOG_PLOT_SCHEMATIC::onOutputDirectoryBrowseClicked( wxCommandEvent& event [[maybe_unused]] )
 {
     // Build the absolute path of current output directory to preselect it in the file browser.
     wxString path;
@@ -322,7 +322,7 @@ void DIALOG_PLOT_SCHEMATIC::onPlotFormatSelection( wxCommandEvent& event )
 }
 
 
-void DIALOG_PLOT_SCHEMATIC::OnPlotCurrent( wxCommandEvent& event )
+void DIALOG_PLOT_SCHEMATIC::OnPlotCurrent( wxCommandEvent& event [[maybe_unused]] )
 {
     plotSchematic( false );
 }

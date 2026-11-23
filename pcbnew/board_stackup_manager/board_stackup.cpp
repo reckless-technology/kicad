@@ -589,7 +589,7 @@ bool BOARD_STACKUP::Deserialize( const google::protobuf::Any& aContainer )
 }
 
 
-bool BOARD_STACKUP::Deserialize( const kiapi::board::BoardStackup& aInput )
+bool BOARD_STACKUP::Deserialize( const kiapi::board::BoardStackup& aInput [[maybe_unused]] )
 {
     // Read-only for now
     return false;
@@ -818,7 +818,7 @@ void BOARD_STACKUP::BuildDefaultStackupList( const BOARD_DESIGN_SETTINGS* aSetti
 }
 
 
-void BOARD_STACKUP::FormatBoardStackup( OUTPUTFORMATTER* aFormatter, const BOARD* aBoard ) const
+void BOARD_STACKUP::FormatBoardStackup( OUTPUTFORMATTER* aFormatter, const BOARD* aBoard [[maybe_unused]] ) const
 {
     // Board stackup is the ordered list from top to bottom of
     // physical layers and substrate used to build the board.

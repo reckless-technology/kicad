@@ -558,7 +558,7 @@ API_HANDLER_SCH::handleSaveDocumentToString( const HANDLER_CONTEXT<commands::Sav
 
 
 HANDLER_RESULT<commands::SavedSelectionResponse>
-API_HANDLER_SCH::handleSaveSelectionToString( const HANDLER_CONTEXT<commands::SaveSelectionToString>& aCtx )
+API_HANDLER_SCH::handleSaveSelectionToString( const HANDLER_CONTEXT<commands::SaveSelectionToString>& aCtx [[maybe_unused]] )
 {
     if( std::optional<ApiResponseStatus> headless = checkForHeadless( "SaveSelectionToString" ) )
         return tl::unexpected( *headless );

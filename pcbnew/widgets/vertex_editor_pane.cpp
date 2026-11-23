@@ -188,7 +188,7 @@ void PCB_VERTEX_EDITOR_PANE::updateRow( int aRow )
     m_updatingGrid = false;
 }
 
-void PCB_VERTEX_EDITOR_PANE::updateHighlight( int aRow )
+void PCB_VERTEX_EDITOR_PANE::updateHighlight( int aRow [[maybe_unused]] )
 {
     // Highlighting is now handled by the point editor tool
     // We just refresh the view

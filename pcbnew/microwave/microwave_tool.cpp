@@ -44,7 +44,7 @@ MICROWAVE_TOOL::~MICROWAVE_TOOL()
 {}
 
 
-void MICROWAVE_TOOL::Reset( RESET_REASON aReason )
+void MICROWAVE_TOOL::Reset( RESET_REASON aReason [[maybe_unused]] )
 {
 }
 

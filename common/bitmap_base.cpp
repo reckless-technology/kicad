@@ -36,7 +36,7 @@
 
 
 
-BITMAP_BASE::BITMAP_BASE( const VECTOR2I& pos )
+BITMAP_BASE::BITMAP_BASE( const VECTOR2I& pos [[maybe_unused]] )
 {
     m_scale  = 1.0;                     // 1.0 = original bitmap size
     m_imageType = wxBITMAP_TYPE_INVALID;

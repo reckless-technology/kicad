@@ -95,7 +95,7 @@ public:
      *
      * @param aEnabled true if self-intersecting polygons are enabled.
      */
-    void AllowIntersections( bool aEnabled )
+    void AllowIntersections( bool aEnabled [[maybe_unused]] )
     {
         m_intersectionsAllowed = true;
     }

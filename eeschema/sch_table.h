@@ -207,7 +207,7 @@ public:
     INSPECT_RESULT Visit( INSPECTOR inspector, void* testData,
                           const std::vector<KICAD_T>& aScanTypes ) override;
 
-    bool Matches( const EDA_SEARCH_DATA& aSearchData, void* aAuxData ) const override
+    bool Matches( const EDA_SEARCH_DATA& aSearchData [[maybe_unused]], void* aAuxData [[maybe_unused]] ) const override
     {
         // Symbols are searchable via the child field and pin item text.
         return false;

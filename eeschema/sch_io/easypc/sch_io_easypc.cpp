@@ -96,7 +96,7 @@ SCH_IO_EASYPC::LIBRARY& SCH_IO_EASYPC::library( const wxString& aLibraryPath )
 
 
 void SCH_IO_EASYPC::EnumerateSymbolLib( wxArrayString& aSymbolNameList, const wxString& aLibraryPath,
-                                        const std::map<std::string, UTF8>* aProperties )
+                                        const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     // KiCad names carry the characters a LIB_ID forbids escaped, and LoadSymbol takes them back the same way
     for( const wxString& name : library( aLibraryPath ).File->ItemNames() )
@@ -105,7 +105,7 @@ void SCH_IO_EASYPC::EnumerateSymbolLib( wxArrayString& aSymbolNameList, const wx
 
 
 void SCH_IO_EASYPC::EnumerateSymbolLib( std::vector<LIB_SYMBOL*>& aSymbolList, const wxString& aLibraryPath,
-                                        const std::map<std::string, UTF8>* aProperties )
+                                        const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     for( const wxString& name : library( aLibraryPath ).File->ItemNames() )
     {
@@ -264,7 +264,7 @@ std::unique_ptr<LIB_SYMBOL> SCH_IO_EASYPC::convertComponent( const LIBRARY& aLib
 
 
 LIB_SYMBOL* SCH_IO_EASYPC::LoadSymbol( const wxString& aLibraryPath, const wxString& aPartName,
-                                       const std::map<std::string, UTF8>* aProperties )
+                                       const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     LIBRARY& lib = library( aLibraryPath );
 

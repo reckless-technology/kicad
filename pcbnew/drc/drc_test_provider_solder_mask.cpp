@@ -246,7 +246,7 @@ void DRC_TEST_PROVIDER_SOLDER_MASK::buildRTrees()
     m_itemTree = std::make_unique<DRC_RTREE>();
 
     forEachGeometryItem( s_allBasicItems, layers,
-            [&]( BOARD_ITEM* item ) -> bool
+            [&]( BOARD_ITEM* item [[maybe_unused]] ) -> bool
             {
                 ++count;
                 return true;
@@ -301,7 +301,7 @@ void DRC_TEST_PROVIDER_SOLDER_MASK::testSilkToMaskClearance()
     int          ii = 0;
 
     forEachGeometryItem( s_allBasicItems, silkLayers,
-            [&]( BOARD_ITEM* item ) -> bool
+            [&]( BOARD_ITEM* item [[maybe_unused]] ) -> bool
             {
                 ++count;
                 return true;
@@ -477,7 +477,7 @@ bool DRC_TEST_PROVIDER_SOLDER_MASK::checkItemMask( BOARD_ITEM* aItem, int aTestN
 }
 
 
-void DRC_TEST_PROVIDER_SOLDER_MASK::testItemAgainstItems( BOARD_ITEM* aItem, const BOX2I& aItemBBox,
+void DRC_TEST_PROVIDER_SOLDER_MASK::testItemAgainstItems( BOARD_ITEM* aItem, const BOX2I& aItemBBox [[maybe_unused]],
                                                           PCB_LAYER_ID aRefLayer, PCB_LAYER_ID aTargetLayer )
 {
     PAD* pad = aItem->Type() == PCB_PAD_T ? static_cast<PAD*>( aItem ) : nullptr;

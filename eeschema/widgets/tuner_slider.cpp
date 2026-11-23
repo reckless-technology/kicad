@@ -404,26 +404,26 @@ void TUNER_SLIDER::updateMin()
 }
 
 
-void TUNER_SLIDER::onClose( wxCommandEvent& event )
+void TUNER_SLIDER::onClose( wxCommandEvent& event [[maybe_unused]] )
 {
     m_frame->RemoveTuner( this );
 }
 
 
-void TUNER_SLIDER::onSave( wxCommandEvent& event )
+void TUNER_SLIDER::onSave( wxCommandEvent& event [[maybe_unused]] )
 {
     m_frame->UpdateTunerValue( m_sheetPath, m_symbol, GetSymbolRef(), m_valueText->GetValue() );
 }
 
 
-void TUNER_SLIDER::onSliderScroll( wxScrollEvent& event )
+void TUNER_SLIDER::onSliderScroll( wxScrollEvent& event [[maybe_unused]] )
 {
     m_value = m_min + ( m_max - m_min ) * SPICE_VALUE( m_slider->GetValue() / 100.0 );
     updateValueText();
 }
 
 
-void TUNER_SLIDER::onSliderChanged( wxScrollEvent& event )
+void TUNER_SLIDER::onSliderChanged( wxScrollEvent& event [[maybe_unused]] )
 {
     m_value = m_min + ( m_max - m_min ) * SPICE_VALUE( m_slider->GetValue() / 100.0 );
     updateValueText();
@@ -459,13 +459,13 @@ void TUNER_SLIDER::onMaxTextEnter( wxCommandEvent& event )
 }
 
 
-void TUNER_SLIDER::onValueTextEnter( wxCommandEvent& event )
+void TUNER_SLIDER::onValueTextEnter( wxCommandEvent& event [[maybe_unused]] )
 {
     updateValue();
 }
 
 
-void TUNER_SLIDER::onMinTextEnter( wxCommandEvent& event )
+void TUNER_SLIDER::onMinTextEnter( wxCommandEvent& event [[maybe_unused]] )
 {
     updateMin();
 }

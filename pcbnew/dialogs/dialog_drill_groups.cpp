@@ -87,7 +87,7 @@ DIALOG_DRILL_GROUPS::DIALOG_DRILL_GROUPS( PCB_EDIT_FRAME* aFrame ) :
     // Modeless, so closing has to actually destroy. The default would only hide and the
     // owner's weak reference would keep pointing at a live but invisible dialog
     Bind( wxEVT_CLOSE_WINDOW,
-          [this]( wxCloseEvent& aEvent )
+          [this]( wxCloseEvent& aEvent [[maybe_unused]] )
           {
               commitDetail( m_detailRow );
               Destroy();
@@ -293,7 +293,7 @@ void DIALOG_DRILL_GROUPS::onGridSelect( wxGridEvent& aEvent )
 }
 
 
-void DIALOG_DRILL_GROUPS::onFreezeChanged( wxCommandEvent& aEvent )
+void DIALOG_DRILL_GROUPS::onFreezeChanged( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     BOARD* board = m_frame->GetBoard();
     board->GetDesignSettings().GetDrillSymbolProfile().SetFreezeAssignments(
@@ -305,7 +305,7 @@ void DIALOG_DRILL_GROUPS::onFreezeChanged( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_DRILL_GROUPS::onFlash( wxCommandEvent& aEvent )
+void DIALOG_DRILL_GROUPS::onFlash( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     const DRILL_CHART_GROUP* group = selectedGroup();
 
@@ -330,7 +330,7 @@ void DIALOG_DRILL_GROUPS::onFlash( wxCommandEvent& aEvent )
 
 
 
-void DIALOG_DRILL_GROUPS::onClose( wxCommandEvent& aEvent )
+void DIALOG_DRILL_GROUPS::onClose( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     commitDetail( m_detailRow );
     Close();

@@ -67,7 +67,7 @@ SPLIT_BUTTON::~SPLIT_BUTTON()
 }
 
 
-void SPLIT_BUTTON::onThemeChanged( wxSysColourChangedEvent &aEvent )
+void SPLIT_BUTTON::onThemeChanged( wxSysColourChangedEvent &aEvent [[maybe_unused]] )
 {
     Refresh();
 }

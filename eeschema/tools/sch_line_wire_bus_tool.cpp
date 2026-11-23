@@ -330,20 +330,20 @@ bool SCH_LINE_WIRE_BUS_TOOL::Init()
     m_selectionTool->GetToolMenu().RegisterSubMenu( selBusUnfoldMenu );
 
     auto wireOrBusTool =
-            [this]( const SELECTION& aSel )
+            [this]( const SELECTION& aSel [[maybe_unused]] )
             {
                 return ( m_frame->IsCurrentTool( SCH_ACTIONS::drawWire )
                       || m_frame->IsCurrentTool( SCH_ACTIONS::drawBus ) );
             };
 
     auto lineTool =
-            [this]( const SELECTION& aSel )
+            [this]( const SELECTION& aSel [[maybe_unused]] )
             {
                 return m_frame->IsCurrentTool( SCH_ACTIONS::drawLines );
             };
 
     auto belowRootSheetCondition =
-            [this]( const SELECTION& aSel )
+            [this]( const SELECTION& aSel [[maybe_unused]] )
             {
                 return m_frame->GetCurrentSheet().Last() != &m_frame->Schematic().Root();
             };
@@ -352,7 +352,7 @@ bool SCH_LINE_WIRE_BUS_TOOL::Init()
                         && SCH_CONDITIONS::OnlyTypes( { SCH_ITEM_LOCATE_BUS_T } );
 
     auto haveHighlight =
-            [this]( const SELECTION& sel )
+            [this]( const SELECTION& sel [[maybe_unused]] )
             {
                 SCH_EDIT_FRAME* editFrame = dynamic_cast<SCH_EDIT_FRAME*>( m_frame );
 

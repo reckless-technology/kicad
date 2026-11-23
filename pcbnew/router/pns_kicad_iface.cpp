@@ -1160,7 +1160,7 @@ bool PNS_KICAD_IFACE_BASE::inheritTrackWidthAndDpGap( PNS::ITEM* aItem, const VE
 
 
 bool PNS_KICAD_IFACE_BASE::ImportSizes( PNS::SIZES_SETTINGS& aSizes, PNS::ITEM* aStartItem,
-                                        PNS::NET_HANDLE aNet, VECTOR2D aStartPosition )
+                                        PNS::NET_HANDLE aNet [[maybe_unused]], VECTOR2D aStartPosition )
 {
     BOARD_DESIGN_SETTINGS& bds = m_board->GetDesignSettings();
     PNS::CONSTRAINT        constraint;
@@ -1524,8 +1524,8 @@ public:
     }
 
     void AddItem( const PNS::ITEM* aItem, const KIGFX::COLOR4D& aColor, int aOverrideWidth = 0,
-                  const wxString& aName = wxT( "" ),
-                  const SRC_LOCATION_INFO& aSrcLoc = SRC_LOCATION_INFO() ) override
+                  const wxString& aName [[maybe_unused]] = wxT( "" ),
+                  const SRC_LOCATION_INFO& aSrcLoc [[maybe_unused]] = SRC_LOCATION_INFO() ) override
     {
         if( !m_view || !aItem )
             return;
@@ -1569,8 +1569,8 @@ public:
     }
 
     void AddShape( const SHAPE* aShape, const KIGFX::COLOR4D& aColor, int aOverrideWidth = 0,
-                   const wxString& aName = wxT( "" ),
-                   const SRC_LOCATION_INFO& aSrcLoc = SRC_LOCATION_INFO() ) override
+                   const wxString& aName [[maybe_unused]] = wxT( "" ),
+                   const SRC_LOCATION_INFO& aSrcLoc [[maybe_unused]] = SRC_LOCATION_INFO() ) override
     {
         if( !m_view || !aShape )
             return;
@@ -1602,7 +1602,7 @@ public:
         m_clonedItems.clear();
     }
 
-    virtual void Message( const wxString& msg, const SRC_LOCATION_INFO& aSrcLoc = SRC_LOCATION_INFO() ) override
+    virtual void Message( const wxString& msg [[maybe_unused]], const SRC_LOCATION_INFO& aSrcLoc [[maybe_unused]] = SRC_LOCATION_INFO() ) override
     {
     }
 
@@ -1970,7 +1970,7 @@ std::unique_ptr<PNS::VIA> PNS_KICAD_IFACE_BASE::syncVia( PCB_VIA* aVia )
 }
 
 
-bool PNS_KICAD_IFACE_BASE::syncZone( PNS::NODE* aWorld, ZONE* aZone, SHAPE_POLY_SET* aBoardOutline )
+bool PNS_KICAD_IFACE_BASE::syncZone( PNS::NODE* aWorld, ZONE* aZone, SHAPE_POLY_SET* aBoardOutline [[maybe_unused]] )
 {
     // If this ever becomes multi-threaded, we'll need to lose the 'static's.  But for now they
     // will help performance a tiny bit.
@@ -2713,7 +2713,7 @@ void PNS_KICAD_IFACE::HideItem( PNS::ITEM* aItem )
 }
 
 
-void PNS_KICAD_IFACE_BASE::RemoveItem( PNS::ITEM* aItem )
+void PNS_KICAD_IFACE_BASE::RemoveItem( PNS::ITEM* aItem [[maybe_unused]] )
 {
 }
 
@@ -2742,7 +2742,7 @@ void PNS_KICAD_IFACE::RemoveItem( PNS::ITEM* aItem )
 }
 
 
-void PNS_KICAD_IFACE_BASE::UpdateItem( PNS::ITEM* aItem )
+void PNS_KICAD_IFACE_BASE::UpdateItem( PNS::ITEM* aItem [[maybe_unused]] )
 {
 }
 
@@ -2847,7 +2847,7 @@ void PNS_KICAD_IFACE::UpdateItem( PNS::ITEM* aItem )
 }
 
 
-void PNS_KICAD_IFACE_BASE::AddItem( PNS::ITEM* aItem )
+void PNS_KICAD_IFACE_BASE::AddItem( PNS::ITEM* aItem [[maybe_unused]] )
 {
 }
 

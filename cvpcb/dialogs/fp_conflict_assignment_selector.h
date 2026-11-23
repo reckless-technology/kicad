@@ -56,8 +56,8 @@ private:
 
     void OnItemClicked( wxMouseEvent& event ) override;
 
-    void OnCancelClick( wxCommandEvent& event ) override { EndModal( wxID_CANCEL ); }
-    void OnOKClick( wxCommandEvent& event ) override { EndModal( wxID_OK ); }
+    void OnCancelClick( wxCommandEvent& event [[maybe_unused]] ) override { EndModal( wxID_CANCEL ); }
+    void OnOKClick( wxCommandEvent& event [[maybe_unused]] ) override { EndModal( wxID_OK ); }
 
     void recalculateColumns();
 

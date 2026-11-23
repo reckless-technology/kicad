@@ -360,7 +360,7 @@ void PCB_BARCODE::OnFootprintRescaled( double /* aRatioX */, double /* aRatioY *
 }
 
 
-void PCB_BARCODE::StyleFromSettings( const BOARD_DESIGN_SETTINGS& settings, bool aCheckSide )
+void PCB_BARCODE::StyleFromSettings( const BOARD_DESIGN_SETTINGS& settings, bool aCheckSide [[maybe_unused]] )
 {
     SetTextSize( settings.GetTextSize( GetLayer() ).y );
 }
@@ -717,7 +717,7 @@ const BOX2I PCB_BARCODE::GetBoundingBox() const
 }
 
 
-wxString PCB_BARCODE::GetItemDescription( UNITS_PROVIDER* aUnitsProvider, bool aFull ) const
+wxString PCB_BARCODE::GetItemDescription( UNITS_PROVIDER* aUnitsProvider [[maybe_unused]], bool aFull [[maybe_unused]] ) const
 {
     return wxString::Format( _( "Barcode '%s' on %s" ), GetText(), GetLayerName() );
 }
@@ -762,7 +762,7 @@ double PCB_BARCODE::ViewGetLOD( int aLayer, const KIGFX::VIEW* aView ) const
 
 void PCB_BARCODE::TransformShapeToPolygon( SHAPE_POLY_SET& aBuffer, PCB_LAYER_ID aLayer,
                                            int aClearance, int aMaxError,
-                                           ERROR_LOC aErrorLoc, bool ignoreLineWidth ) const
+                                           ERROR_LOC aErrorLoc, bool ignoreLineWidth [[maybe_unused]] ) const
 {
     if( aLayer != m_layer && aLayer != UNDEFINED_LAYER )
         return;
@@ -792,7 +792,7 @@ std::shared_ptr<SHAPE> PCB_BARCODE::GetEffectiveShape( PCB_LAYER_ID aLayer, FLAS
 
 
 void PCB_BARCODE::GetBoundingHull( SHAPE_POLY_SET& aBuffer, PCB_LAYER_ID aLayer, int aClearance,
-                                   int aMaxError, ERROR_LOC aErrorLoc ) const
+                                   int aMaxError [[maybe_unused]], ERROR_LOC aErrorLoc [[maybe_unused]] ) const
 {
     AssembleBarcode();
 

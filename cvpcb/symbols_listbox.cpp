@@ -99,7 +99,7 @@ void SYMBOLS_LISTBOX::RemoveWarning( int index )
 }
 
 
-wxString SYMBOLS_LISTBOX::OnGetItemText( long item, long column ) const
+wxString SYMBOLS_LISTBOX::OnGetItemText( long item, long column [[maybe_unused]] ) const
 {
     return m_SymbolList.Item( item );
 }

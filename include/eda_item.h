@@ -125,7 +125,7 @@ public:
     bool HasSelectedAncestorGroup() const;
 
     virtual bool IsLocked() const { return false; }
-    virtual void SetLocked( bool aLocked ) {}
+    virtual void SetLocked( bool aLocked [[maybe_unused]] ) {}
 
     inline bool IsModified() const { return m_flags & IS_CHANGED; }
     inline bool IsNew() const { return m_flags & IS_NEW; }
@@ -193,7 +193,7 @@ public:
         ClearFlags( GetTempFlags() );
     }
 
-    virtual bool RenderAsBitmap( double aWorldScale ) const { return false; }
+    virtual bool RenderAsBitmap( double aWorldScale [[maybe_unused]] ) const { return false; }
 
     void SetIsShownAsBitmap( bool aBitmap )
     {
@@ -293,7 +293,7 @@ public:
      * @param aFrame is the EDA_DRAW_FRAME that displays the message panel
      * @param aList is the list to populate.
      */
-    virtual void GetMsgPanelInfo( EDA_DRAW_FRAME* aFrame, std::vector<MSG_PANEL_ITEM>& aList )
+    virtual void GetMsgPanelInfo( EDA_DRAW_FRAME* aFrame [[maybe_unused]], std::vector<MSG_PANEL_ITEM>& aList [[maybe_unused]] )
     {
     }
 
@@ -306,7 +306,7 @@ public:
      * @param aAccuracy Increase the item bounding box by this amount.
      * @return True if \a aPosition is within the item bounding box.
      */
-    virtual bool HitTest( const VECTOR2I& aPosition, int aAccuracy = 0 ) const
+    virtual bool HitTest( const VECTOR2I& aPosition [[maybe_unused]], int aAccuracy [[maybe_unused]] = 0 ) const
     {
         return false;   // derived classes should override this function
     }
@@ -319,7 +319,7 @@ public:
      * @param aAccuracy Increase \a aRect by this amount.
      * @return True if \a aRect contains or intersects the item bounding box.
      */
-    virtual bool HitTest( const BOX2I& aRect, bool aContained, int aAccuracy = 0 ) const
+    virtual bool HitTest( const BOX2I& aRect [[maybe_unused]], bool aContained [[maybe_unused]], int aAccuracy [[maybe_unused]] = 0 ) const
     {
         return false;   // derived classes should override this function
     }
@@ -331,7 +331,7 @@ public:
      * @param aContained Set to true to test for containment instead of an intersection.
      * @return True if \a aPoly contains or intersects the item.
      */
-    virtual bool HitTest( const SHAPE_LINE_CHAIN& aPoly, bool aContained ) const
+    virtual bool HitTest( const SHAPE_LINE_CHAIN& aPoly [[maybe_unused]], bool aContained [[maybe_unused]] ) const
     {
         return false; // derived classes should override this function
     }
@@ -346,7 +346,7 @@ public:
     virtual const BOX2I GetBoundingBox() const;
 
     virtual VECTOR2I GetPosition() const { return VECTOR2I(); }
-    virtual void     SetPosition( const VECTOR2I& aPos ){};
+    virtual void     SetPosition( const VECTOR2I& aPos [[maybe_unused]] ){};
 
     /**
      * Similar to GetPosition() but allows items to return their visual center rather
@@ -481,7 +481,7 @@ public:
      * @param aAuxData A pointer to optional data required for the search or NULL if not used.
      * @return True if the item's text matches the search criteria in \a aSearchData.
      */
-    virtual bool Matches( const EDA_SEARCH_DATA& aSearchData, void* aAuxData ) const
+    virtual bool Matches( const EDA_SEARCH_DATA& aSearchData [[maybe_unused]], void* aAuxData [[maybe_unused]] ) const
     {
         return false;
     }
@@ -508,7 +508,7 @@ public:
      * @param aAuxData A pointer to optional data required for the search or NULL if not used.
      * @return True if the item text was modified, otherwise false.
      */
-    virtual bool Replace( const EDA_SEARCH_DATA& aSearchData, void* aAuxData = nullptr )
+    virtual bool Replace( const EDA_SEARCH_DATA& aSearchData [[maybe_unused]], void* aAuxData [[maybe_unused]] = nullptr )
     {
         return false;
     }

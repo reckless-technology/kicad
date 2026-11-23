@@ -93,7 +93,7 @@ const BOX2I SELECTION_AREA::ViewBBox() const
 }
 
 
-void SELECTION_AREA::ViewDraw( int aLayer, KIGFX::VIEW* aView ) const
+void SELECTION_AREA::ViewDraw( int aLayer [[maybe_unused]], KIGFX::VIEW* aView ) const
 {
     KIGFX::GAL&      gal = *aView->GetGAL();
     RENDER_SETTINGS* settings = aView->GetPainter()->GetSettings();

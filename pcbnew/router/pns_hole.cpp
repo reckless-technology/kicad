@@ -54,7 +54,7 @@ HOLE* HOLE::Clone() const
 }
 
 
-const SHAPE_LINE_CHAIN HOLE::Hull( int aClearance, int aWalkaroundThickness, int aLayer ) const
+const SHAPE_LINE_CHAIN HOLE::Hull( int aClearance, int aWalkaroundThickness, int aLayer [[maybe_unused]] ) const
 {
     if( !m_holeShape )
         return SHAPE_LINE_CHAIN();

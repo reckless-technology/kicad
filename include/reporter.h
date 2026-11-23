@@ -99,7 +99,7 @@ public:
      *                  RPT_ACTION ) used to filter and format messages
      */
 
-    virtual REPORTER& Report( const wxString& aText,
+    virtual REPORTER& Report( const wxString& aText [[maybe_unused]],
                               SEVERITY aSeverity = RPT_SEVERITY_UNDEFINED )
     {
         m_reportedSeverityMask |= aSeverity;

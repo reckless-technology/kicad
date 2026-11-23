@@ -182,7 +182,7 @@ void PANEL_PCBNEW_ACTION_PLUGINS::SelectRow( int aRow )
 }
 
 
-void PANEL_PCBNEW_ACTION_PLUGINS::OnMoveUpButtonClick( wxCommandEvent& event )
+void PANEL_PCBNEW_ACTION_PLUGINS::OnMoveUpButtonClick( wxCommandEvent& event [[maybe_unused]] )
 {
     m_grid->OnMoveRowUp(
             [&]( int row )
@@ -192,7 +192,7 @@ void PANEL_PCBNEW_ACTION_PLUGINS::OnMoveUpButtonClick( wxCommandEvent& event )
 }
 
 
-void PANEL_PCBNEW_ACTION_PLUGINS::OnMoveDownButtonClick( wxCommandEvent& event )
+void PANEL_PCBNEW_ACTION_PLUGINS::OnMoveDownButtonClick( wxCommandEvent& event [[maybe_unused]] )
 {
     m_grid->OnMoveRowDown(
             [&]( int row )
@@ -217,7 +217,7 @@ void PANEL_PCBNEW_ACTION_PLUGINS::SwapRows( int aRowA, int aRowB )
 }
 
 
-void PANEL_PCBNEW_ACTION_PLUGINS::OnReloadButtonClick( wxCommandEvent& event )
+void PANEL_PCBNEW_ACTION_PLUGINS::OnReloadButtonClick( wxCommandEvent& event [[maybe_unused]] )
 {
     API_PLUGIN_MANAGER& mgr = Pgm().GetPluginManager();
     m_errorDialog->m_Reporter->Clear();
@@ -341,14 +341,14 @@ bool PANEL_PCBNEW_ACTION_PLUGINS::TransferDataToWindow()
 }
 
 
-void PANEL_PCBNEW_ACTION_PLUGINS::OnOpenDirectoryButtonClick( wxCommandEvent& event )
+void PANEL_PCBNEW_ACTION_PLUGINS::OnOpenDirectoryButtonClick( wxCommandEvent& event [[maybe_unused]] )
 {
     wxString dir( PATHS::GetUserPluginsPath() );
     LaunchExternal( dir );
 }
 
 
-void PANEL_PCBNEW_ACTION_PLUGINS::OnShowErrorsButtonClick( wxCommandEvent& event )
+void PANEL_PCBNEW_ACTION_PLUGINS::OnShowErrorsButtonClick( wxCommandEvent& event [[maybe_unused]] )
 {
     wxString trace;
 

@@ -153,7 +153,7 @@ DIALOG_BOARD_REANNOTATE::DIALOG_BOARD_REANNOTATE( PCB_EDIT_FRAME* aParentFrame )
 }
 
 
-void DIALOG_BOARD_REANNOTATE::OnCloseClick( wxCommandEvent& event )
+void DIALOG_BOARD_REANNOTATE::OnCloseClick( wxCommandEvent& event [[maybe_unused]] )
 {
     EndDialog( wxID_OK );
 }
@@ -216,19 +216,19 @@ REFDES_PREFIX_INFO* DIALOG_BOARD_REANNOTATE::GetOrBuildRefDesInfo( const wxStrin
 }
 
 
-void DIALOG_BOARD_REANNOTATE::FilterFrontPrefix( wxCommandEvent& event )
+void DIALOG_BOARD_REANNOTATE::FilterFrontPrefix( wxCommandEvent& event [[maybe_unused]] )
 {
     FilterPrefix( m_FrontPrefix );
 }
 
 
-void DIALOG_BOARD_REANNOTATE::FilterBackPrefix( wxCommandEvent& event )
+void DIALOG_BOARD_REANNOTATE::FilterBackPrefix( wxCommandEvent& event [[maybe_unused]] )
 {
     FilterPrefix( m_BackPrefix );
 }
 
 
-void DIALOG_BOARD_REANNOTATE::OnApplyClick( wxCommandEvent& event )
+void DIALOG_BOARD_REANNOTATE::OnApplyClick( wxCommandEvent& event [[maybe_unused]] )
 {
     m_MessageWindow->SetLazyUpdate( true );
 

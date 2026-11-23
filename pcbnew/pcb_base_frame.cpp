@@ -102,7 +102,7 @@ PCB_BASE_FRAME::~PCB_BASE_FRAME()
 }
 
 
-bool PCB_BASE_FRAME::canCloseWindow( wxCloseEvent& aEvent )
+bool PCB_BASE_FRAME::canCloseWindow( wxCloseEvent& aEvent [[maybe_unused]] )
 {
     // Close modeless dialogs.  They're trouble when they get destroyed after the frame and/or
     // board.
@@ -158,7 +158,7 @@ void PCB_BASE_FRAME::Update3DView( bool aMarkDirty, bool aRefresh, const wxStrin
 }
 
 
-void PCB_BASE_FRAME::SetBoard( BOARD* aBoard, PROGRESS_REPORTER* aReporter )
+void PCB_BASE_FRAME::SetBoard( BOARD* aBoard, PROGRESS_REPORTER* aReporter [[maybe_unused]] )
 {
     if( m_pcb != aBoard )
     {

@@ -32,7 +32,7 @@ LIBRARY_EDITOR_CONTROL::LIBRARY_EDITOR_CONTROL() :
 }
 
 
-void LIBRARY_EDITOR_CONTROL::Reset( RESET_REASON aReason )
+void LIBRARY_EDITOR_CONTROL::Reset( RESET_REASON aReason [[maybe_unused]] )
 {
     m_frame = getEditFrame<EDA_DRAW_FRAME>();
 }
@@ -66,12 +66,12 @@ void LIBRARY_EDITOR_CONTROL::AddContextMenuItems( CONDITIONAL_MENU* aMenu )
         return result;
     };
 
-    auto pinnedLibSelectedCondition = [checkPinnedStatus]( const SELECTION& aSel )
+    auto pinnedLibSelectedCondition = [checkPinnedStatus]( const SELECTION& aSel [[maybe_unused]] )
     {
         return checkPinnedStatus( true );
     };
 
-    auto unpinnedLibSelectedCondition = [checkPinnedStatus]( const SELECTION& aSel )
+    auto unpinnedLibSelectedCondition = [checkPinnedStatus]( const SELECTION& aSel [[maybe_unused]] )
     {
         return checkPinnedStatus( false );
     };
@@ -136,7 +136,7 @@ void LIBRARY_EDITOR_CONTROL::changeSelectedPinStatus( const bool aPin )
     }
 }
 
-int LIBRARY_EDITOR_CONTROL::PinLibrary( const TOOL_EVENT& aEvent )
+int LIBRARY_EDITOR_CONTROL::PinLibrary( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     changeSelectedPinStatus( true );
 
@@ -144,7 +144,7 @@ int LIBRARY_EDITOR_CONTROL::PinLibrary( const TOOL_EVENT& aEvent )
 }
 
 
-int LIBRARY_EDITOR_CONTROL::UnpinLibrary( const TOOL_EVENT& aEvent )
+int LIBRARY_EDITOR_CONTROL::UnpinLibrary( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     changeSelectedPinStatus( false );
 
@@ -152,14 +152,14 @@ int LIBRARY_EDITOR_CONTROL::UnpinLibrary( const TOOL_EVENT& aEvent )
 }
 
 
-int LIBRARY_EDITOR_CONTROL::ToggleLibraryTree( const TOOL_EVENT& aEvent )
+int LIBRARY_EDITOR_CONTROL::ToggleLibraryTree( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->ToggleLibraryTree();
     return 0;
 }
 
 
-int LIBRARY_EDITOR_CONTROL::LibraryTreeSearch( const TOOL_EVENT& aEvent )
+int LIBRARY_EDITOR_CONTROL::LibraryTreeSearch( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if (!m_frame->IsLibraryTreeShown() )
         m_frame->ToggleLibraryTree();

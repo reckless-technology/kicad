@@ -91,7 +91,7 @@ DIALOG_TABLE_PROPERTIES::DIALOG_TABLE_PROPERTIES( PCB_BASE_EDIT_FRAME* aFrame, P
                 attr->SetRenderer( new wxGridCellAutoWrapStringRenderer );
                 attr->SetEditor( new GRID_CELL_STC_EDITOR(
                         true, false,
-                        [this, cell]( wxStyledTextEvent& aEvent, SCINTILLA_TRICKS* aScintillaTricks )
+                        [this, cell]( wxStyledTextEvent& aEvent [[maybe_unused]], SCINTILLA_TRICKS* aScintillaTricks )
                         {
                             aScintillaTricks->DoTextVarAutocomplete(
                                     // getTokensFn
@@ -268,7 +268,7 @@ bool DIALOG_TABLE_PROPERTIES::TransferDataToWindow()
     return true;
 }
 
-void DIALOG_TABLE_PROPERTIES::onHeaderChecked( wxCommandEvent& aEvent )
+void DIALOG_TABLE_PROPERTIES::onHeaderChecked( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     BOARD_DESIGN_SETTINGS& bds = m_frame->GetDesignSettings();
     int                    defaultLineThickness = bds.GetLineThickness( m_LayerSelectionCtrl->GetLayerIDSelection() );
@@ -294,7 +294,7 @@ void DIALOG_TABLE_PROPERTIES::onHeaderChecked( wxCommandEvent& aEvent )
     m_separatorsStyleCombo->Enable( row || col );
 }
 
-void DIALOG_TABLE_PROPERTIES::onBorderChecked( wxCommandEvent& aEvent )
+void DIALOG_TABLE_PROPERTIES::onBorderChecked( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     BOARD_DESIGN_SETTINGS& bds = m_frame->GetDesignSettings();
     int                    defaultLineThickness = bds.GetLineThickness( m_LayerSelectionCtrl->GetLayerIDSelection() );
@@ -459,7 +459,7 @@ void DIALOG_TABLE_PROPERTIES::onSize( wxSizeEvent& aEvent )
 }
 
 
-void DIALOG_TABLE_PROPERTIES::onSyntaxHelp( wxHyperlinkEvent& aEvent )
+void DIALOG_TABLE_PROPERTIES::onSyntaxHelp( wxHyperlinkEvent& aEvent [[maybe_unused]] )
 {
     m_helpWindow = PCB_TEXT::ShowSyntaxHelp( this );
 }

@@ -132,15 +132,15 @@ protected:
 
     static std::vector<KICAD_T> parseRequestedItemTypes( const google::protobuf::RepeatedField<int>& aTypes );
 
-    virtual std::optional<TITLE_BLOCK*> getTitleBlock( const DocumentSpecifier& aDocument ) { return std::nullopt; }
+    virtual std::optional<TITLE_BLOCK*> getTitleBlock( const DocumentSpecifier& aDocument [[maybe_unused]] ) { return std::nullopt; }
 
-    virtual std::optional<PAGE_INFO> getPageSettings( const DocumentSpecifier& aDocument ) { return std::nullopt; }
+    virtual std::optional<PAGE_INFO> getPageSettings( const DocumentSpecifier& aDocument [[maybe_unused]] ) { return std::nullopt; }
 
-    virtual bool setPageSettings( const DocumentSpecifier& aDocument, const PAGE_INFO& aPageInfo ) { return false; }
+    virtual bool setPageSettings( const DocumentSpecifier& aDocument [[maybe_unused]], const PAGE_INFO& aPageInfo [[maybe_unused]] ) { return false; }
 
     virtual wxString getDrawingSheetFileName() { return wxEmptyString; }
 
-    virtual void setDrawingSheetFileName( const wxString& aFileName ) {}
+    virtual void setDrawingSheetFileName( const wxString& aFileName [[maybe_unused]] ) {}
 
     virtual void onModified() {}
 

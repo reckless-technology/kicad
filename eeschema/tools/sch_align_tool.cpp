@@ -185,7 +185,7 @@ void SCH_ALIGN_TOOL::setTransitions()
 }
 
 
-int SCH_ALIGN_TOOL::AlignTop( const TOOL_EVENT& aEvent )
+int SCH_ALIGN_TOOL::AlignTop( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     std::vector<ITEM_BOX> itemsToAlign;
     std::vector<ITEM_BOX> lockedItems;
@@ -220,7 +220,7 @@ int SCH_ALIGN_TOOL::AlignTop( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_ALIGN_TOOL::AlignBottom( const TOOL_EVENT& aEvent )
+int SCH_ALIGN_TOOL::AlignBottom( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     std::vector<ITEM_BOX> itemsToAlign;
     std::vector<ITEM_BOX> lockedItems;
@@ -255,7 +255,7 @@ int SCH_ALIGN_TOOL::AlignBottom( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_ALIGN_TOOL::AlignLeft( const TOOL_EVENT& aEvent )
+int SCH_ALIGN_TOOL::AlignLeft( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     std::vector<ITEM_BOX> itemsToAlign;
     std::vector<ITEM_BOX> lockedItems;
@@ -290,7 +290,7 @@ int SCH_ALIGN_TOOL::AlignLeft( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_ALIGN_TOOL::AlignRight( const TOOL_EVENT& aEvent )
+int SCH_ALIGN_TOOL::AlignRight( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     std::vector<ITEM_BOX> itemsToAlign;
     std::vector<ITEM_BOX> lockedItems;
@@ -325,7 +325,7 @@ int SCH_ALIGN_TOOL::AlignRight( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_ALIGN_TOOL::AlignCenterX( const TOOL_EVENT& aEvent )
+int SCH_ALIGN_TOOL::AlignCenterX( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     std::vector<ITEM_BOX> itemsToAlign;
     std::vector<ITEM_BOX> lockedItems;
@@ -360,7 +360,7 @@ int SCH_ALIGN_TOOL::AlignCenterX( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_ALIGN_TOOL::AlignCenterY( const TOOL_EVENT& aEvent )
+int SCH_ALIGN_TOOL::AlignCenterY( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     std::vector<ITEM_BOX> itemsToAlign;
     std::vector<ITEM_BOX> lockedItems;

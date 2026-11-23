@@ -277,7 +277,7 @@ void PCB_BASE_EDIT_FRAME::SetObjectVisible( GAL_LAYER_ID aLayer, bool aVisible )
 }
 
 
-COLOR_SETTINGS* PCB_BASE_EDIT_FRAME::GetColorSettings( bool aForceRefresh ) const
+COLOR_SETTINGS* PCB_BASE_EDIT_FRAME::GetColorSettings( bool aForceRefresh [[maybe_unused]] ) const
 {
     PCBNEW_SETTINGS* cfg = GetPcbNewSettings();
     return ::GetColorSettings( cfg ? cfg->m_ColorTheme : DEFAULT_THEME );
@@ -379,7 +379,7 @@ void PCB_BASE_EDIT_FRAME::configureToolbars()
 
                 // UI update handler for the control
                 aToolbar->Bind( wxEVT_UPDATE_UI,
-                                [this]( wxUpdateUIEvent& aEvent )
+                                [this]( wxUpdateUIEvent& aEvent [[maybe_unused]] )
                                     {
                                         if( m_SelLayerBox->GetCount()
                                             && ( m_SelLayerBox->GetLayerSelection() != GetActiveLayer() ) )
@@ -391,7 +391,7 @@ void PCB_BASE_EDIT_FRAME::configureToolbars()
 
                 // Event handler to respond to the user interacting with the control
                 aToolbar->Bind( wxEVT_COMBOBOX,
-                                [this]( wxCommandEvent& aEvent )
+                                [this]( wxCommandEvent& aEvent [[maybe_unused]] )
                                     {
                                         SetActiveLayer( m_SelLayerBox->GetLayerIDSelection() );
 

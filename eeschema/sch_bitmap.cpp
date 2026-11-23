@@ -222,8 +222,8 @@ bool SCH_BITMAP::HitTest( const SHAPE_LINE_CHAIN& aPoly, bool aContained ) const
 
 
 
-void SCH_BITMAP::Plot( PLOTTER* aPlotter, bool aBackground, const SCH_PLOT_OPTS& aPlotOpts,
-                       int aUnit, int aBodyStyle, const VECTOR2I& aOffset, bool aDimmed )
+void SCH_BITMAP::Plot( PLOTTER* aPlotter, bool aBackground, const SCH_PLOT_OPTS& aPlotOpts [[maybe_unused]],
+                       int aUnit [[maybe_unused]], int aBodyStyle [[maybe_unused]], const VECTOR2I& aOffset [[maybe_unused]], bool aDimmed [[maybe_unused]] )
 {
     if( aBackground )
     {

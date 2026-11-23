@@ -35,7 +35,7 @@ private:
     void updateData();
 
     bool TransferDataToWindow() override;
-    void OnCloseClick( wxCommandEvent& event ) override { Close(); };
+    void OnCloseClick( wxCommandEvent& event [[maybe_unused]] ) override { Close(); };
 
     wxWindow* m_frame;
 };

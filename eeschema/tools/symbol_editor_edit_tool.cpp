@@ -300,7 +300,7 @@ bool SYMBOL_EDITOR_EDIT_TOOL::Init()
     wxASSERT_MSG( drawingTools, "eeschema.SymbolDrawing tool is not available" );
 
     auto haveSymbolCondition =
-            [&]( const SELECTION& sel )
+            [&]( const SELECTION& sel [[maybe_unused]] )
             {
                 return m_isSymbolEditor && m_frame->GetCurSymbol();
             };
@@ -592,7 +592,7 @@ int SYMBOL_EDITOR_EDIT_TOOL::Mirror( const TOOL_EVENT& aEvent )
 
     return 0;
 }
-int SYMBOL_EDITOR_EDIT_TOOL::Swap( const TOOL_EVENT& aEvent )
+int SYMBOL_EDITOR_EDIT_TOOL::Swap( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SCH_SELECTION&         selection = m_selectionTool->RequestSelection( SwappableItems );
     std::vector<EDA_ITEM*> sorted = selection.GetItemsSortedBySelectionOrder();
@@ -674,7 +674,7 @@ static std::vector<KICAD_T> nonFields =
 };
 
 
-int SYMBOL_EDITOR_EDIT_TOOL::DoDelete( const TOOL_EVENT& aEvent )
+int SYMBOL_EDITOR_EDIT_TOOL::DoDelete( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     LIB_SYMBOL*           symbol = m_frame->GetCurSymbol();
     std::deque<EDA_ITEM*> items = m_selectionTool->RequestSelection().GetItems();
@@ -1051,7 +1051,7 @@ void SYMBOL_EDITOR_EDIT_TOOL::editSymbolProperties()
 }
 
 
-int SYMBOL_EDITOR_EDIT_TOOL::EditSymbolPinMaps( const TOOL_EVENT& aEvent )
+int SYMBOL_EDITOR_EDIT_TOOL::EditSymbolPinMaps( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     LIB_SYMBOL* symbol = m_frame->GetCurSymbol();
 
@@ -1079,7 +1079,7 @@ int SYMBOL_EDITOR_EDIT_TOOL::EditSymbolPinMaps( const TOOL_EVENT& aEvent )
 }
 
 
-int SYMBOL_EDITOR_EDIT_TOOL::PinTable( const TOOL_EVENT& aEvent )
+int SYMBOL_EDITOR_EDIT_TOOL::PinTable( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SCH_COMMIT  commit( m_frame );
     LIB_SYMBOL* symbol = m_frame->GetCurSymbol();
@@ -1121,7 +1121,7 @@ int SYMBOL_EDITOR_EDIT_TOOL::PinTable( const TOOL_EVENT& aEvent )
 }
 
 
-int SYMBOL_EDITOR_EDIT_TOOL::ConvertStackedPins( const TOOL_EVENT& aEvent )
+int SYMBOL_EDITOR_EDIT_TOOL::ConvertStackedPins( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SCH_COMMIT  commit( m_frame );
     LIB_SYMBOL* symbol = m_frame->GetCurSymbol();
@@ -1369,7 +1369,7 @@ int SYMBOL_EDITOR_EDIT_TOOL::ConvertStackedPins( const TOOL_EVENT& aEvent )
 }
 
 
-int SYMBOL_EDITOR_EDIT_TOOL::ExplodeStackedPin( const TOOL_EVENT& aEvent )
+int SYMBOL_EDITOR_EDIT_TOOL::ExplodeStackedPin( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SCH_COMMIT  commit( m_frame );
     LIB_SYMBOL* symbol = m_frame->GetCurSymbol();
@@ -1456,7 +1456,7 @@ int SYMBOL_EDITOR_EDIT_TOOL::ExplodeStackedPin( const TOOL_EVENT& aEvent )
 }
 
 
-int SYMBOL_EDITOR_EDIT_TOOL::UpdateSymbolFields( const TOOL_EVENT& aEvent )
+int SYMBOL_EDITOR_EDIT_TOOL::UpdateSymbolFields( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     LIB_SYMBOL* symbol = m_frame->GetCurSymbol();
 
@@ -1479,7 +1479,7 @@ int SYMBOL_EDITOR_EDIT_TOOL::UpdateSymbolFields( const TOOL_EVENT& aEvent )
 }
 
 
-int SYMBOL_EDITOR_EDIT_TOOL::Undo( const TOOL_EVENT& aEvent )
+int SYMBOL_EDITOR_EDIT_TOOL::Undo( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SCH_SELECTION_TOOL* selTool = m_toolMgr->GetTool<SCH_SELECTION_TOOL>();
 
@@ -1495,7 +1495,7 @@ int SYMBOL_EDITOR_EDIT_TOOL::Undo( const TOOL_EVENT& aEvent )
 }
 
 
-int SYMBOL_EDITOR_EDIT_TOOL::Redo( const TOOL_EVENT& aEvent )
+int SYMBOL_EDITOR_EDIT_TOOL::Redo( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SCH_SELECTION_TOOL* selTool = m_toolMgr->GetTool<SCH_SELECTION_TOOL>();
 
@@ -1522,7 +1522,7 @@ int SYMBOL_EDITOR_EDIT_TOOL::Cut( const TOOL_EVENT& aEvent )
 }
 
 
-int SYMBOL_EDITOR_EDIT_TOOL::Copy( const TOOL_EVENT& aEvent )
+int SYMBOL_EDITOR_EDIT_TOOL::Copy( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     LIB_SYMBOL*    symbol = m_frame->GetCurSymbol();
     SCH_SELECTION& selection = m_selectionTool->RequestSelection( nonFields );
@@ -1635,7 +1635,7 @@ int SYMBOL_EDITOR_EDIT_TOOL::Copy( const TOOL_EVENT& aEvent )
 }
 
 
-int SYMBOL_EDITOR_EDIT_TOOL::CopyAsText( const TOOL_EVENT& aEvent )
+int SYMBOL_EDITOR_EDIT_TOOL::CopyAsText( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SCH_SELECTION_TOOL* selTool = m_toolMgr->GetTool<SCH_SELECTION_TOOL>();
     SCH_SELECTION&      selection = selTool->RequestSelection();
@@ -1652,7 +1652,7 @@ int SYMBOL_EDITOR_EDIT_TOOL::CopyAsText( const TOOL_EVENT& aEvent )
 }
 
 
-int SYMBOL_EDITOR_EDIT_TOOL::Paste( const TOOL_EVENT& aEvent )
+int SYMBOL_EDITOR_EDIT_TOOL::Paste( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     LIB_SYMBOL* symbol  = m_frame->GetCurSymbol();
     LIB_SYMBOL* newPart = nullptr;
@@ -1731,7 +1731,7 @@ int SYMBOL_EDITOR_EDIT_TOOL::Paste( const TOOL_EVENT& aEvent )
 }
 
 
-int SYMBOL_EDITOR_EDIT_TOOL::Duplicate( const TOOL_EVENT& aEvent )
+int SYMBOL_EDITOR_EDIT_TOOL::Duplicate( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     LIB_SYMBOL*    symbol = m_frame->GetCurSymbol();
     SCH_SELECTION& selection = m_selectionTool->RequestSelection( nonFields );

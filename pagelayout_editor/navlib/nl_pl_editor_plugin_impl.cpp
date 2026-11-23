@@ -358,13 +358,13 @@ long NL_PL_EDITOR_PLUGIN_IMPL::SetViewExtents( const navlib::box_t& extents )
 }
 
 
-long NL_PL_EDITOR_PLUGIN_IMPL::SetViewFOV( double fov )
+long NL_PL_EDITOR_PLUGIN_IMPL::SetViewFOV( double fov [[maybe_unused]] )
 {
     return navlib::make_result_code( navlib::navlib_errc::invalid_operation );
 }
 
 
-long NL_PL_EDITOR_PLUGIN_IMPL::SetViewFrustum( const navlib::frustum_t& frustum )
+long NL_PL_EDITOR_PLUGIN_IMPL::SetViewFrustum( const navlib::frustum_t& frustum [[maybe_unused]] )
 {
     return navlib::make_result_code( navlib::navlib_errc::invalid_operation );
 }
@@ -470,7 +470,7 @@ long NL_PL_EDITOR_PLUGIN_IMPL::SetActiveCommand( std::string commandId )
 }
 
 
-long NL_PL_EDITOR_PLUGIN_IMPL::SetSettingsChanged( long change )
+long NL_PL_EDITOR_PLUGIN_IMPL::SetSettingsChanged( long change [[maybe_unused]] )
 {
     return 0;
 }
@@ -493,97 +493,97 @@ long NL_PL_EDITOR_PLUGIN_IMPL::SetTransaction( long value )
 }
 
 
-long NL_PL_EDITOR_PLUGIN_IMPL::GetViewFOV( double& fov ) const
+long NL_PL_EDITOR_PLUGIN_IMPL::GetViewFOV( double& fov [[maybe_unused]] ) const
 {
     return navlib::make_result_code( navlib::navlib_errc::invalid_operation );
 }
 
 
-long NL_PL_EDITOR_PLUGIN_IMPL::GetViewFrustum( navlib::frustum_t& frustum ) const
+long NL_PL_EDITOR_PLUGIN_IMPL::GetViewFrustum( navlib::frustum_t& frustum [[maybe_unused]] ) const
 {
     return navlib::make_result_code( navlib::navlib_errc::invalid_operation );
 }
 
 
-long NL_PL_EDITOR_PLUGIN_IMPL::GetSelectionExtents( navlib::box_t& extents ) const
+long NL_PL_EDITOR_PLUGIN_IMPL::GetSelectionExtents( navlib::box_t& extents [[maybe_unused]] ) const
 {
     return navlib::make_result_code( navlib::navlib_errc::no_data_available );
 }
 
 
-long NL_PL_EDITOR_PLUGIN_IMPL::GetSelectionTransform( navlib::matrix_t& transform ) const
+long NL_PL_EDITOR_PLUGIN_IMPL::GetSelectionTransform( navlib::matrix_t& transform [[maybe_unused]] ) const
 {
     return navlib::make_result_code( navlib::navlib_errc::no_data_available );
 }
 
 
-long NL_PL_EDITOR_PLUGIN_IMPL::SetSelectionTransform( const navlib::matrix_t& matrix )
+long NL_PL_EDITOR_PLUGIN_IMPL::SetSelectionTransform( const navlib::matrix_t& matrix [[maybe_unused]] )
 {
     return navlib::make_result_code( navlib::navlib_errc::invalid_operation );
 }
 
 
-long NL_PL_EDITOR_PLUGIN_IMPL::GetPivotPosition( navlib::point_t& position ) const
+long NL_PL_EDITOR_PLUGIN_IMPL::GetPivotPosition( navlib::point_t& position [[maybe_unused]] ) const
 {
     return navlib::make_result_code( navlib::navlib_errc::invalid_operation );
 }
 
 
-long NL_PL_EDITOR_PLUGIN_IMPL::IsUserPivot( navlib::bool_t& userPivot ) const
+long NL_PL_EDITOR_PLUGIN_IMPL::IsUserPivot( navlib::bool_t& userPivot [[maybe_unused]] ) const
 {
     return navlib::make_result_code( navlib::navlib_errc::invalid_operation );
 }
 
 
-long NL_PL_EDITOR_PLUGIN_IMPL::SetPivotPosition( const navlib::point_t& position )
+long NL_PL_EDITOR_PLUGIN_IMPL::SetPivotPosition( const navlib::point_t& position [[maybe_unused]] )
 {
     return navlib::make_result_code( navlib::navlib_errc::invalid_operation );
 }
 
 
-long NL_PL_EDITOR_PLUGIN_IMPL::GetPivotVisible( navlib::bool_t& visible ) const
+long NL_PL_EDITOR_PLUGIN_IMPL::GetPivotVisible( navlib::bool_t& visible [[maybe_unused]] ) const
 {
     return navlib::make_result_code( navlib::navlib_errc::invalid_operation );
 }
 
 
-long NL_PL_EDITOR_PLUGIN_IMPL::SetPivotVisible( bool visible )
+long NL_PL_EDITOR_PLUGIN_IMPL::SetPivotVisible( bool visible [[maybe_unused]] )
 {
     return navlib::make_result_code( navlib::navlib_errc::invalid_operation );
 }
 
 
-long NL_PL_EDITOR_PLUGIN_IMPL::GetHitLookAt( navlib::point_t& position ) const
+long NL_PL_EDITOR_PLUGIN_IMPL::GetHitLookAt( navlib::point_t& position [[maybe_unused]] ) const
 {
     return navlib::make_result_code( navlib::navlib_errc::no_data_available );
 }
 
 
-long NL_PL_EDITOR_PLUGIN_IMPL::SetHitAperture( double aperture )
+long NL_PL_EDITOR_PLUGIN_IMPL::SetHitAperture( double aperture [[maybe_unused]] )
 {
     return navlib::make_result_code( navlib::navlib_errc::invalid_operation );
 }
 
 
-long NL_PL_EDITOR_PLUGIN_IMPL::SetHitDirection( const navlib::vector_t& direction )
+long NL_PL_EDITOR_PLUGIN_IMPL::SetHitDirection( const navlib::vector_t& direction [[maybe_unused]] )
 {
     return navlib::make_result_code( navlib::navlib_errc::invalid_operation );
 }
 
 
-long NL_PL_EDITOR_PLUGIN_IMPL::SetHitLookFrom( const navlib::point_t& eye )
+long NL_PL_EDITOR_PLUGIN_IMPL::SetHitLookFrom( const navlib::point_t& eye [[maybe_unused]] )
 {
     return navlib::make_result_code( navlib::navlib_errc::invalid_operation );
 }
 
 
-long NL_PL_EDITOR_PLUGIN_IMPL::SetHitSelectionOnly( bool onlySelection )
+long NL_PL_EDITOR_PLUGIN_IMPL::SetHitSelectionOnly( bool onlySelection [[maybe_unused]] )
 {
     return navlib::make_result_code( navlib::navlib_errc::invalid_operation );
 }
 
 
-long NL_PL_EDITOR_PLUGIN_IMPL::SetCameraTarget( const navlib::point_t& position )
+long NL_PL_EDITOR_PLUGIN_IMPL::SetCameraTarget( const navlib::point_t& position [[maybe_unused]] )
 {
     return navlib::make_result_code( navlib::navlib_errc::invalid_operation );
 }

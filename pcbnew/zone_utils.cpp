@@ -509,7 +509,7 @@ static void ufUnion( std::unordered_map<ZONE*, ZONE*>& aParent, std::unordered_m
 }
 
 
-bool AutoAssignZonePriorities( BOARD* aBoard, PROGRESS_REPORTER* aReporter )
+bool AutoAssignZonePriorities( BOARD* aBoard, PROGRESS_REPORTER* aReporter [[maybe_unused]] )
 {
     std::vector<ZONE*> eligibleZones;
 

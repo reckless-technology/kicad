@@ -39,7 +39,7 @@ public:
     void Resync() override;
 
     // Return true if the layer id is enabled (i.e. is it should be displayed)
-    bool isLayerEnabled( int aLayer ) const override { return true; }
+    bool isLayerEnabled( int aLayer [[maybe_unused]] ) const override { return true; }
 
 private:
     std::unique_ptr<LAYER_PRESENTATION> m_layerPresentation;

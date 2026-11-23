@@ -92,7 +92,7 @@ std::optional<rectpack2D::rect_wh> spreadRectangles( std::vector<RECT_T>& vecSub
                 };
 
         auto report_unsuccessful =
-                [&]( RECT_T& r )
+                [&]( RECT_T& r [[maybe_unused]] )
                 {
                     anyUnsuccessful = true;
                     return rectpack2D::callback_result::ABORT_PACKING;

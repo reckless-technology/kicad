@@ -88,7 +88,7 @@ protected:
      * @param aQuiet will suppress any warning output (prompt dialogs)
      * @return true if save is allowed
      */
-    virtual bool validateSave( bool aQuiet = false )
+    virtual bool validateSave( bool aQuiet [[maybe_unused]] = false )
     {
         return true;
     }

@@ -167,7 +167,7 @@ std::vector<LIB_SYMBOL*> SCH_IO_EASYEDAPRO_V3::GetImportedCachedLibrarySymbols()
 
 
 void SCH_IO_EASYEDAPRO_V3::EnumerateSymbolLib( wxArrayString& aSymbolNameList, const wxString& aLibraryPath,
-                                               const std::map<std::string, UTF8>* aProperties )
+                                               const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     FONTCONFIG_REPORTER_SCOPE fontconfigScope( nullptr );
 
@@ -181,7 +181,7 @@ void SCH_IO_EASYEDAPRO_V3::EnumerateSymbolLib( wxArrayString& aSymbolNameList, c
 
 
 void SCH_IO_EASYEDAPRO_V3::EnumerateSymbolLib( std::vector<LIB_SYMBOL*>& aSymbolList, const wxString& aLibraryPath,
-                                               const std::map<std::string, UTF8>* aProperties )
+                                               const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     FONTCONFIG_REPORTER_SCOPE fontconfigScope( nullptr );
 
@@ -211,7 +211,7 @@ void SCH_IO_EASYEDAPRO_V3::EnumerateSymbolLib( std::vector<LIB_SYMBOL*>& aSymbol
 
 
 LIB_SYMBOL* SCH_IO_EASYEDAPRO_V3::LoadSymbol( const wxString& aLibraryPath, const wxString& aAliasName,
-                                              const std::map<std::string, UTF8>* aProperties )
+                                              const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     FONTCONFIG_REPORTER_SCOPE fontconfigScope( nullptr );
 

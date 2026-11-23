@@ -54,7 +54,7 @@ NONCACHED_CONTAINER::~NONCACHED_CONTAINER()
 }
 
 
-void NONCACHED_CONTAINER::SetItem( VERTEX_ITEM* aItem )
+void NONCACHED_CONTAINER::SetItem( VERTEX_ITEM* aItem [[maybe_unused]] )
 {
     // Nothing has to be done, as the noncached container
     // does not care about VERTEX_ITEMs ownership

@@ -524,7 +524,7 @@ private:
 };
 
 
-int BOARD_EDITOR_CONTROL::GenD356File( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::GenD356File( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     wxFileName  fn = m_frame->GetBoard()->GetFileName();
     wxString    ext, wildcard;

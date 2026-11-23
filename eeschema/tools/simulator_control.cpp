@@ -55,7 +55,7 @@ bool SIMULATOR_CONTROL::Init()
 }
 
 
-void SIMULATOR_CONTROL::Reset( RESET_REASON aReason )
+void SIMULATOR_CONTROL::Reset( RESET_REASON aReason [[maybe_unused]] )
 {
     m_simulatorFrame = getEditFrame<SIMULATOR_FRAME>();
 
@@ -68,7 +68,7 @@ void SIMULATOR_CONTROL::Reset( RESET_REASON aReason )
 }
 
 
-int SIMULATOR_CONTROL::NewAnalysisTab( const TOOL_EVENT& aEvent )
+int SIMULATOR_CONTROL::NewAnalysisTab( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     DIALOG_SIM_COMMAND dlg( m_simulatorFrame, m_circuitModel, m_simulator->Settings() );
     WX_STRING_REPORTER reporter;
@@ -98,7 +98,7 @@ int SIMULATOR_CONTROL::NewAnalysisTab( const TOOL_EVENT& aEvent )
 }
 
 
-int SIMULATOR_CONTROL::OpenWorkbook( const TOOL_EVENT& aEvent )
+int SIMULATOR_CONTROL::OpenWorkbook( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     wxFileDialog openDlg( m_simulatorFrame, _( "Open Simulation Workbook" ), getDefaultPath(), "",
                           FILEEXT::WorkbookFileWildcard(), wxFD_OPEN | wxFD_FILE_MUST_EXIST );
@@ -170,7 +170,7 @@ int SIMULATOR_CONTROL::SaveWorkbook( const TOOL_EVENT& aEvent )
 }
 
 
-int SIMULATOR_CONTROL::ExportPlotAsPNG( const TOOL_EVENT& aEvent )
+int SIMULATOR_CONTROL::ExportPlotAsPNG( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( SIM_PLOT_TAB* plotTab = dynamic_cast<SIM_PLOT_TAB*>( getCurrentSimTab() ) )
     {
@@ -191,7 +191,7 @@ int SIMULATOR_CONTROL::ExportPlotAsPNG( const TOOL_EVENT& aEvent )
 }
 
 
-int SIMULATOR_CONTROL::ExportPlotToClipboard( const TOOL_EVENT& aEvent )
+int SIMULATOR_CONTROL::ExportPlotToClipboard( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( SIM_PLOT_TAB* plotTab = dynamic_cast<SIM_PLOT_TAB*>( getCurrentSimTab() ) )
     {
@@ -212,7 +212,7 @@ int SIMULATOR_CONTROL::ExportPlotToClipboard( const TOOL_EVENT& aEvent )
 }
 
 
-int SIMULATOR_CONTROL::ExportPlotToSchematic( const TOOL_EVENT& aEvent )
+int SIMULATOR_CONTROL::ExportPlotToSchematic( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( m_schematicFrame == nullptr )
         return -1;
@@ -276,7 +276,7 @@ SIM_TAB* SIMULATOR_CONTROL::getCurrentSimTab()
 }
 
 
-int SIMULATOR_CONTROL::ExportPlotAsCSV( const TOOL_EVENT& aEvent )
+int SIMULATOR_CONTROL::ExportPlotAsCSV( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( SIM_PLOT_TAB* plotTab = dynamic_cast<SIM_PLOT_TAB*>( getCurrentSimTab() ) )
     {
@@ -377,7 +377,7 @@ int SIMULATOR_CONTROL::ExportPlotAsCSV( const TOOL_EVENT& aEvent )
 }
 
 
-int SIMULATOR_CONTROL::Close( const TOOL_EVENT& aEvent )
+int SIMULATOR_CONTROL::Close( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_simulatorFrame->Close();
     return 0;
@@ -470,7 +470,7 @@ int SIMULATOR_CONTROL::Zoom( const TOOL_EVENT& aEvent )
 }
 
 
-int SIMULATOR_CONTROL::UndoZoom( const TOOL_EVENT& aEvent )
+int SIMULATOR_CONTROL::UndoZoom( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( SIM_PLOT_TAB* plotTab = dynamic_cast<SIM_PLOT_TAB*>( getCurrentSimTab() ) )
     {
@@ -483,7 +483,7 @@ int SIMULATOR_CONTROL::UndoZoom( const TOOL_EVENT& aEvent )
 }
 
 
-int SIMULATOR_CONTROL::RedoZoom( const TOOL_EVENT& aEvent )
+int SIMULATOR_CONTROL::RedoZoom( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( SIM_PLOT_TAB* plotTab = dynamic_cast<SIM_PLOT_TAB*>( getCurrentSimTab() ) )
     {
@@ -495,7 +495,7 @@ int SIMULATOR_CONTROL::RedoZoom( const TOOL_EVENT& aEvent )
 }
 
 
-int SIMULATOR_CONTROL::ToggleSimConsolePanel( const TOOL_EVENT& aEvent )
+int SIMULATOR_CONTROL::ToggleSimConsolePanel( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( m_simulatorFrame )
         m_simulatorFrame->ToggleSimConsole();
@@ -504,7 +504,7 @@ int SIMULATOR_CONTROL::ToggleSimConsolePanel( const TOOL_EVENT& aEvent )
 }
 
 
-int SIMULATOR_CONTROL::ToggleSimSidePanel( const TOOL_EVENT& aEvent )
+int SIMULATOR_CONTROL::ToggleSimSidePanel( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( m_simulatorFrame )
         m_simulatorFrame->ToggleSimSidePanel();
@@ -513,7 +513,7 @@ int SIMULATOR_CONTROL::ToggleSimSidePanel( const TOOL_EVENT& aEvent )
 }
 
 
-int SIMULATOR_CONTROL::ToggleGrid( const TOOL_EVENT& aEvent )
+int SIMULATOR_CONTROL::ToggleGrid( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( SIM_PLOT_TAB* plotTab = dynamic_cast<SIM_PLOT_TAB*>( getCurrentSimTab() ) )
     {
@@ -525,7 +525,7 @@ int SIMULATOR_CONTROL::ToggleGrid( const TOOL_EVENT& aEvent )
 }
 
 
-int SIMULATOR_CONTROL::ToggleLegend( const TOOL_EVENT& aEvent )
+int SIMULATOR_CONTROL::ToggleLegend( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( SIM_PLOT_TAB* plotTab = dynamic_cast<SIM_PLOT_TAB*>( getCurrentSimTab() ) )
     {
@@ -537,7 +537,7 @@ int SIMULATOR_CONTROL::ToggleLegend( const TOOL_EVENT& aEvent )
 }
 
 
-int SIMULATOR_CONTROL::ToggleDottedSecondary( const TOOL_EVENT& aEvent )
+int SIMULATOR_CONTROL::ToggleDottedSecondary( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( SIM_PLOT_TAB* plotTab = dynamic_cast<SIM_PLOT_TAB*>( getCurrentSimTab() ) )
     {
@@ -549,21 +549,21 @@ int SIMULATOR_CONTROL::ToggleDottedSecondary( const TOOL_EVENT& aEvent )
 }
 
 
-int SIMULATOR_CONTROL::ToggleSmithChart( const TOOL_EVENT& aEvent )
+int SIMULATOR_CONTROL::ToggleSmithChart( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_simulatorFrame->ToggleSmithChart();
     return 0;
 }
 
 
-int SIMULATOR_CONTROL::ToggleDarkModePlots( const TOOL_EVENT& aEvent )
+int SIMULATOR_CONTROL::ToggleDarkModePlots( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_simulatorFrame->ToggleDarkModePlots();
     return 0;
 }
 
 
-int SIMULATOR_CONTROL::ToggleTrackCursor( const TOOL_EVENT& aEvent )
+int SIMULATOR_CONTROL::ToggleTrackCursor( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( SIM_PLOT_TAB* plotTab = dynamic_cast<SIM_PLOT_TAB*>( getCurrentSimTab() ) )
     {
@@ -575,7 +575,7 @@ int SIMULATOR_CONTROL::ToggleTrackCursor( const TOOL_EVENT& aEvent )
 }
 
 
-int SIMULATOR_CONTROL::EditAnalysisTab( const TOOL_EVENT& aEvent )
+int SIMULATOR_CONTROL::EditAnalysisTab( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_simulatorFrame->EditAnalysis();
     return 0;
@@ -602,7 +602,7 @@ int SIMULATOR_CONTROL::RunSimulation( const TOOL_EVENT& aEvent )
 }
 
 
-int SIMULATOR_CONTROL::Probe( const TOOL_EVENT& aEvent )
+int SIMULATOR_CONTROL::Probe( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( m_schematicFrame == nullptr )
         return -1;
@@ -619,7 +619,7 @@ int SIMULATOR_CONTROL::Probe( const TOOL_EVENT& aEvent )
 }
 
 
-int SIMULATOR_CONTROL::Tune( const TOOL_EVENT& aEvent )
+int SIMULATOR_CONTROL::Tune( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( m_schematicFrame == nullptr )
         return -1;
@@ -644,7 +644,7 @@ public:
         MARGIN_LINE_NUMBERS
     };
 
-    void onClose( wxCloseEvent& evt )
+    void onClose( wxCloseEvent& evt [[maybe_unused]] )
     {
         wxPostEvent( this, wxCommandEvent( wxEVT_COMMAND_BUTTON_CLICKED, wxID_CANCEL ) );
     }
@@ -720,7 +720,7 @@ private:
 };
 
 
-int SIMULATOR_CONTROL::EditUserDefinedSignals( const TOOL_EVENT& aEvent )
+int SIMULATOR_CONTROL::EditUserDefinedSignals( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     std::map<int, wxString> userSignals = m_simulatorFrame->UserDefinedSignals();
 
@@ -734,7 +734,7 @@ int SIMULATOR_CONTROL::EditUserDefinedSignals( const TOOL_EVENT& aEvent )
 }
 
 
-int SIMULATOR_CONTROL::ShowNetlist( const TOOL_EVENT& aEvent )
+int SIMULATOR_CONTROL::ShowNetlist( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( m_schematicFrame == nullptr || m_simulator == nullptr )
         return -1;

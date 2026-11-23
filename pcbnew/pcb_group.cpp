@@ -342,21 +342,21 @@ double PCB_GROUP::GetCoverageArea( int aTextMargin ) const
 }
 
 
-bool PCB_GROUP::HitTest( const VECTOR2I& aPosition, int aAccuracy ) const
+bool PCB_GROUP::HitTest( const VECTOR2I& aPosition [[maybe_unused]], int aAccuracy [[maybe_unused]] ) const
 {
     // Groups are selected by promoting a selection of one of their children
     return false;
 }
 
 
-bool PCB_GROUP::HitTest( const BOX2I& aRect, bool aContained, int aAccuracy ) const
+bool PCB_GROUP::HitTest( const BOX2I& aRect [[maybe_unused]], bool aContained [[maybe_unused]], int aAccuracy [[maybe_unused]] ) const
 {
     // Groups are selected by promoting a selection of one of their children
     return false;
 }
 
 
-bool PCB_GROUP::HitTest( const SHAPE_LINE_CHAIN& aPoly, bool aContained ) const
+bool PCB_GROUP::HitTest( const SHAPE_LINE_CHAIN& aPoly [[maybe_unused]], bool aContained [[maybe_unused]] ) const
 {
     // Groups are selected by promoting a selection of one of their children
     return false;
@@ -439,7 +439,7 @@ std::vector<int> PCB_GROUP::ViewGetLayers() const
 }
 
 
-double PCB_GROUP::ViewGetLOD( int aLayer, const KIGFX::VIEW* aView ) const
+double PCB_GROUP::ViewGetLOD( int aLayer [[maybe_unused]], const KIGFX::VIEW* aView ) const
 {
     if( aView->IsLayerVisibleCached( LAYER_ANCHOR ) )
         return LOD_SHOW;
@@ -507,7 +507,7 @@ void PCB_GROUP::Mirror( const SEG& aAxis )
 }
 
 
-wxString PCB_GROUP::GetItemDescription( UNITS_PROVIDER* aUnitsProvider, bool aFull ) const
+wxString PCB_GROUP::GetItemDescription( UNITS_PROVIDER* aUnitsProvider [[maybe_unused]], bool aFull [[maybe_unused]] ) const
 {
     if( m_name.empty() )
         return wxString::Format( _( "Unnamed Group, %zu members" ), m_items.size() );
@@ -532,7 +532,7 @@ void PCB_GROUP::GetMsgPanelInfo( EDA_DRAW_FRAME* aFrame, std::vector<MSG_PANEL_I
 }
 
 
-bool PCB_GROUP::Matches( const EDA_SEARCH_DATA& aSearchData, void* aAuxData ) const
+bool PCB_GROUP::Matches( const EDA_SEARCH_DATA& aSearchData, void* aAuxData [[maybe_unused]] ) const
 {
     return EDA_ITEM::Matches( UnescapeString( GetName() ), aSearchData );
 }

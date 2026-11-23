@@ -275,7 +275,7 @@ void PANEL_DESIGN_BLOCK_CHOOSER::FinishSetup()
 }
 
 
-void PANEL_DESIGN_BLOCK_CHOOSER::RefreshLibs( bool aProgress )
+void PANEL_DESIGN_BLOCK_CHOOSER::RefreshLibs( bool aProgress [[maybe_unused]] )
 {
     // Unselect before syncing to avoid null reference in the adapter
     // if a selected item is removed during the sync
@@ -331,7 +331,7 @@ void PANEL_DESIGN_BLOCK_CHOOSER::SelectLibId( const LIB_ID& aLibId )
 }
 
 
-void PANEL_DESIGN_BLOCK_CHOOSER::onCloseTimer( wxTimerEvent& aEvent )
+void PANEL_DESIGN_BLOCK_CHOOSER::onCloseTimer( wxTimerEvent& aEvent [[maybe_unused]] )
 {
     // Hack because of eaten MouseUp event. See PANEL_DESIGN_BLOCK_CHOOSER::onDesignBlockChosen
     // for the beginning of this spaghetti noodle.
@@ -353,7 +353,7 @@ void PANEL_DESIGN_BLOCK_CHOOSER::onCloseTimer( wxTimerEvent& aEvent )
 }
 
 
-void PANEL_DESIGN_BLOCK_CHOOSER::onOpenLibsTimer( wxTimerEvent& aEvent )
+void PANEL_DESIGN_BLOCK_CHOOSER::onOpenLibsTimer( wxTimerEvent& aEvent [[maybe_unused]] )
 {
     if( APP_SETTINGS_BASE* cfg = m_frame->config() )
         m_adapter->OpenLibs( cfg->m_DesignBlockChooserPanel.tree.open_libs );
@@ -367,7 +367,7 @@ void PANEL_DESIGN_BLOCK_CHOOSER::onOpenLibsTimer( wxTimerEvent& aEvent )
 }
 
 
-void PANEL_DESIGN_BLOCK_CHOOSER::onDesignBlockSelected( wxCommandEvent& aEvent )
+void PANEL_DESIGN_BLOCK_CHOOSER::onDesignBlockSelected( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     displaySelectedDesignBlock();
 }
@@ -386,7 +386,7 @@ void PANEL_DESIGN_BLOCK_CHOOSER::displaySelectedDesignBlock()
 }
 
 
-void PANEL_DESIGN_BLOCK_CHOOSER::onDesignBlockChosen( wxCommandEvent& aEvent )
+void PANEL_DESIGN_BLOCK_CHOOSER::onDesignBlockChosen( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( m_tree->GetSelectedLibId().IsValid() )
     {

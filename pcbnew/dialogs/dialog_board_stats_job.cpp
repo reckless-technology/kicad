@@ -67,7 +67,7 @@ void DIALOG_BOARD_STATS_JOB::setSelectedFormat( JOB_EXPORT_PCB_STATS::OUTPUT_FOR
 }
 
 
-void DIALOG_BOARD_STATS_JOB::OnFormatChoice( wxCommandEvent& event )
+void DIALOG_BOARD_STATS_JOB::OnFormatChoice( wxCommandEvent& event [[maybe_unused]] )
 {
     JOB_EXPORT_PCB_STATS::OUTPUT_FORMAT selectedFormat = getSelectedFormat();
 

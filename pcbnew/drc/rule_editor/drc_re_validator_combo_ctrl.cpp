@@ -31,7 +31,7 @@ wxObject* VALIDATOR_COMBO_CTRL::Clone() const
 }
 
 
-bool VALIDATOR_COMBO_CTRL::Validate( wxWindow* aParent )
+bool VALIDATOR_COMBO_CTRL::Validate( wxWindow* aParent [[maybe_unused]] )
 {
     wxComboBox* comboCtrl = wxDynamicCast( GetWindow(), wxComboBox );
 

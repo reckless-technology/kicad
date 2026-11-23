@@ -187,7 +187,7 @@ int SHOVE::getClearance( const ITEM* aA, const ITEM* aB, CLEARANCE_ASPECT aAspec
 }
 
 
-void SHOVE::sanityCheck( LINE* aOld, LINE* aNew )
+void SHOVE::sanityCheck( LINE* aOld [[maybe_unused]], LINE* aNew [[maybe_unused]] )
 {
     assert( aOld->CPoint( 0 ) == aNew->CPoint( 0 ) );
     assert( aOld->CLastPoint() == aNew->CLastPoint() );
@@ -1600,7 +1600,7 @@ bool SHOVE::fixupViaCollisions( const LINE* aCurrent, OBSTACLE& obs )
     return false;
 }
 
-bool SHOVE::patchTadpoleVia( ITEM* nearest, LINE& current )
+bool SHOVE::patchTadpoleVia( ITEM* nearest [[maybe_unused]], LINE& current )
 {
     if (current.CLine().PointCount() < 1 )
         return false;
@@ -2301,7 +2301,7 @@ void SHOVE::removeHeads()
 }
 
 
-void SHOVE::reconstructHeads( bool aShoveFailed )
+void SHOVE::reconstructHeads( bool aShoveFailed [[maybe_unused]] )
 {
     int  i = 0;
     auto iface = Router()->GetInterface();

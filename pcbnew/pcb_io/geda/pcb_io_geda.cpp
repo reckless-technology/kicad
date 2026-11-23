@@ -862,7 +862,7 @@ void PCB_IO_GEDA::validateCache( const wxString& aLibraryPath, bool checkModifie
 
 
 std::unique_ptr<FOOTPRINT> PCB_IO_GEDA::ImportFootprint( const wxString& aFootprintPath, wxString& aFootprintNameOut,
-                                                         const std::map<std::string, UTF8>* aProperties )
+                                                         const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     wxFileName fn( aFootprintPath );
 
@@ -939,7 +939,7 @@ const FOOTPRINT* PCB_IO_GEDA::getFootprint( const wxString& aLibraryPath,
 
 
 std::unique_ptr<FOOTPRINT> PCB_IO_GEDA::FootprintLoad( const wxString& aLibraryPath, const wxString& aFootprintName,
-                                                       bool aKeepUUID, const std::map<std::string, UTF8>* aProperties )
+                                                       bool aKeepUUID [[maybe_unused]], const std::map<std::string, UTF8>* aProperties )
 {
     // Suppress font substitution warnings (RAII - automatically restored on scope exit)
     FONTCONFIG_REPORTER_SCOPE fontconfigScope( nullptr );
@@ -971,7 +971,7 @@ void PCB_IO_GEDA::FootprintDelete( const wxString& aLibraryPath, const wxString&
 }
 
 
-bool PCB_IO_GEDA::DeleteLibrary( const wxString& aLibraryPath, const std::map<std::string, UTF8>* aProperties )
+bool PCB_IO_GEDA::DeleteLibrary( const wxString& aLibraryPath, const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     wxFileName fn;
     fn.SetPath( aLibraryPath );
@@ -1947,8 +1947,8 @@ void PCB_IO_GEDA::parseNetList( LINE_READER* aLineReader )
 }
 
 
-void PCB_IO_GEDA::loadBoard( const wxString& aFileName, BOARD& aBoard, bool aIsNewLoad,
-                             const std::map<std::string, UTF8>* aProperties, PROJECT* aProject )
+void PCB_IO_GEDA::loadBoard( const wxString& aFileName, BOARD& aBoard, bool aIsNewLoad [[maybe_unused]],
+                             const std::map<std::string, UTF8>* aProperties, PROJECT* aProject [[maybe_unused]] )
 {
     FONTCONFIG_REPORTER_SCOPE fontconfigScope( &LOAD_INFO_REPORTER::GetInstance() );
 

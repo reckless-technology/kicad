@@ -77,7 +77,7 @@ const DIFF_PAIR& DP_MEANDER_PLACER::GetOriginPair()
 }
 
 
-NODE* DP_MEANDER_PLACER::CurrentNode( bool aLoopsRemoved ) const
+NODE* DP_MEANDER_PLACER::CurrentNode( bool aLoopsRemoved [[maybe_unused]] ) const
 {
     if( !m_currentNode )
         return m_world;
@@ -214,7 +214,7 @@ bool DP_MEANDER_PLACER::pairOrientation( const DIFF_PAIR::COUPLED_SEGMENTS& aPai
 }
 
 
-bool DP_MEANDER_PLACER::Move( const VECTOR2I& aP, ITEM* aEndItem )
+bool DP_MEANDER_PLACER::Move( const VECTOR2I& aP, ITEM* aEndItem [[maybe_unused]] )
 {
     m_hasMeanders = false;
 
@@ -348,7 +348,7 @@ bool DP_MEANDER_PLACER::Move( const VECTOR2I& aP, ITEM* aEndItem )
         VECTOR2I                 endPt;
     };
 
-    auto getItem = [&]( const SHAPE_LINE_CHAIN& aChain, int aIndex, int aLastIndex )
+    auto getItem = [&]( const SHAPE_LINE_CHAIN& aChain, int aIndex, int aLastIndex [[maybe_unused]] )
     {
         std::optional<SHAPE_ARC> optArc;
         VECTOR2I                 startPt;
@@ -573,7 +573,7 @@ bool DP_MEANDER_PLACER::Move( const VECTOR2I& aP, ITEM* aEndItem )
 }
 
 
-bool DP_MEANDER_PLACER::FixRoute( const VECTOR2I& aP, ITEM* aEndItem, bool aForceFinish )
+bool DP_MEANDER_PLACER::FixRoute( const VECTOR2I& aP [[maybe_unused]], ITEM* aEndItem [[maybe_unused]], bool aForceFinish [[maybe_unused]] )
 {
     LINE lP( m_originPair.PLine(), m_finalShapeP );
     LINE lN( m_originPair.NLine(), m_finalShapeN );

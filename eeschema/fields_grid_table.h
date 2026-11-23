@@ -108,7 +108,7 @@ public:
 
     wxString GetColLabelValue( int aCol ) override;
 
-    bool IsEmptyCell( int row, int col ) override
+    bool IsEmptyCell( int row [[maybe_unused]], int col [[maybe_unused]] ) override
     {
         return false;   // don't allow adjacent cell overflow, even if we are actually empty
     }

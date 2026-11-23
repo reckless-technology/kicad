@@ -53,8 +53,8 @@ public:
     virtual wxString GetResultCell( int row, int col ) = 0;
     virtual void Sort( int aCol, bool aAscending, std::vector<long>* aSelection ) = 0;
 
-    virtual void SelectItems( std::vector<long>& aItemRows ) {}
-    virtual void ActivateItem( long aItemRow ) {}
+    virtual void SelectItems( std::vector<long>& aItemRows [[maybe_unused]] ) {}
+    virtual void ActivateItem( long aItemRow [[maybe_unused]] ) {}
 
 protected:
     wxString                                                   m_name;

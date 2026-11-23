@@ -115,7 +115,7 @@ void PCB_DESIGN_BLOCK_PANE::setLabelsAndTooltips()
     }
 }
 
-void PCB_DESIGN_BLOCK_PANE::OnCheckBox( wxCommandEvent& aEvent )
+void PCB_DESIGN_BLOCK_PANE::OnCheckBox( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( PCBNEW_SETTINGS* cfg = dynamic_cast<PCBNEW_SETTINGS*>( Kiface().KifaceSettings() ) )
     {

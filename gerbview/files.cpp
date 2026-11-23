@@ -59,7 +59,7 @@ void GERBVIEW_FRAME::OnGbrFileHistory( wxCommandEvent& event )
         LoadGerberFiles( filename );
 }
 
-void GERBVIEW_FRAME::OnClearGbrFileHistory( wxCommandEvent& aEvent )
+void GERBVIEW_FRAME::OnClearGbrFileHistory( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     GetFileHistory().ClearFileHistory();
 
@@ -80,7 +80,7 @@ void GERBVIEW_FRAME::OnDrlFileHistory( wxCommandEvent& event )
 }
 
 
-void GERBVIEW_FRAME::OnClearDrlFileHistory( wxCommandEvent& aEvent )
+void GERBVIEW_FRAME::OnClearDrlFileHistory( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     m_drillFileHistory.ClearFileHistory();
 
@@ -101,7 +101,7 @@ void GERBVIEW_FRAME::OnZipFileHistory( wxCommandEvent& event )
 }
 
 
-void GERBVIEW_FRAME::OnClearZipFileHistory( wxCommandEvent& aEvent )
+void GERBVIEW_FRAME::OnClearZipFileHistory( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     m_zipFileHistory.ClearFileHistory();
 
@@ -122,7 +122,7 @@ void GERBVIEW_FRAME::OnJobFileHistory( wxCommandEvent& event )
 }
 
 
-void GERBVIEW_FRAME::OnClearJobFileHistory( wxCommandEvent& aEvent )
+void GERBVIEW_FRAME::OnClearJobFileHistory( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     m_jobFileHistory.ClearFileHistory();
 

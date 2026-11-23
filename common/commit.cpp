@@ -39,7 +39,7 @@ COMMIT::~COMMIT()
 }
 
 
-COMMIT& COMMIT::Stage( EDA_ITEM* aItem, CHANGE_TYPE aChangeType, BASE_SCREEN* aScreen, RECURSE_MODE aRecurse )
+COMMIT& COMMIT::Stage( EDA_ITEM* aItem, CHANGE_TYPE aChangeType, BASE_SCREEN* aScreen, RECURSE_MODE aRecurse [[maybe_unused]] )
 {
     int       flags = aChangeType & CHT_FLAGS;
     int       changeType = aChangeType & CHT_TYPE;

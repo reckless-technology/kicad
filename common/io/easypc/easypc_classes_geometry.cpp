@@ -84,7 +84,7 @@ LOAD_TASK SOURCE_SEGMENT::Load( ARCHIVE& aAr )
 }
 
 
-LOAD_TASK SOURCE_SEGMENT::LoadTail( ARCHIVE& aAr )
+LOAD_TASK SOURCE_SEGMENT::LoadTail( ARCHIVE& aAr [[maybe_unused]] )
 {
     co_return;
 }

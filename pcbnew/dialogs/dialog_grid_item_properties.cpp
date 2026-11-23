@@ -320,7 +320,7 @@ void DIALOG_GRID_ITEM_PROPERTIES::updatePagesForType()
 }
 
 
-void DIALOG_GRID_ITEM_PROPERTIES::onGridType( wxCommandEvent& aEvent )
+void DIALOG_GRID_ITEM_PROPERTIES::onGridType( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     // Capture the field values under their old meaning before relabelling.
     saveSpacingToItem( m_workingCopy.GetGridItemType() );

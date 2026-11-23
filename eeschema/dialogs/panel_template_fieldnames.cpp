@@ -81,7 +81,7 @@ bool PANEL_TEMPLATE_FIELDNAMES::TransferDataToWindow()
 }
 
 
-void PANEL_TEMPLATE_FIELDNAMES::OnAddButtonClick( wxCommandEvent& event )
+void PANEL_TEMPLATE_FIELDNAMES::OnAddButtonClick( wxCommandEvent& event [[maybe_unused]] )
 {
     m_grid->OnAddRow(
             [&]() -> std::pair<int, int>
@@ -112,7 +112,7 @@ void PANEL_TEMPLATE_FIELDNAMES::OnAddButtonClick( wxCommandEvent& event )
 }
 
 
-void PANEL_TEMPLATE_FIELDNAMES::OnDeleteButtonClick( wxCommandEvent& event )
+void PANEL_TEMPLATE_FIELDNAMES::OnDeleteButtonClick( wxCommandEvent& event [[maybe_unused]] )
 {
     m_grid->OnDeleteRows(
             [&]( int row )
@@ -123,7 +123,7 @@ void PANEL_TEMPLATE_FIELDNAMES::OnDeleteButtonClick( wxCommandEvent& event )
 }
 
 
-void PANEL_TEMPLATE_FIELDNAMES::OnMoveUp( wxCommandEvent& event )
+void PANEL_TEMPLATE_FIELDNAMES::OnMoveUp( wxCommandEvent& event [[maybe_unused]] )
 {
     m_grid->OnMoveRowUp(
             [&]( int row )
@@ -133,7 +133,7 @@ void PANEL_TEMPLATE_FIELDNAMES::OnMoveUp( wxCommandEvent& event )
 }
 
 
-void PANEL_TEMPLATE_FIELDNAMES::OnMoveDown( wxCommandEvent& event )
+void PANEL_TEMPLATE_FIELDNAMES::OnMoveDown( wxCommandEvent& event [[maybe_unused]] )
 {
     m_grid->OnMoveRowDown(
             [&]( int row )

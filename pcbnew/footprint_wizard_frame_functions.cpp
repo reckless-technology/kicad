@@ -120,7 +120,7 @@ void FOOTPRINT_WIZARD_FRAME::SelectFootprintWizard()
 }
 
 
-void FOOTPRINT_WIZARD_FRAME::SelectCurrentWizard( wxCommandEvent& aDummy )
+void FOOTPRINT_WIZARD_FRAME::SelectCurrentWizard( wxCommandEvent& aDummy [[maybe_unused]] )
 {
     SelectFootprintWizard();
     updateView();

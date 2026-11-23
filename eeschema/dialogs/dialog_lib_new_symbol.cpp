@@ -60,7 +60,7 @@ DIALOG_LIB_NEW_SYMBOL::DIALOG_LIB_NEW_SYMBOL( EDA_DRAW_FRAME* aParent, const wxA
                                        nullptr, this );
 
     m_textName->Bind( wxEVT_TEXT,
-                      [this]( wxCommandEvent& aEvent )
+                      [this]( wxCommandEvent& aEvent [[maybe_unused]] )
                       {
                           m_nameIsDefaulted = false;
                       } );
@@ -125,7 +125,7 @@ bool DIALOG_LIB_NEW_SYMBOL::TransferDataFromWindow()
 }
 
 
-void DIALOG_LIB_NEW_SYMBOL::onParentSymbolSelect( wxCommandEvent& aEvent )
+void DIALOG_LIB_NEW_SYMBOL::onParentSymbolSelect( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     const wxString parent = m_comboInheritanceSelect->GetValue();
 
@@ -196,13 +196,13 @@ void DIALOG_LIB_NEW_SYMBOL::syncControls()
 }
 
 
-void DIALOG_LIB_NEW_SYMBOL::onPowerCheckBox( wxCommandEvent& aEvent )
+void DIALOG_LIB_NEW_SYMBOL::onPowerCheckBox( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     syncControls();
 }
 
 
-void DIALOG_LIB_NEW_SYMBOL::onCheckTransferUserFields( wxCommandEvent& aEvent )
+void DIALOG_LIB_NEW_SYMBOL::onCheckTransferUserFields( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     syncControls();
 }

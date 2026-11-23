@@ -364,7 +364,7 @@ API_HANDLER_COMMON::handleSetNetClassAssignments( const HANDLER_CONTEXT<SetNetCl
 }
 
 
-HANDLER_RESULT<Empty> API_HANDLER_COMMON::handlePing( const HANDLER_CONTEXT<Ping>& aCtx )
+HANDLER_RESULT<Empty> API_HANDLER_COMMON::handlePing( const HANDLER_CONTEXT<Ping>& aCtx [[maybe_unused]] )
 {
     return Empty();
 }

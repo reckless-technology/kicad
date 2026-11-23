@@ -2173,7 +2173,7 @@ wxString LIB_SYMBOL::GetPrefix()
 }
 
 
-void LIB_SYMBOL::RunOnChildren( const std::function<void( SCH_ITEM* )>& aFunction, RECURSE_MODE aMode )
+void LIB_SYMBOL::RunOnChildren( const std::function<void( SCH_ITEM* )>& aFunction, RECURSE_MODE aMode [[maybe_unused]] )
 {
     for( SCH_ITEM& item : m_drawings )
         aFunction( &item );

@@ -767,7 +767,7 @@ std::vector<int> ZONE::ViewGetLayers() const
 }
 
 
-double ZONE::ViewGetLOD( int aLayer, const KIGFX::VIEW* aView ) const
+double ZONE::ViewGetLOD( int aLayer [[maybe_unused]], const KIGFX::VIEW* aView ) const
 {
     if( !aView )
         return LOD_SHOW;
@@ -1536,7 +1536,7 @@ bool ZONE::AppendCorner( const VECTOR2I& aPosition, int aHoleIdx, bool aAllowDup
 }
 
 
-wxString ZONE::GetItemDescription( UNITS_PROVIDER* aUnitsProvider, bool aFull ) const
+wxString ZONE::GetItemDescription( UNITS_PROVIDER* aUnitsProvider [[maybe_unused]], bool aFull [[maybe_unused]] ) const
 {
     LSEQ     layers = m_layerSet.Seq();
     wxString layerDesc;
@@ -2011,7 +2011,7 @@ double ZONE::CalculateOutlineArea()
 
 
 void ZONE::TransformSmoothedOutlineToPolygon( SHAPE_POLY_SET& aBuffer, PCB_LAYER_ID aLayer, int aClearance,
-                                              int aMaxError, ERROR_LOC aErrorLoc, SHAPE_POLY_SET* aBoardOutline ) const
+                                              int aMaxError [[maybe_unused]], ERROR_LOC aErrorLoc, SHAPE_POLY_SET* aBoardOutline ) const
 {
     // Creates the zone outline polygon (with holes if any)
     SHAPE_POLY_SET polybuffer;
@@ -2055,7 +2055,7 @@ std::shared_ptr<SHAPE> ZONE::GetEffectiveShape( PCB_LAYER_ID aLayer, FLASHING, D
 }
 
 
-double ZONE::GetCoverageArea( int aTextMargin ) const
+double ZONE::GetCoverageArea( int aTextMargin [[maybe_unused]] ) const
 {
     if( !GetIsRuleArea() )
     {

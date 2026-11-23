@@ -143,7 +143,7 @@ void DIALOG_BARCODE_PROPERTIES::OnResize( wxSizeEvent& event )
 }
 
 
-void DIALOG_BARCODE_PROPERTIES::OnUpdateUI( wxUpdateUIEvent& event )
+void DIALOG_BARCODE_PROPERTIES::OnUpdateUI( wxUpdateUIEvent& event [[maybe_unused]] )
 {
     // Error correction options are only meaningful for QR codes
     bool enableEC = m_barcode->GetSelection() >= to_underlying( BARCODE_T::QR_CODE );
@@ -339,7 +339,7 @@ void DIALOG_BARCODE_PROPERTIES::refreshPreview()
 }
 
 
-void DIALOG_BARCODE_PROPERTIES::OnValuesChanged( wxCommandEvent& event )
+void DIALOG_BARCODE_PROPERTIES::OnValuesChanged( wxCommandEvent& event [[maybe_unused]] )
 {
     if( transferDataToBarcode( m_dummyBarcode ) )
     {
@@ -349,7 +349,7 @@ void DIALOG_BARCODE_PROPERTIES::OnValuesChanged( wxCommandEvent& event )
 }
 
 
-void DIALOG_BARCODE_PROPERTIES::OnTextValueChanged( wxKeyEvent& event )
+void DIALOG_BARCODE_PROPERTIES::OnTextValueChanged( wxKeyEvent& event [[maybe_unused]] )
 {
     if( transferDataToBarcode( m_dummyBarcode ) )
     {

@@ -162,7 +162,7 @@ bool DIALOG_WIRE_BUS_PROPERTIES::TransferDataToWindow()
 }
 
 
-void DIALOG_WIRE_BUS_PROPERTIES::resetDefaults( wxCommandEvent& event )
+void DIALOG_WIRE_BUS_PROPERTIES::resetDefaults( wxCommandEvent& event [[maybe_unused]] )
 {
     m_wireWidth.SetValue( 0 );
     m_colorSwatch->SetSwatchColor( COLOR4D::UNSPECIFIED, false );

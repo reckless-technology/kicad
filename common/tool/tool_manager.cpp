@@ -1132,7 +1132,7 @@ const KIGFX::VC_SETTINGS& TOOL_MANAGER::GetCurrentToolVC() const
 }
 
 
-TOOL_ID TOOL_MANAGER::MakeToolId( const std::string& aToolName )
+TOOL_ID TOOL_MANAGER::MakeToolId( const std::string& aToolName [[maybe_unused]] )
 {
     static int currentId;
 
@@ -1298,7 +1298,7 @@ bool TOOL_MANAGER::IsToolActive( TOOL_ID aId ) const
 }
 
 
-void TOOL_MANAGER::UpdateUI( const TOOL_EVENT& aEvent )
+void TOOL_MANAGER::UpdateUI( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     EDA_BASE_FRAME* frame = dynamic_cast<EDA_BASE_FRAME*>( GetToolHolder() );
 

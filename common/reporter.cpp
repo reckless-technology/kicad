@@ -76,7 +76,7 @@ public:
 };
 
 
-REPORTER& REPORTER::Report( const char* aText, SEVERITY aSeverity )
+REPORTER& REPORTER::Report( const char* aText, SEVERITY aSeverity [[maybe_unused]] )
 {
     Report( From_UTF8( aText ) );
     return *this;

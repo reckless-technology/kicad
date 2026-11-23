@@ -40,7 +40,7 @@ CLI::VERSION_COMMAND::VERSION_COMMAND() : COMMAND( "version" )
 }
 
 
-int CLI::VERSION_COMMAND::doPerform( KIWAY& aKiway )
+int CLI::VERSION_COMMAND::doPerform( KIWAY& aKiway [[maybe_unused]] )
 {
     if( !m_argParser )
     {

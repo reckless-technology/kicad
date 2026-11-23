@@ -125,7 +125,7 @@ public:
     /**
      * Get the coarsest grid that applies to an item.
      */
-    virtual GRID_HELPER_GRIDS GetItemGrid( const EDA_ITEM* aItem ) const { return GRID_CURRENT; }
+    virtual GRID_HELPER_GRIDS GetItemGrid( const EDA_ITEM* aItem [[maybe_unused]] ) const { return GRID_CURRENT; }
 
     /**
      * Return the size of the specified grid.

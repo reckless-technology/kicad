@@ -79,7 +79,7 @@ void DIALOG_ITEMS_LIST::onSelectionChanged( wxListEvent& aEvent )
         m_callback( aEvent.GetIndex() );
 }
 
-void DIALOG_ITEMS_LIST::onCollapse( wxCollapsiblePaneEvent& aEvent )
+void DIALOG_ITEMS_LIST::onCollapse( wxCollapsiblePaneEvent& aEvent [[maybe_unused]] )
 {
     Layout();
     GetSizer()->Fit( this );

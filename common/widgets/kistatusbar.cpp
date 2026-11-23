@@ -235,7 +235,7 @@ protected:
 
 
 private:
-    void onClearButtonClick( wxCommandEvent& aEvent )
+    void onClearButtonClick( wxCommandEvent& aEvent [[maybe_unused]] )
     {
         if( m_statusBar )
             m_statusBar->ClearWarningMessages();
@@ -356,7 +356,7 @@ KISTATUSBAR::~KISTATUSBAR()
 }
 
 
-void KISTATUSBAR::onNotificationsIconClick( wxCommandEvent& aEvent )
+void KISTATUSBAR::onNotificationsIconClick( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     wxCHECK( m_notificationsButton, /* void */ );
     wxPoint pos = m_notificationsButton->GetScreenPosition();
@@ -372,7 +372,7 @@ void KISTATUSBAR::onNotificationsIconClick( wxCommandEvent& aEvent )
 }
 
 
-void KISTATUSBAR::onBackgroundProgressClick( wxMouseEvent& aEvent )
+void KISTATUSBAR::onBackgroundProgressClick( wxMouseEvent& aEvent [[maybe_unused]] )
 {
     wxPoint pos = m_backgroundProgressBar->GetScreenPosition();
 
@@ -387,7 +387,7 @@ void KISTATUSBAR::onBackgroundProgressClick( wxMouseEvent& aEvent )
 }
 
 
-void KISTATUSBAR::onSize( wxSizeEvent& aEvent )
+void KISTATUSBAR::onSize( wxSizeEvent& aEvent [[maybe_unused]] )
 {
     layoutControls();
 }
@@ -766,7 +766,7 @@ void KISTATUSBAR::ClearWarningMessages( const wxString& aSource )
 }
 
 
-void KISTATUSBAR::onLoadWarningsIconClick( wxCommandEvent& aEvent )
+void KISTATUSBAR::onLoadWarningsIconClick( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( KISTATUSBAR_POPUP::IsDismissingClick( typeid( STATUSBAR_WARNING_LIST ) ) )
         return;

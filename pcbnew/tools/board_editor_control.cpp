@@ -351,7 +351,7 @@ void BOARD_EDITOR_CONTROL::Reset( RESET_REASON aReason )
 }
 
 // Update left-toolbar Line modes group icon based on current settings
-int BOARD_EDITOR_CONTROL::OnAngleSnapModeChanged( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::OnAngleSnapModeChanged( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     PCB_EDIT_FRAME* f = getEditFrame<PCB_EDIT_FRAME>();
 
@@ -384,7 +384,7 @@ int BOARD_EDITOR_CONTROL::ChangeLineMode( const TOOL_EVENT& aEvent )
 bool BOARD_EDITOR_CONTROL::Init()
 {
     auto activeToolCondition =
-            [this]( const SELECTION& aSel )
+            [this]( const SELECTION& aSel [[maybe_unused]] )
             {
                 return ( !m_frame->ToolStackIsEmpty() );
             };
@@ -454,7 +454,7 @@ bool BOARD_EDITOR_CONTROL::Init()
         auto toolActiveFunctor =
                 [=]( DRAWING_TOOL::MODE aMode )
                 {
-                    return [=]( const SELECTION& sel )
+                    return [=]( const SELECTION& sel [[maybe_unused]] )
                            {
                                return drawingTool->GetDrawingMode() == aMode;
                            };
@@ -471,7 +471,7 @@ bool BOARD_EDITOR_CONTROL::Init()
 }
 
 
-int BOARD_EDITOR_CONTROL::ExportForOlderVersion( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::ExportForOlderVersion( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     const wxString title = _( "Export for Older KiCad Version" );
 
@@ -511,35 +511,35 @@ int BOARD_EDITOR_CONTROL::ExportForOlderVersion( const TOOL_EVENT& aEvent )
 }
 
 
-int BOARD_EDITOR_CONTROL::Save( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::Save( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->SaveBoard();
     return 0;
 }
 
 
-int BOARD_EDITOR_CONTROL::SaveAs( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::SaveAs( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->SaveBoard( true );
     return 0;
 }
 
 
-int BOARD_EDITOR_CONTROL::SaveCopy( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::SaveCopy( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->SaveBoard( true, true );
     return 0;
 }
 
 
-int BOARD_EDITOR_CONTROL::ExportFootprints( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::ExportFootprints( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->ExportFootprintsToLibrary( false );
     return 0;
 }
 
 
-int BOARD_EDITOR_CONTROL::PageSettings( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::PageSettings( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     PICKED_ITEMS_LIST   undoCmd;
     DS_PROXY_UNDO_ITEM* undoItem = new DS_PROXY_UNDO_ITEM( m_frame );
@@ -581,7 +581,7 @@ int BOARD_EDITOR_CONTROL::PageSettings( const TOOL_EVENT& aEvent )
 }
 
 
-int BOARD_EDITOR_CONTROL::Plot( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::Plot( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     DIALOG_PLOT dlg( m_frame );
     dlg.ShowQuasiModal();
@@ -589,7 +589,7 @@ int BOARD_EDITOR_CONTROL::Plot( const TOOL_EVENT& aEvent )
 }
 
 
-int BOARD_EDITOR_CONTROL::EditFootprintFields( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::EditFootprintFields( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     DIALOG_FOOTPRINT_FIELDS_TABLE* dlg = m_frame->GetFootprintFieldsTableDialog();
 
@@ -608,7 +608,7 @@ int BOARD_EDITOR_CONTROL::EditFootprintFields( const TOOL_EVENT& aEvent )
 }
 
 
-int BOARD_EDITOR_CONTROL::GenerateBOM( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::GenerateBOM( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     DIALOG_FOOTPRINT_FIELDS_TABLE* dlg = m_frame->GetFootprintFieldsTableDialog();
 
@@ -627,14 +627,14 @@ int BOARD_EDITOR_CONTROL::GenerateBOM( const TOOL_EVENT& aEvent )
 }
 
 
-int BOARD_EDITOR_CONTROL::Search( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::Search( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->ToggleSearch();
     return 0;
 }
 
 
-int BOARD_EDITOR_CONTROL::Find( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::Find( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->ShowFindDialog();
     return 0;
@@ -648,35 +648,35 @@ int BOARD_EDITOR_CONTROL::FindNext( const TOOL_EVENT& aEvent )
 }
 
 
-int BOARD_EDITOR_CONTROL::FindByProperties( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::FindByProperties( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->ShowFindByPropertiesDialog();
     return 0;
 }
 
 
-int BOARD_EDITOR_CONTROL::BoardSetup( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::BoardSetup( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     getEditFrame<PCB_EDIT_FRAME>()->ShowBoardSetupDialog();
     return 0;
 }
 
 
-int BOARD_EDITOR_CONTROL::DesignRules( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::DesignRules( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     getEditFrame<PCB_EDIT_FRAME>()->ShowBoardSetupDialog( _( "Clearance" ) );
     return 0;
 }
 
 
-int BOARD_EDITOR_CONTROL::ImportNetlist( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::ImportNetlist( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     getEditFrame<PCB_EDIT_FRAME>()->InstallNetlistFrame();
     return 0;
 }
 
 
-int BOARD_EDITOR_CONTROL::ImportSpecctraSession( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::ImportSpecctraSession( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     wxString fullFileName = frame()->GetBoard()->GetFileName();
     wxString path;
@@ -698,7 +698,7 @@ int BOARD_EDITOR_CONTROL::ImportSpecctraSession( const TOOL_EVENT& aEvent )
 }
 
 
-int BOARD_EDITOR_CONTROL::ExportSpecctraDSN( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::ExportSpecctraDSN( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     wxString    fullFileName = m_frame->GetLastPath( LAST_PATH_SPECCTRADSN );
     wxFileName  fn;
@@ -727,7 +727,7 @@ int BOARD_EDITOR_CONTROL::ExportSpecctraDSN( const TOOL_EVENT& aEvent )
 }
 
 
-int BOARD_EDITOR_CONTROL::ExportNetlist( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::ExportNetlist( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     wxCHECK( m_frame, 0 );
 
@@ -808,7 +808,7 @@ int BOARD_EDITOR_CONTROL::ExportNetlist( const TOOL_EVENT& aEvent )
 }
 
 
-int BOARD_EDITOR_CONTROL::GenerateGerbers( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::GenerateGerbers( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     PCB_PLOT_PARAMS plotSettings = m_frame->GetPlotSettings();
 
@@ -904,7 +904,7 @@ int BOARD_EDITOR_CONTROL::RepairBoard( const TOOL_EVENT& aEvent )
 }
 
 
-int BOARD_EDITOR_CONTROL::UpdatePCBFromSchematic( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::UpdatePCBFromSchematic( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     NETLIST netlist;
     bool    fetched = false;
@@ -925,7 +925,7 @@ int BOARD_EDITOR_CONTROL::UpdatePCBFromSchematic( const TOOL_EVENT& aEvent )
     return 0;
 }
 
-int BOARD_EDITOR_CONTROL::UpdateSchematicFromPCB( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::UpdateSchematicFromPCB( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( Kiface().IsSingle() )
     {
@@ -954,7 +954,7 @@ int BOARD_EDITOR_CONTROL::UpdateSchematicFromPCB( const TOOL_EVENT& aEvent )
 }
 
 
-int BOARD_EDITOR_CONTROL::ShowEeschema( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::ShowEeschema( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     wxString        msg;
     PCB_EDIT_FRAME* boardFrame = m_frame;
@@ -1034,49 +1034,49 @@ int BOARD_EDITOR_CONTROL::ShowEeschema( const TOOL_EVENT& aEvent )
 }
 
 
-int BOARD_EDITOR_CONTROL::ToggleLayersManager( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::ToggleLayersManager( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     getEditFrame<PCB_EDIT_FRAME>()->ToggleLayersManager();
     return 0;
 }
 
 
-int BOARD_EDITOR_CONTROL::ToggleProperties( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::ToggleProperties( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     getEditFrame<PCB_EDIT_FRAME>()->ToggleProperties();
     return 0;
 }
 
 
-int BOARD_EDITOR_CONTROL::ToggleNetInspector( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::ToggleNetInspector( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     getEditFrame<PCB_EDIT_FRAME>()->ToggleNetInspector();
     return 0;
 }
 
 
-int BOARD_EDITOR_CONTROL::ToggleGitCommitPane( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::ToggleGitCommitPane( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     getEditFrame<PCB_EDIT_FRAME>()->ToggleGitCommitPane();
     return 0;
 }
 
 
-int BOARD_EDITOR_CONTROL::ToggleLibraryTree( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::ToggleLibraryTree( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     getEditFrame<PCB_EDIT_FRAME>()->ToggleLibraryTree();
     return 0;
 }
 
 
-int BOARD_EDITOR_CONTROL::ToggleSearch( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::ToggleSearch( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     getEditFrame<PCB_EDIT_FRAME>()->ToggleSearch();
     return 0;
 }
 
 
-int BOARD_EDITOR_CONTROL::ToggleConstraintsPanel( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::ToggleConstraintsPanel( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     getEditFrame<PCB_EDIT_FRAME>()->ToggleConstraintsPanel();
     return 0;
@@ -1084,7 +1084,7 @@ int BOARD_EDITOR_CONTROL::ToggleConstraintsPanel( const TOOL_EVENT& aEvent )
 
 
 // Track & via size control
-int BOARD_EDITOR_CONTROL::TrackWidthInc( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::TrackWidthInc( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     BOARD_DESIGN_SETTINGS& bds = getModel<BOARD>()->GetDesignSettings();
     PCB_SELECTION&         selection = m_toolMgr->GetTool<PCB_SELECTION_TOOL>()->GetSelection();
@@ -1154,7 +1154,7 @@ int BOARD_EDITOR_CONTROL::TrackWidthInc( const TOOL_EVENT& aEvent )
 }
 
 
-int BOARD_EDITOR_CONTROL::TrackWidthDec( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::TrackWidthDec( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     BOARD_DESIGN_SETTINGS& bds = getModel<BOARD>()->GetDesignSettings();
     PCB_SELECTION&         selection = m_toolMgr->GetTool<PCB_SELECTION_TOOL>()->GetSelection();
@@ -1224,7 +1224,7 @@ int BOARD_EDITOR_CONTROL::TrackWidthDec( const TOOL_EVENT& aEvent )
 }
 
 
-int BOARD_EDITOR_CONTROL::ViaSizeInc( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::ViaSizeInc( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     BOARD_DESIGN_SETTINGS& bds = getModel<BOARD>()->GetDesignSettings();
     PCB_SELECTION&         selection = m_toolMgr->GetTool<PCB_SELECTION_TOOL>()->GetSelection();
@@ -1290,7 +1290,7 @@ int BOARD_EDITOR_CONTROL::ViaSizeInc( const TOOL_EVENT& aEvent )
 }
 
 
-int BOARD_EDITOR_CONTROL::ViaSizeDec( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::ViaSizeDec( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     BOARD_DESIGN_SETTINGS& bds = getModel<BOARD>()->GetDesignSettings();
     PCB_SELECTION&         selection = m_toolMgr->GetTool<PCB_SELECTION_TOOL>()->GetSelection();
@@ -1360,7 +1360,7 @@ int BOARD_EDITOR_CONTROL::ViaSizeDec( const TOOL_EVENT& aEvent )
 }
 
 
-int BOARD_EDITOR_CONTROL::AutoTrackWidth( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::AutoTrackWidth( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     BOARD_DESIGN_SETTINGS& bds = getModel<BOARD>()->GetDesignSettings();
 
@@ -1611,19 +1611,19 @@ int BOARD_EDITOR_CONTROL::PlaceFootprint( const TOOL_EVENT& aEvent )
 }
 
 
-int BOARD_EDITOR_CONTROL::ToggleLockSelected( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::ToggleLockSelected( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     return modifyLockSelected( TOGGLE );
 }
 
 
-int BOARD_EDITOR_CONTROL::LockSelected( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::LockSelected( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     return modifyLockSelected( ON );
 }
 
 
-int BOARD_EDITOR_CONTROL::UnlockSelected( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::UnlockSelected( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     return modifyLockSelected( OFF );
 }
@@ -1772,7 +1772,7 @@ static bool mergeZones( EDA_DRAW_FRAME* aFrame, BOARD_COMMIT& aCommit,
 }
 
 
-int BOARD_EDITOR_CONTROL::ZoneMerge( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::ZoneMerge( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     const PCB_SELECTION& selection = m_toolMgr->GetTool<PCB_SELECTION_TOOL>()->GetSelection();
     BOARD*               board = getModel<BOARD>();
@@ -1853,7 +1853,7 @@ int BOARD_EDITOR_CONTROL::ZoneMerge( const TOOL_EVENT& aEvent )
 }
 
 
-int BOARD_EDITOR_CONTROL::ZoneDuplicate( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::ZoneDuplicate( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     PCB_SELECTION_TOOL*  selTool = m_toolMgr->GetTool<PCB_SELECTION_TOOL>();
     const PCB_SELECTION& selection = selTool->GetSelection();
@@ -1905,7 +1905,7 @@ int BOARD_EDITOR_CONTROL::ZoneDuplicate( const TOOL_EVENT& aEvent )
 }
 
 
-int BOARD_EDITOR_CONTROL::ZonePriorityMoveToTop( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::ZonePriorityMoveToTop( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     const PCB_SELECTION& selection = m_toolMgr->GetTool<PCB_SELECTION_TOOL>()->GetSelection();
 
@@ -1983,7 +1983,7 @@ int BOARD_EDITOR_CONTROL::ZonePriorityMoveToTop( const TOOL_EVENT& aEvent )
 }
 
 
-int BOARD_EDITOR_CONTROL::ZonePriorityRaise( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::ZonePriorityRaise( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     const PCB_SELECTION& selection = m_toolMgr->GetTool<PCB_SELECTION_TOOL>()->GetSelection();
 
@@ -2037,7 +2037,7 @@ int BOARD_EDITOR_CONTROL::ZonePriorityRaise( const TOOL_EVENT& aEvent )
 }
 
 
-int BOARD_EDITOR_CONTROL::ZonePriorityLower( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::ZonePriorityLower( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     const PCB_SELECTION& selection = m_toolMgr->GetTool<PCB_SELECTION_TOOL>()->GetSelection();
 
@@ -2091,7 +2091,7 @@ int BOARD_EDITOR_CONTROL::ZonePriorityLower( const TOOL_EVENT& aEvent )
 }
 
 
-int BOARD_EDITOR_CONTROL::ZonePriorityMoveToBottom( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::ZonePriorityMoveToBottom( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     const PCB_SELECTION& selection = m_toolMgr->GetTool<PCB_SELECTION_TOOL>()->GetSelection();
 
@@ -2207,12 +2207,12 @@ void BOARD_EDITOR_CONTROL::doCrossProbePcbToSch( const TOOL_EVENT& aEvent, bool 
 }
 
 
-int BOARD_EDITOR_CONTROL::AssignNetclass( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::AssignNetclass( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     PCB_SELECTION_TOOL*  selectionTool = m_toolMgr->GetTool<PCB_SELECTION_TOOL>();
 
     const PCB_SELECTION& selection = selectionTool->RequestSelection(
-            []( const VECTOR2I& aPt, GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
+            []( const VECTOR2I& aPt [[maybe_unused]], GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
             {
                 // Iterate from the back so we don't have to worry about removals.
                 for( int i = aCollector.GetCount() - 1; i >= 0; --i )

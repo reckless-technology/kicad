@@ -50,7 +50,7 @@ bool SCH_DESIGN_BLOCK_CONTROL::Init()
             };
 
     auto hasSelection =
-            [this](const SELECTION& aSel )
+            [this](const SELECTION& aSel [[maybe_unused]] )
             {
                 return !m_editFrame->GetCurrentSelection().Empty();
             };
@@ -73,7 +73,7 @@ bool SCH_DESIGN_BLOCK_CONTROL::Init()
 }
 
 
-int SCH_DESIGN_BLOCK_CONTROL::SaveSheetAsDesignBlock( const TOOL_EVENT& aEvent )
+int SCH_DESIGN_BLOCK_CONTROL::SaveSheetAsDesignBlock( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     LIB_TREE_NODE* current = getCurrentTreeNode();
 
@@ -92,7 +92,7 @@ int SCH_DESIGN_BLOCK_CONTROL::SaveSheetAsDesignBlock( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_DESIGN_BLOCK_CONTROL::SaveSelectionAsDesignBlock( const TOOL_EVENT& aEvent )
+int SCH_DESIGN_BLOCK_CONTROL::SaveSelectionAsDesignBlock( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     LIB_TREE_NODE* current = getCurrentTreeNode();
 
@@ -111,7 +111,7 @@ int SCH_DESIGN_BLOCK_CONTROL::SaveSelectionAsDesignBlock( const TOOL_EVENT& aEve
 }
 
 
-int SCH_DESIGN_BLOCK_CONTROL::UpdateDesignBlockFromSheet( const TOOL_EVENT& aEvent )
+int SCH_DESIGN_BLOCK_CONTROL::UpdateDesignBlockFromSheet( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     LIB_TREE_NODE* current = getCurrentTreeNode();
 
@@ -130,7 +130,7 @@ int SCH_DESIGN_BLOCK_CONTROL::UpdateDesignBlockFromSheet( const TOOL_EVENT& aEve
 }
 
 
-int SCH_DESIGN_BLOCK_CONTROL::UpdateDesignBlockFromSelection( const TOOL_EVENT& aEvent )
+int SCH_DESIGN_BLOCK_CONTROL::UpdateDesignBlockFromSelection( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     LIB_TREE_NODE* current = getCurrentTreeNode();
 
