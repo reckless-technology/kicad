@@ -1340,4 +1340,99 @@ BOOST_AUTO_TEST_CASE( Issue26130_AutomaticJunctions )
 }
 
 
+// https://gitlab.com/kicad/code/kicad/-/issues/26131
+// This project has Altium's Automatic net identifier scope and neither sheet entries nor ports,
+// so Altium connects same-named net labels on its two sheets. The four touchscreen nets are
+// labelled on both and must become global labels, joining JP10C on one sheet to the connectors
+// on the other. Labels used on one sheet only stay local.
+BOOST_AUTO_TEST_CASE( Issue26131_NetLabelsJoinAcrossSheets )
+{
+    SCH_IO_ALTIUM plugin;
+
+    std::map<std::string, UTF8> properties;
+    properties.emplace( "project_file", UTF8( eDPAdapterDataFile( wxT( "eDP_adapter_dvt1.PrjPcb" ) ) ) );
+    properties.emplace( "sch0", UTF8( eDPAdapterDataFile( wxT( "it6251_core.SchDoc" ) ) ) );
+    properties.emplace( "sch1", UTF8( eDPAdapterDataFile( wxT( "power.SchDoc" ) ) ) );
+
+    SCH_SHEET* rootSheet = plugin.LoadSchematicFile( wxEmptyString, &m_schematic, nullptr, &properties );
+    BOOST_REQUIRE( rootSheet );
+
+    const std::set<wxString> shared = { wxT( "LCD_XM" ), wxT( "LCD_XP" ), wxT( "LCD_YM" ), wxT( "LCD_YP" ) };
+
+    std::map<wxString, int>                     globalLabels;
+    std::set<std::pair<wxString, std::string>>  globalStyles;
+    std::set<std::pair<wxString, std::string>>  localStyles;
+    int                                         localLabels = 0;
+
+    auto styleOf = []( const SCH_LABEL_BASE* aLabel )
+    {
+        wxString face = aLabel->GetFont() ? aLabel->GetFont()->GetName() : wxString();
+        return std::make_pair( face, aLabel->GetTextColor().ToCSSString().ToStdString() );
+    };
+
+    for( const SCH_SHEET_PATH& sheetPath : m_schematic.Hierarchy() )
+    {
+        for( SCH_ITEM* item : sheetPath.LastScreen()->Items().OfType( SCH_GLOBAL_LABEL_T ) )
+        {
+            globalLabels[static_cast<SCH_LABEL_BASE*>( item )->GetText()]++;
+            globalStyles.insert( styleOf( static_cast<SCH_LABEL_BASE*>( item ) ) );
+        }
+
+        for( SCH_ITEM* item : sheetPath.LastScreen()->Items().OfType( SCH_LABEL_T ) )
+        {
+            BOOST_CHECK( !shared.count( static_cast<SCH_LABEL_BASE*>( item )->GetText() ) );
+            localStyles.insert( styleOf( static_cast<SCH_LABEL_BASE*>( item ) ) );
+            localLabels++;
+        }
+    }
+
+    // A label made global keeps the font and colour it had as a net label
+    BOOST_REQUIRE( !globalStyles.empty() );
+
+    for( const auto& [face, colour] : globalStyles )
+    {
+        BOOST_CHECK( !face.IsEmpty() );
+        BOOST_CHECK( localStyles.count( { face, colour } ) );
+    }
+
+    BOOST_CHECK_EQUAL( globalLabels.size(), shared.size() );
+
+    for( const wxString& name : shared )
+        BOOST_CHECK_EQUAL( globalLabels[name], 2 );
+
+    BOOST_CHECK_EQUAL( localLabels, 82 );
+
+    // Global labels' frames get a tight margin, as Altium's labels sit close together
+    BOOST_CHECK_EQUAL( m_schematic.Settings().m_LabelSizeRatio, 0.1 );
+
+    // JP10C pin 52 on one sheet and C26P pin 2 on the other are both on LCD_XM
+    CONNECTION_GRAPH graph;
+    graph.SetSchematic( &m_schematic );
+    graph.Recalculate( m_schematic.BuildSheetListSortedByPageNumbers(), true );
+
+    std::map<wxString, wxString> pinNets;
+
+    for( const SCH_SHEET_PATH& sheetPath : m_schematic.Hierarchy() )
+    {
+        for( SCH_ITEM* item : sheetPath.LastScreen()->Items().OfType( SCH_SYMBOL_T ) )
+        {
+            SCH_SYMBOL* symbol = static_cast<SCH_SYMBOL*>( item );
+
+            for( SCH_PIN* pin : symbol->GetPins( &sheetPath ) )
+            {
+                wxString key = symbol->GetRef( &sheetPath ) + wxT( "." ) + pin->GetNumber();
+
+                if( CONNECTION_SUBGRAPH* subgraph = graph.GetSubgraphForItem( pin ) )
+                    pinNets[key] = subgraph->GetNetName();
+            }
+        }
+    }
+
+    BOOST_REQUIRE( pinNets.count( wxT( "JP10C.52" ) ) );
+    BOOST_REQUIRE( pinNets.count( wxT( "C26P.2" ) ) );
+    BOOST_CHECK_EQUAL( pinNets[wxT( "JP10C.52" )], wxT( "LCD_XM" ) );
+    BOOST_CHECK_EQUAL( pinNets[wxT( "C26P.2" )], wxT( "LCD_XM" ) );
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()
