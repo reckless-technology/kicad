@@ -23,7 +23,8 @@ if(NOT TARGET 3DxWare::headers)
   add_library(3DxWare::headers INTERFACE IMPORTED)
   if(TDxWare_INCLUDE_DIRS)
     set_target_properties(3DxWare::headers PROPERTIES
-      INTERFACE_INCLUDE_DIRECTORIES "${TDxWare_INCLUDE_DIRS}")
+      INTERFACE_INCLUDE_DIRECTORIES "${TDxWare_INCLUDE_DIRS}"
+      INTERFACE_SYSTEM_INCLUDE_DIRECTORIES "${TDxWare_INCLUDE_DIRS}")
   endif()
 endif()
 
@@ -36,7 +37,8 @@ if(NOT TARGET TDxNavlib)
   add_library(TDxNavlib STATIC ${NAVLIB_LIB_SRCS})
   target_include_directories( TDxNavlib PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/inc" )
   set_target_properties(TDxNavlib PROPERTIES
-                        INTERFACE_INCLUDE_DIRECTORIES "${TDxWare_INCLUDE_DIRS}")
+                        INTERFACE_INCLUDE_DIRECTORIES "${TDxWare_INCLUDE_DIRS}"
+                        INTERFACE_SYSTEM_INCLUDE_DIRECTORIES "${TDxWare_INCLUDE_DIRS}")
 
   set_target_properties(TDxNavlib PROPERTIES
                         IMPORTED_LINK_INTERFACE_LANGUAGES "CXX")
