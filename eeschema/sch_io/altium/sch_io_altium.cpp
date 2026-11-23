@@ -2218,6 +2218,20 @@ void SCH_IO_ALTIUM::ParseAltiumSch( const wxString& aFileName )
     PARSE_FILE_GUARD selfGuard( this, AltiumParseKey( parentFileName ) );
     m_parsedFiles.insert( AltiumParseKey( parentFileName ) );
 
+    // A sub-sheet is read inside its parent's call, so the name of the file being read is restored
+    struct SOURCE_NAME_SCOPE
+    {
+        wxString& m_slot;
+        wxString  m_saved;
+
+        SOURCE_NAME_SCOPE( wxString& aSlot, const wxString& aName ) : m_slot( aSlot ), m_saved( aSlot )
+        {
+            m_slot = aName;
+        }
+
+        ~SOURCE_NAME_SCOPE() { m_slot = m_saved; }
+    } sourceNameScope( m_sourceSheetName, parentFileName.GetFullName().Lower() );
+
     // Fresh per-file owner-index map so a stale entry from a pruned sheet is not dereferenced
     // map insert keeps a dangling entry rather than replacing it
     m_sheets.clear();
@@ -3192,6 +3206,19 @@ void SCH_IO_ALTIUM::ParseComponent( int aIndex, const std::map<wxString, wxStrin
 
     SCH_SCREEN* screen = getCurrentScreen();
     wxCHECK( screen, /* void */ );
+
+    if( !elem.uniqueid.empty() )
+    {
+        // A symbol's id is random unless it is made from what names the component in Altium, and
+        // the net names of the pins of a part with no reference are made from it: two imports of one
+        // project would otherwise name those nets differently
+        wxString symbolKey = m_sourceSheetName + wxS( "/" ) + elem.uniqueid;
+
+        if( int repeat = m_symbolNameCounts[symbolKey]++; repeat > 0 )
+            symbolKey << wxS( "#" ) << repeat;
+
+        const_cast<KIID&>( symbol->m_Uuid ) = KIID::FromDeterministicString( wxS( "altium-symbol/" ) + symbolKey );
+    }
 
     screen->Append( symbol );
 

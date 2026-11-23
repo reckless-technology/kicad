@@ -59,6 +59,7 @@
 #include <cstring>
 #include <map>
 #include <optional>
+#include <algorithm>
 #include <set>
 #include <vector>
 
@@ -132,6 +133,13 @@ struct ALTIUM_SCH_IMPORT_FIXTURE
     {
         return wxString::FromUTF8( KI_TEST::GetEeschemaTestDataDir()
                                    + "/plugins/altium/text_placement/" )
+               + aName;
+    }
+
+    wxString unannotatedDataFile( const wxString& aName ) const
+    {
+        return wxString::FromUTF8( KI_TEST::GetEeschemaTestDataDir()
+                                   + "/plugins/altium/unannotated/" )
                + aName;
     }
 
@@ -1312,6 +1320,61 @@ BOOST_AUTO_TEST_CASE( AltiumPinText )
     }
 
     BOOST_CHECK_EQUAL( pins, 3 );
+}
+
+
+// The nets on an unannotated part's pins are named from its symbol's id, so two imports of one project
+// must give a symbol the same id, and so the same net names, though the ids of other items are random.
+BOOST_AUTO_TEST_CASE( AltiumUnannotatedSymbolNetNamesRepeat )
+{
+    auto netNames = [&]( SCHEMATIC& aSchematic )
+    {
+        SCH_IO_ALTIUM plugin;
+        SCH_SHEET*    rootSheet = plugin.LoadSchematicFile( unannotatedDataFile( wxT( "unannotated.SchDoc" ) ),
+                                                            &aSchematic );
+        BOOST_REQUIRE( rootSheet );
+
+        SCH_SHEET_PATH path;
+        path.push_back( rootSheet );
+
+        std::vector<SCH_SYMBOL*> symbols;
+
+        for( SCH_ITEM* item : rootSheet->GetScreen()->Items().OfType( SCH_SYMBOL_T ) )
+            symbols.push_back( static_cast<SCH_SYMBOL*>( item ) );
+
+        std::sort( symbols.begin(), symbols.end(),
+                   []( const SCH_SYMBOL* aLeft, const SCH_SYMBOL* aRight )
+                   {
+                       return aLeft->GetPosition().x < aRight->GetPosition().x;
+                   } );
+
+        BOOST_REQUIRE_EQUAL( symbols.size(), 2 );
+
+        std::vector<wxString> names;
+
+        for( SCH_SYMBOL* symbol : symbols )
+        {
+            for( SCH_PIN* pin : symbol->GetPins( &path ) )
+                names.push_back( pin->GetDefaultNetName( path ) );
+        }
+
+        return names;
+    };
+
+    std::vector<wxString> first = netNames( m_schematic );
+
+    SCHEMATIC again( nullptr );
+    again.SetProject( &m_settingsManager.Prj() );
+    again.Reset();
+
+    std::vector<wxString> second = netNames( again );
+
+    again.Reset();
+
+    BOOST_REQUIRE_EQUAL( first.size(), 4 );
+    BOOST_CHECK( first[0].StartsWith( wxT( "Net-(R?-" ) ) );
+    BOOST_CHECK_EQUAL( std::set<wxString>( first.begin(), first.end() ).size(), 4 );
+    BOOST_CHECK_EQUAL_COLLECTIONS( first.begin(), first.end(), second.begin(), second.end() );
 }
 
 
