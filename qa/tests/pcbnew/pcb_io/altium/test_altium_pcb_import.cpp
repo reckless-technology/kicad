@@ -55,6 +55,7 @@
 #include <generators/pcb_tuning_pattern.h>
 #include <geometry/shape_line_chain.h>
 #include <project.h>
+#include <reporter.h>
 #include <pcb_text.h>
 #include <project/net_settings.h>
 #include <settings/settings_manager.h>
@@ -2205,6 +2206,50 @@ BOOST_AUTO_TEST_CASE( DuplicateCourtyardIsDropped )
     BOOST_CHECK_EQUAL( courtyards[wxT( "R24" )].second, 0 );
     BOOST_CHECK_EQUAL( courtyards[wxT( "R23" )].first, 0 );
     BOOST_CHECK_EQUAL( courtyards[wxT( "R23" )].second, 1 );
+}
+
+
+/**
+ * A project import can make the board's net classes before the board is read: the schematic
+ * import creates them from the same Altium project.  The board's class of the same name is then
+ * that class, its nets assigned to it, and no conflict is reported.
+ */
+BOOST_AUTO_TEST_CASE( NetclassMergesIntoExistingClass )
+{
+    std::string dataPath = KI_TEST::GetPcbnewTestDataDir() + "plugins/altium/HiFive/HiFive1.B01.PcbDoc";
+
+    std::unique_ptr<BOARD> reference = m_altiumPlugin.LoadBoard( dataPath );
+    BOOST_REQUIRE( reference );
+
+    std::shared_ptr<NET_SETTINGS> referenceSettings = reference->GetDesignSettings().m_NetSettings;
+    wxString                      className;
+
+    for( const auto& [name, netclass] : referenceSettings->GetNetclasses() )
+    {
+        if( name != NETCLASS::Default )
+        {
+            className = name;
+            break;
+        }
+    }
+
+    BOOST_REQUIRE_MESSAGE( !className.IsEmpty(), "Test file must define a net class" );
+
+    std::unique_ptr<BOARD> board = std::make_unique<BOARD>();
+    std::shared_ptr<NETCLASS> existing = std::make_shared<NETCLASS>( className, false );
+    board->GetDesignSettings().m_NetSettings->SetNetclass( className, existing );
+
+    WX_STRING_REPORTER     reporter;
+    PCB_IO_ALTIUM_DESIGNER plugin;
+    plugin.SetReporter( &reporter );
+    plugin.LoadAndAppendBoard( dataPath, *board );
+
+    std::shared_ptr<NET_SETTINGS> settings = board->GetDesignSettings().m_NetSettings;
+
+    BOOST_CHECK( !reporter.GetMessages().Contains( wxT( "More than one Altium netclass" ) ) );
+    BOOST_CHECK( settings->GetNetclasses().at( className ) == existing );
+    BOOST_CHECK_EQUAL( settings->GetNetclassPatternAssignments().size(),
+                       referenceSettings->GetNetclassPatternAssignments().size() );
 }
 
 

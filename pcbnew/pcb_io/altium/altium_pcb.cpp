@@ -2686,6 +2686,10 @@ void ALTIUM_PCB::ParseClasses6Data( const ALTIUM_PCB_COMPOUND_FILE&     aAltiumP
 
     ALTIUM_BINARY_PARSER reader( aAltiumPcbFile, aEntry );
 
+    // Net classes this file defines; a class of the same name may already be in the project,
+    // made by the schematic import from the same Altium project, and is then the one used
+    std::set<wxString> definedHere;
+
     while( reader.GetRemainingBytes() >= 4 /* TODO: use Header section of file */ )
     {
         checkpoint();
@@ -2701,9 +2705,9 @@ void ALTIUM_PCB::ParseClasses6Data( const ALTIUM_PCB_COMPOUND_FILE&     aAltiumP
                                                                                           nc->GetName() );
             }
 
-            if( m_board->GetDesignSettings().m_NetSettings->HasNetclass( nc->GetName() ) )
+            if( !definedHere.insert( nc->GetName() ).second )
             {
-                // Name conflict, happens in some unknown circumstances
+                // Name conflict within the file, happens in some unknown circumstances
                 // unique_ptr will delete nc on this code path
                 if( m_reporter )
                 {
@@ -2713,7 +2717,7 @@ void ALTIUM_PCB::ParseClasses6Data( const ALTIUM_PCB_COMPOUND_FILE&     aAltiumP
                     m_reporter->Report( msg, RPT_SEVERITY_ERROR );
                 }
             }
-            else
+            else if( !m_board->GetDesignSettings().m_NetSettings->HasNetclass( nc->GetName() ) )
             {
                 m_board->GetDesignSettings().m_NetSettings->SetNetclass( nc->GetName(), nc );
             }
