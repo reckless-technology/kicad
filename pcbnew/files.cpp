@@ -731,6 +731,8 @@ bool PCB_EDIT_FRAME::OpenProjectFiles( const std::vector<wxString>& aFileSet, in
 
                 if( !ApplyImportedNetNameMap( *loaded, *netNames, loadReporter ) )
                     THROW_IO_ERROR( _( "Cannot apply imported net-name map to the board." ) );
+
+                importedRules = RenameNetsInDesignRules( importedRules, *netNames );
             }
 
             loadedBoard = loaded.release();

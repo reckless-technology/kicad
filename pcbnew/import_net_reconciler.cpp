@@ -232,7 +232,10 @@ NET_RECONCILE_RESULT ReconcileImportedNetNames( BOARD& aBoard, NETLIST& aNetlist
     }
 
     if( ApplyImportedNetNameMap( aBoard, renames, aReporter ) )
+    {
         result.m_renamed = static_cast<int>( renames.size() );
+        result.m_renames = renames;
+    }
 
     // the schematic names a net that joins one pin, which the board leaves without a net
     for( const auto& [name, pins] : schematicNets )

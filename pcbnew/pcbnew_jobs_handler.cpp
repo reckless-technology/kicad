@@ -19,6 +19,7 @@
  */
 
 #include <import_net_names.h>
+#include <import_design_rules.h>
 #include <import_net_reconciler.h>
 #include <import_local_footprint_libs.h>
 #include <diff_merge/merge_dispatch.h>
@@ -4369,6 +4370,9 @@ int PCBNEW_JOBS_HANDLER::JobImport( JOB* aJob )
         if( !ApplyImportedNetNameMap( *board, job->m_netNameMap, *m_reporter ) )
             return CLI::EXIT_CODES::ERR_INVALID_INPUT_FILE;
 
+        // the imported rules name the source design's nets, so they follow each renaming of the board's nets
+        std::vector<std::map<wxString, wxString>> netRenames{ job->m_netNameMap };
+
         // Extract a project footprint library and re-link FPIDs, as the board editor does.
         // Each EasyEDA Pro project board needs a distinct cache; using the archive name makes
         // every board compete to publish the same .pretty directory.
@@ -4389,7 +4393,7 @@ int PCBNEW_JOBS_HANDLER::JobImport( JOB* aJob )
             {
                 KICAD_NETLIST_READER reader( new FILE_LINE_READER( job->m_netlistFile ), &netlist );
                 reader.LoadNetlist();
-                ReconcileImportedBoard( *board, netlist, *m_reporter );
+                netRenames.push_back( ReconcileImportedBoard( *board, netlist, *m_reporter ).m_nets.m_renames );
             }
             catch( const IO_ERROR& ioe )
             {
@@ -4433,6 +4437,9 @@ int PCBNEW_JOBS_HANDLER::JobImport( JOB* aJob )
         IO_RELEASER<PCB_IO> kicadPlugin( PCB_IO_MGR::FindPlugin( PCB_IO_MGR::KICAD_SEXP ) );
         kicadPlugin->SaveBoard( outputPath, *board );
         wxString importedRules = pi->GetImportedDesignRules();
+
+        for( const std::map<wxString, wxString>& renames : netRenames )
+            importedRules = RenameNetsInDesignRules( importedRules, renames );
 
         if( !importedRules.IsEmpty() )
         {

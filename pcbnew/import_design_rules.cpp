@@ -78,3 +78,112 @@ bool SaveImportedDesignRules( const wxString& aRules, const wxFileName& aBoardPa
 
     return true;
 }
+
+
+wxString RenameNetsInDesignRules( const wxString& aRules, const std::map<wxString, wxString>& aNames )
+{
+    if( aNames.empty() )
+        return aRules;
+
+    const wxString property = wxS( ".NetName" );
+
+    wxString result;
+    size_t   copied = 0;
+    size_t   at = 0;
+
+    while( ( at = aRules.find( property, at ) ) != wxString::npos )
+    {
+        size_t cursor = at + property.length();
+        at = cursor;
+
+        auto skipSpaces = [&]()
+        {
+            while( cursor < aRules.length() && ( aRules[cursor] == ' ' || aRules[cursor] == '\t' ) )
+                cursor++;
+        };
+
+        skipSpaces();
+
+        // only a comparison with a literal names a net: `A.NetName == B.NetName` names none
+        if( cursor + 1 >= aRules.length() || ( aRules[cursor] != '=' && aRules[cursor] != '!' )
+            || aRules[cursor + 1] != '=' )
+        {
+            continue;
+        }
+
+        cursor += 2;
+        skipSpaces();
+
+        if( cursor >= aRules.length() || aRules[cursor] != '\'' )
+            continue;
+
+        const size_t literalStart = ++cursor;
+        wxString     name;
+
+        for( ; cursor < aRules.length() && aRules[cursor] != '\''; cursor++ )
+        {
+            if( aRules[cursor] == '\\' && cursor + 1 < aRules.length() )
+                cursor++;
+
+            name += aRules[cursor];
+        }
+
+        if( cursor >= aRules.length() )
+            break;
+
+        auto renamed = aNames.find( name );
+
+        if( renamed != aNames.end() )
+        {
+            wxString escaped = renamed->second;
+            escaped.Replace( wxS( "'" ), wxS( "\\'" ) );
+
+            result += aRules.Mid( copied, literalStart - copied ) + escaped;
+            copied = cursor;
+        }
+
+        at = cursor;
+    }
+
+    return result + aRules.Mid( copied );
+}
+
+
+bool RenameNetsInDesignRulesFile( const wxFileName& aRulesPath, const std::map<wxString, wxString>& aNames,
+                                  REPORTER& aReporter )
+{
+    if( aNames.empty() || !aRulesPath.FileExists() )
+        return false;
+
+    wxString rules;
+
+    {
+        wxFile rulesFile( aRulesPath.GetFullPath() );
+
+        if( !rulesFile.IsOpened() || !rulesFile.ReadAll( &rules, wxConvUTF8 ) )
+        {
+            aReporter.Report( wxString::Format( _( "Could not read the design rules '%s' to rename the nets they "
+                                                   "name.\n" ),
+                                                aRulesPath.GetFullPath() ),
+                              RPT_SEVERITY_WARNING );
+            return false;
+        }
+    }
+
+    wxString renamed = RenameNetsInDesignRules( rules, aNames );
+
+    if( renamed == rules )
+        return false;
+
+    wxFile rulesFile( aRulesPath.GetFullPath(), wxFile::write );
+
+    if( !rulesFile.IsOpened() || !rulesFile.Write( renamed, wxConvUTF8 ) || !rulesFile.Close() )
+    {
+        aReporter.Report( wxString::Format( _( "Could not write the design rules '%s' with the renamed nets.\n" ),
+                                            aRulesPath.GetFullPath() ),
+                          RPT_SEVERITY_WARNING );
+        return false;
+    }
+
+    return true;
+}
