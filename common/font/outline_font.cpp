@@ -32,6 +32,7 @@
 #include FT_TRUETYPE_TABLES_H
 #include FT_GLYPH_H
 #include FT_BBOX_H
+#include FT_ADVANCES_H
 #include <trigo.h>
 #include <core/utf8.h>
 
@@ -216,6 +217,28 @@ void OUTLINE_FONT::GetAscentAndDescent( double& aAscent, double& aDescent ) cons
         aAscent = m_face->ascender / unitsPerEm;
         aDescent = -m_face->descender / unitsPerEm;
     }
+}
+
+
+double OUTLINE_FONT::GetAdvanceInEms( const wxString& aText ) const
+{
+    std::lock_guard<std::mutex> guard( m_freeTypeMutex );
+
+    if( !m_face || m_face->units_per_EM == 0 )
+        return 0.0;
+
+    double advance = 0.0;
+
+    for( wxUniChar character : aText )
+    {
+        FT_UInt  glyph = FT_Get_Char_Index( m_face, static_cast<FT_ULong>( character.GetValue() ) );
+        FT_Fixed glyphAdvance = 0;
+
+        if( glyph && FT_Get_Advance( m_face, glyph, FT_LOAD_NO_SCALE, &glyphAdvance ) == 0 )
+            advance += glyphAdvance;
+    }
+
+    return advance / m_face->units_per_EM;
 }
 
 
