@@ -20,6 +20,9 @@
 #ifndef IMPORT_NET_RECONCILER_H
 #define IMPORT_NET_RECONCILER_H
 
+#include <map>
+#include <wx/string.h>
+
 class BOARD;
 class NETLIST;
 class REPORTER;
@@ -33,6 +36,9 @@ struct NET_RECONCILE_RESULT
     int m_alreadyNamed = 0;        ///< board nets that already carried the schematic name
     int m_conflicting = 0;         ///< board nets whose pads the schematic divides differently
     int m_unconnectedAssigned = 0; ///< pads given the schematic's name for a net that joins nothing
+
+    /// The renames made, from each net's name before to its name after, for whatever else names a net
+    std::map<wxString, wxString> m_renames;
 };
 
 /**

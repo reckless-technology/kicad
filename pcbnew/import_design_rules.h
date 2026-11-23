@@ -20,6 +20,7 @@
 #ifndef IMPORT_DESIGN_RULES_H
 #define IMPORT_DESIGN_RULES_H
 
+#include <map>
 #include <wx/filename.h>
 #include <wx/string.h>
 
@@ -38,5 +39,29 @@ class REPORTER;
  * @return true if the rules file was written.
  */
 bool SaveImportedDesignRules( const wxString& aRules, const wxFileName& aBoardPath, REPORTER& aReporter );
+
+/**
+ * Make imported custom rules name the nets by their new names.
+ *
+ * An importer writes rules that name the source design's nets, such as `A.NetName == 'NetR34_1'`.  Where the
+ * board's nets were renamed afterwards, as the reconcile with the schematic does, a rule on one of them would
+ * match nothing.  Each net name such a condition compares against is replaced, the renames not chained.
+ *
+ * @param[in] aRules is the rules text.
+ * @param[in] aNames maps each net's old name to its new one.
+ * @return the rules text naming the nets by their new names.
+ */
+wxString RenameNetsInDesignRules( const wxString& aRules, const std::map<wxString, wxString>& aNames );
+
+/**
+ * Rename the nets the rules file of an imported board names, see RenameNetsInDesignRules().
+ *
+ * @param[in] aRulesPath is the rules file, nothing is done when there is none.
+ * @param[in] aNames maps each net's old name to its new one.
+ * @param[in] aReporter receives a warning when the rules cannot be read or written.
+ * @return true if the file was changed.
+ */
+bool RenameNetsInDesignRulesFile( const wxFileName& aRulesPath, const std::map<wxString, wxString>& aNames,
+                                  REPORTER& aReporter );
 
 #endif // IMPORT_DESIGN_RULES_H
