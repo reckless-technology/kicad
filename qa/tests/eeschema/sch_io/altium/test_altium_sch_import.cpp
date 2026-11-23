@@ -143,6 +143,13 @@ struct ALTIUM_SCH_IMPORT_FIXTURE
                + aName;
     }
 
+    wxString displayModeDataFile( const wxString& aName ) const
+    {
+        return wxString::FromUTF8( KI_TEST::GetEeschemaTestDataDir()
+                                   + "/plugins/altium/display_mode/" )
+               + aName;
+    }
+
     wxString pinTextDataFile( const wxString& aName ) const
     {
         return wxString::FromUTF8( KI_TEST::GetEeschemaTestDataDir()
@@ -1320,6 +1327,42 @@ BOOST_AUTO_TEST_CASE( AltiumPinText )
     }
 
     BOOST_CHECK_EQUAL( pins, 3 );
+}
+
+
+// A part placed in an alternate display mode, whose library part draws nothing for that part in the mode,
+// is drawn in the normal mode by Altium, so its instance takes the normal body style and keeps its pins.
+// One whose library part draws that part in the mode keeps the alternate body style.
+BOOST_AUTO_TEST_CASE( AltiumAlternateDisplayModeWithNothingDrawn )
+{
+    SCH_IO_ALTIUM plugin;
+
+    SCH_SHEET* rootSheet = plugin.LoadSchematicFile( displayModeDataFile( wxT( "display_mode.SchDoc" ) ),
+                                                     &m_schematic );
+    BOOST_REQUIRE( rootSheet );
+
+    std::vector<SCH_SYMBOL*> symbols;
+
+    for( SCH_ITEM* item : rootSheet->GetScreen()->Items().OfType( SCH_SYMBOL_T ) )
+        symbols.push_back( static_cast<SCH_SYMBOL*>( item ) );
+
+    std::sort( symbols.begin(), symbols.end(),
+               []( const SCH_SYMBOL* aLeft, const SCH_SYMBOL* aRight )
+               {
+                   return aLeft->GetPosition().x < aRight->GetPosition().x;
+               } );
+
+    BOOST_REQUIRE_EQUAL( symbols.size(), 2 );
+
+    // unit 2 has nothing in the alternate mode
+    BOOST_CHECK_EQUAL( symbols[0]->GetUnit(), 2 );
+    BOOST_CHECK_EQUAL( symbols[0]->GetBodyStyle(), 1 );
+    BOOST_CHECK_EQUAL( symbols[0]->GetLibSymbolRef()->GetUnitDrawItems( 2, symbols[0]->GetBodyStyle() ).size(), 1 );
+
+    // unit 1 has a pin in it
+    BOOST_CHECK_EQUAL( symbols[1]->GetUnit(), 1 );
+    BOOST_CHECK_EQUAL( symbols[1]->GetBodyStyle(), 2 );
+    BOOST_CHECK_EQUAL( symbols[1]->GetLibSymbolRef()->GetUnitDrawItems( 1, symbols[1]->GetBodyStyle() ).size(), 1 );
 }
 
 
