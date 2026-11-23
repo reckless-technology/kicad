@@ -23,6 +23,8 @@
 
 #include <connection_graph.h>
 #include <erc/erc.h>
+#include <font/font.h>
+#include <font/outline_font.h>
 #include <lib_id.h>
 #include <reporter.h>
 #include <schematic.h>
@@ -83,6 +85,13 @@ struct ALTIUM_SCH_IMPORT_FIXTURE
     {
         return wxString::FromUTF8( KI_TEST::GetEeschemaTestDataDir()
                                    + "/plugins/altium/ticket1303/" )
+               + aName;
+    }
+
+    wxString issue26127DataFile( const wxString& aName ) const
+    {
+        return wxString::FromUTF8( KI_TEST::GetEeschemaTestDataDir()
+                                   + "/plugins/altium/issue26127/" )
                + aName;
     }
 
@@ -504,6 +513,104 @@ BOOST_AUTO_TEST_CASE( Issue16903_ImportKeepsGeometryOnGrid )
 
     ERC_TESTER tester( &m_schematic );
     BOOST_CHECK_EQUAL( tester.TestOffGridEndpoints(), 0 );
+}
+
+
+// https://gitlab.com/kicad/code/kicad/-/issues/26127
+// Every text takes its face, style and size from the sheet's font table: free text, net labels,
+// ports, power ports and symbol fields alike. Altium draws a font of N points with its ascent
+// plus descent N * 10 mil tall, so an outline font's KiCad size comes from the font's own
+// metrics. A text naming no font uses font 1.
+BOOST_AUTO_TEST_CASE( Issue26127_AltiumFonts )
+{
+    SCH_IO_ALTIUM plugin;
+
+    SCH_SHEET* rootSheet = plugin.LoadSchematicFile( issue26127DataFile( wxT( "fonts.SchDoc" ) ), &m_schematic );
+    BOOST_REQUIRE( rootSheet );
+
+    SCH_SCREEN* screen = rootSheet->GetScreen();
+    BOOST_REQUIRE( screen );
+
+    m_schematic.RefreshHierarchy();
+    const SCH_SHEET_PATH& sheetPath = m_schematic.Hierarchy().front();
+
+    struct ALTIUM_FONT
+    {
+        wxString name;
+        int      points;
+        bool     bold;
+        bool     italic;
+    };
+
+    // The sheet's font table
+    const std::map<int, ALTIUM_FONT> fonts = {
+        { 1, { wxT( "Times New Roman" ), 10, false, false } },
+        { 2, { wxT( "Arial" ), 12, true, false } },
+        { 3, { wxT( "Courier New" ), 8, false, true } },
+    };
+
+    std::vector<std::pair<EDA_TEXT*, int>> texts;
+
+    for( SCH_ITEM* item : screen->Items() )
+    {
+        switch( item->Type() )
+        {
+        case SCH_TEXT_T:         texts.emplace_back( static_cast<SCH_TEXT*>( item ), 2 );        break;
+        case SCH_LABEL_T:        texts.emplace_back( static_cast<SCH_LABEL*>( item ), 3 );       break;
+        case SCH_HIER_LABEL_T:   texts.emplace_back( static_cast<SCH_HIERLABEL*>( item ), 3 );   break;
+        case SCH_GLOBAL_LABEL_T: texts.emplace_back( static_cast<SCH_GLOBALLABEL*>( item ), 3 ); break;
+
+        case SCH_SYMBOL_T:
+        {
+            SCH_SYMBOL* symbol = static_cast<SCH_SYMBOL*>( item );
+
+            if( symbol->IsPower() )
+            {
+                texts.emplace_back( symbol->GetField( FIELD_T::VALUE ), 2 );
+            }
+            else
+            {
+                BOOST_CHECK_EQUAL( symbol->GetRef( &sheetPath ), wxT( "R1" ) );
+                texts.emplace_back( symbol->GetField( FIELD_T::REFERENCE ), 3 );
+                texts.emplace_back( symbol->GetField( FIELD_T::VALUE ), 2 );
+                texts.emplace_back( symbol->GetField( wxT( "ALTIUM_VALUE" ) ), 1 );
+            }
+
+            break;
+        }
+
+        default:
+            break;
+        }
+    }
+
+    // free text, net label, port, power port name and three fields
+    BOOST_REQUIRE_EQUAL( texts.size(), 7 );
+
+    for( const auto& [text, fontId] : texts )
+    {
+        BOOST_REQUIRE( text );
+
+        const ALTIUM_FONT& font = fonts.at( fontId );
+
+        BOOST_TEST_CONTEXT( text->GetText() )
+        {
+            BOOST_CHECK_EQUAL( text->GetFontName(), font.name );
+            BOOST_CHECK_EQUAL( text->IsBold(), font.bold );
+            BOOST_CHECK_EQUAL( text->IsItalic(), font.italic );
+
+            const int cell = schIUScale.MilsToIU( font.points * 10 );
+            int       size = cell / 2;
+
+            KIFONT::FONT* kifont = KIFONT::FONT::GetFont( font.name, font.bold, font.italic );
+
+            if( kifont && kifont->IsOutline() )
+                size = KiROUND( static_cast<KIFONT::OUTLINE_FONT*>( kifont )->GetTextSizeForAscentPlusDescent( cell ) );
+
+            BOOST_CHECK_EQUAL( text->GetTextHeight(), size );
+            BOOST_CHECK_EQUAL( text->GetTextWidth(), size );
+        }
+    }
 }
 
 

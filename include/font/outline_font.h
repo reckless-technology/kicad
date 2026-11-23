@@ -159,6 +159,29 @@ public:
     bool LoadGlyphContours( unsigned int aGlyphIndex, std::vector<CONTOUR>& aContours ) const;
 
     /**
+     * Return the text size at which this font's ascent plus descent, from its ascender line to
+     * its descender line, measures \a aHeight.
+     *
+     * Some other EDA tools size text that way rather than by its em; importers use this to keep
+     * the text the height it was drawn.
+     *
+     * @param aHeight is the wanted distance from the ascender line to the descender line.
+     * @return the text size to give, in the units of \a aHeight.
+     */
+    double GetTextSizeForAscentPlusDescent( double aHeight ) const;
+
+    /**
+     * Get the face's ascent and descent as fractions of its em, both positive.
+     *
+     * They come from the hhea table, or from OS/2's typographic metrics where hhea has none.
+     * A face with no metrics gives a typical 0.905 and 0.212.
+     */
+    void GetAscentAndDescent( double& aAscent, double& aDescent ) const;
+
+    /// The height of an outline font's em, in units of its text size.
+    static constexpr double GetEmHeightPerTextSize() { return m_outlineFontSizeCompensation; }
+
+    /**
      * Select the charmap used to map characters to glyphs for @p aFace.
      *
      * Prefers a Unicode charmap, but legacy "symbol" fonts place their glyphs in the
