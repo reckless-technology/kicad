@@ -441,6 +441,7 @@ public:
     {
     }
 
+    GAL_SET& operator=( const GAL_SET& aOther ) = default;
     GAL_SET( const GAL_SET& aOther ) : std::bitset<GAL_LAYER_ID_COUNT>( aOther )
     {
     }

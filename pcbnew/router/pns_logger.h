@@ -83,6 +83,7 @@ public:
         {
         }
 
+        EVENT_ENTRY& operator=( const EVENT_ENTRY& aOther ) = default;
         EVENT_ENTRY( const EVENT_ENTRY& aE ) :
                 p( aE.p ),
                 type( aE.type ),

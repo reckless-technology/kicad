@@ -38,6 +38,7 @@ public:
         m_uid = genNextUid();
     }
 
+    LINKED_ITEM& operator=( const LINKED_ITEM& aOther ) = default;
     LINKED_ITEM( const LINKED_ITEM& aOther ) :
         ITEM( aOther ),
         m_uid( aOther.m_uid )

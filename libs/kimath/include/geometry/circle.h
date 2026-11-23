@@ -36,6 +36,7 @@ public:
 
     CIRCLE( const VECTOR2I& aCenter, int aRadius );
 
+    CIRCLE& operator=( const CIRCLE& aOther ) = default;
     CIRCLE( const CIRCLE& aOther );
 
     bool operator==( const CIRCLE& aOther ) const = default;

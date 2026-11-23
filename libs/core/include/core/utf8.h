@@ -230,6 +230,7 @@ public:
             it = nullptr;
         }
 
+        uni_iter& operator=( const uni_iter& aOther ) = default;
         uni_iter( const uni_iter& o )
         {
             it = o.it;
