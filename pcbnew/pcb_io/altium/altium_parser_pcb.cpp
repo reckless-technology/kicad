@@ -681,29 +681,37 @@ ABOARD6::ABOARD6( ALTIUM_BINARY_PARSER& aReader )
         THROW_IO_ERROR( wxT( "Board6 stream was not parsed correctly!" ) );
 }
 
-ACLASS6::ACLASS6( ALTIUM_BINARY_PARSER& aReader )
+ACLASS6::ACLASS6( ALTIUM_BINARY_PARSER& aReader ) :
+        ACLASS6( aReader.ReadProperties() )
 {
-    std::map<wxString, wxString> properties = aReader.ReadProperties();
-
-    if( properties.empty() )
-        THROW_IO_ERROR( wxT( "Classes6 stream has no properties!" ) );
-
-    name     = ALTIUM_PROPS_UTILS::ReadString( properties, wxT( "NAME" ), wxT( "" ) );
-    uniqueid = ALTIUM_PROPS_UTILS::ReadString( properties, wxT( "UNIQUEID" ), wxT( "" ) );
-    kind     = static_cast<ALTIUM_CLASS_KIND>( ALTIUM_PROPS_UTILS::ReadInt( properties, wxT( "KIND" ), -1 ) );
-
-    for( size_t i = 0; i < std::numeric_limits<size_t>::max(); i++ )
-    {
-        auto mit = properties.find( wxT( "M" ) + wxString( std::to_string( i ) ) );
-
-        if( mit == properties.end() )
-            break; // it doesn't seem like we know beforehand how many components are in the netclass
-
-        names.push_back( mit->second );
-    }
-
     if( aReader.HasParsingError() )
         THROW_IO_ERROR( wxT( "Classes6 stream was not parsed correctly" ) );
+}
+
+
+ACLASS6::ACLASS6( const std::map<wxString, wxString>& aProps )
+{
+    if( aProps.empty() )
+        THROW_IO_ERROR( wxT( "Classes6 stream has no properties!" ) );
+
+    name = ALTIUM_PROPS_UTILS::ReadString( aProps, wxT( "NAME" ), wxT( "" ) );
+    uniqueid = ALTIUM_PROPS_UTILS::ReadString( aProps, wxT( "UNIQUEID" ), wxT( "" ) );
+    kind = static_cast<ALTIUM_CLASS_KIND>( ALTIUM_PROPS_UTILS::ReadInt( aProps, wxT( "KIND" ), -1 ) );
+    superClass = ALTIUM_PROPS_UTILS::ReadBool( aProps, wxT( "SUPERCLASS" ), false );
+
+    // The members are M0, M1, ...; the count is not stored, and a gap does not end the list
+    std::map<long, wxString> members;
+
+    for( const auto& [key, value] : aProps )
+    {
+        long index;
+
+        if( key.StartsWith( wxT( "M" ) ) && key.Mid( 1 ).IsNumber() && key.Mid( 1 ).ToLong( &index ) )
+            members[index] = value;
+    }
+
+    for( const auto& [index, member] : members )
+        names.push_back( member );
 }
 
 ACOMPONENT6::ACOMPONENT6( ALTIUM_BINARY_PARSER& aReader )
@@ -894,7 +902,17 @@ ARULE6::ARULE6( ALTIUM_BINARY_PARSER& aReader )
 {
     aReader.Skip( 2 );
 
-    std::map<wxString, wxString> props = aReader.ReadProperties();
+    *this = ARULE6( aReader.ReadProperties() );
+
+    if( aReader.HasParsingError() )
+        THROW_IO_ERROR( wxT( "Rules6 stream was not parsed correctly" ) );
+}
+
+
+ARULE6::ARULE6( const std::map<wxString, wxString>& aProps ) :
+        properties( aProps )
+{
+    const std::map<wxString, wxString>& props = aProps;
 
     if( props.empty() )
         THROW_IO_ERROR( wxT( "Rules6 stream has no props" ) );
@@ -989,9 +1007,6 @@ ARULE6::ARULE6( ALTIUM_BINARY_PARSER& aReader )
     {
         kind = ALTIUM_RULE_KIND::UNKNOWN;
     }
-
-    if( aReader.HasParsingError() )
-        THROW_IO_ERROR( wxT( "Rules6 stream was not parsed correctly" ) );
 }
 
 ASMARTUNION6::ASMARTUNION6( ALTIUM_BINARY_PARSER& aReader )

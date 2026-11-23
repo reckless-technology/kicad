@@ -541,9 +541,18 @@ struct ACLASS6
 
     ALTIUM_CLASS_KIND kind;
 
+    /// Altium's own classes ("All Nets", "All Components", ...) rather than ones the user made
+    bool superClass = false;
+
+    /// Members in the order of their M<n> keys
     std::vector<wxString> names;
 
     explicit ACLASS6( ALTIUM_BINARY_PARSER& aReader );
+
+    /**
+     * Build a class from its record's properties, keys in upper case.
+     */
+    explicit ACLASS6( const std::map<wxString, wxString>& aProps );
 };
 
 struct ACOMPONENT6
@@ -698,8 +707,16 @@ struct ARULE6
 
     // TODO: implement different types of rules we need to parse
 
+    /// Every property of the record, keys in upper case, for the rule kinds read only as text
+    std::map<wxString, wxString> properties;
+
     ARULE6() = default;
     explicit ARULE6( ALTIUM_BINARY_PARSER& aReader );
+
+    /**
+     * Build a rule from its record's properties, keys in upper case.
+     */
+    explicit ARULE6( const std::map<wxString, wxString>& aProps );
 };
 
 struct AREGION6
