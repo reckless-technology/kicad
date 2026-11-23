@@ -178,6 +178,12 @@ public:
      */
     void GetAscentAndDescent( double& aAscent, double& aDescent ) const;
 
+    /**
+     * Get the sum of the advance widths of the glyphs of \a aText, in ems, without kerning.
+     * Characters the face has no glyph for add nothing.
+     */
+    double GetAdvanceInEms( const wxString& aText ) const;
+
     /// The height of an outline font's em, in units of its text size.
     static constexpr double GetEmHeightPerTextSize() { return m_outlineFontSizeCompensation; }
 

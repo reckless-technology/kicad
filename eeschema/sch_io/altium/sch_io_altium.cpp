@@ -1745,6 +1745,32 @@ static COLOR4D AltiumTextColor( const std::map<wxString, wxString>& aProperties 
 }
 
 
+// Altium emboldens a face that has no bold weight itself, strongly, widening each character a
+// little. KiCad's own emboldening of such a face barely shows, so its bold text is drawn in a
+// sibling face of the same design that has a bold weight, squeezed to the width Altium draws.
+// Add faces here as they are met.
+static const std::map<wxString, wxString> boldSiblingFaces = {
+    { wxS( "Cambria Math" ), wxS( "Cambria" ) },
+};
+
+// Altium's synthetic bold adds this much to each character's advance, in ems (the median over
+// 263 bold Cambria Math texts in 18 Altium PDFs; it varies a little between Altium versions)
+static constexpr double SYNTHETIC_BOLD_EXTRA_EM = 0.0111;
+
+
+// The face KiCad draws an Altium font in
+static wxString kicadFace( const wxString& aFace, bool aBold )
+{
+    if( aBold )
+    {
+        if( auto it = boldSiblingFaces.find( aFace ); it != boldSiblingFaces.end() )
+            return it->second;
+    }
+
+    return aFace;
+}
+
+
 void SCH_IO_ALTIUM::SetTextFont( EDA_TEXT* aText, int aFontId ) const
 {
     if( !m_altiumSheet || m_altiumSheet->fonts.empty() )
@@ -1769,14 +1795,39 @@ void SCH_IO_ALTIUM::SetTextFont( EDA_TEXT* aText, const wxString& aFace, int aCe
         kifont = KIFONT::FONT::GetFont( aFace, aBold, aItalic );
 
     int size = aCellHeight / 2;
+    int width = size;
 
     if( kifont && kifont->IsOutline() )
     {
-        aText->SetFont( kifont );
+        // Sized by the Altium face, which sets the cell, but drawn in the face KiCad draws it in
         size = KiROUND( static_cast<KIFONT::OUTLINE_FONT*>( kifont )->GetTextSizeForAscentPlusDescent( aCellHeight ) );
+        width = size;
+
+        wxString face = kicadFace( aFace, aBold );
+
+        if( face != aFace )
+        {
+            KIFONT::FONT* sibling = KIFONT::FONT::GetFont( face, aBold, aItalic );
+            KIFONT::FONT* regular = KIFONT::FONT::GetFont( aFace, false, aItalic );
+            wxString      text = aText->GetText();
+
+            if( sibling && sibling->IsOutline() && regular && regular->IsOutline() && !text.IsEmpty() )
+            {
+                double wanted = static_cast<KIFONT::OUTLINE_FONT*>( regular )->GetAdvanceInEms( text )
+                                + SYNTHETIC_BOLD_EXTRA_EM * text.length();
+                double have = static_cast<KIFONT::OUTLINE_FONT*>( sibling )->GetAdvanceInEms( text );
+
+                if( have > 0.0 )
+                    width = KiROUND( size * wanted / have );
+
+                kifont = sibling;
+            }
+        }
+
+        aText->SetFont( kifont );
     }
 
-    aText->SetTextSize( { size, size } );
+    aText->SetTextSize( { width, size } );
 
     // Must come after SetTextSize()
     aText->SetBold( aBold );
@@ -1818,11 +1869,23 @@ bool SCH_IO_ALTIUM::AltiumTextPosition( TEXT_KIND aKind, const VECTOR2I& aAnchor
     double descent = 0.0;
     static_cast<KIFONT::OUTLINE_FONT*>( kifont )->GetAscentAndDescent( ascent, descent );
 
+    // The face KiCad draws in sets how KiCad places the baseline; the Altium face, the cell
+    double drawnAscent = ascent;
+    double drawnDescent = descent;
+
+    if( wxString face = kicadFace( aFace, aBold ); face != aFace )
+    {
+        KIFONT::FONT* sibling = KIFONT::FONT::GetFont( face, aBold, aItalic );
+
+        if( sibling && sibling->IsOutline() )
+            static_cast<KIFONT::OUTLINE_FONT*>( sibling )->GetAscentAndDescent( drawnAscent, drawnDescent );
+    }
+
     const double emPerSize = KIFONT::OUTLINE_FONT::GetEmHeightPerTextSize();
     const double cell = aCellHeight;                    // descender line to ascender line
     const double em = cell / ( ascent + descent );
     const double size = em / emPerSize;                 // the size SetTextFont() gives
-    const double faceHeight = emPerSize * ( ascent + descent );   // in text sizes
+    const double faceHeight = emPerSize * ( drawnAscent + drawnDescent );   // in text sizes
 
     // KiCad never draws text upside down, so Altium's 180 and 270 degree text is drawn upright
     // in the same cell, its anchor on the opposite side
