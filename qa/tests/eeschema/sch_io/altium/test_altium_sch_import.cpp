@@ -131,6 +131,13 @@ struct ALTIUM_SCH_IMPORT_FIXTURE
                + aName;
     }
 
+    wxString symbolGraphicsDataFile( const wxString& aName ) const
+    {
+        return wxString::FromUTF8( KI_TEST::GetEeschemaTestDataDir()
+                                   + "/plugins/altium/symbol_graphics/" )
+               + aName;
+    }
+
     wxString issue16903DataFile( const wxString& aName ) const
     {
         return wxString::FromUTF8( KI_TEST::GetEeschemaTestDataDir()
@@ -1096,6 +1103,80 @@ BOOST_AUTO_TEST_CASE( AltiumPinText )
     }
 
     BOOST_CHECK_EQUAL( pins, 3 );
+}
+
+
+// A symbol's graphics keep Altium's line width (one of four: 1, 10, 30 or 50 mil), line colour
+// (blue by default) and fill: a solid shape is filled with its area colour (white by default)
+// unless Altium draws it transparent, and an open one is not filled.
+BOOST_AUTO_TEST_CASE( AltiumSymbolGraphicsStyle )
+{
+    SCH_IO_ALTIUM plugin;
+
+    SCH_SHEET* rootSheet = plugin.LoadSchematicFile( symbolGraphicsDataFile( wxT( "symbol_graphics.SchDoc" ) ),
+                                                     &m_schematic );
+    BOOST_REQUIRE( rootSheet );
+
+    std::vector<SCH_SYMBOL*> symbols;
+
+    for( SCH_ITEM* item : rootSheet->GetScreen()->Items().OfType( SCH_SYMBOL_T ) )
+        symbols.push_back( static_cast<SCH_SYMBOL*>( item ) );
+
+    BOOST_REQUIRE_EQUAL( symbols.size(), 1 );
+    BOOST_REQUIRE( symbols.front()->GetLibSymbolRef() );
+
+    auto altiumColour = []( int aRed, int aGreen, int aBlue )
+    {
+        return COLOR4D( aRed / 255.0, aGreen / 255.0, aBlue / 255.0, 1.0 );
+    };
+
+    int rectangles = 0;
+
+    for( SCH_ITEM& item : symbols.front()->GetLibSymbolRef()->GetDrawItems() )
+    {
+        if( item.Type() != SCH_SHAPE_T )
+            continue;
+
+        SCH_SHAPE& shape = static_cast<SCH_SHAPE&>( item );
+
+        switch( shape.GetShape() )
+        {
+        case SHAPE_T::RECTANGLE:
+            if( shape.GetStroke().GetWidth() == schIUScale.MilsToIU( 10 ) )
+            {
+                BOOST_CHECK_EQUAL( shape.GetStroke().GetColor(), altiumColour( 128, 0, 0 ) );
+                BOOST_CHECK( shape.GetFillMode() == FILL_T::FILLED_WITH_COLOR );
+                BOOST_CHECK_EQUAL( shape.GetFillColor(), altiumColour( 255, 255, 176 ) );
+            }
+            else
+            {
+                BOOST_CHECK_EQUAL( shape.GetStroke().GetWidth(), schIUScale.MilsToIU( 50 ) );
+                BOOST_CHECK_EQUAL( shape.GetStroke().GetColor(), altiumColour( 0, 0, 255 ) );
+                BOOST_CHECK( shape.GetFillMode() == FILL_T::FILLED_WITH_COLOR );
+                BOOST_CHECK_EQUAL( shape.GetFillColor(), altiumColour( 255, 255, 255 ) );
+            }
+
+            rectangles++;
+            break;
+
+        case SHAPE_T::POLY:
+            BOOST_CHECK_EQUAL( shape.GetStroke().GetWidth(), schIUScale.MilsToIU( 30 ) );
+            BOOST_CHECK_EQUAL( shape.GetStroke().GetColor(), altiumColour( 0, 128, 0 ) );
+            BOOST_CHECK( shape.GetFillMode() == FILL_T::NO_FILL );
+            break;
+
+        case SHAPE_T::CIRCLE:
+            BOOST_CHECK_EQUAL( shape.GetStroke().GetWidth(), schIUScale.MilsToIU( 1 ) );
+            BOOST_CHECK_EQUAL( shape.GetStroke().GetColor(), altiumColour( 0, 0, 255 ) );
+            BOOST_CHECK( shape.GetFillMode() == FILL_T::NO_FILL );
+            break;
+
+        default:
+            BOOST_FAIL( "unexpected shape" );
+        }
+    }
+
+    BOOST_CHECK_EQUAL( rectangles, 2 );
 }
 
 

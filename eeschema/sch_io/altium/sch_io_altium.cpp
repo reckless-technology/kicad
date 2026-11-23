@@ -196,98 +196,45 @@ static void SetSchShapeFillAndColor( const ASCH_FILL_INTERFACE& elem, SCH_SHAPE*
 }
 
 
+// A symbol's graphic takes Altium's line width and colour, so the symbol looks as Altium draws it
 static void SetLibShapeLine( const ASCH_BORDER_INTERFACE& elem, SCH_SHAPE* shape,
                              ALTIUM_SCH_RECORD aType )
 {
-    COLOR4D default_color;
-    COLOR4D alt_default_color = COLOR4D( PUREBLUE ); // PUREBLUE is used for many objects, so if
-                                                     // it is used, we will assume that it should
-                                                     // blend with the others
-    STROKE_PARAMS stroke;
-    stroke.SetColor( GetColorFromInt( elem.Color ) );
-    stroke.SetLineStyle( LINE_STYLE::SOLID );
-
-    switch( aType )
-    {
-    case ALTIUM_SCH_RECORD::ARC:             default_color = COLOR4D( PUREBLUE );       break;
-    case ALTIUM_SCH_RECORD::BEZIER:          default_color = COLOR4D( PURERED );        break;
-    case ALTIUM_SCH_RECORD::ELLIPSE:         default_color = COLOR4D( PUREBLUE );       break;
-    case ALTIUM_SCH_RECORD::ELLIPTICAL_ARC:  default_color = COLOR4D( PUREBLUE );       break;
-    case ALTIUM_SCH_RECORD::LINE:            default_color = COLOR4D( PUREBLUE );       break;
-    case ALTIUM_SCH_RECORD::POLYGON:         default_color = COLOR4D( PUREBLUE );       break;
-    case ALTIUM_SCH_RECORD::POLYLINE:        default_color = COLOR4D( BLACK );          break;
-    case ALTIUM_SCH_RECORD::RECTANGLE:       default_color = COLOR4D( 0.5, 0, 0, 1.0 ); break;
-    case ALTIUM_SCH_RECORD::ROUND_RECTANGLE: default_color = COLOR4D( PUREBLUE );       break;
-    default:                                 default_color = COLOR4D( PUREBLUE );       break;
-    }
-
-    if( stroke.GetColor() == default_color || stroke.GetColor() == alt_default_color )
-        stroke.SetColor( COLOR4D::UNSPECIFIED );
-
-    // In Altium libraries, you cannot change the width of the pins.  So, to match pin width,
-    // if the line width of other elements is the default pin width (10 mil), we set the width
-    // to the KiCad default pin width ( represented by 0 )
-    if( elem.LineWidth == 2540 )
-        stroke.SetWidth( 0 );
-    else
-        stroke.SetWidth( elem.LineWidth );
-
-    shape->SetStroke( stroke );
+    shape->SetStroke( STROKE_PARAMS( elem.LineWidth, LINE_STYLE::SOLID, GetColorFromInt( elem.Color ) ) );
 }
 
+
+// A solid closed shape in a symbol is filled with Altium's area colour, or left open where Altium
+// draws it transparent
 static void SetLibShapeFillAndColor( const ASCH_FILL_INTERFACE& elem, SCH_SHAPE* shape,
                                      ALTIUM_SCH_RECORD aType, int aStrokeColor )
 {
-    COLOR4D bgcolor = GetColorFromInt( elem.AreaColor );
-    COLOR4D default_bgcolor;
+    bool closedShape = false;
 
-    switch (aType)
+    switch( aType )
     {
     case ALTIUM_SCH_RECORD::RECTANGLE:
-        default_bgcolor = GetColorFromInt( 11599871 ); // Light Yellow
+    case ALTIUM_SCH_RECORD::ROUND_RECTANGLE:
+    case ALTIUM_SCH_RECORD::POLYGON:
+    case ALTIUM_SCH_RECORD::ELLIPSE:
+    case ALTIUM_SCH_RECORD::ELLIPTICAL_ARC:
+    case ALTIUM_SCH_RECORD::BEZIER:
+    case ALTIUM_SCH_RECORD::PIECHART:
+        closedShape = true;
         break;
+
     default:
-        default_bgcolor = GetColorFromInt( 12632256 ); // Grey
         break;
     }
 
-    if( elem.IsTransparent )
-        bgcolor = bgcolor.WithAlpha( 0.5 );
-
-    if( !elem.IsSolid )
+    if( !elem.IsSolid || ( closedShape && elem.IsTransparent ) )
     {
         shape->SetFillMode( FILL_T::NO_FILL );
-    }
-    else if( elem.AreaColor == aStrokeColor )
-    {
-        bgcolor = shape->GetStroke().GetColor();
-
-        shape->SetFillMode( FILL_T::FILLED_SHAPE );
-    }
-    else if( bgcolor.WithAlpha( 1.0 ) == default_bgcolor )
-    {
-        shape->SetFillMode( FILL_T::FILLED_WITH_BG_BODYCOLOR );
     }
     else
     {
         shape->SetFillMode( FILL_T::FILLED_WITH_COLOR );
-    }
-
-    shape->SetFillColor( bgcolor );
-
-    if( elem.AreaColor == aStrokeColor
-            && shape->GetStroke().GetWidth() == schIUScale.MilsToIU( 1 ) )
-    {
-        STROKE_PARAMS stroke = shape->GetStroke();
-        stroke.SetWidth( -1 );
-        shape->SetStroke( stroke );
-    }
-
-    // Fixup small circles that had their widths set to 0
-    if( shape->GetShape() == SHAPE_T::CIRCLE && shape->GetStroke().GetWidth() == 0
-        && shape->GetRadius() <= schIUScale.MilsToIU( 10 ) )
-    {
-        shape->SetFillMode( FILL_T::FILLED_SHAPE );
+        shape->SetFillColor( GetColorFromInt( elem.AreaColor ) );
     }
 }
 
@@ -3986,14 +3933,6 @@ void SCH_IO_ALTIUM::ParsePolygon( const std::map<wxString, wxString>& aPropertie
 
         SetLibShapeLine( elem, line, ALTIUM_SCH_RECORD::POLYGON );
         SetLibShapeFillAndColor( elem, line, ALTIUM_SCH_RECORD::POLYGON, elem.Color );
-
-        if( line->GetFillColor() == line->GetStroke().GetColor()
-          && line->GetFillMode() != FILL_T::NO_FILL )
-        {
-            STROKE_PARAMS stroke = line->GetStroke();
-            stroke.SetWidth( -1 );
-            line->SetStroke( stroke );
-        }
     }
 }
 
