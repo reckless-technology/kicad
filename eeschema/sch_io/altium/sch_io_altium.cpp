@@ -925,6 +925,19 @@ SCH_SHEET* SCH_IO_ALTIUM::LoadSchematicFile( const wxString& aFileName, SCHEMATI
     if( minBusWidth < std::numeric_limits<int>::max() )
         netSettings->GetDefaultNetclass()->SetBusWidth( minBusWidth );
 
+    // Net classes named by parameter sets. Settings left unset are the Default class's, and the
+    // board's import or rules may give the class its own
+    for( const wxString& className : m_parameterSetNetClasses )
+    {
+        if( className == NETCLASS::Default || netSettings->HasNetclass( className ) )
+            continue;
+
+        std::shared_ptr<NETCLASS> netclass = std::make_shared<NETCLASS>( className, false );
+        netSettings->SetNetclass( className, netclass );
+    }
+
+    m_parameterSetNetClasses.clear();
+
     return m_rootSheet;
 }
 
@@ -1785,6 +1798,8 @@ void SCH_IO_ALTIUM::ParseAltiumSch( const wxString& aFileName )
         ParseASCIISchematic( aFileName );
     }
 
+    FinishParameterSets();
+
     SCH_SCREEN* currentScreen = getCurrentScreen();
     wxCHECK( currentScreen, /* void */ );
 
@@ -2500,7 +2515,7 @@ void SCH_IO_ALTIUM::ParseRecord( int index, std::map<wxString, wxString>& proper
         break;
 
     case ALTIUM_SCH_RECORD::PARAMETER_SET:
-        m_errorMessages.emplace( _( "Parameter Set not currently supported." ), RPT_SEVERITY_ERROR );
+        ParseParameterSet( index, properties );
         break;
 
     case ALTIUM_SCH_RECORD::IMPLEMENTATION_LIST:
@@ -5357,6 +5372,158 @@ void SCH_IO_ALTIUM::ParseNoERC( const std::map<wxString, wxString>& aProperties 
 }
 
 
+void SCH_IO_ALTIUM::ParseParameterSet( int aIndex, const std::map<wxString, wxString>& aProperties )
+{
+    ASCH_PARAMETER_SET elem( aProperties );
+
+    SCH_SCREEN* screen = getCurrentScreen();
+    wxCHECK( screen, /* void */ );
+
+    // Altium draws a 60 mil stem pointing away from the net, a circle of 60 mil radius holding
+    // an "i" at its end, and the parameters' text 200 mil out along the stem
+    const int stemLength = schIUScale.MilsToIU( 60 );
+    const int circleRadius = schIUScale.MilsToIU( 60 );
+    const int textOffset = schIUScale.MilsToIU( 200 );
+
+    VECTOR2I          position = elem.location + m_sheetOffset;
+    VECTOR2I          textPosition = position;
+    VECTOR2I          direction( 1, 0 );
+    SPIN_STYLE        spin = SPIN_STYLE::UP;
+    GR_TEXT_H_ALIGN_T hJustify = GR_TEXT_H_ALIGN_LEFT;
+    GR_TEXT_V_ALIGN_T vJustify = GR_TEXT_V_ALIGN_CENTER;
+
+    switch( elem.orientation )
+    {
+    default:
+    case ASCH_RECORD_ORIENTATION::RIGHTWARDS:
+        spin = SPIN_STYLE::UP;
+        direction = VECTOR2I( 1, 0 );
+        textPosition.x += textOffset;
+        break;
+
+    case ASCH_RECORD_ORIENTATION::UPWARDS:
+        spin = SPIN_STYLE::RIGHT;
+        direction = VECTOR2I( 0, -1 );
+        textPosition.y -= textOffset;
+        hJustify = GR_TEXT_H_ALIGN_CENTER;
+        vJustify = GR_TEXT_V_ALIGN_BOTTOM;
+        break;
+
+    case ASCH_RECORD_ORIENTATION::LEFTWARDS:
+        spin = SPIN_STYLE::BOTTOM;
+        direction = VECTOR2I( -1, 0 );
+        textPosition.x -= textOffset;
+        hJustify = GR_TEXT_H_ALIGN_RIGHT;
+        break;
+
+    case ASCH_RECORD_ORIENTATION::DOWNWARDS:
+        spin = SPIN_STYLE::LEFT;
+        direction = VECTOR2I( 0, 1 );
+        textPosition.y += textOffset;
+        hJustify = GR_TEXT_H_ALIGN_CENTER;
+        vJustify = GR_TEXT_V_ALIGN_TOP;
+        break;
+    }
+
+    const COLOR4D color = GetColorFromInt( elem.color );
+
+    SCH_DIRECTIVE_LABEL* flag = new SCH_DIRECTIVE_LABEL( position );
+    flag->SetShape( LABEL_FLAG_SHAPE::F_ROUND );
+    flag->SetPinLength( stemLength );
+    flag->SetSpinStyle( spin );
+    flag->SetTextColor( color );
+
+    SCH_FIELD field( flag, FIELD_T::USER, wxT( "Netclass" ) );
+    field.SetPosition( textPosition );
+    field.SetTextAngle( ANGLE_HORIZONTAL );
+    field.SetHorizJustify( hJustify );
+    field.SetVertJustify( vJustify );
+    field.SetTextColor( color );
+    field.SetVisible( true );
+    flag->AddField( field );
+
+    flag->SetFlags( IS_NEW );
+    screen->Append( flag );
+
+    // KiCad's flag ends in a small circle of its own; Altium's look is drawn beside it
+    const VECTOR2I center = position + direction * ( stemLength + circleRadius );
+
+    SCH_SHAPE* circle = new SCH_SHAPE( SHAPE_T::CIRCLE );
+    circle->SetPosition( center );
+    circle->SetEnd( center + VECTOR2I( circleRadius, 0 ) );
+    circle->SetStroke( STROKE_PARAMS( schIUScale.MilsToIU( 10 ), LINE_STYLE::SOLID, color ) );
+    circle->SetFillMode( FILL_T::NO_FILL );
+    circle->SetFlags( IS_NEW );
+    screen->Append( circle );
+
+    SCH_TEXT* info = new SCH_TEXT( center, wxT( "i" ) );
+    info->SetHorizJustify( GR_TEXT_H_ALIGN_CENTER );
+    info->SetVertJustify( GR_TEXT_V_ALIGN_CENTER );
+    info->SetTextColor( color );
+    info->SetFlags( IS_NEW );
+    screen->Append( info );
+
+    m_parameterSets[aIndex] = { flag, { circle, info } };
+}
+
+
+bool SCH_IO_ALTIUM::AddParameterSetParameter( const ASCH_PARAMETER& aElem )
+{
+    auto it = m_parameterSets.find( aElem.ownerindex );
+
+    if( it == m_parameterSets.end() )
+        return false;
+
+    // A net class is the only parameter KiCad's flags act on
+    if( aElem.name.CmpNoCase( wxT( "ClassName" ) ) == 0 && !aElem.text.IsEmpty() )
+    {
+        for( SCH_FIELD& field : it->second.flag->GetFields() )
+        {
+            if( field.GetUntranslatedName() == wxT( "Netclass" ) )
+                field.SetText( aElem.text );
+        }
+
+        m_parameterSetNetClasses.insert( aElem.text );
+    }
+
+    return true;
+}
+
+
+void SCH_IO_ALTIUM::FinishParameterSets()
+{
+    SCH_SCREEN* screen = getCurrentScreen();
+    wxCHECK( screen, /* void */ );
+
+    for( const auto& [index, items] : m_parameterSets )
+    {
+        bool hasClass = false;
+
+        for( const SCH_FIELD& field : items.flag->GetFields() )
+        {
+            if( field.GetUntranslatedName() == wxT( "Netclass" ) && !field.GetText().IsEmpty() )
+                hasClass = true;
+        }
+
+        if( !hasClass )
+        {
+            m_errorMessages.emplace( _( "Parameter Set without a ClassName parameter not imported." ),
+                                     RPT_SEVERITY_WARNING );
+            screen->Remove( items.flag );
+            delete items.flag;
+
+            for( SCH_ITEM* decoration : items.decorations )
+            {
+                screen->Remove( decoration );
+                delete decoration;
+            }
+        }
+    }
+
+    m_parameterSets.clear();
+}
+
+
 void SCH_IO_ALTIUM::ParseNetLabel( const std::map<wxString, wxString>& aProperties )
 {
     ASCH_NET_LABEL elem( aProperties );
@@ -5831,6 +5998,9 @@ void SCH_IO_ALTIUM::ParseParameter( const std::map<wxString, wxString>& aPropert
     }
     else
     {
+        if( AddParameterSetParameter( elem ) )
+            return;
+
         const auto& libSymbolIt = m_libSymbols.find( elem.ownerindex );
 
         if( libSymbolIt == m_libSymbols.end() )

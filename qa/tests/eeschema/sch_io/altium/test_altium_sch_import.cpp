@@ -27,6 +27,12 @@
 #include <font/outline_font.h>
 #include <lib_id.h>
 #include <reporter.h>
+#include <netclass.h>
+#include <project.h>
+#include <project/net_settings.h>
+#include <project/project_file.h>
+#include <sch_shape.h>
+#include <sch_text.h>
 #include <schematic.h>
 #include <sch_io/altium/sch_io_altium.h>
 #include <sch_label.h>
@@ -99,6 +105,13 @@ struct ALTIUM_SCH_IMPORT_FIXTURE
     {
         return wxString::FromUTF8( KI_TEST::GetEeschemaTestDataDir()
                                    + "/plugins/altium/issue26126/" )
+               + aName;
+    }
+
+    wxString issue26009DataFile( const wxString& aName ) const
+    {
+        return wxString::FromUTF8( KI_TEST::GetEeschemaTestDataDir()
+                                   + "/plugins/altium/issue26009/" )
                + aName;
     }
 
@@ -709,6 +722,130 @@ BOOST_AUTO_TEST_CASE( Issue26126_FieldJustification )
     }
 
     BOOST_CHECK_EQUAL( checked, 24 );
+}
+
+
+// https://gitlab.com/kicad/code/kicad/-/issues/26009
+// An Altium Parameter Set whose ClassName parameter names a net class assigns that class to the
+// net it sits on. Each becomes a net class flag with a Netclass field, pointing the way Altium's
+// flag points, and the class is added to the project, inheriting the Default class. A set
+// without a ClassName is left out.
+BOOST_AUTO_TEST_CASE( Issue26009_ParameterSetsAsNetClassFlags )
+{
+    SCH_IO_ALTIUM plugin;
+
+    SCH_SHEET* rootSheet = plugin.LoadSchematicFile( issue26009DataFile( wxT( "parameter_sets.SchDoc" ) ),
+                                                     &m_schematic );
+    BOOST_REQUIRE( rootSheet );
+
+    SCH_SCREEN* screen = rootSheet->GetScreen();
+    BOOST_REQUIRE( screen );
+
+    // Altium places items in 10 mil units with the Y axis flipped about the page bottom
+    const int gridPitch = m_schematic.Settings().m_ConnectionGridSize;
+    const int pageHeight = screen->GetPageSettings().GetHeightIU( schIUScale.IU_PER_MILS );
+    const int flipY = ( pageHeight / gridPitch ) * gridPitch;
+
+    auto altiumPoint =
+            [&]( int aX, int aY )
+            {
+                return VECTOR2I( schIUScale.MilsToIU( aX * 10 ), flipY - schIUScale.MilsToIU( aY * 10 ) );
+            };
+
+    struct EXPECTED
+    {
+        VECTOR2I   position;
+        SPIN_STYLE spin;
+        VECTOR2I   textPosition;
+    };
+
+    // The flag on the upper wire points up (Altium orientation 1), the other right (0)
+    std::map<wxString, EXPECTED> expected = {
+        { wxT( "HT" ), { altiumPoint( 200, 400 ), SPIN_STYLE::RIGHT, altiumPoint( 200, 420 ) } },
+        { wxT( "H" ), { altiumPoint( 300, 200 ), SPIN_STYLE::UP, altiumPoint( 320, 200 ) } },
+    };
+
+    std::map<wxString, SCH_DIRECTIVE_LABEL*> flags;
+
+    for( SCH_ITEM* item : screen->Items().OfType( SCH_DIRECTIVE_LABEL_T ) )
+    {
+        SCH_DIRECTIVE_LABEL* flag = static_cast<SCH_DIRECTIVE_LABEL*>( item );
+
+        for( SCH_FIELD& field : flag->GetFields() )
+        {
+            if( field.GetUntranslatedName() == wxT( "Netclass" ) )
+            {
+                flags[field.GetText()] = flag;
+
+                BOOST_TEST_CONTEXT( field.GetText() )
+                {
+                    BOOST_REQUIRE( expected.count( field.GetText() ) );
+                    BOOST_CHECK( field.IsVisible() );
+                    BOOST_CHECK_EQUAL( field.GetPosition(), expected[field.GetText()].textPosition );
+                }
+            }
+        }
+    }
+
+    BOOST_REQUIRE_EQUAL( flags.size(), expected.size() );
+
+    // Altium's circle holding an "i", drawn at the end of each flag's stem
+    std::set<std::pair<int, int>> circles;
+    std::set<std::pair<int, int>> infos;
+
+    for( SCH_ITEM* item : screen->Items().OfType( SCH_SHAPE_T ) )
+    {
+        SCH_SHAPE* shape = static_cast<SCH_SHAPE*>( item );
+
+        if( shape->GetShape() == SHAPE_T::CIRCLE )
+        {
+            BOOST_CHECK_EQUAL( shape->GetRadius(), schIUScale.MilsToIU( 60 ) );
+            circles.emplace( shape->GetCenter().x, shape->GetCenter().y );
+        }
+    }
+
+    for( SCH_ITEM* item : screen->Items().OfType( SCH_TEXT_T ) )
+    {
+        if( static_cast<SCH_TEXT*>( item )->GetText() == wxT( "i" ) )
+            infos.emplace( item->GetPosition().x, item->GetPosition().y );
+    }
+
+    const VECTOR2I htCenter = altiumPoint( 200, 412 );
+    const VECTOR2I hCenter = altiumPoint( 312, 200 );
+    const std::set<std::pair<int, int>> centers = { { htCenter.x, htCenter.y }, { hCenter.x, hCenter.y } };
+
+    BOOST_CHECK( circles == centers );
+    BOOST_CHECK( infos == centers );
+
+    for( const auto& [name, want] : expected )
+    {
+        BOOST_TEST_CONTEXT( name )
+        {
+            BOOST_CHECK_EQUAL( flags[name]->GetPosition(), want.position );
+            BOOST_CHECK( flags[name]->GetSpinStyle() == want.spin );
+            BOOST_CHECK( flags[name]->GetShape() == LABEL_FLAG_SHAPE::F_ROUND );
+            BOOST_CHECK_EQUAL( flags[name]->GetPinLength(), schIUScale.MilsToIU( 60 ) );
+        }
+    }
+
+    // The classes are added to the project, taking the Default class's settings until the board
+    // or its rules give them their own
+    std::shared_ptr<NET_SETTINGS>& netSettings = m_schematic.Project().GetProjectFile().NetSettings();
+
+    for( const wxString& name : { wxT( "H" ), wxT( "HT" ) } )
+    {
+        BOOST_TEST_CONTEXT( name )
+        {
+            BOOST_REQUIRE( netSettings->HasNetclass( name ) );
+
+            std::shared_ptr<NETCLASS> netclass = netSettings->GetNetclasses().at( name );
+            BOOST_CHECK( !netclass->HasClearance() );
+            BOOST_CHECK( !netclass->HasWireWidth() );
+            BOOST_CHECK( !netclass->HasTrackWidth() );
+        }
+    }
+
+    BOOST_CHECK_EQUAL( netSettings->GetNetclasses().size(), 2 );
 }
 
 

@@ -922,4 +922,22 @@ struct ASCH_PARAMETER : ASCH_OWNER_INTERFACE
     explicit ASCH_PARAMETER( const std::map<wxString, wxString>& aProps );
 };
 
+
+/**
+ * A Parameter Set directive: a flag on a net carrying parameters, such as a net class, that
+ * apply to that net. Its parameters are separate records owned by this one.
+ */
+struct ASCH_PARAMETER_SET : ASCH_OWNER_INTERFACE
+{
+    VECTOR2I location;
+
+    /// The direction the flag points away from the net it sits on
+    ASCH_RECORD_ORIENTATION orientation;
+
+    wxString name;
+    int      color;
+
+    explicit ASCH_PARAMETER_SET( const std::map<wxString, wxString>& aProps );
+};
+
 #endif //ALTIUM_PARSER_SCH_H
