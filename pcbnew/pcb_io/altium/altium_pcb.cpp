@@ -900,6 +900,8 @@ void ALTIUM_PCB::Parse( const ALTIUM_PCB_COMPOUND_FILE&              altiumPcbFi
     for( std::pair<const ALTIUM_LAYER, ZONE*>& zone : m_outer_plane )
         zone.second->SetAssignedPriority( 0 );
 
+    HelperSetZonePrioritiesFromFills();
+
     // Simplify and fracture zone fills in case we constructed them from tracks (hatched fill)
     thread_pool&           tp = GetKiCadThreadPool();
     BS::multi_future<void> fractureFutures;
@@ -3727,6 +3729,89 @@ void ALTIUM_PCB::ParsePolygons6Data( const ALTIUM_PCB_COMPOUND_FILE&     aAltium
     if( reader.GetRemainingBytes() != 0 )
         THROW_IO_ERROR( wxT( "Polygons6 stream is not fully parsed" ) );
 }
+
+void ALTIUM_PCB::HelperSetZonePrioritiesFromFills()
+{
+    // Areas in square millimetres: an overlap must be worth deciding, and its owner must hold
+    // most of it while the other holds next to none
+    const double minOverlapArea = 4.0;
+    const double minOwnedArea = 1.0;
+    const double maxLoserShare = 0.1;
+
+    auto areaMm2 =
+            []( SHAPE_POLY_SET& aPolys )
+            {
+                return aPolys.Area() / ( pcbIUScale.IU_PER_MM * pcbIUScale.IU_PER_MM );
+            };
+
+    std::vector<ZONE*> zones;
+
+    for( ZONE* zone : m_polygons )
+    {
+        if( zone && !zone->GetIsRuleArea() && zone->GetNetCode() > 0 )
+            zones.push_back( zone );
+    }
+
+    std::vector<std::pair<ZONE*, ZONE*>> ownership; // (owner, other)
+
+    for( size_t ii = 0; ii < zones.size(); ++ii )
+    {
+        for( size_t jj = ii + 1; jj < zones.size(); ++jj )
+        {
+            ZONE* a = zones[ii];
+            ZONE* b = zones[jj];
+
+            if( a->GetNetCode() == b->GetNetCode() )
+                continue;
+
+            for( PCB_LAYER_ID layer :
+                 LSET( a->GetLayerSet() & b->GetLayerSet() & LSET::AllCuMask() ).Seq() )
+            {
+                if( !a->HasFilledPolysForLayer( layer ) || !b->HasFilledPolysForLayer( layer ) )
+                    continue;
+
+                SHAPE_POLY_SET overlap = *a->Outline();
+                overlap.BooleanIntersection( *b->Outline() );
+
+                if( overlap.OutlineCount() == 0 || areaMm2( overlap ) < minOverlapArea )
+                    continue;
+
+                SHAPE_POLY_SET aFill = *a->GetFilledPolysList( layer );
+                SHAPE_POLY_SET bFill = *b->GetFilledPolysList( layer );
+                aFill.BooleanIntersection( overlap );
+                bFill.BooleanIntersection( overlap );
+
+                double aArea = areaMm2( aFill );
+                double bArea = areaMm2( bFill );
+
+                if( aArea > minOwnedArea && bArea < maxLoserShare * aArea )
+                    ownership.emplace_back( a, b );
+                else if( bArea > minOwnedArea && aArea < maxLoserShare * bArea )
+                    ownership.emplace_back( b, a );
+            }
+        }
+    }
+
+    // KiCad pours the higher priority first; raise each owner above what it owns, as often as
+    // a chain of overlaps needs
+    for( size_t pass = 0; pass <= zones.size(); ++pass )
+    {
+        bool changed = false;
+
+        for( const auto& [owner, other] : ownership )
+        {
+            if( owner->GetAssignedPriority() <= other->GetAssignedPriority() )
+            {
+                owner->SetAssignedPriority( other->GetAssignedPriority() + 1 );
+                changed = true;
+            }
+        }
+
+        if( !changed )
+            break;
+    }
+}
+
 
 void ALTIUM_PCB::ParseRules6Data( const ALTIUM_PCB_COMPOUND_FILE&     aAltiumPcbFile,
                                   const CFB::COMPOUND_FILE_ENTRY* aEntry )

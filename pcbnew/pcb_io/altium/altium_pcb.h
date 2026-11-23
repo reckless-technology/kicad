@@ -270,6 +270,14 @@ private:
      * (a dot of the track's width) and is kept.
      */
     void HelperRemoveRedundantTracks();
+
+    /**
+     * Where two pours of different nets overlap and Altium's stored fills show which of them
+     * owns the overlap, give that one the higher priority, so that a KiCad refill pours it the
+     * same way.  Altium's pour order alone does not always say: a pour repoured on its own keeps
+     * its index.
+     */
+    void HelperSetZonePrioritiesFromFills();
     void HelperSetFootprintMountingStyles();
 
     /**
