@@ -19,6 +19,7 @@
  */
 
 #include "import_proj.h"
+#include "import_altium_project.h"
 
 #include <list>
 
@@ -49,12 +50,10 @@
 #include <project_sch.h>
 #include <project_pcb.h>
 
-#include <io/altium/altium_outjob.h>
 #include <io/easyedapro/easyedapro_import_utils.h>
 #include <io/easyedapro/easyedapro_parser.h>
 #include <io/easyedapro/easyedapro_v3_parser.h>
 #include <io/common/plugin_common_choose_project.h>
-#include <io/io_utils.h>
 #include <io/pads/pads_common.h>
 #include <io/easypc/easypc_classes_project.h>
 #include <io/easypc/easypc_document.h>
@@ -313,22 +312,6 @@ void IMPORT_PROJ_HELPER::setImportCacheNickname()
 }
 
 
-wxString IMPORT_PROJ_HELPER::joinSourceLibNicknames( const std::set<wxString>& aPaths ) const
-{
-    wxArrayString nicks;
-
-    for( const wxString& path : aPaths )
-    {
-        wxString nick = wxFileName( path ).GetName();
-
-        if( !nick.IsEmpty() )
-            nicks.Add( nick );
-    }
-
-    return IMPORT_PROJ_PROPS::JoinList( nicks );
-}
-
-
 void IMPORT_PROJ_HELPER::addLocalLibraries( const std::set<wxString>& aNames, FRAME_T aFrameType )
 {
     KIWAY_PLAYER* frame = m_frame->Kiway().Player( aFrameType, true );
@@ -356,118 +339,21 @@ void IMPORT_PROJ_HELPER::addLocalLibraries( const std::set<wxString>& aNames, FR
 
 void IMPORT_PROJ_HELPER::AltiumProjectHandler()
 {
-    wxFileConfig config( wxEmptyString, wxEmptyString, wxEmptyString, m_InputFile.GetFullPath(),
-                         wxCONFIG_USE_NO_ESCAPE_CHARACTERS );
+    ALTIUM_PROJECT_FILES files = ReadAltiumProjectFiles( m_InputFile );
 
-    wxString groupname;
-    long groupid;
+    addLocalLibraries( files.m_symbolLibraries, FRAME_SCH );
+    addLocalLibraries( files.m_footprintLibraries, FRAME_PCB_EDITOR );
 
-    std::set<wxString> sch_file;
-    std::set<wxString> sch_libs;
-    std::set<wxString> pcb_libs;
+    for( const auto& [key, value] : AltiumProjectImportProperties( files, m_InputFile, m_TargetProj.GetName() ) )
+        m_properties[key] = value;
 
-    std::vector<wxString> outJobs;
-
-    wxString pcb_file;
-    int      pcb_file_type = PCB_IO_MGR::ALTIUM_DESIGNER;
-
-    auto matchPcbFile = []( const wxFileName& aFile ) -> int
-    {
-        const wxString ext = aFile.GetExt();
-
-        if( !ext.CmpNoCase( wxS( "PcbDoc" ) ) )
-            return PCB_IO_MGR::ALTIUM_DESIGNER;
-
-        // Older Altium (and Protel) projects keep the board as a binary .pcb, a compound file
-        // holding the same records as a .PcbDoc.  The header keeps other .pcb formats out.
-        if( !ext.CmpNoCase( wxS( "pcb" ) )
-            && IO_UTILS::fileHasBinaryHeader( aFile.GetFullPath(),
-                                              IO_UTILS::COMPOUND_FILE_HEADER ) )
-        {
-            return PCB_IO_MGR::ALTIUM_DESIGNER;
-        }
-
-        if( !ext.CmpNoCase( wxS( "CSPcbDoc" ) ) )
-            return PCB_IO_MGR::ALTIUM_CIRCUIT_STUDIO;
-
-        if( !ext.CmpNoCase( wxS( "CMPcbDoc" ) ) )
-            return PCB_IO_MGR::ALTIUM_CIRCUIT_MAKER;
-
-        if( !ext.CmpNoCase( wxS( "SWPcbDoc" ) ) )
-            return PCB_IO_MGR::SOLIDWORKS_PCB;
-
-        return -1;
-    };
-
-    for( bool more = config.GetFirstGroup( groupname, groupid ); more;
-         more = config.GetNextGroup( groupname, groupid ) )
-    {
-        if( !groupname.StartsWith( wxS( "Document" ) ) )
-            continue;
-
-        wxString number = groupname.Mid( 8 );
-        long docNumber;
-
-        if( !number.ToLong( &docNumber ) )
-            continue;
-
-        wxString path = config.Read( groupname + wxS( "/DocumentPath" ), wxEmptyString );
-
-        if( path.empty() )
-            continue;
-
-        wxFileName fname( path, wxPATH_WIN );
-
-        if( !fname.IsAbsolute() )
-            fname.MakeAbsolute( m_InputFile.GetPath() );
-
-        int pcbType = matchPcbFile( fname );
-
-        if( pcbType >= 0 && pcb_file.empty() )
-        {
-            pcb_file = fname.GetFullPath();
-            pcb_file_type = pcbType;
-        }
-
-        if( !fname.GetExt().CmpNoCase( "SCHDOC" ) )
-            sch_file.insert( fname.GetFullPath() );
-
-        if( !fname.GetExt().CmpNoCase( "PCBLIB" ) )
-            pcb_libs.insert( fname.GetFullPath() );
-
-        if( !fname.GetExt().CmpNoCase( "SCHLIB" ) )
-            sch_libs.insert( fname.GetFullPath() );
-
-        if( !fname.GetExt().CmpNoCase( "OUTJOB" ) && fname.FileExists() )
-            outJobs.push_back( fname.GetFullPath() );
-    }
-
-    addLocalLibraries( sch_libs, FRAME_SCH );
-    addLocalLibraries( pcb_libs, FRAME_PCB_EDITOR );
-
-    // pass source fp libs to both imports so found footprints relink to source, not the cache
-    m_properties[IMPORT_PROJ_PROPS::SOURCE_FP_LIBS] = joinSourceLibNicknames( pcb_libs );
-
-    // and the symbol libraries, so only symbols from these keep their source library's nickname
-    m_properties[IMPORT_PROJ_PROPS::SOURCE_SYM_LIBS] = joinSourceLibNicknames( sch_libs );
-
-    m_properties["project_file"] = m_InputFile.GetFullPath();
-
-    int ii = 0;
-
-    for( auto& path : sch_file )
-    {
-        std::string key = "sch" + std::to_string( ii++ );
-        m_properties[key] = path.ToStdString();
-    }
-
-    if( !sch_file.empty() )
+    if( !files.m_schematics.empty() )
         doImport( "", FRAME_SCH, SCH_IO_MGR::SCH_ALTIUM );
 
-    if( !pcb_file.empty() )
-        doImport( pcb_file, FRAME_PCB_EDITOR, pcb_file_type );
+    if( !files.m_board.empty() )
+        doImport( files.m_board, FRAME_PCB_EDITOR, files.m_boardType );
 
-    importAltiumOutJobs( outJobs );
+    importAltiumOutJobs( files.m_outputJobs );
 }
 
 
@@ -494,33 +380,15 @@ void IMPORT_PROJ_HELPER::importAltiumOutJobs( const std::vector<wxString>& aOutJ
     if( aOutJobs.empty() )
         return;
 
-    const wxString     projectName = m_TargetProj.GetName();
-    std::set<wxString> copperLayers = importedCopperLayers();
-
-    for( const wxString& outJobPath : aOutJobs )
-    {
-        wxString stem = projectName;
-
-        if( aOutJobs.size() > 1 )
-            stem += wxT( "-" ) + wxFileName( outJobPath ).GetName();
-
-        wxFileName jobsetFile( m_TargetProj.GetPath(), stem, FILEEXT::KiCadJobSetFileExtension );
-
-        try
-        {
-            ALTIUM_OUTJOB outJob = ALTIUM_OUTJOB::FromFile( outJobPath, projectName, copperLayers );
-
-            // An output job KiCad can make nothing of would leave an empty jobset
-            if( outJob.HasJobs() && !jobsetFile.FileExists() )
-                outJob.SaveJobset( jobsetFile.GetFullPath() );
-        }
-        catch( const IO_ERROR& error )
-        {
-            DisplayErrorMessage( m_frame,
-                                 wxString::Format( _( "The Altium output job '%s' was not converted." ), outJobPath ),
-                                 error.What() );
-        }
-    }
+    ConvertAltiumOutputJobs( aOutJobs, m_TargetProj, importedCopperLayers(),
+                             [&]( const wxString& aOutJob, const wxString& aError )
+                             {
+                                 DisplayErrorMessage( m_frame,
+                                                      wxString::Format( _( "The Altium output job '%s' was not "
+                                                                           "converted." ),
+                                                                        aOutJob ),
+                                                      aError );
+                             } );
 }
 
 

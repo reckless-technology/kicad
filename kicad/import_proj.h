@@ -99,9 +99,6 @@ private:
      */
     void setImportCacheNickname();
 
-    /// Join the basenames of the given library paths into a source-library property value.
-    wxString joinSourceLibNicknames( const std::set<wxString>& aPaths ) const;
-
     void EasyEDAProProjectHandler( int aImportedSchFileType, int aImportedPcbFileType );
 
     void AltiumProjectHandler();

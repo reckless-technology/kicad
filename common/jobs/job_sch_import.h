@@ -75,6 +75,11 @@ public:
     /// Directory of the source project and the symbol libraries it names, registered before the import.
     wxString              m_sourceProjectDir;
     std::vector<wxString> m_localLibraries;
+
+    /// Board reference to footprint LIB_ID, from the board imported with the schematic.  When set,
+    /// the job imports nothing: it links the KiCad schematic the import wrote (the input file) to
+    /// these footprints, the last step of a project import.
+    std::map<wxString, wxString> m_footprintIds;
 };
 
 #endif

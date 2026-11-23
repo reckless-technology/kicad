@@ -20,6 +20,7 @@
 
 #include <import_net_names.h>
 #include <import_net_reconciler.h>
+#include <import_local_footprint_libs.h>
 #include <diff_merge/merge_dispatch.h>
 #include <richio.h>
 #include <string_utils.h>
@@ -4316,6 +4317,20 @@ int PCBNEW_JOBS_HANDLER::JobImport( JOB* aJob )
                 importProperties = &importPropertyStorage;
             }
 
+            // A project import hands the importer the project's properties, as the project manager
+            // hands them to the editor
+            if( !job->m_properties.empty() )
+            {
+                importPropertyStorage.insert( job->m_properties.begin(), job->m_properties.end() );
+                importProperties = &importPropertyStorage;
+            }
+
+            // a project's own libraries are registered before the import, which links footprints to them
+            if( !job->m_localLibraries.empty() )
+            {
+                RegisterLocalFootprintLibraries( *projectPtr, job->m_sourceProjectDir, job->m_localLibraries,
+                                                 *m_reporter );
+            }
 
             board = pi->LoadBoard( job->m_inputFile, importProperties, projectPtr );
         }
@@ -4360,7 +4375,8 @@ int PCBNEW_JOBS_HANDLER::JobImport( JOB* aJob )
         if( PCB_IO_MGR::ImportGeneratesProjectLibrary( fileType ) )
         {
             const wxString reconciliationPath = job->m_importPcbId.empty() ? job->m_inputFile : outputPath;
-            ReconcileImportedFootprints( *pi, *board, *projectPtr, reconciliationPath, nullptr, *m_reporter );
+            ReconcileImportedFootprints( *pi, *board, *projectPtr, reconciliationPath,
+                                         job->m_properties.empty() ? nullptr : &job->m_properties, *m_reporter );
         }
 
         // Imported with its schematic, the board is linked to the symbols and given their references,
@@ -4383,6 +4399,14 @@ int PCBNEW_JOBS_HANDLER::JobImport( JOB* aJob )
                                     RPT_SEVERITY_WARNING );
             }
         }
+
+        // what a project import needs back: the footprint links for the schematic, and the copper
+        // layers that decide which layers the project's output jobs can plot
+        job->m_footprintIds = ImportedFootprintIds( *board );
+        job->m_copperLayers.clear();
+
+        for( PCB_LAYER_ID layer : board->GetEnabledLayers().CuStack() )
+            job->m_copperLayers.insert( LSET::Name( layer ) );
 
         // Flag explicit map entries that never matched a source layer so typos do not pass silently.
         if( layersCaptured )
