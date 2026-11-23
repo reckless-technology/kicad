@@ -67,6 +67,7 @@
 #include <string_utils.h>
 #include <sch_edit_frame.h>
 #include <wildcards_and_files_ext.h>
+#include <wx/fileconf.h>
 #include <wx/log.h>
 #include <wx/dir.h>
 #include <wx/mstream.h>
@@ -243,6 +244,7 @@ SCH_IO_ALTIUM::SCH_IO_ALTIUM() :
         SCH_IO( wxS( "Altium" ) )
 {
     m_isIntLib     = false;
+    m_hasPortsOrSheetEntries = false;
     m_rootSheet    = nullptr;
     m_schematic    = nullptr;
     m_harnessOwnerIndexOffset = 0;
@@ -671,6 +673,9 @@ SCH_SHEET* SCH_IO_ALTIUM::LoadSchematicFile( const wxString& aFileName, SCHEMATI
         }
 
         m_rootSheet = &aSchematic->Root();
+
+        if( aProperties->count( "project_file" ) )
+            JoinNetLabelsAcrossSheets( aProperties->at( "project_file" ) );
     }
 
     if( !aAppendToMe )
@@ -2036,6 +2041,70 @@ void SCH_IO_ALTIUM::StyleLibraryText( EDA_TEXT* aText, TEXT_KIND aKind, const VE
 }
 
 
+void SCH_IO_ALTIUM::JoinNetLabelsAcrossSheets( const wxString& aProjectFile )
+{
+    // Altium's net identifier scope. Only Automatic (0), the default, is handled: it makes net
+    // labels global when the project has neither sheet entries nor ports.
+    wxFileConfig config( wxEmptyString, wxEmptyString, wxEmptyString, aProjectFile, wxCONFIG_USE_NO_ESCAPE_CHARACTERS );
+
+    if( config.ReadLong( wxS( "Design/HierarchyMode" ), 0 ) != 0 || m_hasPortsOrSheetEntries )
+        return;
+
+    SCH_SCREENS                               screens( m_rootSheet );
+    std::map<wxString, std::set<SCH_SCREEN*>> labelScreens;
+    std::set<wxString>                        powerNets;
+
+    for( SCH_SCREEN* screen = screens.GetFirst(); screen; screen = screens.GetNext() )
+    {
+        for( SCH_ITEM* item : screen->Items().OfType( SCH_LABEL_T ) )
+            labelScreens[static_cast<SCH_LABEL*>( item )->GetText()].insert( screen );
+
+        for( SCH_ITEM* item : screen->Items().OfType( SCH_SYMBOL_T ) )
+        {
+            SCH_SYMBOL* symbol = static_cast<SCH_SYMBOL*>( item );
+
+            if( symbol->IsPower() )
+                powerNets.insert( symbol->GetField( FIELD_T::VALUE )->GetText() );
+        }
+    }
+
+    bool madeGlobal = false;
+
+    for( SCH_SCREEN* screen = screens.GetFirst(); screen; screen = screens.GetNext() )
+    {
+        std::vector<SCH_LABEL*> sharedLabels;
+
+        for( SCH_ITEM* item : screen->Items().OfType( SCH_LABEL_T ) )
+        {
+            SCH_LABEL*      label = static_cast<SCH_LABEL*>( item );
+            const wxString& name = label->GetText();
+
+            if( labelScreens[name].size() > 1 || powerNets.count( name ) )
+                sharedLabels.push_back( label );
+        }
+
+        for( SCH_LABEL* label : sharedLabels )
+        {
+            SCH_GLOBALLABEL* globalLabel = new SCH_GLOBALLABEL( label->GetPosition(), label->GetText() );
+            globalLabel->SetShape( LABEL_FLAG_SHAPE::L_UNSPECIFIED );
+            globalLabel->SetAttributes( *label, false );
+            globalLabel->SetSpinStyle( label->GetSpinStyle() );
+            globalLabel->GetField( FIELD_T::INTERSHEET_REFS )->SetVisible( false );
+
+            screen->Remove( label );
+            screen->Append( globalLabel );
+            delete label;
+            madeGlobal = true;
+        }
+    }
+
+    // Altium's net labels often sit 100 mil apart; KiCad's default margin round a global label's
+    // text would make neighbouring frames overlap
+    if( madeGlobal )
+        m_schematic->Settings().m_LabelSizeRatio = 0.1;
+}
+
+
 void SCH_IO_ALTIUM::ParseAltiumSch( const wxString& aFileName )
 {
     // Load path may be different from the project path.
@@ -2737,6 +2806,7 @@ void SCH_IO_ALTIUM::ParseRecord( int index, std::map<wxString, wxString>& proper
         break;
 
     case ALTIUM_SCH_RECORD::SHEET_ENTRY:
+        m_hasPortsOrSheetEntries = true;
         ParseSheetEntry( properties );
         break;
 
@@ -2747,6 +2817,7 @@ void SCH_IO_ALTIUM::ParseRecord( int index, std::map<wxString, wxString>& proper
     case ALTIUM_SCH_RECORD::PORT:
         // Ports are parsed after the sheet was parsed
         // This is required because we need all electrical connection points before placing.
+        m_hasPortsOrSheetEntries = true;
         m_altiumPortsCurrentSheet.emplace_back( properties );
         break;
 
