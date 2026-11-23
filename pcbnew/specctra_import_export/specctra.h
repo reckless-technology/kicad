@@ -148,6 +148,7 @@ struct POINT
         return *this;
     }
 
+    POINT( const POINT& other ) = default;
     POINT& operator=( const POINT& other )
     {
         x = other.x;

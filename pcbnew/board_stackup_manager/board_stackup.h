@@ -108,6 +108,7 @@ class BOARD_STACKUP_ITEM
 {
 public:
     BOARD_STACKUP_ITEM( BOARD_STACKUP_ITEM_TYPE aType );
+    BOARD_STACKUP_ITEM& operator=( const BOARD_STACKUP_ITEM& aOther ) = default;
     BOARD_STACKUP_ITEM( const BOARD_STACKUP_ITEM& aOther );
 
     bool operator==( const BOARD_STACKUP_ITEM& aOther ) const;
