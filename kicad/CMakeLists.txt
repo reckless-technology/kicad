@@ -36,6 +36,7 @@ set( KICAD_SRCS
     dialogs/panel_jobset.cpp
     files-io.cpp
     jobs_runner.cpp
+    import_altium_project.cpp
     import_proj.cpp
     import_project.cpp
     kicad_manager_frame.cpp
@@ -95,6 +96,7 @@ set( KICAD_CLI_SRCS
     cli/command_pcb_import.cpp
     cli/command_sch_import.cpp
     cli/command_import.cpp
+    import_altium_project.cpp
     cli/command_fp_export_svg.cpp
     cli/command_fp_upgrade.cpp
     cli/command_fp_downgrade.cpp

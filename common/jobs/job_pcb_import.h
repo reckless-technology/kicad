@@ -23,6 +23,7 @@
 #include <kicommon.h>
 #include <core/utf8.h>
 #include <map>
+#include <set>
 #include <string>
 #include <utility>
 #include <vector>
@@ -90,6 +91,9 @@ public:
 
     /// Board reference to footprint LIB_ID, filled in by an import.
     std::map<wxString, wxString> m_footprintIds;
+
+    /// The names of the imported board's copper layers, filled in by an import.
+    std::set<wxString> m_copperLayers;
 
     /// Set by a probe of a project archive that holds no board.
     bool m_projectHasNoBoard = false;

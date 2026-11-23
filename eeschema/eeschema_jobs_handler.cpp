@@ -59,6 +59,10 @@
 #include <sch_sheet_path.h>
 #include <sch_commit.h>
 #include <symbol_import_reconciler.h>
+#include <import_local_symbol_libs.h>
+#include <import_proj_properties.h>
+#include <link_imported_footprints.h>
+#include <sch_footprint_field_reconciler.h>
 #include <save_project_utils.h>
 #include <tool/tool_manager.h>
 #include <project.h>
@@ -2465,6 +2469,63 @@ int EESCHEMA_JOBS_HANDLER::JobDowngrade( JOB* aJob )
 }
 
 
+int EESCHEMA_JOBS_HANDLER::linkImportedFootprints( JOB_SCH_IMPORT& aJob )
+{
+    SETTINGS_MANAGER& mgr = Pgm().GetSettingsManager();
+    PROJECT*          project = mgr.IsProjectOpenNotDummy() ? &mgr.Prj() : nullptr;
+
+    // The import left its schematic settings (its drawing sheet among them) with the project; they
+    // are flushed into the project before another schematic takes it, as SCHEMATIC::SetProject()
+    // flushes them when a schematic leaves a project, or that schematic's would replace them
+    if( project )
+    {
+        PROJECT_FILE& projectFile = project->GetProjectFile();
+
+        delete projectFile.m_ErcSettings;
+        projectFile.m_ErcSettings = nullptr;
+
+        delete projectFile.m_SchematicSettings;
+        projectFile.m_SchematicSettings = nullptr;
+    }
+
+    std::unique_ptr<SCHEMATIC> schematic( EESCHEMA_HELPERS::LoadSchematic( aJob.m_inputFile, SCH_IO_MGR::SCH_KICAD,
+                                                                           false, false, project, true ) );
+
+    if( !schematic )
+    {
+        m_reporter->Report( wxString::Format( _( "Could not reopen '%s' to link its footprints\n" ),
+                                              aJob.m_inputFile ),
+                            RPT_SEVERITY_ERROR );
+        return CLI::EXIT_CODES::ERR_INVALID_INPUT_FILE;
+    }
+
+    if( LinkImportedFootprints( *schematic, aJob.m_footprintIds, *m_reporter ) == 0 )
+        return CLI::EXIT_CODES::SUCCESS;
+
+    try
+    {
+        IO_RELEASER<SCH_IO> kicadPi( SCH_IO_MGR::FindPlugin( SCH_IO_MGR::SCH_KICAD ) );
+        SCH_SCREENS         screens( schematic->Root() );
+
+        for( size_t i = 0; i < screens.GetCount(); i++ )
+        {
+            SCH_SCREEN* screen = screens.GetScreen( i );
+
+            if( screen && !screen->GetFileName().IsEmpty() )
+                kicadPi->SaveSchematicFile( screen->GetFileName(), screens.GetSheet( i ), schematic.get() );
+        }
+    }
+    catch( const IO_ERROR& ioe )
+    {
+        m_reporter->Report( wxString::Format( _( "Error saving the linked schematic: %s\n" ), ioe.What() ),
+                            RPT_SEVERITY_ERROR );
+        return CLI::EXIT_CODES::ERR_UNKNOWN;
+    }
+
+    return CLI::EXIT_CODES::SUCCESS;
+}
+
+
 int EESCHEMA_JOBS_HANDLER::JobImport( JOB* aJob )
 {
     JOB_SCH_IMPORT* job = dynamic_cast<JOB_SCH_IMPORT*>( aJob );
@@ -2480,6 +2541,10 @@ int EESCHEMA_JOBS_HANDLER::JobImport( JOB* aJob )
                             RPT_SEVERITY_ERROR );
         return CLI::EXIT_CODES::ERR_INVALID_INPUT_FILE;
     }
+
+    // The last step of a project import: the schematic it wrote takes the board's footprint links
+    if( !job->m_footprintIds.empty() )
+        return linkImportedFootprints( *job );
 
     // AUTO restricts autodetect to non-KiCad plugins so a native file is not re-imported.
     SCH_IO_MGR::SCH_FILE_T fileType = SCH_IO_MGR::SCH_FILE_UNKNOWN;
@@ -2582,13 +2647,23 @@ int EESCHEMA_JOBS_HANDLER::JobImport( JOB* aJob )
     // Without this the importer's warnings go to the wx log and never reach the import report
     pi->SetReporter( &importMessages );
 
+    // A project import hands the importer its sheets and library coordination in properties, as the
+    // project manager hands them to the editor; the sheets then come from there, not from the input
+    const std::map<std::string, UTF8>* properties = job->m_properties.empty() ? nullptr : &job->m_properties;
+    const bool sheetsInProperties = properties && properties->contains( "sch0" );
+    const wxString loadPath = sheetsInProperties ? wxString() : inputFn.GetFullPath();
+
+    // a project's own libraries are registered before the import, which links symbols to them
+    if( !job->m_localLibraries.empty() )
+        RegisterLocalSymbolLibraries( project, job->m_sourceProjectDir, job->m_localLibraries, *m_reporter );
+
     try
     {
         m_reporter->Report( wxString::Format( _( "Importing '%s' using %s format...\n" ),
                                               inputFn.GetFullPath(), formatName ),
                             RPT_SEVERITY_INFO );
 
-        loadedSheet = pi->LoadSchematicFile( inputFn.GetFullPath(), schematic.get() );
+        loadedSheet = pi->LoadSchematicFile( loadPath, schematic.get(), nullptr, properties );
 
         if( !loadedSheet )
         {
@@ -2621,8 +2696,17 @@ int EESCHEMA_JOBS_HANDLER::JobImport( JOB* aJob )
 
         // Extract a project symbol library and re-link LIB_IDs, as importFile() does; without it
         // the saved schematic references nicknames no library table row resolves.
-        ReconcileImportedSymbols( *pi, *schematic, project, inputFn.GetFullPath(), nullptr,
-                                  *m_reporter );
+        ReconcileImportedSymbols( *pi, *schematic, project, loadPath, properties, *m_reporter );
+
+        // re-link footprint fields to the project library so the board can be updated from it
+        {
+            wxString              cacheNick;
+            std::vector<wxString> sourceFpLibs;
+            IMPORT_PROJ_PROPS::ReadFootprintProps( properties, cacheNick, sourceFpLibs );
+
+            SCH_FOOTPRINT_FIELD_RECONCILER fpReconciler( cacheNick, sourceFpLibs, m_reporter );
+            fpReconciler.Reconcile( *schematic );
+        }
 
         // Recompute connectivity so instance data is valid before saving, as importFile() does.
         std::unique_ptr<TOOL_MANAGER> toolManager = std::make_unique<TOOL_MANAGER>();

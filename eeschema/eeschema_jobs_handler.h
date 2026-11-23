@@ -29,6 +29,7 @@ class SCH_RENDER_SETTINGS;
 class KIWAY;
 class SCHEMATIC;
 class JOB_SYM_EXPORT_SVG;
+class JOB_SCH_IMPORT;
 class LIB_SYMBOL;
 class DS_PROXY_VIEW_ITEM;
 class REPORTER;
@@ -80,6 +81,13 @@ public:
                                                          REPORTER* aReporter );
 
 private:
+    /**
+     * Link the KiCad schematic a project import wrote (\a aJob's input file) to the imported board's
+     * footprints (\a aJob's footprint ids), as the project manager's import does once both halves
+     * are imported, and save it if that changed anything.
+     */
+    int linkImportedFootprints( JOB_SCH_IMPORT& aJob );
+
     int runSchMerge( const wxString& aAncestor, const wxString& aOurs, const wxString& aTheirs,
                      const wxString& aOutput, bool aInteractive );
     int runSymLibMerge( const wxString& aAncestor, const wxString& aOurs, const wxString& aTheirs,

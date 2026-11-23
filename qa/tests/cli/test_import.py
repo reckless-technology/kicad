@@ -29,6 +29,7 @@ import pytest
 import json
 import os
 import re
+import shutil
 from conftest import KiTestFixture
 
 
@@ -419,6 +420,37 @@ def reference_of( node: list ) -> str:
     return ""
 
 
+def footprints_linked_to_symbols( stem: Path ) -> int:
+    """Check that each board footprint is linked to the symbol of its reference, in any sheet of the
+    project, as Update PCB from Schematic links it; return how many footprints were checked."""
+    symbols = {}
+
+    for sheet in stem.parent.glob( "*.kicad_sch" ):
+        for symbol in children( parse_sexpr( sheet.read_text( encoding="utf-8" ) ), "symbol" ):
+            reference = reference_of( symbol )
+            uuid = children( symbol, "uuid" )
+
+            if reference and not reference.startswith( "#" ) and uuid:
+                symbols.setdefault( reference, [] ).append( uuid[0][1] )
+
+    board = parse_sexpr( stem.with_suffix( ".kicad_pcb" ).read_text( encoding="utf-8" ) )
+    checked = 0
+
+    for footprint in children( board, "footprint" ):
+        reference = reference_of( footprint )
+
+        if len( symbols.get( reference, [] ) ) != 1:
+            continue
+
+        path = children( footprint, "path" )
+        assert path, f"footprint {reference} has no path"
+        assert path[0][1].split( "/" )[-1] == symbols[reference][0], \
+            f"footprint {reference} is not linked to its symbol"
+        checked += 1
+
+    return checked
+
+
 @pytest.mark.skipif( get_altium_pair_test_files() == ( None, None ),
                      reason="Altium test files not available" )
 class TestImportAltiumProject:
@@ -438,32 +470,61 @@ class TestImportAltiumProject:
         assert stem.with_suffix( ".kicad_sch" ).exists()
         assert stem.with_suffix( ".kicad_pcb" ).exists()
 
-        schematic = parse_sexpr( stem.with_suffix( ".kicad_sch" ).read_text( encoding="utf-8" ) )
-        symbols = {}
+        assert footprints_linked_to_symbols( stem ) > 0
 
-        for symbol in children( schematic, "symbol" ):
-            reference = reference_of( symbol )
-            uuid = children( symbol, "uuid" )
+    def test_import_altium_project( self, kitest: KiTestFixture ):
+        """An Altium project (.PrjPcb) is imported whole, as File > Import Non-KiCad Project does:
+        every sheet it lists, its board, its parameters and its output jobs
+        (https://github.com/reckless-technology/kicad/issues/16)"""
+        source = os.path.join( os.path.dirname( __file__ ), "..", "..", "data", "pcbnew", "plugins", "altium",
+                               "eDP_adapter_dvt1_source" )
 
-            if reference and not reference.startswith( "#" ) and uuid:
-                symbols.setdefault( reference, [] ).append( uuid[0][1] )
+        if not os.path.isdir( source ):
+            pytest.skip( "Altium project test files not available" )
 
-        board = parse_sexpr( stem.with_suffix( ".kicad_pcb" ).read_text( encoding="utf-8" ) )
-        checked = 0
+        # a private copy of the project, given a parameter and an output job of its own
+        projectDir = kitest.get_output_path( "cli/import/altium_project_source/" )
+        shutil.rmtree( projectDir, ignore_errors=True )
+        shutil.copytree( source, projectDir )
 
-        for footprint in children( board, "footprint" ):
-            reference = reference_of( footprint )
+        ( projectDir / "Board.OutJob" ).write_text(
+                "[OutputJobFile]\r\nVersion=1.0\r\n\r\n[OutputGroup1]\r\nName=Fabrication\r\n"
+                "OutputMedium1=Folder Structure\r\nOutputMedium1_Type=GeneratedFiles\r\n"
+                "OutputType1=NC Drill\r\nOutputName1=NC Drill Files\r\n"
+                "OutputDocumentPath1=eDP_adapter_dvt1.PcbDoc\r\nOutputEnabled1=1\r\n"
+                "OutputEnabled1_OutputMedium1=1\r\n", encoding="utf-8" )
 
-            if len( symbols.get( reference, [] ) ) != 1:
-                continue
+        with open( projectDir / "eDP_adapter_dvt1.PrjPcb", "a", encoding="utf-8", newline="" ) as f:
+            f.write( "\r\n[Document99]\r\nDocumentPath=Board.OutJob\r\n"
+                     "\r\n[Parameter99]\r\nName=ImportCheck\r\nValue=from the project\r\n" )
 
-            path = children( footprint, "path" )
-            assert path, f"footprint {reference} has no path"
-            assert path[0][1].split( "/" )[-1] == symbols[reference][0], \
-                f"footprint {reference} is not linked to its symbol"
-            checked += 1
+        stem = get_project_stem( kitest, "altium_project", "adapter" )
+        command = [ utils.kicad_cli(), "import", str( projectDir / "eDP_adapter_dvt1.PrjPcb" ), "-o", str( stem ) ]
 
-        assert checked > 0
+        stdout, stderr, return_code = utils.run_and_capture( command )
+
+        assert return_code == 0
+        assert stem.with_suffix( ".kicad_sch" ).exists()
+        assert stem.with_suffix( ".kicad_pcb" ).exists()
+
+        with open( stem.with_suffix( ".kicad_pro" ), "r" ) as f:
+            project = json.load( f )
+
+        # both sheets the project lists, and its board
+        assert sorted( name for _, name in project["sheets"] ) == [ "it6251_core", "power" ]
+        assert [ name for _, name in project["boards"] ] == [ "adapter.kicad_pcb" ]
+
+        # the project's parameter, for title blocks and text, under the upper-case name Altium resolves
+        assert project["text_variables"].get( "IMPORTCHECK" ) == "from the project"
+
+        # its output job, as a jobset beside the project
+        with open( stem.with_suffix( ".kicad_jobset" ), "r" ) as f:
+            jobset = json.load( f )
+
+        assert [ job["type"] for job in jobset["jobs"] ] == [ "pcb_export_drill" ]
+
+        # and the board linked to the schematic, sheet by sheet
+        assert footprints_linked_to_symbols( stem ) > 0
 
 
 def get_template_sheet_test_file() -> str:

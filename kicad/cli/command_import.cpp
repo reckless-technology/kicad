@@ -18,6 +18,7 @@
  */
 
 #include "command_import.h"
+#include "import_altium_project.h"
 #include <cli/exit_codes.h>
 #include <jobs/job_pcb_import.h>
 #include <jobs/job_sch_import.h>
@@ -36,6 +37,7 @@
 #include <wx/filename.h>
 
 #include <string>
+#include <optional>
 #include <set>
 #include <vector>
 
@@ -50,7 +52,8 @@ CLI::IMPORT_COMMAND::IMPORT_COMMAND() : COMMAND( "import" )
 
     m_argParser.add_argument( ARG_INPUT )
             .help( UTF8STDSTR( _( "Input file(s) to import; each is autodetected as a board or "
-                                  "schematic" ) ) )
+                                  "schematic.  An Altium project (.PrjPcb), given alone, is imported "
+                                  "whole, as File > Import Non-KiCad Project does" ) ) )
             .nargs( argparse::nargs_pattern::at_least_one )
             .metavar( "INPUT_FILES" );
 
@@ -154,15 +157,65 @@ int CLI::IMPORT_COMMAND::doPerform( KIWAY& aKiway )
 
     std::map<wxString, wxString> netNameMap;
     wxString boardInput;
+    std::set<wxString>           copperLayers;
 
     // The schematic's netlist, from which the board is linked to its symbols as the project
     // manager's import links it
     wxString netlistFile = wxFileName::CreateTempFileName( wxS( "kicad-import-netlist" ) );
     bool     haveNetlist = false;
 
+    // An Altium project names its sheets, board, libraries and output jobs, and carries parameters,
+    // variants and the net identifier scope; it is imported as the project manager's File > Import
+    // Non-KiCad Project > Altium Project imports it
+    std::optional<ALTIUM_PROJECT_FILES> altiumProject;
+    std::map<std::string, UTF8>         projectProperties;
+    wxString                            sourceProjectDir;
+
+    if( inputFiles.size() == 1 && wxFileName( inputFiles.front() ).GetExt().CmpNoCase( wxS( "PrjPcb" ) ) == 0 )
+    {
+        wxFileName altiumProjectFn( inputFiles.front() );
+        altiumProjectFn.MakeAbsolute();
+
+        altiumProject = ReadAltiumProjectFiles( altiumProjectFn );
+        projectProperties = AltiumProjectImportProperties( *altiumProject, altiumProjectFn, stem );
+        sourceProjectDir = altiumProjectFn.GetPath();
+
+        if( !altiumProject->m_schematics.empty() )
+        {
+            JOB_SCH_IMPORT schJob;
+            schJob.m_inputFile = altiumProjectFn.GetFullPath();
+            schJob.m_format = JOB_SCH_IMPORT::FORMAT::ALTIUM;
+            schJob.m_properties = projectProperties;
+            schJob.m_sourceProjectDir = sourceProjectDir;
+            schJob.m_localLibraries.assign( altiumProject->m_symbolLibraries.begin(),
+                                            altiumProject->m_symbolLibraries.end() );
+            schJob.SetConfiguredOutputPath( schFn.GetFullPath() );
+            schJob.m_netlistFile = netlistFile;
+
+            retCode = aKiway.ProcessJob( KIWAY::FACE_SCH, &schJob, &reporter );
+
+            if( retCode == EXIT_CODES::SUCCESS )
+            {
+                haveSch = true;
+                netNameMap = std::move( schJob.m_netNameMap );
+                haveNetlist = !netlistFile.IsEmpty() && wxFileName( netlistFile ).GetSize() > 0;
+            }
+        }
+
+        if( retCode == EXIT_CODES::SUCCESS && !altiumProject->m_board.empty() )
+        {
+            boards.emplace_back( KIID(), boardFn.GetFullName() );
+            haveBoard = true;
+            boardInput = altiumProject->m_board;
+        }
+    }
+
     // Preserve board-first format detection, but defer loading until the schematic supplies its names.
     for( const wxString& input : inputFiles )
     {
+        if( altiumProject )
+            break;
+
         bool accepted = false;
 
         if( !haveBoard )
@@ -296,8 +349,44 @@ int CLI::IMPORT_COMMAND::doPerform( KIWAY& aKiway )
         if( haveNetlist )
             pcbJob.m_netlistFile = netlistFile;
 
+        if( altiumProject )
+        {
+            pcbJob.m_properties = projectProperties;
+            pcbJob.m_sourceProjectDir = sourceProjectDir;
+            pcbJob.m_localLibraries.assign( altiumProject->m_footprintLibraries.begin(),
+                                            altiumProject->m_footprintLibraries.end() );
+        }
+
         pcbJob.SetConfiguredOutputPath( boardFn.GetFullPath() );
         retCode = aKiway.ProcessJob( KIWAY::FACE_PCB, &pcbJob, &reporter );
+
+        // the schematic takes the footprints the board import settled on, as the project
+        // manager's import links them once both halves are in
+        if( retCode == EXIT_CODES::SUCCESS && haveSch && !pcbJob.m_footprintIds.empty() )
+        {
+            JOB_SCH_IMPORT linkJob;
+            linkJob.m_inputFile = schFn.GetFullPath();
+            linkJob.m_footprintIds = std::move( pcbJob.m_footprintIds );
+            retCode = aKiway.ProcessJob( KIWAY::FACE_SCH, &linkJob, &reporter );
+        }
+
+        copperLayers = std::move( pcbJob.m_copperLayers );
+    }
+
+    // after the board, whose copper layers decide which mid layers the output jobs' plots keep
+    if( retCode == EXIT_CODES::SUCCESS && altiumProject && !altiumProject->m_outputJobs.empty() )
+    {
+        if( copperLayers.empty() )
+            copperLayers = { wxT( "F.Cu" ), wxT( "B.Cu" ) };
+
+        ConvertAltiumOutputJobs( altiumProject->m_outputJobs, projectFn, copperLayers,
+                                 [&]( const wxString& aOutJob, const wxString& aError )
+                                 {
+                                     reporter.Report( wxString::Format( _( "The Altium output job '%s' was not "
+                                                                           "converted: %s\n" ),
+                                                                        aOutJob, aError ),
+                                                      RPT_SEVERITY_WARNING );
+                                 } );
     }
 
     if( retCode == EXIT_CODES::SUCCESS && !haveBoard && !haveSch )
