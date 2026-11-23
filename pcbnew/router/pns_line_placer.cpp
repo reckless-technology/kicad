@@ -1510,7 +1510,7 @@ bool LINE_PLACER::Move( const VECTOR2I& aP, ITEM* aEndItem )
 }
 
 
-bool LINE_PLACER::FixRoute( const VECTOR2I& aP, ITEM* aEndItem, bool aForceFinish )
+bool LINE_PLACER::FixRoute( const VECTOR2I& aP [[maybe_unused]], ITEM* aEndItem, bool aForceFinish )
 {
     bool fixAll  = Settings().GetFixAllSegments();
     bool realEnd = false;
@@ -2064,7 +2064,7 @@ bool LINE_PLACER::AbortPlacement()
 }
 
 
-FIXED_TAIL::FIXED_TAIL( int aLineCount )
+FIXED_TAIL::FIXED_TAIL( int aLineCount [[maybe_unused]] )
 {
 
 }

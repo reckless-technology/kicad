@@ -70,13 +70,13 @@ DIALOG_GIT_MR_REVIEW::DIALOG_GIT_MR_REVIEW( wxWindow* aParent, KIGIT_COMMON* aCo
 }
 
 
-void DIALOG_GIT_MR_REVIEW::OnClose( wxCloseEvent& aEvent )
+void DIALOG_GIT_MR_REVIEW::OnClose( wxCloseEvent& aEvent [[maybe_unused]] )
 {
     EndModal( wxID_CANCEL );
 }
 
 
-void DIALOG_GIT_MR_REVIEW::OnCompareClick( wxCommandEvent& aEvent )
+void DIALOG_GIT_MR_REVIEW::OnCompareClick( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     populateFileList();
 }

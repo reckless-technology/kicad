@@ -378,7 +378,7 @@ bool DRC_TEST_PROVIDER_MATCHED_LENGTH::runInternal( bool aDelayReportMode )
     size_t       ii = 0;
 
     forEachGeometryItem( { PCB_TRACE_T, PCB_ARC_T, PCB_VIA_T, PCB_PAD_T }, boardCopperLayers,
-            [&]( BOARD_ITEM *item ) -> bool
+            [&]( BOARD_ITEM *item [[maybe_unused]] ) -> bool
             {
                 count++;
                 return true;

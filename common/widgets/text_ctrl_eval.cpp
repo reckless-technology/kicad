@@ -98,7 +98,7 @@ void TEXT_CTRL_EVAL::onTextFocusLost( wxFocusEvent& aEvent )
 }
 
 
-void TEXT_CTRL_EVAL::onTextEnter( wxCommandEvent& aEvent )
+void TEXT_CTRL_EVAL::onTextEnter( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     evaluate();
 

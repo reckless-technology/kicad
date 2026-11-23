@@ -36,7 +36,7 @@
 namespace PNS {
 
 
-const SHAPE_LINE_CHAIN SOLID::Hull( int aClearance, int aWalkaroundThickness, int aLayer ) const
+const SHAPE_LINE_CHAIN SOLID::Hull( int aClearance, int aWalkaroundThickness, int aLayer [[maybe_unused]] ) const
 {
     if( !m_shape )
         return SHAPE_LINE_CHAIN();

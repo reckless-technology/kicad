@@ -195,7 +195,7 @@ void PANEL_SELECTION_FILTER::onRightClick( wxMouseEvent& aEvent )
 }
 
 
-void PANEL_SELECTION_FILTER::onPopupSelection( wxCommandEvent& aEvent )
+void PANEL_SELECTION_FILTER::onPopupSelection( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( !m_onlyCheckbox )
         return;
@@ -281,7 +281,7 @@ wxColour PANEL_SELECTION_FILTER::flashColour( int aStep ) const
 }
 
 
-void PANEL_SELECTION_FILTER::onFlashTimer( wxTimerEvent& aEvent )
+void PANEL_SELECTION_FILTER::onFlashTimer( wxTimerEvent& aEvent [[maybe_unused]] )
 {
     for( auto it = m_flashCounters.begin(); it != m_flashCounters.end(); )
     {

@@ -120,7 +120,7 @@ static const wxString formatOpName( int op )
 }
 
 
-bool VALUE::EqualTo( CONTEXT* aCtx, const VALUE* b ) const
+bool VALUE::EqualTo( CONTEXT* aCtx [[maybe_unused]], const VALUE* b ) const
 {
     if( m_type == VT_UNDEFINED || b->m_type == VT_UNDEFINED )
         return false;
@@ -1023,7 +1023,7 @@ bool COMPILER::generateUCode( UCODE* aCode, CONTEXT* aPreflightContext )
                         bool overflow = false;
 
                         auto previousCallback = aPreflightContext->ExchangeErrorCallback(
-                                [&]( const wxString& aMessage, int aOffset )
+                                [&]( const wxString& aMessage, int aOffset [[maybe_unused]] )
                                 {
                                     size_t loc = node->leaf[1]->leaf[1]->srcPos;
                                     reportError( CST_CODEGEN, aMessage, (int) loc - 1 );

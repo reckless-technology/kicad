@@ -35,7 +35,7 @@ public:
     {
     }
 
-    virtual void Reset( RESET_REASON aReason ) override {}
+    virtual void Reset( RESET_REASON aReason [[maybe_unused]] ) override {}
 
     int UpdateProperties( const TOOL_EVENT& aEvent );
 

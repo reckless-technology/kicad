@@ -150,13 +150,13 @@ bool X3DCOORDS::SetParent( X3DNODE* aParent, bool doUnlink )
 }
 
 
-bool X3DCOORDS::AddChildNode( X3DNODE* aNode )
+bool X3DCOORDS::AddChildNode( X3DNODE* aNode [[maybe_unused]] )
 {
     return false;
 }
 
 
-bool X3DCOORDS::AddRefNode( X3DNODE* aNode )
+bool X3DCOORDS::AddRefNode( X3DNODE* aNode [[maybe_unused]] )
 {
     return false;
 }
@@ -176,7 +176,7 @@ void X3DCOORDS::GetCoords( WRLVEC3F*& aCoordList, size_t& aListSize )
 }
 
 
-SGNODE* X3DCOORDS::TranslateToSG( SGNODE* aParent )
+SGNODE* X3DCOORDS::TranslateToSG( SGNODE* aParent [[maybe_unused]] )
 {
     return nullptr;
 }

@@ -101,7 +101,7 @@ int UPDATE_MANAGER::PostRequest( const wxString& aUrl, std::string aRequestBody,
 {
     bool size_exceeded = false;
 
-    TRANSFER_CALLBACK callback = [&]( size_t dltotal, size_t dlnow, size_t ultotal, size_t ulnow )
+    TRANSFER_CALLBACK callback = [&]( size_t dltotal, size_t dlnow, size_t ultotal [[maybe_unused]], size_t ulnow [[maybe_unused]] )
     {
         if( aSizeLimit > 0 && ( dltotal > aSizeLimit || dlnow > aSizeLimit ) )
         {

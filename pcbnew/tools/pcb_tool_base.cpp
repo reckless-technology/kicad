@@ -387,7 +387,7 @@ bool PCB_TOOL_BASE::Init()
 }
 
 
-void PCB_TOOL_BASE::Reset( RESET_REASON aReason )
+void PCB_TOOL_BASE::Reset( RESET_REASON aReason [[maybe_unused]] )
 {
 }
 
@@ -452,7 +452,7 @@ bool PCB_TOOL_BASE::GetAutoConstraints() const
 }
 
 
-void INTERACTIVE_PLACER_BASE::SnapItem( BOARD_ITEM *aItem )
+void INTERACTIVE_PLACER_BASE::SnapItem( BOARD_ITEM *aItem [[maybe_unused]] )
 {
     // Base implementation performs no snapping
 }

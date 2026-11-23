@@ -81,7 +81,7 @@ const IO_BASE::IO_FILE_DESC PCB_IO_PADS_BINARY::GetLibraryDesc() const
 }
 
 
-long long PCB_IO_PADS_BINARY::GetLibraryTimestamp( const wxString& aLibraryPath ) const
+long long PCB_IO_PADS_BINARY::GetLibraryTimestamp( const wxString& aLibraryPath [[maybe_unused]] ) const
 {
     return 0;
 }
@@ -108,7 +108,7 @@ bool PCB_IO_PADS_BINARY::CanReadLibrary( const wxString& aFileName ) const
 
 
 void PCB_IO_PADS_BINARY::loadBoard( const wxString& aFileName, BOARD& aBoard, bool aIsNewLoad,
-                                    const std::map<std::string, UTF8>* aProperties, PROJECT* aProject )
+                                    const std::map<std::string, UTF8>* aProperties [[maybe_unused]], PROJECT* aProject [[maybe_unused]] )
 {
     LOCALE_IO setlocale;
 

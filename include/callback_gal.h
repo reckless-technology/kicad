@@ -58,7 +58,7 @@ public:
                   std::function<void( const SHAPE_LINE_CHAIN& aPoly )> aOutlineCallback ) :
         GAL( aDisplayOptions )
     {
-        m_strokeCallback = []( const VECTOR2I& aPt1, const VECTOR2I& aPt2 ) {};
+        m_strokeCallback = []( const VECTOR2I& aPt1 [[maybe_unused]], const VECTOR2I& aPt2 [[maybe_unused]] ) {};
         m_triangleCallback = []( const VECTOR2I&, const VECTOR2I&, const VECTOR2I& ) {};
         m_outlineCallback = std::move( aOutlineCallback );
         m_stroke = false;

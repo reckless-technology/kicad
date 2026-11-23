@@ -167,7 +167,7 @@ bool FOOTPRINT_EDIT_FRAME::BeginNewFootprint( const wxString& aLibrary )
 }
 
 
-void FOOTPRINT_EDIT_FRAME::centerItemIdleHandler( wxIdleEvent& aEvent )
+void FOOTPRINT_EDIT_FRAME::centerItemIdleHandler( wxIdleEvent& aEvent [[maybe_unused]] )
 {
     m_treePane->GetLibTree()->CenterLibId( m_centerItemOnIdle );
     Unbind( wxEVT_IDLE, &FOOTPRINT_EDIT_FRAME::centerItemIdleHandler, this );
@@ -410,7 +410,7 @@ void FOOTPRINT_EDIT_FRAME::SetActiveLayer( PCB_LAYER_ID aLayer )
 }
 
 
-bool FOOTPRINT_EDIT_FRAME::OpenProjectFiles( const std::vector<wxString>& aFileSet, int aCtl )
+bool FOOTPRINT_EDIT_FRAME::OpenProjectFiles( const std::vector<wxString>& aFileSet, int aCtl [[maybe_unused]] )
 {
     GetCanvas()->GetViewControls()->SetCrossHairCursorPosition( VECTOR2D( 0, 0 ), false );
 

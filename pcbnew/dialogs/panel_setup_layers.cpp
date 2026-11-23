@@ -1158,7 +1158,7 @@ bool PANEL_SETUP_LAYERS::CheckCopperLayerCount( BOARD* aWorkingBoard, BOARD* aIm
 }
 
 
-void PANEL_SETUP_LAYERS::addUserDefinedLayer( wxCommandEvent& aEvent )
+void PANEL_SETUP_LAYERS::addUserDefinedLayer( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     wxArrayString headers;
     headers.Add( _( "Layers" ) );

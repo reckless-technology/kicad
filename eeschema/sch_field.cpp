@@ -1056,7 +1056,7 @@ void SCH_FIELD::CalcEdit( const VECTOR2I& aPosition )
 }
 
 
-wxString SCH_FIELD::GetItemDescription( UNITS_PROVIDER* aUnitsProvider, bool aFull ) const
+wxString SCH_FIELD::GetItemDescription( UNITS_PROVIDER* aUnitsProvider [[maybe_unused]], bool aFull ) const
 {
     wxString content = aFull ? GetShownText( FOR_GUI ) : KIUI::EllipsizeMenuText( GetText() );
 
@@ -1115,7 +1115,7 @@ bool SCH_FIELD::HasHypertext() const
 }
 
 
-void SCH_FIELD::DoHypertextAction( EDA_DRAW_FRAME* aFrame, const VECTOR2I& aMousePos ) const
+void SCH_FIELD::DoHypertextAction( EDA_DRAW_FRAME* aFrame, const VECTOR2I& aMousePos [[maybe_unused]] ) const
 {
     constexpr int START_ID = 1;
 
@@ -1397,7 +1397,7 @@ bool SCH_FIELD::HitTest( const SHAPE_LINE_CHAIN& aPoly, bool aContained ) const
 }
 
 
-void SCH_FIELD::Plot( PLOTTER* aPlotter, bool aBackground, const SCH_PLOT_OPTS& aPlotOpts, int aUnit, int aBodyStyle,
+void SCH_FIELD::Plot( PLOTTER* aPlotter, bool aBackground, const SCH_PLOT_OPTS& aPlotOpts [[maybe_unused]], int aUnit [[maybe_unused]], int aBodyStyle [[maybe_unused]],
                       const VECTOR2I& aOffset, bool aDimmed )
 {
     wxString text;

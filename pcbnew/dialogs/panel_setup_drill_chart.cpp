@@ -103,7 +103,7 @@ void PANEL_SETUP_DRILL_CHART::ImportSettingsFrom( BOARD* aBoard )
 
 
 
-void PANEL_SETUP_DRILL_CHART::onEditGroups( wxCommandEvent& aEvent )
+void PANEL_SETUP_DRILL_CHART::onEditGroups( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     PAGED_DIALOG* dialog = PAGED_DIALOG::GetDialog( this );
 

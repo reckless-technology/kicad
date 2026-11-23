@@ -292,8 +292,8 @@ public:
      * @param aPoints A buffer to fill with polygon corners coordinates.
      * @param Pos Position of the shape, for texts and labels: do nothing.
      */
-    virtual void CreateGraphicShape( const RENDER_SETTINGS* aSettings,
-                                     std::vector<VECTOR2I>& aPoints, const VECTOR2I& Pos ) const
+    virtual void CreateGraphicShape( const RENDER_SETTINGS* aSettings [[maybe_unused]],
+                                     std::vector<VECTOR2I>& aPoints, const VECTOR2I& Pos [[maybe_unused]] ) const
     {
         aPoints.clear();
     }

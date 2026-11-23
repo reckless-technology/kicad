@@ -90,7 +90,7 @@ bool DIALOG_PNS_SETTINGS::TransferDataFromWindow()
 }
 
 
-void DIALOG_PNS_SETTINGS::onModeChange( wxCommandEvent& aEvent )
+void DIALOG_PNS_SETTINGS::onModeChange( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     m_freeAngleMode->Enable( m_rbMarkObstacles->GetValue() );
     m_violateDrc->Enable( m_rbMarkObstacles->GetValue() );

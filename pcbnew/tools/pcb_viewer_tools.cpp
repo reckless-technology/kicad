@@ -42,7 +42,7 @@ bool PCB_VIEWER_TOOLS::Init()
 {
     // Populate the context menu displayed during the tool (primarily the measure tool)
     auto activeToolCondition =
-            [this] ( const SELECTION& aSel )
+            [this] ( const SELECTION& aSel [[maybe_unused]] )
             {
                 return !frame()->ToolStackIsEmpty();
             };
@@ -67,12 +67,12 @@ bool PCB_VIEWER_TOOLS::Init()
 }
 
 
-void PCB_VIEWER_TOOLS::Reset( RESET_REASON aReason )
+void PCB_VIEWER_TOOLS::Reset( RESET_REASON aReason [[maybe_unused]] )
 {
 }
 
 
-int PCB_VIEWER_TOOLS::Show3DViewer( const TOOL_EVENT& aEvent )
+int PCB_VIEWER_TOOLS::Show3DViewer( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     bool do_reload_board = true;    // reload board flag
 
@@ -104,7 +104,7 @@ template<class T> void Flip( T& aValue )
 }
 
 
-int PCB_VIEWER_TOOLS::NextLineMode( const TOOL_EVENT& toolEvent )
+int PCB_VIEWER_TOOLS::NextLineMode( const TOOL_EVENT& toolEvent [[maybe_unused]] )
 {
     if( frame()->IsType( FRAME_PCB_EDITOR ) )
     {
@@ -149,7 +149,7 @@ int PCB_VIEWER_TOOLS::NextLineMode( const TOOL_EVENT& toolEvent )
 }
 
 
-int PCB_VIEWER_TOOLS::ShowPadNumbers( const TOOL_EVENT& aEvent )
+int PCB_VIEWER_TOOLS::ShowPadNumbers( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     PCB_VIEWERS_SETTINGS_BASE* cfg = frame()->GetViewerSettingsBase();
     Flip( cfg->m_ViewersDisplay.m_DisplayPadNumbers );
@@ -166,7 +166,7 @@ int PCB_VIEWER_TOOLS::ShowPadNumbers( const TOOL_EVENT& aEvent )
 }
 
 
-int PCB_VIEWER_TOOLS::PadDisplayMode( const TOOL_EVENT& aEvent )
+int PCB_VIEWER_TOOLS::PadDisplayMode( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     PCB_VIEWERS_SETTINGS_BASE* cfg = frame()->GetViewerSettingsBase();
     Flip( cfg->m_ViewersDisplay.m_DisplayPadFill );
@@ -183,7 +183,7 @@ int PCB_VIEWER_TOOLS::PadDisplayMode( const TOOL_EVENT& aEvent )
 }
 
 
-int PCB_VIEWER_TOOLS::GraphicOutlines( const TOOL_EVENT& aEvent )
+int PCB_VIEWER_TOOLS::GraphicOutlines( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     PCB_VIEWERS_SETTINGS_BASE* cfg = frame()->GetViewerSettingsBase();
     Flip( cfg->m_ViewersDisplay.m_DisplayGraphicsFill );
@@ -213,7 +213,7 @@ int PCB_VIEWER_TOOLS::GraphicOutlines( const TOOL_EVENT& aEvent )
 }
 
 
-int PCB_VIEWER_TOOLS::TextOutlines( const TOOL_EVENT& aEvent )
+int PCB_VIEWER_TOOLS::TextOutlines( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     PCB_VIEWERS_SETTINGS_BASE* cfg = frame()->GetViewerSettingsBase();
     Flip( cfg->m_ViewersDisplay.m_DisplayTextFill );
@@ -450,7 +450,7 @@ int PCB_VIEWER_TOOLS::MeasureTool( const TOOL_EVENT& aEvent )
 }
 
 
-int PCB_VIEWER_TOOLS::FootprintAutoZoom( const TOOL_EVENT& aEvent )
+int PCB_VIEWER_TOOLS::FootprintAutoZoom( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     PCB_VIEWERS_SETTINGS_BASE* cfg = dynamic_cast<PCB_VIEWERS_SETTINGS_BASE*>( frame()->config() );
 

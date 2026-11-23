@@ -393,7 +393,7 @@ bool DIALOG_LABEL_PROPERTIES::TransferDataToWindow()
 }
 
 
-void DIALOG_LABEL_PROPERTIES::OnEnterKey( wxCommandEvent& aEvent )
+void DIALOG_LABEL_PROPERTIES::OnEnterKey( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     wxPostEvent( this, wxCommandEvent( wxEVT_COMMAND_BUTTON_CLICKED, wxID_OK ) );
 }
@@ -716,7 +716,7 @@ void DIALOG_LABEL_PROPERTIES::onSpinButton( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_LABEL_PROPERTIES::OnFormattingHelp( wxHyperlinkEvent& aEvent )
+void DIALOG_LABEL_PROPERTIES::OnFormattingHelp( wxHyperlinkEvent& aEvent [[maybe_unused]] )
 {
     m_helpWindow = SCH_LABEL_BASE::ShowSyntaxHelp( this );
 }
@@ -767,7 +767,7 @@ void DIALOG_LABEL_PROPERTIES::OnGridCellChanging( wxGridEvent& event )
 }
 
 
-void DIALOG_LABEL_PROPERTIES::OnAddField( wxCommandEvent& event )
+void DIALOG_LABEL_PROPERTIES::OnAddField( wxCommandEvent& event [[maybe_unused]] )
 {
     m_grid->OnAddRow(
             [&]() -> std::pair<int, int>
@@ -809,7 +809,7 @@ void DIALOG_LABEL_PROPERTIES::OnAddField( wxCommandEvent& event )
 }
 
 
-void DIALOG_LABEL_PROPERTIES::OnDeleteField( wxCommandEvent& event )
+void DIALOG_LABEL_PROPERTIES::OnDeleteField( wxCommandEvent& event [[maybe_unused]] )
 {
     m_grid->OnDeleteRows(
             [&]( int row )
@@ -834,7 +834,7 @@ void DIALOG_LABEL_PROPERTIES::OnDeleteField( wxCommandEvent& event )
 }
 
 
-void DIALOG_LABEL_PROPERTIES::OnMoveUp( wxCommandEvent& event )
+void DIALOG_LABEL_PROPERTIES::OnMoveUp( wxCommandEvent& event [[maybe_unused]] )
 {
     m_grid->OnMoveRowUp(
             [&]( int row )
@@ -849,7 +849,7 @@ void DIALOG_LABEL_PROPERTIES::OnMoveUp( wxCommandEvent& event )
 }
 
 
-void DIALOG_LABEL_PROPERTIES::OnMoveDown( wxCommandEvent& event )
+void DIALOG_LABEL_PROPERTIES::OnMoveDown( wxCommandEvent& event [[maybe_unused]] )
 {
     m_grid->OnMoveRowDown(
             [&]( int row )
@@ -864,7 +864,7 @@ void DIALOG_LABEL_PROPERTIES::OnMoveDown( wxCommandEvent& event )
 }
 
 
-void DIALOG_LABEL_PROPERTIES::OnUpdateUI( wxUpdateUIEvent& event )
+void DIALOG_LABEL_PROPERTIES::OnUpdateUI( wxUpdateUIEvent& event [[maybe_unused]] )
 {
     std::bitset<64> shownColumns = m_grid->GetShownColumns();
 
@@ -889,7 +889,7 @@ void DIALOG_LABEL_PROPERTIES::OnUpdateUI( wxUpdateUIEvent& event )
 }
 
 
-void DIALOG_LABEL_PROPERTIES::onMultiLabelCheck( wxCommandEvent& event )
+void DIALOG_LABEL_PROPERTIES::onMultiLabelCheck( wxCommandEvent& event [[maybe_unused]] )
 {
     bool multiLine = m_multilineAllowed && m_cbMultiLine->IsChecked();
 

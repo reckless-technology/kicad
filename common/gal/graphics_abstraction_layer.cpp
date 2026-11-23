@@ -136,7 +136,7 @@ void GAL::DrawEllipseArc( const VECTOR2D& aCenterPoint, double aMajorRadius, dou
 }
 
 
-bool GAL::updatedGalDisplayOptions( const GAL_DISPLAY_OPTIONS& aOptions )
+bool GAL::updatedGalDisplayOptions( const GAL_DISPLAY_OPTIONS& aOptions [[maybe_unused]] )
 {
     bool refresh = false;
 
@@ -468,7 +468,7 @@ void GAL::BitmapText( const wxString& aText, const VECTOR2I& aPosition, const ED
 }
 
 
-bool GAL::SetNativeCursorStyle( KICURSOR aCursor, bool aHiDPI )
+bool GAL::SetNativeCursorStyle( KICURSOR aCursor, bool aHiDPI [[maybe_unused]] )
 {
     if( m_currentNativeCursor == aCursor )
         return false;

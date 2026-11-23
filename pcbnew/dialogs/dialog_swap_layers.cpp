@@ -47,8 +47,8 @@ public:
         }
     }
 
-    wxString GetValue( int row, int col ) override { return "undefined"; }
-    void SetValue( int row, int col, const wxString& value ) override { }
+    wxString GetValue( int row [[maybe_unused]], int col [[maybe_unused]] ) override { return "undefined"; }
+    void SetValue( int row [[maybe_unused]], int col [[maybe_unused]], const wxString& value [[maybe_unused]] ) override { }
 
     long GetValueAsLong( int row, int col ) override
     {

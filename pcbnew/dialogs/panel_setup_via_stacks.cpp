@@ -108,7 +108,7 @@ bool PANEL_SETUP_VIA_STACKS::editPreset( VIA_STACK_PRESET& aPreset )
 }
 
 
-void PANEL_SETUP_VIA_STACKS::onAdd( wxCommandEvent& aEvent )
+void PANEL_SETUP_VIA_STACKS::onAdd( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     wxString name;
 
@@ -183,7 +183,7 @@ void PANEL_SETUP_VIA_STACKS::onCellChanged( wxGridEvent& aEvent )
 }
 
 
-void PANEL_SETUP_VIA_STACKS::onEdit( wxCommandEvent& aEvent )
+void PANEL_SETUP_VIA_STACKS::onEdit( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( !m_grid->CommitPendingChanges() )
         return;
@@ -198,7 +198,7 @@ void PANEL_SETUP_VIA_STACKS::onEdit( wxCommandEvent& aEvent )
 }
 
 
-void PANEL_SETUP_VIA_STACKS::onRemove( wxCommandEvent& aEvent )
+void PANEL_SETUP_VIA_STACKS::onRemove( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( !m_grid->CommitPendingChanges() )
         return;

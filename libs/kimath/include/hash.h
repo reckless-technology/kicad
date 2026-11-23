@@ -25,7 +25,7 @@
  * This is a dummy function to take the final case of hash_combine below
  * @param seed
  */
-static inline constexpr void hash_combine( std::size_t& seed )
+static inline constexpr void hash_combine( std::size_t& seed [[maybe_unused]] )
 {
 }
 

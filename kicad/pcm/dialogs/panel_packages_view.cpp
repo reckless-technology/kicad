@@ -494,7 +494,7 @@ void PANEL_PACKAGES_VIEW::OnVersionsCellClicked( wxGridEvent& event )
 }
 
 
-void PANEL_PACKAGES_VIEW::OnDownloadVersionClicked( wxCommandEvent& event )
+void PANEL_PACKAGES_VIEW::OnDownloadVersionClicked( wxCommandEvent& event [[maybe_unused]] )
 {
     if( !canDownload() )
     {
@@ -577,7 +577,7 @@ void PANEL_PACKAGES_VIEW::OnDownloadVersionClicked( wxCommandEvent& event )
 }
 
 
-void PANEL_PACKAGES_VIEW::OnVersionActionClicked( wxCommandEvent& event )
+void PANEL_PACKAGES_VIEW::OnVersionActionClicked( wxCommandEvent& event [[maybe_unused]] )
 {
     if( !canRunAction() )
     {
@@ -623,7 +623,7 @@ void PANEL_PACKAGES_VIEW::OnVersionActionClicked( wxCommandEvent& event )
 }
 
 
-void PANEL_PACKAGES_VIEW::OnShowAllVersionsClicked( wxCommandEvent& event )
+void PANEL_PACKAGES_VIEW::OnShowAllVersionsClicked( wxCommandEvent& event [[maybe_unused]] )
 {
     if( m_currentSelected )
     {
@@ -635,7 +635,7 @@ void PANEL_PACKAGES_VIEW::OnShowAllVersionsClicked( wxCommandEvent& event )
 }
 
 
-void PANEL_PACKAGES_VIEW::OnSearchTextChanged( wxCommandEvent& event )
+void PANEL_PACKAGES_VIEW::OnSearchTextChanged( wxCommandEvent& event [[maybe_unused]] )
 {
     unsetPackageDetails();
 
@@ -762,7 +762,7 @@ PCM_PACKAGE_ACTION PANEL_PACKAGES_VIEW::getAction() const
 }
 
 
-void PANEL_PACKAGES_VIEW::OnSizeInfoBox( wxSizeEvent& aEvent )
+void PANEL_PACKAGES_VIEW::OnSizeInfoBox( wxSizeEvent& aEvent [[maybe_unused]] )
 {
     wxSize infoSize = KIPLATFORM::UI::GetUnobscuredSize( m_infoText->GetParent() );
     infoSize.x -= 10;
@@ -811,7 +811,7 @@ void PANEL_PACKAGES_VIEW::OnInfoMouseWheel( wxMouseEvent& event )
 }
 
 
-void PANEL_PACKAGES_VIEW::SetSashOnIdle( wxIdleEvent& aEvent )
+void PANEL_PACKAGES_VIEW::SetSashOnIdle( wxIdleEvent& aEvent [[maybe_unused]] )
 {
     COMMON_SETTINGS* cfg = Pgm().GetCommonSettings();
     m_splitter1->SetSashPosition( cfg->m_PackageManager.sash_pos );
@@ -828,7 +828,7 @@ void PANEL_PACKAGES_VIEW::updateCommonState()
 }
 
 
-void PANEL_PACKAGES_VIEW::OnUpdateAllClicked( wxCommandEvent& event )
+void PANEL_PACKAGES_VIEW::OnUpdateAllClicked( wxCommandEvent& event [[maybe_unused]] )
 {
     // The map will be modified by the callback so we copy the list here
     std::vector<wxString> packages;

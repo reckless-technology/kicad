@@ -49,19 +49,19 @@ public:
     ~DIALOG_GLOBAL_EDIT_TEXT_AND_GRAPHICS() override;
 
 protected:
-    void OnReferenceFilterText( wxCommandEvent& event ) override
+    void OnReferenceFilterText( wxCommandEvent& event [[maybe_unused]] ) override
     {
         m_referenceFilterOpt->SetValue( true );
     }
-    void OnSymbolFilterText( wxCommandEvent& event ) override
+    void OnSymbolFilterText( wxCommandEvent& event [[maybe_unused]] ) override
     {
         m_symbolFilterOpt->SetValue( true );
     }
-    void OnFieldNameFilterText( wxCommandEvent& event ) override
+    void OnFieldNameFilterText( wxCommandEvent& event [[maybe_unused]] ) override
     {
         m_fieldnameFilterOpt->SetValue( true );
     }
-    void OnNetFilterText( wxCommandEvent& event ) override
+    void OnNetFilterText( wxCommandEvent& event [[maybe_unused]] ) override
     {
         m_netFilterOpt->SetValue( true );
     }
@@ -545,7 +545,7 @@ bool DIALOG_GLOBAL_EDIT_TEXT_AND_GRAPHICS::TransferDataFromWindow()
 }
 
 
-int SCH_EDIT_TOOL::GlobalEdit( const TOOL_EVENT& aEvent )
+int SCH_EDIT_TOOL::GlobalEdit( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     DIALOG_GLOBAL_EDIT_TEXT_AND_GRAPHICS dlg( m_frame );
     dlg.ShowModal();

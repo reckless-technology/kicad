@@ -113,13 +113,13 @@ const BOX2I PCB_TARGET::GetBoundingBox() const
 }
 
 
-std::shared_ptr<SHAPE> PCB_TARGET::GetEffectiveShape( PCB_LAYER_ID aLayer, FLASHING, DRC_CONSTRAINT_T ) const
+std::shared_ptr<SHAPE> PCB_TARGET::GetEffectiveShape( PCB_LAYER_ID aLayer [[maybe_unused]], FLASHING, DRC_CONSTRAINT_T ) const
 {
     return std::make_shared<SHAPE_CIRCLE>( m_pos, m_size / 2 );
 }
 
 
-wxString PCB_TARGET::GetItemDescription( UNITS_PROVIDER* aUnitsProvider, bool aFull ) const
+wxString PCB_TARGET::GetItemDescription( UNITS_PROVIDER* aUnitsProvider [[maybe_unused]], bool aFull [[maybe_unused]] ) const
 {
     // Targets are on *every* layer by definition
     return _( "Target" );

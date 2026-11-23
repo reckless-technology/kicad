@@ -2462,7 +2462,7 @@ void IDF3_BOARD::readBoardFile( const std::string& aFileName, bool aNoSubstitute
 }
 
 
-void IDF3_BOARD::readLibSection( std::istream& aLibFile, FILE_STATE& aLibState,
+void IDF3_BOARD::readLibSection( std::istream& aLibFile, FILE_STATE& aLibState [[maybe_unused]],
                                  IDF3_BOARD* aBoard )
 {
     if( aBoard == nullptr )

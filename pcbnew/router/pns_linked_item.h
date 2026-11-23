@@ -50,7 +50,7 @@ public:
 
     UNIQ_ID Uid() const { return m_uid; }
 
-    virtual void SetWidth( int aWidth )
+    virtual void SetWidth( int aWidth [[maybe_unused]] )
     {};
 
     virtual int Width() const

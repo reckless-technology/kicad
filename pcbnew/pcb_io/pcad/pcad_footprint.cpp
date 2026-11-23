@@ -214,7 +214,7 @@ static bool HasLine( std::vector<PCAD_LINE*>& vector, PCAD_LINE* line )
 }
 
 void PCAD_FOOTPRINT::DoLayerContentsObjects( XNODE* aNode, PCAD_FOOTPRINT* aFootprint,
-                                             PCAD_COMPONENTS_ARRAY* aList, wxStatusBar* aStatusBar,
+                                             PCAD_COMPONENTS_ARRAY* aList, wxStatusBar* aStatusBar [[maybe_unused]],
                                              const wxString& aDefaultMeasurementUnit,
                                              const wxString& aActualConversion )
 {

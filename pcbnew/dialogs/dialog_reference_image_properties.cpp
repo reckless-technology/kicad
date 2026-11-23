@@ -144,7 +144,7 @@ bool DIALOG_REFERENCE_IMAGE_PROPERTIES::TransferDataFromWindow()
 }
 
 
-void DIALOG_REFERENCE_IMAGE_PROPERTIES::onWidthChanged( wxCommandEvent& aEvent )
+void DIALOG_REFERENCE_IMAGE_PROPERTIES::onWidthChanged( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     double newWidth = m_width.GetDoubleValue();
 
@@ -163,7 +163,7 @@ void DIALOG_REFERENCE_IMAGE_PROPERTIES::onWidthChanged( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_REFERENCE_IMAGE_PROPERTIES::onHeightChanged( wxCommandEvent& aEvent )
+void DIALOG_REFERENCE_IMAGE_PROPERTIES::onHeightChanged( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     double newHeight = m_height.GetDoubleValue();
 
@@ -182,7 +182,7 @@ void DIALOG_REFERENCE_IMAGE_PROPERTIES::onHeightChanged( wxCommandEvent& aEvent 
 }
 
 
-void DIALOG_REFERENCE_IMAGE_PROPERTIES::onScaleChanged( wxCommandEvent& aEvent )
+void DIALOG_REFERENCE_IMAGE_PROPERTIES::onScaleChanged( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     double scale = m_imageEditor->GetScale();
 

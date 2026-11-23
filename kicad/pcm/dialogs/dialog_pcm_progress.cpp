@@ -46,7 +46,7 @@ DIALOG_PCM_PROGRESS::DIALOG_PCM_PROGRESS( wxWindow* parent, bool aShowDownloadSe
 }
 
 
-void DIALOG_PCM_PROGRESS::OnCancelClicked( wxCommandEvent& event )
+void DIALOG_PCM_PROGRESS::OnCancelClicked( wxCommandEvent& event [[maybe_unused]] )
 {
     SetNumPhases( 1 );
     SetPackageProgress( 1, 1 );
@@ -57,7 +57,7 @@ void DIALOG_PCM_PROGRESS::OnCancelClicked( wxCommandEvent& event )
 }
 
 
-void DIALOG_PCM_PROGRESS::OnCloseClicked( wxCommandEvent& event )
+void DIALOG_PCM_PROGRESS::OnCloseClicked( wxCommandEvent& event [[maybe_unused]] )
 {
     m_progress.store( m_maxProgress );
 }

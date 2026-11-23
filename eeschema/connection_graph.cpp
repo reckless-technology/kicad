@@ -274,7 +274,7 @@ static int compareDrivers( SCH_ITEM* aA, SCH_CONNECTION* aAConn, const wxString&
 }
 
 
-bool CONNECTION_SUBGRAPH::ResolveDrivers( bool aCheckMultipleDrivers )
+bool CONNECTION_SUBGRAPH::ResolveDrivers( bool aCheckMultipleDrivers [[maybe_unused]] )
 {
     std::lock_guard lock( m_driver_mutex );
 

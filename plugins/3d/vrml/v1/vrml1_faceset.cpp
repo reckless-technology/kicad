@@ -56,21 +56,21 @@ WRL1FACESET::~WRL1FACESET()
 }
 
 
-bool WRL1FACESET::AddRefNode( WRL1NODE* aNode )
+bool WRL1FACESET::AddRefNode( WRL1NODE* aNode [[maybe_unused]] )
 {
     // this node may not own or reference any other node
     wxCHECK_MSG( false, false, wxT( "AddRefNode is not applicable." ) );
 }
 
 
-bool WRL1FACESET::AddChildNode( WRL1NODE* aNode )
+bool WRL1FACESET::AddChildNode( WRL1NODE* aNode [[maybe_unused]] )
 {
     // this node may not own or reference any other node
     wxCHECK_MSG( false, false, wxT( "AddChildNode is not applicable." ) );
 }
 
 
-bool WRL1FACESET::Read( WRLPROC& proc, WRL1BASE* aTopNode )
+bool WRL1FACESET::Read( WRLPROC& proc, WRL1BASE* aTopNode [[maybe_unused]] )
 {
     char tok = proc.Peek();
 

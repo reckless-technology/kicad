@@ -922,7 +922,7 @@ bool GERBER_DRAW_ITEM::HitTest( const VECTOR2I& aRefPos, int aAccuracy ) const
 }
 
 
-bool GERBER_DRAW_ITEM::HitTest( const BOX2I& aRefArea, bool aContained, int aAccuracy ) const
+bool GERBER_DRAW_ITEM::HitTest( const BOX2I& aRefArea, bool aContained [[maybe_unused]], int aAccuracy [[maybe_unused]] ) const
 {
     VECTOR2I pos = GetABPosition( m_Start );
 
@@ -1023,7 +1023,7 @@ INSPECT_RESULT GERBER_DRAW_ITEM::Visit( INSPECTOR inspector, void* testData,
 }
 
 
-wxString GERBER_DRAW_ITEM::GetItemDescription( UNITS_PROVIDER* aUnitsProvider, bool aFull ) const
+wxString GERBER_DRAW_ITEM::GetItemDescription( UNITS_PROVIDER* aUnitsProvider [[maybe_unused]], bool aFull [[maybe_unused]] ) const
 {
     wxString layerName = GERBER_FILE_IMAGE_LIST::GetImagesList().GetDisplayName( GetLayer(), true );
 

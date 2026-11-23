@@ -39,25 +39,25 @@ DIALOG_UPDATE_NOTICE::DIALOG_UPDATE_NOTICE( wxWindow* aWindow, const wxString& a
 }
 
 
-void DIALOG_UPDATE_NOTICE::OnSkipThisVersionClicked( wxCommandEvent& aEvent )
+void DIALOG_UPDATE_NOTICE::OnSkipThisVersionClicked( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     EndModal( wxID_NO );
 }
 
 
-void DIALOG_UPDATE_NOTICE::OnBtnRemindMeClicked( wxCommandEvent& aEvent )
+void DIALOG_UPDATE_NOTICE::OnBtnRemindMeClicked( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     EndModal( wxID_RETRY );
 }
 
 
-void DIALOG_UPDATE_NOTICE::OnBtnDetailsPageClicked( wxCommandEvent& aEvent )
+void DIALOG_UPDATE_NOTICE::OnBtnDetailsPageClicked( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     wxLaunchDefaultBrowser( m_detailsUrl, wxBROWSER_NEW_WINDOW );
 }
 
 
-void DIALOG_UPDATE_NOTICE::OnBtnDownloadsPageClicked( wxCommandEvent& aEvent )
+void DIALOG_UPDATE_NOTICE::OnBtnDownloadsPageClicked( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     wxLaunchDefaultBrowser( m_downloadsUrl, wxBROWSER_NEW_WINDOW );
     EndModal( wxID_YES );

@@ -322,7 +322,7 @@ DRAWING_TOOL::~DRAWING_TOOL()
 bool DRAWING_TOOL::Init()
 {
     auto haveHighlight =
-            [this]( const SELECTION& sel )
+            [this]( const SELECTION& sel [[maybe_unused]] )
             {
                 KIGFX::RENDER_SETTINGS* cfg = m_toolMgr->GetView()->GetPainter()->GetSettings();
 
@@ -330,14 +330,14 @@ bool DRAWING_TOOL::Init()
             };
 
     auto activeToolFunctor =
-            [this]( const SELECTION& aSel )
+            [this]( const SELECTION& aSel [[maybe_unused]] )
             {
                 return m_mode != MODE::NONE;
             };
 
     // some interactive drawing tools can undo the last point
     auto canUndoPoint =
-            [this]( const SELECTION& aSel )
+            [this]( const SELECTION& aSel [[maybe_unused]] )
             {
                 return (   m_mode == MODE::ARC
                         || m_mode == MODE::ELLIPSE_ARC
@@ -350,7 +350,7 @@ bool DRAWING_TOOL::Init()
 
     // functor for tools that can automatically close the outline
     auto canCloseOutline =
-            [this]( const SELECTION& aSel )
+            [this]( const SELECTION& aSel [[maybe_unused]] )
             {
                  return (   m_mode == MODE::ZONE
                          || m_mode == MODE::KEEPOUT
@@ -358,14 +358,14 @@ bool DRAWING_TOOL::Init()
             };
 
     auto arcToolActive =
-            [this]( const SELECTION& aSel )
+            [this]( const SELECTION& aSel [[maybe_unused]] )
             {
                 return m_mode == MODE::ARC;
             };
 
     // managed shape loops (arc, ellipse arc, bezier) can be finished early
     auto canFinishShape =
-            [this]( const SELECTION& aSel )
+            [this]( const SELECTION& aSel [[maybe_unused]] )
             {
                 return (   m_mode == MODE::ARC
                         || m_mode == MODE::ELLIPSE_ARC
@@ -373,19 +373,19 @@ bool DRAWING_TOOL::Init()
             };
 
     auto viaToolActive =
-            [this]( const SELECTION& aSel )
+            [this]( const SELECTION& aSel [[maybe_unused]] )
             {
                 return m_mode == MODE::VIA;
             };
 
     auto tuningToolActive =
-            [this]( const SELECTION& aSel )
+            [this]( const SELECTION& aSel [[maybe_unused]] )
             {
                 return m_mode == MODE::TUNING;
             };
 
     auto dimensionToolActive =
-            [this]( const SELECTION& aSel )
+            [this]( const SELECTION& aSel [[maybe_unused]] )
             {
                 return m_mode == MODE::DIMENSION;
             };
@@ -2286,7 +2286,7 @@ int DRAWING_TOOL::DrawDimension( const TOOL_EVENT& aEvent )
 }
 
 
-int DRAWING_TOOL::ConvertImageToOutlines( const TOOL_EVENT& aEvent )
+int DRAWING_TOOL::ConvertImageToOutlines( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( m_inDrawingTool )
         return 0;

@@ -131,7 +131,7 @@ private:
         }
     }
 
-    void onDismiss( wxHyperlinkEvent& aEvent )
+    void onDismiss( wxHyperlinkEvent& aEvent [[maybe_unused]] )
     {
         CallAfter(
                 [this]()

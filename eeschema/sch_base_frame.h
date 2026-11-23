@@ -149,7 +149,7 @@ public:
         static VECTOR2I zero;
         return zero;
     }
-    void SetGridOrigin( const VECTOR2I& aPoint ) override {}
+    void SetGridOrigin( const VECTOR2I& aPoint [[maybe_unused]] ) override {}
 
     const TITLE_BLOCK& GetTitleBlock() const override;
     void SetTitleBlock( const TITLE_BLOCK& aTitleBlock ) override;
@@ -311,7 +311,7 @@ protected:
     /**
      * Return true if reloading library @a aLibNickname from disk would discard unsaved edits.
      */
-    virtual bool hasUnsavedLibraryEdits( const wxString& aLibNickname ) const
+    virtual bool hasUnsavedLibraryEdits( const wxString& aLibNickname [[maybe_unused]] ) const
     {
         return GetScreen() && GetScreen()->IsContentModified();
     }

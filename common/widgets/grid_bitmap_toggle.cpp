@@ -58,8 +58,8 @@ void GRID_BITMAP_TOGGLE_RENDERER::Draw( wxGrid& aGrid, wxGridCellAttr& aAttr, wx
 }
 
 
-wxSize GRID_BITMAP_TOGGLE_RENDERER::GetBestSize( wxGrid& aGrid, wxGridCellAttr& aAttr, wxDC& aDc,
-                                                 int aRow, int aCol)
+wxSize GRID_BITMAP_TOGGLE_RENDERER::GetBestSize( wxGrid& aGrid, wxGridCellAttr& aAttr [[maybe_unused]], wxDC& aDc [[maybe_unused]],
+                                                 int aRow [[maybe_unused]], int aCol [[maybe_unused]])
 {
     return m_bitmapChecked.GetPreferredBitmapSizeFor( &aGrid );
 }

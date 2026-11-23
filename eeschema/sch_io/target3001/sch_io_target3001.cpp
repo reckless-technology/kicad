@@ -44,7 +44,7 @@ bool SCH_IO_TARGET3001::CanReadSchematicFile( const wxString& aFileName ) const
 
 SCH_SHEET* SCH_IO_TARGET3001::LoadSchematicFile( const wxString& aFileName, SCHEMATIC* aSchematic,
                                                  SCH_SHEET*                         aAppendToMe,
-                                                 const std::map<std::string, UTF8>* aProperties )
+                                                 const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     wxASSERT( !aFileName.IsEmpty() && aSchematic != nullptr );
 

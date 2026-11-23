@@ -76,7 +76,7 @@ void PANEL_BOM_PRESETS::BuildGrid()
 }
 
 
-void PANEL_BOM_PRESETS::OnDeleteBomPreset( wxCommandEvent& event )
+void PANEL_BOM_PRESETS::OnDeleteBomPreset( wxCommandEvent& event [[maybe_unused]] )
 {
     m_bomPresetsGrid->OnDeleteRows(
             [&]( int row )
@@ -87,7 +87,7 @@ void PANEL_BOM_PRESETS::OnDeleteBomPreset( wxCommandEvent& event )
 }
 
 
-void PANEL_BOM_PRESETS::OnDeleteBomFmtPreset( wxCommandEvent& event )
+void PANEL_BOM_PRESETS::OnDeleteBomFmtPreset( wxCommandEvent& event [[maybe_unused]] )
 {
     m_bomFmtPresetsGrid->OnDeleteRows(
             [&]( int row )

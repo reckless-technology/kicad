@@ -549,7 +549,7 @@ wxString PCB_TEXTBOX::GetShownText( RESOLUTION_CONTEXT aContext, int aDepth ) co
 }
 
 
-bool PCB_TEXTBOX::Matches( const EDA_SEARCH_DATA& aSearchData, void* aAuxData ) const
+bool PCB_TEXTBOX::Matches( const EDA_SEARCH_DATA& aSearchData, void* aAuxData [[maybe_unused]] ) const
 {
     return BOARD_ITEM::Matches( UnescapeString( GetText() ), aSearchData );
 }
@@ -779,8 +779,8 @@ void PCB_TEXTBOX::syncLibCoords()
 }
 
 
-void PCB_TEXTBOX::OnFootprintRescaled( double aRatioX, double aRatioY, double aLinearFactor, const VECTOR2I& aAnchor,
-                                       const EDA_ANGLE& aParentRotate )
+void PCB_TEXTBOX::OnFootprintRescaled( double aRatioX [[maybe_unused]], double aRatioY [[maybe_unused]], double aLinearFactor [[maybe_unused]], const VECTOR2I& aAnchor [[maybe_unused]],
+                                       const EDA_ANGLE& aParentRotate [[maybe_unused]] )
 {
     OnFootprintTransformed();
 }
@@ -829,7 +829,7 @@ bool PCB_TEXTBOX::HitTest( const SHAPE_LINE_CHAIN& aPoly, bool aContained ) cons
 }
 
 
-wxString PCB_TEXTBOX::GetItemDescription( UNITS_PROVIDER* aUnitsProvider, bool aFull ) const
+wxString PCB_TEXTBOX::GetItemDescription( UNITS_PROVIDER* aUnitsProvider [[maybe_unused]], bool aFull ) const
 {
     return wxString::Format( _( "PCB text box '%s' on %s" ),
                              aFull ? GetShownText( FOR_GUI ) : KIUI::EllipsizeMenuText( GetText() ),
@@ -960,8 +960,8 @@ double PCB_TEXTBOX::GetCoverageArea( int aTextMargin ) const
 }
 
 
-void PCB_TEXTBOX::TransformShapeToPolygon( SHAPE_POLY_SET& aBuffer, PCB_LAYER_ID aLayer, int aClearance, int aMaxError,
-                                           ERROR_LOC aErrorLoc, bool aIgnoreLineWidth ) const
+void PCB_TEXTBOX::TransformShapeToPolygon( SHAPE_POLY_SET& aBuffer, PCB_LAYER_ID aLayer [[maybe_unused]], int aClearance, int aMaxError,
+                                           ERROR_LOC aErrorLoc, bool aIgnoreLineWidth [[maybe_unused]] ) const
 {
     // Don't use PCB_SHAPE::TransformShapeToPolygon.  We want to treat the textbox as filled even
     // if there's no background colour.

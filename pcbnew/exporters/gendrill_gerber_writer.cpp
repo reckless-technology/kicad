@@ -207,7 +207,7 @@ static void convertOblong2Segment( const VECTOR2I& aSize, const EDA_ANGLE& aOrie
 #endif
 
 int GERBER_WRITER::createProtectionFile( const wxString& aFullFilename, IPC4761_FEATURES aFeature,
-                                         DRILL_LAYER_PAIR aLayerPair )
+                                         DRILL_LAYER_PAIR aLayerPair [[maybe_unused]] )
 {
     GERBER_PLOTTER plotter;
     // Gerber drill file imply X2 format:

@@ -115,7 +115,7 @@ public:
         return result;
     }
 
-    std::vector<wxString> GetConstraintClauses( const RULE_GENERATION_CONTEXT& aContext ) const override
+    std::vector<wxString> GetConstraintClauses( const RULE_GENERATION_CONTEXT& aContext [[maybe_unused]] ) const override
     {
         auto formatDimension = []( double aValue )
         {

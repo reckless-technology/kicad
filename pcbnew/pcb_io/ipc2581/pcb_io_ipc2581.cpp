@@ -671,7 +671,7 @@ size_t PCB_IO_IPC2581::lineHash( int aWidth, LINE_STYLE aDashType )
 }
 
 
-wxXmlNode* PCB_IO_IPC2581::generateContentStackup( wxXmlNode* aContentNode )
+wxXmlNode* PCB_IO_IPC2581::generateContentStackup( wxXmlNode* aContentNode [[maybe_unused]] )
 {
     const BOARD_STACKUP& stackup = m_fabStackup->Stackup();
 

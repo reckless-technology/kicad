@@ -242,7 +242,7 @@ int DIALOG_ERC::getSeverities()
 }
 
 
-void DIALOG_ERC::OnMenu( wxCommandEvent& event )
+void DIALOG_ERC::OnMenu( wxCommandEvent& event [[maybe_unused]] )
 {
     // Build a pop menu:
     wxMenu menu;
@@ -405,7 +405,7 @@ void DIALOG_ERC::updateDisplayedCounts()
 }
 
 
-void DIALOG_ERC::OnDeleteOneClick( wxCommandEvent& aEvent )
+void DIALOG_ERC::OnDeleteOneClick( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( m_notebook->GetSelection() == 0 )
     {
@@ -422,7 +422,7 @@ void DIALOG_ERC::OnDeleteOneClick( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_ERC::OnDeleteAllClick( wxCommandEvent& event )
+void DIALOG_ERC::OnDeleteAllClick( wxCommandEvent& event [[maybe_unused]] )
 {
     bool   includeExclusions = false;
     size_t numExcluded = m_parent->Schematic().GetUnresolvedERCExclusionCount();
@@ -486,13 +486,13 @@ void DIALOG_ERC::OnCloseErcDialog( wxCloseEvent& aEvent )
 }
 
 
-void DIALOG_ERC::OnLinkClicked( wxHtmlLinkEvent& event )
+void DIALOG_ERC::OnLinkClicked( wxHtmlLinkEvent& event [[maybe_unused]] )
 {
     m_parent->OnAnnotate();
 }
 
 
-void DIALOG_ERC::OnRunERCClick( wxCommandEvent& event )
+void DIALOG_ERC::OnRunERCClick( wxCommandEvent& event [[maybe_unused]] )
 {
     wxBusyCursor busy;
 
@@ -1082,7 +1082,7 @@ void DIALOG_ERC::SelectMarker( const SCH_MARKER* aMarker )
 }
 
 
-void DIALOG_ERC::centerMarkerIdleHandler( wxIdleEvent& aEvent )
+void DIALOG_ERC::centerMarkerIdleHandler( wxIdleEvent& aEvent [[maybe_unused]] )
 {
     if( m_markerTreeModel->GetView()->IsFrozen() )
         return;
@@ -1127,7 +1127,7 @@ void DIALOG_ERC::ExcludeMarker( SCH_MARKER* aMarker )
 }
 
 
-void DIALOG_ERC::OnEditViolationSeverities( wxHyperlinkEvent& aEvent )
+void DIALOG_ERC::OnEditViolationSeverities( wxHyperlinkEvent& aEvent [[maybe_unused]] )
 {
     m_parent->ShowSchematicSetupDialog( _( "Violation Severity" ) );
 }
@@ -1168,7 +1168,7 @@ void DIALOG_ERC::DeleteAllMarkers( bool aIncludeExclusions )
 }
 
 
-void DIALOG_ERC::OnSaveReport( wxCommandEvent& aEvent )
+void DIALOG_ERC::OnSaveReport( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     wxFileName fn( wxS( "ERC." ) + wxString( FILEEXT::ReportFileExtension ) );
 

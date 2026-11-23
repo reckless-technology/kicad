@@ -281,7 +281,7 @@ void DRC_TEST_PROVIDER_MISC::testDisabledLayers()
     int       items = 0;
 
     auto countItems =
-            [&]( BOARD_ITEM* item ) -> bool
+            [&]( BOARD_ITEM* item [[maybe_unused]] ) -> bool
             {
                 ++items;
                 return true;
@@ -499,7 +499,7 @@ void DRC_TEST_PROVIDER_MISC::testTextVars()
             };
 
     forEachGeometryItem( itemTypes, LSET::AllLayersMask(),
-            [&]( BOARD_ITEM* item ) -> bool
+            [&]( BOARD_ITEM* item [[maybe_unused]] ) -> bool
             {
                 ++items;
                 return true;

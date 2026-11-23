@@ -61,32 +61,32 @@ public:
     void SetDebugEnabled( bool aEnabled ) { m_debugEnabled = aEnabled;}
     bool IsDebugEnabled() const { return m_debugEnabled; }
 
-    virtual void SetIteration( int iter ) {};
+    virtual void SetIteration( int iter [[maybe_unused]] ) {};
 
-    virtual void Message( const wxString& msg,
-                          const SRC_LOCATION_INFO& aSrcLoc = SRC_LOCATION_INFO() ){};
+    virtual void Message( const wxString& msg [[maybe_unused]],
+                          const SRC_LOCATION_INFO& aSrcLoc [[maybe_unused]] = SRC_LOCATION_INFO() ){};
 
-    virtual void NewStage( const wxString& name, int iter,
-                           const SRC_LOCATION_INFO& aSrcLoc = SRC_LOCATION_INFO() ){};
+    virtual void NewStage( const wxString& name [[maybe_unused]], int iter [[maybe_unused]],
+                           const SRC_LOCATION_INFO& aSrcLoc [[maybe_unused]] = SRC_LOCATION_INFO() ){};
 
-    virtual void BeginGroup( const wxString& name, int aLevel = 0,
-                             const SRC_LOCATION_INFO& aSrcLoc = SRC_LOCATION_INFO() ){};
+    virtual void BeginGroup( const wxString& name [[maybe_unused]], int aLevel [[maybe_unused]] = 0,
+                             const SRC_LOCATION_INFO& aSrcLoc [[maybe_unused]] = SRC_LOCATION_INFO() ){};
 
-    virtual void EndGroup( const SRC_LOCATION_INFO& aSrcLoc = SRC_LOCATION_INFO() ){};
+    virtual void EndGroup( const SRC_LOCATION_INFO& aSrcLoc [[maybe_unused]] = SRC_LOCATION_INFO() ){};
 
-    virtual void AddPoint( const VECTOR2I& aP, const KIGFX::COLOR4D& aColor, int aSize,
-                           const wxString& aName = wxT( "" ),
-                           const SRC_LOCATION_INFO& aSrcLoc = SRC_LOCATION_INFO() ){};
+    virtual void AddPoint( const VECTOR2I& aP [[maybe_unused]], const KIGFX::COLOR4D& aColor [[maybe_unused]], int aSize [[maybe_unused]],
+                           const wxString& aName [[maybe_unused]] = wxT( "" ),
+                           const SRC_LOCATION_INFO& aSrcLoc [[maybe_unused]] = SRC_LOCATION_INFO() ){};
 
-    virtual void AddItem( const ITEM* aItem, const KIGFX::COLOR4D& aColor,
-                         int aOverrideWidth = 0,
-                         const wxString& aName = wxT( "" ),
-                         const SRC_LOCATION_INFO& aSrcLoc = SRC_LOCATION_INFO() ) {};
+    virtual void AddItem( const ITEM* aItem [[maybe_unused]], const KIGFX::COLOR4D& aColor [[maybe_unused]],
+                         int aOverrideWidth [[maybe_unused]] = 0,
+                         const wxString& aName [[maybe_unused]] = wxT( "" ),
+                         const SRC_LOCATION_INFO& aSrcLoc [[maybe_unused]] = SRC_LOCATION_INFO() ) {};
 
-    virtual void AddShape( const SHAPE* aShape, const KIGFX::COLOR4D& aColor,
-                         int aOverrideWidth = 0,
-                         const wxString& aName = wxT( "" ),
-                         const SRC_LOCATION_INFO& aSrcLoc = SRC_LOCATION_INFO() ) {};
+    virtual void AddShape( const SHAPE* aShape [[maybe_unused]], const KIGFX::COLOR4D& aColor [[maybe_unused]],
+                         int aOverrideWidth [[maybe_unused]] = 0,
+                         const wxString& aName [[maybe_unused]] = wxT( "" ),
+                         const SRC_LOCATION_INFO& aSrcLoc [[maybe_unused]] = SRC_LOCATION_INFO() ) {};
 
     virtual void AddShape( const BOX2I& aBox, const KIGFX::COLOR4D& aColor, int aOverrideWidth = 0,
                            const wxString&          aName = wxT( "" ),

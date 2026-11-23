@@ -3163,7 +3163,7 @@ void CADSTAR_SCH_ARCHIVE_LOADER::applyTextCodeIfExists( EDA_TEXT*          aKiCa
 void CADSTAR_SCH_ARCHIVE_LOADER::applyTextSettings( EDA_TEXT*            aKiCadTextItem,
                                                     const TEXTCODE_ID&   aCadstarTextCodeID,
                                                     const ALIGNMENT&     aCadstarAlignment,
-                                                    const JUSTIFICATION& aCadstarJustification,
+                                                    const JUSTIFICATION& aCadstarJustification [[maybe_unused]],
                                                     const long long      aCadstarOrientAngle,
                                                     bool                 aMirrored )
 {

@@ -44,7 +44,7 @@ public:
     void RebuildParameters( FOOTPRINT_WIZARD* aWizard );
 
 protected:
-    wxPGProperty* createPGProperty( const PROPERTY_BASE* aProperty ) const override { return nullptr; }
+    wxPGProperty* createPGProperty( const PROPERTY_BASE* aProperty [[maybe_unused]] ) const override { return nullptr; }
     wxPGProperty* createPGProperty( WIZARD_PARAMETER* aParam ) const;
     void valueChanging( wxPropertyGridEvent& aEvent ) override;
     void valueChanged( wxPropertyGridEvent& aEvent ) override;

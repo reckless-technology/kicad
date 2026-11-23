@@ -366,7 +366,7 @@ bool BOARD_NETLIST_UPDATER::updateComponentClass( FOOTPRINT* aFootprint, COMPONE
 }
 
 
-FOOTPRINT* BOARD_NETLIST_UPDATER::replaceFootprint( NETLIST& aNetlist, FOOTPRINT* aFootprint,
+FOOTPRINT* BOARD_NETLIST_UPDATER::replaceFootprint( NETLIST& aNetlist [[maybe_unused]], FOOTPRINT* aFootprint,
                                                     COMPONENT* aNewComponent )
 {
     wxString msg;

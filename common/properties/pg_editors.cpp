@@ -340,8 +340,8 @@ wxPGWindowList PG_CHECKBOX_EDITOR::CreateControls( wxPropertyGrid* aGrid, wxPGPr
 }
 
 
-bool PG_COLOR_EDITOR::OnEvent( wxPropertyGrid* aGrid, wxPGProperty* aProperty, wxWindow* aWindow,
-                               wxEvent& aEvent ) const
+bool PG_COLOR_EDITOR::OnEvent( wxPropertyGrid* aGrid [[maybe_unused]], wxPGProperty* aProperty [[maybe_unused]], wxWindow* aWindow [[maybe_unused]],
+                               wxEvent& aEvent [[maybe_unused]] ) const
 {
     return false;
 }
@@ -368,7 +368,7 @@ wxPGWindowList PG_COLOR_EDITOR::CreateControls( wxPropertyGrid* aGrid, wxPGPrope
     wxString propName = colorProp->GetName();
 
     editor->Bind( COLOR_SWATCH_CHANGED,
-                  [=]( wxCommandEvent& aEvt )
+                  [=]( wxCommandEvent& aEvt [[maybe_unused]] )
                   {
                       wxPGProperty* prop = aGrid->GetPropertyByName( propName );
 
@@ -431,7 +431,7 @@ KIGFX::COLOR4D PG_COLOR_EDITOR::colorFromProperty( wxPGProperty* aProperty ) con
 }
 
 
-bool PG_RATIO_EDITOR::GetValueFromControl( wxVariant& aVariant, wxPGProperty* aProperty,
+bool PG_RATIO_EDITOR::GetValueFromControl( wxVariant& aVariant, wxPGProperty* aProperty [[maybe_unused]],
                                            wxWindow* aCtrl ) const
 {
     wxTextCtrl* textCtrl = dynamic_cast<wxTextCtrl*>( aCtrl );

@@ -50,21 +50,21 @@ WRL1COORDS::~WRL1COORDS()
 }
 
 
-bool WRL1COORDS::AddRefNode( WRL1NODE* aNode )
+bool WRL1COORDS::AddRefNode( WRL1NODE* aNode [[maybe_unused]] )
 {
     // this node may not own or reference any other node
     wxCHECK_MSG( false, false, wxT( "AddRefNode is not applicable." ) );
 }
 
 
-bool WRL1COORDS::AddChildNode( WRL1NODE* aNode )
+bool WRL1COORDS::AddChildNode( WRL1NODE* aNode [[maybe_unused]] )
 {
     // this node may not own or reference any other node
     wxCHECK_MSG( false, false, wxT( "AddChildNode is not applicable." ) );
 }
 
 
-bool WRL1COORDS::Read( WRLPROC& proc, WRL1BASE* aTopNode )
+bool WRL1COORDS::Read( WRLPROC& proc, WRL1BASE* aTopNode [[maybe_unused]] )
 {
     char tok = proc.Peek();
 
@@ -173,7 +173,7 @@ void WRL1COORDS::GetCoords( WRLVEC3F*& aCoordList, size_t& aListSize )
 }
 
 
-SGNODE* WRL1COORDS::TranslateToSG( SGNODE* aParent, WRL1STATUS* sp )
+SGNODE* WRL1COORDS::TranslateToSG( SGNODE* aParent [[maybe_unused]], WRL1STATUS* sp )
 {
     wxCHECK_MSG( sp, nullptr, wxT( "Invalid base data." ) );
 

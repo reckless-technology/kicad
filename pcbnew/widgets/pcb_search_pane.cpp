@@ -85,7 +85,7 @@ void PCB_SEARCH_PANE::onBoardChanged( wxCommandEvent& event )
 }
 
 
-void PCB_SEARCH_PANE::OnBoardItemAdded( BOARD& aBoard, BOARD_ITEM* aBoardItem )
+void PCB_SEARCH_PANE::OnBoardItemAdded( BOARD& aBoard [[maybe_unused]], BOARD_ITEM* aBoardItem [[maybe_unused]] )
 {
     if( !IsShownOnScreen() )
         return;
@@ -94,7 +94,7 @@ void PCB_SEARCH_PANE::OnBoardItemAdded( BOARD& aBoard, BOARD_ITEM* aBoardItem )
 }
 
 
-void PCB_SEARCH_PANE::OnBoardItemsAdded( BOARD& aBoard, std::vector<BOARD_ITEM*>& aBoardItems )
+void PCB_SEARCH_PANE::OnBoardItemsAdded( BOARD& aBoard [[maybe_unused]], std::vector<BOARD_ITEM*>& aBoardItems [[maybe_unused]] )
 {
     if( !IsShownOnScreen() )
         return;
@@ -103,7 +103,7 @@ void PCB_SEARCH_PANE::OnBoardItemsAdded( BOARD& aBoard, std::vector<BOARD_ITEM*>
 }
 
 
-void PCB_SEARCH_PANE::OnBoardItemRemoved( BOARD& aBoard, BOARD_ITEM* aBoardItem )
+void PCB_SEARCH_PANE::OnBoardItemRemoved( BOARD& aBoard [[maybe_unused]], BOARD_ITEM* aBoardItem [[maybe_unused]] )
 {
     if( !IsShownOnScreen() )
         return;
@@ -112,7 +112,7 @@ void PCB_SEARCH_PANE::OnBoardItemRemoved( BOARD& aBoard, BOARD_ITEM* aBoardItem 
 }
 
 
-void PCB_SEARCH_PANE::OnBoardItemsRemoved( BOARD& aBoard, std::vector<BOARD_ITEM*>& aBoardItems )
+void PCB_SEARCH_PANE::OnBoardItemsRemoved( BOARD& aBoard [[maybe_unused]], std::vector<BOARD_ITEM*>& aBoardItems [[maybe_unused]] )
 {
     if( !IsShownOnScreen() )
         return;
@@ -121,21 +121,12 @@ void PCB_SEARCH_PANE::OnBoardItemsRemoved( BOARD& aBoard, std::vector<BOARD_ITEM
 }
 
 
-void PCB_SEARCH_PANE::OnBoardNetSettingsChanged( BOARD& aBoard )
+void PCB_SEARCH_PANE::OnBoardNetSettingsChanged( BOARD& aBoard [[maybe_unused]] )
 {
 }
 
 
-void PCB_SEARCH_PANE::OnBoardItemChanged( BOARD& aBoard, BOARD_ITEM* aBoardItem )
-{
-    if( !IsShownOnScreen() )
-        return;
-
-    RefreshSearch();
-}
-
-
-void PCB_SEARCH_PANE::OnBoardItemsChanged( BOARD& aBoard, std::vector<BOARD_ITEM*>& aBoardItems )
+void PCB_SEARCH_PANE::OnBoardItemChanged( BOARD& aBoard [[maybe_unused]], BOARD_ITEM* aBoardItem [[maybe_unused]] )
 {
     if( !IsShownOnScreen() )
         return;
@@ -144,12 +135,7 @@ void PCB_SEARCH_PANE::OnBoardItemsChanged( BOARD& aBoard, std::vector<BOARD_ITEM
 }
 
 
-void PCB_SEARCH_PANE::OnBoardHighlightNetChanged( BOARD& aBoard )
-{
-}
-
-
-void PCB_SEARCH_PANE::OnBoardRatsnestChanged( BOARD& aBoard )
+void PCB_SEARCH_PANE::OnBoardItemsChanged( BOARD& aBoard [[maybe_unused]], std::vector<BOARD_ITEM*>& aBoardItems [[maybe_unused]] )
 {
     if( !IsShownOnScreen() )
         return;
@@ -157,9 +143,23 @@ void PCB_SEARCH_PANE::OnBoardRatsnestChanged( BOARD& aBoard )
     RefreshSearch();
 }
 
-void PCB_SEARCH_PANE::OnBoardCompositeUpdate( BOARD& aBoard, std::vector<BOARD_ITEM*>& aAddedItems,
-                                              std::vector<BOARD_ITEM*>& aRemovedItems,
-                                              std::vector<BOARD_ITEM*>& aChangedItems )
+
+void PCB_SEARCH_PANE::OnBoardHighlightNetChanged( BOARD& aBoard [[maybe_unused]] )
+{
+}
+
+
+void PCB_SEARCH_PANE::OnBoardRatsnestChanged( BOARD& aBoard [[maybe_unused]] )
+{
+    if( !IsShownOnScreen() )
+        return;
+
+    RefreshSearch();
+}
+
+void PCB_SEARCH_PANE::OnBoardCompositeUpdate( BOARD& aBoard [[maybe_unused]], std::vector<BOARD_ITEM*>& aAddedItems [[maybe_unused]],
+                                              std::vector<BOARD_ITEM*>& aRemovedItems [[maybe_unused]],
+                                              std::vector<BOARD_ITEM*>& aChangedItems [[maybe_unused]] )
 {
     if( !IsShownOnScreen() )
         return;

@@ -277,13 +277,13 @@ void PCB_EDIT_FRAME::OnFileHistory( wxCommandEvent& event )
 }
 
 
-void PCB_EDIT_FRAME::OnClearFileHistory( wxCommandEvent& aEvent )
+void PCB_EDIT_FRAME::OnClearFileHistory( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     ClearFileHistory();
 }
 
 
-int BOARD_EDITOR_CONTROL::Open( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::Open( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     // Only standalone mode can directly load a new document
     if( !Kiface().IsSingle() )
@@ -299,7 +299,7 @@ int BOARD_EDITOR_CONTROL::Open( const TOOL_EVENT& aEvent )
 }
 
 
-int BOARD_EDITOR_CONTROL::OpenNonKicadBoard( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::OpenNonKicadBoard( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     // Note: we explicitly allow this even if not in standalone mode for now, even though it is dangerous.
     int      open_ctl = KICTL_NONKICAD_ONLY;
@@ -312,7 +312,7 @@ int BOARD_EDITOR_CONTROL::OpenNonKicadBoard( const TOOL_EVENT& aEvent )
 }
 
 
-int BOARD_EDITOR_CONTROL::Revert( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::Revert( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     wxFileName fn = m_frame->Prj().AbsolutePath( m_frame->GetBoard()->GetFileName() );
 
@@ -323,7 +323,7 @@ int BOARD_EDITOR_CONTROL::Revert( const TOOL_EVENT& aEvent )
 }
 
 
-int BOARD_EDITOR_CONTROL::New( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::New( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     // Only standalone mode can directly load a new document
     if( !Kiface().IsSingle() )
@@ -1296,7 +1296,7 @@ void PCB_EDIT_FRAME::reconcileImportedFootprintLibraries(
 }
 
 
-int BOARD_EDITOR_CONTROL::GenIPC2581File( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::GenIPC2581File( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     DIALOG_EXPORT_2581 dlg( m_frame );
 
@@ -1306,7 +1306,7 @@ int BOARD_EDITOR_CONTROL::GenIPC2581File( const TOOL_EVENT& aEvent )
 }
 
 
-int BOARD_EDITOR_CONTROL::GenerateODBPPFiles( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::GenerateODBPPFiles( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     DIALOG_EXPORT_ODBPP dlg( m_frame );
     dlg.ShowModal();

@@ -87,7 +87,7 @@ NET_GRID_TABLE::~NET_GRID_TABLE()
 }
 
 
-wxGridCellAttr* NET_GRID_TABLE::GetAttr( int aRow, int aCol, wxGridCellAttr::wxAttrKind )
+wxGridCellAttr* NET_GRID_TABLE::GetAttr( int aRow [[maybe_unused]], int aCol, wxGridCellAttr::wxAttrKind )
 {
     wxGridCellAttr* attr = nullptr;
 
@@ -148,7 +148,7 @@ void NET_GRID_TABLE::SetValue( int aRow, int aCol, const wxString& aValue )
 }
 
 
-wxString NET_GRID_TABLE::GetTypeName( int aRow, int aCol )
+wxString NET_GRID_TABLE::GetTypeName( int aRow [[maybe_unused]], int aCol )
 {
     switch( aCol )
     {
@@ -513,19 +513,19 @@ APPEARANCE_CONTROLS::APPEARANCE_CONTROLS( PCB_BASE_FRAME* aParent, wxWindow* aFo
             };
 
     m_rbHighContrastNormal->Bind( wxEVT_RADIOBUTTON,
-            [=]( wxCommandEvent& aEvent )
+            [=]( wxCommandEvent& aEvent [[maybe_unused]] )
             {
                 setHighContrastMode( HIGH_CONTRAST_MODE::NORMAL );
             } );
 
     m_rbHighContrastDim->Bind( wxEVT_RADIOBUTTON,
-            [=]( wxCommandEvent& aEvent )
+            [=]( wxCommandEvent& aEvent [[maybe_unused]] )
             {
                 setHighContrastMode( HIGH_CONTRAST_MODE::DIMMED );
             } );
 
     m_rbHighContrastOff->Bind( wxEVT_RADIOBUTTON,
-            [=]( wxCommandEvent& aEvent )
+            [=]( wxCommandEvent& aEvent [[maybe_unused]] )
             {
                 setHighContrastMode( HIGH_CONTRAST_MODE::HIDDEN );
             } );
@@ -533,13 +533,13 @@ APPEARANCE_CONTROLS::APPEARANCE_CONTROLS( PCB_BASE_FRAME* aParent, wxWindow* aFo
     m_cbLayerPresets->Bind( wxEVT_CHOICE, &APPEARANCE_CONTROLS::onLayerPresetChanged, this );
 
     m_btnNetInspector->Bind( wxEVT_BUTTON,
-            [&]( wxCommandEvent& aEvent )
+            [&]( wxCommandEvent& aEvent [[maybe_unused]] )
             {
                 m_frame->GetToolManager()->RunAction( PCB_ACTIONS::showNetInspector );
             } );
 
     m_btnConfigureNetClasses->Bind( wxEVT_BUTTON,
-            [&]( wxCommandEvent& aEvent )
+            [&]( wxCommandEvent& aEvent [[maybe_unused]] )
             {
                 // This panel should only be visible in the PCB_EDIT_FRAME anyway
                 if( PCB_EDIT_FRAME* editframe = dynamic_cast<PCB_EDIT_FRAME*>( m_frame ) )
@@ -550,7 +550,7 @@ APPEARANCE_CONTROLS::APPEARANCE_CONTROLS( PCB_BASE_FRAME* aParent, wxWindow* aFo
 
     m_cbFlipBoard->SetValue( m_frame->GetDisplayOptions().m_FlipBoardView );
     m_cbFlipBoard->Bind( wxEVT_CHECKBOX,
-            [&]( wxCommandEvent& aEvent )
+            [&]( wxCommandEvent& aEvent [[maybe_unused]] )
             {
                 m_frame->GetToolManager()->RunAction( PCB_ACTIONS::flipBoard );
                 syncLayerPresetSelection();
@@ -703,7 +703,7 @@ void APPEARANCE_CONTROLS::createControls()
     m_panelLayersSizer->Add( m_paneLayerDisplayOptions, 0, wxEXPAND | wxTOP | wxLEFT | wxRIGHT, 3 );
 
     m_paneLayerDisplayOptions->Bind( WX_COLLAPSIBLE_PANE_CHANGED,
-                                     [&]( wxCommandEvent& aEvent )
+                                     [&]( wxCommandEvent& aEvent [[maybe_unused]] )
                                      {
                                          Freeze();
                                          m_panelLayers->Fit();
@@ -813,7 +813,7 @@ void APPEARANCE_CONTROLS::createControls()
     m_netsTabOuterSizer->Add( m_paneNetDisplayOptions, 0, wxEXPAND | wxTOP, 5 );
 
     m_paneNetDisplayOptions->Bind( WX_COLLAPSIBLE_PANE_CHANGED,
-                                   [&]( wxCommandEvent& aEvent )
+                                   [&]( wxCommandEvent& aEvent [[maybe_unused]] )
                                    {
                                        Freeze();
                                        m_panelNetsAndClasses->Fit();
@@ -852,7 +852,7 @@ bool APPEARANCE_CONTROLS::IsNetOptionsExpanded()
 }
 
 
-void APPEARANCE_CONTROLS::OnNotebookPageChanged( wxNotebookEvent& aEvent )
+void APPEARANCE_CONTROLS::OnNotebookPageChanged( wxNotebookEvent& aEvent [[maybe_unused]] )
 {
     // Work around wxMac issue where the notebook pages are blank
 #ifdef __WXMAC__
@@ -876,7 +876,7 @@ void APPEARANCE_CONTROLS::OnNotebookPageChanged( wxNotebookEvent& aEvent )
 }
 
 
-void APPEARANCE_CONTROLS::idleFocusHandler( wxIdleEvent& aEvent )
+void APPEARANCE_CONTROLS::idleFocusHandler( wxIdleEvent& aEvent [[maybe_unused]] )
 {
     passOnFocus();
     Unbind( wxEVT_IDLE, &APPEARANCE_CONTROLS::idleFocusHandler, this );
@@ -1125,7 +1125,7 @@ void APPEARANCE_CONTROLS::OnBoardChanged()
 }
 
 
-void APPEARANCE_CONTROLS::OnBoardNetSettingsChanged( BOARD& aBoard )
+void APPEARANCE_CONTROLS::OnBoardNetSettingsChanged( BOARD& aBoard [[maybe_unused]] )
 {
     handleBoardItemsChanged();
 }
@@ -1164,49 +1164,49 @@ bool APPEARANCE_CONTROLS::doesBoardItemNeedRebuild( std::vector<BOARD_ITEM*>& aB
 }
 
 
-void APPEARANCE_CONTROLS::OnBoardItemAdded( BOARD& aBoard, BOARD_ITEM* aItem )
+void APPEARANCE_CONTROLS::OnBoardItemAdded( BOARD& aBoard [[maybe_unused]], BOARD_ITEM* aItem )
 {
     if( doesBoardItemNeedRebuild( aItem ) )
         handleBoardItemsChanged();
 }
 
 
-void APPEARANCE_CONTROLS::OnBoardItemsAdded( BOARD& aBoard, std::vector<BOARD_ITEM*>& aItems )
+void APPEARANCE_CONTROLS::OnBoardItemsAdded( BOARD& aBoard [[maybe_unused]], std::vector<BOARD_ITEM*>& aItems )
 {
     if( doesBoardItemNeedRebuild( aItems ) )
         handleBoardItemsChanged();
 }
 
 
-void APPEARANCE_CONTROLS::OnBoardItemRemoved( BOARD& aBoard, BOARD_ITEM* aItem )
+void APPEARANCE_CONTROLS::OnBoardItemRemoved( BOARD& aBoard [[maybe_unused]], BOARD_ITEM* aItem )
 {
     if( doesBoardItemNeedRebuild( aItem ) )
         handleBoardItemsChanged();
 }
 
 
-void APPEARANCE_CONTROLS::OnBoardItemsRemoved( BOARD& aBoard, std::vector<BOARD_ITEM*>& aItems )
+void APPEARANCE_CONTROLS::OnBoardItemsRemoved( BOARD& aBoard [[maybe_unused]], std::vector<BOARD_ITEM*>& aItems )
 {
     if( doesBoardItemNeedRebuild( aItems ) )
         handleBoardItemsChanged();
 }
 
 
-void APPEARANCE_CONTROLS::OnBoardItemChanged( BOARD& aBoard, BOARD_ITEM* aItem )
+void APPEARANCE_CONTROLS::OnBoardItemChanged( BOARD& aBoard [[maybe_unused]], BOARD_ITEM* aItem )
 {
     if( doesBoardItemNeedRebuild( aItem ) )
         handleBoardItemsChanged();
 }
 
 
-void APPEARANCE_CONTROLS::OnBoardItemsChanged( BOARD& aBoard, std::vector<BOARD_ITEM*>& aItems )
+void APPEARANCE_CONTROLS::OnBoardItemsChanged( BOARD& aBoard [[maybe_unused]], std::vector<BOARD_ITEM*>& aItems )
 {
     if( doesBoardItemNeedRebuild( aItems ) )
         handleBoardItemsChanged();
 }
 
 
-void APPEARANCE_CONTROLS::OnBoardCompositeUpdate( BOARD&                    aBoard,
+void APPEARANCE_CONTROLS::OnBoardCompositeUpdate( BOARD&                    aBoard [[maybe_unused]],
                                                   std::vector<BOARD_ITEM*>& aAddedItems,
                                                   std::vector<BOARD_ITEM*>& aRemovedItems,
                                                   std::vector<BOARD_ITEM*>& aChangedItems )
@@ -1406,7 +1406,7 @@ void APPEARANCE_CONTROLS::setVisibleLayers( const LSET& aLayers )
 }
 
 
-bool APPEARANCE_CONTROLS::isLayerEnabled( PCB_LAYER_ID aLayer ) const
+bool APPEARANCE_CONTROLS::isLayerEnabled( PCB_LAYER_ID aLayer [[maybe_unused]] ) const
 {
     // This used to be used for disabling some layers in the footprint editor, but
     // now all layers are enabled in the footprint editor.
@@ -2231,7 +2231,7 @@ void APPEARANCE_CONTROLS::onLayerLeftClick( wxMouseEvent& aEvent )
 }
 
 
-void APPEARANCE_CONTROLS::rightClickHandler( wxMouseEvent& aEvent )
+void APPEARANCE_CONTROLS::rightClickHandler( wxMouseEvent& aEvent [[maybe_unused]] )
 {
     wxASSERT( m_layerContextMenu );
     PopupMenu( m_layerContextMenu );
@@ -2681,7 +2681,7 @@ void APPEARANCE_CONTROLS::rebuildNets()
                                                this );
 
                 auto menuHandler =
-                        [&, name, isDefaultClass]( wxMouseEvent& aEvent )
+                        [&, name, isDefaultClass]( wxMouseEvent& aEvent [[maybe_unused]] )
                         {
                             wxMenu menu;
                             buildNetClassMenu( menu, isDefaultClass, name );
@@ -2896,7 +2896,7 @@ void APPEARANCE_CONTROLS::updateLayerPresetSelection( const wxString& aName )
 }
 
 
-void APPEARANCE_CONTROLS::onLayerPresetChanged( wxCommandEvent& aEvent )
+void APPEARANCE_CONTROLS::onLayerPresetChanged( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     int count = m_cbLayerPresets->GetCount();
     int index = m_cbLayerPresets->GetSelection();
@@ -3142,7 +3142,7 @@ void APPEARANCE_CONTROLS::updateViewportSelection( const wxString& aName )
 }
 
 
-void APPEARANCE_CONTROLS::onViewportChanged( wxCommandEvent& aEvent )
+void APPEARANCE_CONTROLS::onViewportChanged( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     int count = m_cbViewports->GetCount();
     int index = m_cbViewports->GetSelection();
@@ -3455,7 +3455,7 @@ wxString APPEARANCE_CONTROLS::netclassNameFromEvent( wxEvent& aEvent )
 }
 
 
-void APPEARANCE_CONTROLS::onNetColorMode( wxCommandEvent& aEvent )
+void APPEARANCE_CONTROLS::onNetColorMode( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     PCB_DISPLAY_OPTIONS options = m_frame->GetDisplayOptions();
 
@@ -3472,7 +3472,7 @@ void APPEARANCE_CONTROLS::onNetColorMode( wxCommandEvent& aEvent )
 }
 
 
-void APPEARANCE_CONTROLS::onRatsnestMode( wxCommandEvent& aEvent )
+void APPEARANCE_CONTROLS::onRatsnestMode( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( PCBNEW_SETTINGS* cfg = m_frame->GetPcbNewSettings() )
     {
@@ -3692,7 +3692,7 @@ void APPEARANCE_CONTROLS::onReadOnlySwatch()
 
     infobar->RemoveAllButtons();
     infobar->AddLink( _( "Open Preferences" ),
-            [&]( wxHyperlinkEvent& aEvent )
+            [&]( wxHyperlinkEvent& aEvent [[maybe_unused]] )
             {
                  m_frame->ShowPreferences( wxEmptyString, wxEmptyString );
             } );

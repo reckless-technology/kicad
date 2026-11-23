@@ -67,7 +67,7 @@ bool PNG_PLOTTER::OpenFile( const wxString& aFullFilename )
 }
 
 
-bool PNG_PLOTTER::StartPlot( const wxString& aPageNumber )
+bool PNG_PLOTTER::StartPlot( const wxString& aPageNumber [[maybe_unused]] )
 {
     // Cairo image surfaces are limited to INT16_MAX in either dimension. Beyond that, surface
     // creation returns CAIRO_STATUS_INVALID_SIZE. Reject up front rather than risking a silent
@@ -161,7 +161,7 @@ bool PNG_PLOTTER::SaveFile( const wxString& aPath )
 }
 
 
-void PNG_PLOTTER::SetCurrentLineWidth( int aWidth, void* aData )
+void PNG_PLOTTER::SetCurrentLineWidth( int aWidth, void* aData [[maybe_unused]] )
 {
     if( aWidth == DO_NOT_SET_LINE_WIDTH )
         return;
@@ -414,7 +414,7 @@ void PNG_PLOTTER::PenTo( const VECTOR2I& aPos, char aPlume )
 }
 
 
-void PNG_PLOTTER::PlotPoly( const std::vector<VECTOR2I>& aCornerList, FILL_T aFill, int aWidth, void* aData )
+void PNG_PLOTTER::PlotPoly( const std::vector<VECTOR2I>& aCornerList, FILL_T aFill, int aWidth, void* aData [[maybe_unused]] )
 {
     if( !m_context || aCornerList.size() < 2 )
         return;
@@ -529,7 +529,7 @@ void PNG_PLOTTER::PlotImage( const wxImage& aImage, const VECTOR2I& aPos, double
 }
 
 
-void PNG_PLOTTER::FlashPadCircle( const VECTOR2I& aPadPos, int aDiameter, void* aData )
+void PNG_PLOTTER::FlashPadCircle( const VECTOR2I& aPadPos, int aDiameter, void* aData [[maybe_unused]] )
 {
     Circle( aPadPos, aDiameter, FILL_T::FILLED_SHAPE, 0 );
 }
@@ -613,7 +613,7 @@ void PNG_PLOTTER::FlashPadRoundRect( const VECTOR2I& aPadPos, const VECTOR2I& aS
 }
 
 
-void PNG_PLOTTER::FlashPadCustom( const VECTOR2I& aPadPos, const VECTOR2I& aSize, const EDA_ANGLE& aPadOrient,
+void PNG_PLOTTER::FlashPadCustom( const VECTOR2I& aPadPos [[maybe_unused]], const VECTOR2I& aSize [[maybe_unused]], const EDA_ANGLE& aPadOrient [[maybe_unused]],
                                   SHAPE_POLY_SET* aPolygons, void* aData )
 {
     if( !aPolygons || aPolygons->OutlineCount() == 0 )

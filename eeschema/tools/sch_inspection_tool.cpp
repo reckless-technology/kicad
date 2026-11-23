@@ -100,7 +100,7 @@ void SCH_INSPECTION_TOOL::Reset( RESET_REASON aReason )
 }
 
 
-int SCH_INSPECTION_TOOL::RunERC( const TOOL_EVENT& aEvent )
+int SCH_INSPECTION_TOOL::RunERC( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     ShowERCDialog();
     return 0;
@@ -131,7 +131,7 @@ void SCH_INSPECTION_TOOL::ShowERCDialog()
 }
 
 
-int SCH_INSPECTION_TOOL::PrevMarker( const TOOL_EVENT& aEvent )
+int SCH_INSPECTION_TOOL::PrevMarker( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SCH_EDIT_FRAME* frame = dynamic_cast<SCH_EDIT_FRAME*>( m_frame );
 
@@ -150,7 +150,7 @@ int SCH_INSPECTION_TOOL::PrevMarker( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_INSPECTION_TOOL::NextMarker( const TOOL_EVENT& aEvent )
+int SCH_INSPECTION_TOOL::NextMarker( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SCH_EDIT_FRAME* frame = dynamic_cast<SCH_EDIT_FRAME*>( m_frame );
 
@@ -248,7 +248,7 @@ void SCH_INSPECTION_TOOL::InspectERCError( const std::shared_ptr<RC_ITEM>& aERCI
 }
 
 
-int SCH_INSPECTION_TOOL::ExcludeMarker( const TOOL_EVENT& aEvent )
+int SCH_INSPECTION_TOOL::ExcludeMarker( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SCH_SELECTION_TOOL* selTool = m_toolMgr->GetTool<SCH_SELECTION_TOOL>();
     SCH_SELECTION&      selection = selTool->GetSelection();
@@ -277,7 +277,7 @@ int SCH_INSPECTION_TOOL::ExcludeMarker( const TOOL_EVENT& aEvent )
 extern void CheckLibSymbol( LIB_SYMBOL* aSymbol, std::vector<wxString>& aMessages,
                             int aGridForPins, UNITS_PROVIDER* aUnitsProvider );
 
-int SCH_INSPECTION_TOOL::CheckSymbol( const TOOL_EVENT& aEvent )
+int SCH_INSPECTION_TOOL::CheckSymbol( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     LIB_SYMBOL* symbol = static_cast<SYMBOL_EDIT_FRAME*>( m_frame )->GetCurSymbol();
 
@@ -307,7 +307,7 @@ int SCH_INSPECTION_TOOL::CheckSymbol( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_INSPECTION_TOOL::ShowBusSyntaxHelp( const TOOL_EVENT& aEvent )
+int SCH_INSPECTION_TOOL::ShowBusSyntaxHelp( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( m_busSyntaxHelp )
     {
@@ -321,7 +321,7 @@ int SCH_INSPECTION_TOOL::ShowBusSyntaxHelp( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_INSPECTION_TOOL::DiffSymbol( const TOOL_EVENT& aEvent )
+int SCH_INSPECTION_TOOL::DiffSymbol( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SCH_EDIT_FRAME* schEditorFrame = dynamic_cast<SCH_EDIT_FRAME*>( m_frame );
 
@@ -586,7 +586,7 @@ void reloadDrillFrame( DIALOG_KICAD_DIFF& aDlg, SCHEMATIC* aRefSch, const KICAD_
 } // namespace
 
 
-int SCH_INSPECTION_TOOL::CompareSchematicWithFile( const TOOL_EVENT& aEvent )
+int SCH_INSPECTION_TOOL::CompareSchematicWithFile( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SCH_EDIT_FRAME* schEditorFrame = dynamic_cast<SCH_EDIT_FRAME*>( m_frame );
 
@@ -854,7 +854,7 @@ int SCH_INSPECTION_TOOL::showSchematicComparison( const wxString& aOtherPath, co
 }
 
 
-int SCH_INSPECTION_TOOL::CompareSchematicWithHistory( const TOOL_EVENT& aEvent )
+int SCH_INSPECTION_TOOL::CompareSchematicWithHistory( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SCH_EDIT_FRAME* schEditorFrame = dynamic_cast<SCH_EDIT_FRAME*>( m_frame );
 
@@ -1291,7 +1291,7 @@ int SCH_INSPECTION_TOOL::CompareSchematicWithHistory( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_INSPECTION_TOOL::RunSimulation( const TOOL_EVENT& aEvent )
+int SCH_INSPECTION_TOOL::RunSimulation( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SIMULATOR_FRAME* simFrame = (SIMULATOR_FRAME*) m_frame->Kiway().Player( FRAME_SIMULATOR, true );
 
@@ -1313,7 +1313,7 @@ int SCH_INSPECTION_TOOL::RunSimulation( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_INSPECTION_TOOL::ShowDatasheet( const TOOL_EVENT& aEvent )
+int SCH_INSPECTION_TOOL::ShowDatasheet( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     wxString datasheet;
     std::vector<EMBEDDED_FILES*> filesStack;
@@ -1378,7 +1378,7 @@ int SCH_INSPECTION_TOOL::ShowDatasheet( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_INSPECTION_TOOL::UpdateMessagePanel( const TOOL_EVENT& aEvent )
+int SCH_INSPECTION_TOOL::UpdateMessagePanel( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SYMBOL_EDIT_FRAME*  symbolEditFrame = dynamic_cast<SYMBOL_EDIT_FRAME*>( m_frame );
     SCH_EDIT_FRAME*     schEditFrame = dynamic_cast<SCH_EDIT_FRAME*>( m_frame );

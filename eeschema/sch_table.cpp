@@ -312,13 +312,13 @@ void SCH_TABLE::Move( const VECTOR2I& aMoveVector )
 }
 
 
-void SCH_TABLE::MirrorHorizontally( int aCenter )
+void SCH_TABLE::MirrorHorizontally( int aCenter [[maybe_unused]] )
 {
     // We could mirror all the cells, but it doesn't seem useful....
 }
 
 
-void SCH_TABLE::MirrorVertically( int aCenter )
+void SCH_TABLE::MirrorVertically( int aCenter [[maybe_unused]] )
 {
     // We could mirror all the cells, but it doesn't seem useful....
 }
@@ -395,7 +395,7 @@ bool SCH_TABLE::operator<( const SCH_ITEM& aItem ) const
 }
 
 
-void SCH_TABLE::RunOnChildren( const std::function<void( SCH_ITEM* )>& aFunction, RECURSE_MODE aMode )
+void SCH_TABLE::RunOnChildren( const std::function<void( SCH_ITEM* )>& aFunction, RECURSE_MODE aMode [[maybe_unused]] )
 {
     for( SCH_TABLECELL* cell : m_cells )
         aFunction( cell );
@@ -442,7 +442,7 @@ INSPECT_RESULT SCH_TABLE::Visit( INSPECTOR aInspector, void* aTestData, const st
 }
 
 
-wxString SCH_TABLE::GetItemDescription( UNITS_PROVIDER* aUnitsProvider, bool aFull ) const
+wxString SCH_TABLE::GetItemDescription( UNITS_PROVIDER* aUnitsProvider [[maybe_unused]], bool aFull [[maybe_unused]] ) const
 {
     return wxString::Format( _( "%d Column Table" ), m_colCount );
 }

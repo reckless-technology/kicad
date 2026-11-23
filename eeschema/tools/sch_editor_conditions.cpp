@@ -41,7 +41,7 @@ SELECTION_CONDITION SCH_EDITOR_CONDITIONS::LineMode( LINE_MODE aMode )
 }
 
 
-bool SCH_EDITOR_CONDITIONS::lineModeFunc( const SELECTION& aSelection, SCH_BASE_FRAME* aFrame,
+bool SCH_EDITOR_CONDITIONS::lineModeFunc( const SELECTION& aSelection [[maybe_unused]], SCH_BASE_FRAME* aFrame,
                                           LINE_MODE aMode )
 {
     wxCHECK( aFrame && aFrame->eeconfig(), false );

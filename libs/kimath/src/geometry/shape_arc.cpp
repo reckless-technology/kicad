@@ -215,7 +215,7 @@ SHAPE_ARC& SHAPE_ARC::ConstructFromStartEndAngle( const VECTOR2I& aStart, const 
 
 SHAPE_ARC& SHAPE_ARC::ConstructFromStartEndCenter( const VECTOR2I& aStart, const VECTOR2I& aEnd,
                                                    const VECTOR2I& aCenter, bool aClockwise,
-                                                   double aWidth )
+                                                   double aWidth [[maybe_unused]] )
 {
     VECTOR2I startLine = aStart - aCenter;
     VECTOR2I endLine = aEnd - aCenter;

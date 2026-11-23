@@ -835,7 +835,7 @@ VECTOR2I BOARD::GetPosition() const
 }
 
 
-void BOARD::SetPosition( const VECTOR2I& aPos )
+void BOARD::SetPosition( const VECTOR2I& aPos [[maybe_unused]] )
 {
     wxLogWarning( wxT( "This should not be called on the BOARD object" ) );
 }
@@ -843,7 +843,7 @@ void BOARD::SetPosition( const VECTOR2I& aPos )
 
 void BOARD::Move( const VECTOR2I& aMoveVector ) // overload
 {
-    INSPECTOR_FUNC inspector = [&]( EDA_ITEM* item, void* testData )
+    INSPECTOR_FUNC inspector = [&]( EDA_ITEM* item, void* testData [[maybe_unused]] )
     {
         if( item->IsBOARD_ITEM() )
         {
@@ -911,7 +911,7 @@ TRACKS BOARD::TracksInNet( int aNetCode )
 {
     TRACKS ret;
 
-    INSPECTOR_FUNC inspector = [aNetCode, &ret]( EDA_ITEM* item, void* testData )
+    INSPECTOR_FUNC inspector = [aNetCode, &ret]( EDA_ITEM* item, void* testData [[maybe_unused]] )
     {
         PCB_TRACK* t = static_cast<PCB_TRACK*>( item );
 
@@ -2069,7 +2069,7 @@ bool BOARD::RemoveAllItemsOnLayer( PCB_LAYER_ID aLayer )
 }
 
 
-wxString BOARD::GetItemDescription( UNITS_PROVIDER* aUnitsProvider, bool aFull ) const
+wxString BOARD::GetItemDescription( UNITS_PROVIDER* aUnitsProvider [[maybe_unused]], bool aFull [[maybe_unused]] ) const
 {
     return wxString::Format( _( "PCB" ) );
 }
@@ -2077,7 +2077,7 @@ wxString BOARD::GetItemDescription( UNITS_PROVIDER* aUnitsProvider, bool aFull )
 
 void BOARD::UpdateUserUnits( BOARD_ITEM* aItem, KIGFX::VIEW* aView )
 {
-    INSPECTOR_FUNC inspector = [&]( EDA_ITEM* descendant, void* aTestData )
+    INSPECTOR_FUNC inspector = [&]( EDA_ITEM* descendant, void* aTestData [[maybe_unused]] )
     {
         PCB_DIMENSION_BASE* dimension = static_cast<PCB_DIMENSION_BASE*>( descendant );
 
@@ -2639,7 +2639,7 @@ BOX2I BOARD::ComputeBoundingBox( bool aBoardEdgesOnly, bool aPhysicalLayersOnly 
 }
 
 
-void BOARD::GetMsgPanelInfo( EDA_DRAW_FRAME* aFrame, std::vector<MSG_PANEL_ITEM>& aList )
+void BOARD::GetMsgPanelInfo( EDA_DRAW_FRAME* aFrame [[maybe_unused]], std::vector<MSG_PANEL_ITEM>& aList )
 {
     int           padCount = 0;
     int           viaCount = 0;

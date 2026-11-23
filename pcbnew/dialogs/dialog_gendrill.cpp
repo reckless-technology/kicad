@@ -53,7 +53,7 @@ static DRILL_PRECISION precisionListForMetric( 3, 3 );
 
 /* This function displays the dialog frame for drill tools
  */
-int BOARD_EDITOR_CONTROL::GenerateDrillFiles( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::GenerateDrillFiles( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     PCB_EDIT_FRAME* editFrame = getEditFrame<PCB_EDIT_FRAME>();
     DIALOG_GENDRILL dlg( editFrame, editFrame );
@@ -180,7 +180,7 @@ bool DIALOG_GENDRILL::TransferDataFromWindow()
 }
 
 
-void DIALOG_GENDRILL::onFileFormatSelection( wxCommandEvent& event )
+void DIALOG_GENDRILL::onFileFormatSelection( wxCommandEvent& event [[maybe_unused]] )
 {
     bool enbl_Excellon = m_rbExcellon->GetValue();
 
@@ -224,13 +224,13 @@ void DIALOG_GENDRILL::updateConfig()
 }
 
 
-void DIALOG_GENDRILL::onSelDrillUnitsSelected( wxCommandEvent& event )
+void DIALOG_GENDRILL::onSelDrillUnitsSelected( wxCommandEvent& event [[maybe_unused]] )
 {
     updatePrecisionOptions();
 }
 
 
-void DIALOG_GENDRILL::onSelZerosFmtSelected( wxCommandEvent& event )
+void DIALOG_GENDRILL::onSelZerosFmtSelected( wxCommandEvent& event [[maybe_unused]] )
 {
     updatePrecisionOptions();
 }
@@ -262,7 +262,7 @@ void DIALOG_GENDRILL::updatePrecisionOptions()
 }
 
 
-void DIALOG_GENDRILL::onOutputDirectoryBrowseClicked( wxCommandEvent& event )
+void DIALOG_GENDRILL::onOutputDirectoryBrowseClicked( wxCommandEvent& event [[maybe_unused]] )
 {
     // Build the absolute path of current output directory to preselect it in the file browser.
     wxString path = ResolveProjectPath( m_outputDirectoryName->GetValue(), &Prj() );
@@ -375,7 +375,7 @@ void DIALOG_GENDRILL::genDrillAndMapFiles( bool aGenDrill, bool aGenMap, bool aG
 }
 
 
-void DIALOG_GENDRILL::onGenReportFile( wxCommandEvent& event )
+void DIALOG_GENDRILL::onGenReportFile( wxCommandEvent& event [[maybe_unused]] )
 {
     updateConfig(); // set params and Save drill options
 

@@ -55,7 +55,7 @@ void FILTER_COMBOPOPUP_LISTBOX::SetDisplayStyleCallback( const std::function<int
 }
 
 
-wxCoord FILTER_COMBOPOPUP_LISTBOX::OnMeasureItem( size_t aItem ) const
+wxCoord FILTER_COMBOPOPUP_LISTBOX::OnMeasureItem( size_t aItem [[maybe_unused]] ) const
 {
     return GetFont().GetPixelSize().GetHeight() + 4;
 }
@@ -139,7 +139,7 @@ FILTER_COMBOPOPUP::FILTER_COMBOPOPUP() :
         m_focusHandler( nullptr )
 {
     m_displayStyleCallback =
-            []( const wxString& aItem ) -> int
+            []( const wxString& aItem [[maybe_unused]] ) -> int
             {
                 return 0;
             };
@@ -262,7 +262,7 @@ void FILTER_COMBOPOPUP::Accept()
 }
 
 
-wxSize FILTER_COMBOPOPUP::GetAdjustedSize( int aMinWidth, int aPrefHeight, int aMaxHeight )
+wxSize FILTER_COMBOPOPUP::GetAdjustedSize( int aMinWidth, int aPrefHeight [[maybe_unused]], int aMaxHeight )
 {
     // Called when the popup is first shown.  Stash the minWidth and maxHeight so we
     // can use them later when refreshing the sizes after filter changes.
@@ -352,7 +352,7 @@ wxSize FILTER_COMBOPOPUP::updateSize()
 }
 
 
-void FILTER_COMBOPOPUP::onIdle( wxIdleEvent& aEvent )
+void FILTER_COMBOPOPUP::onIdle( wxIdleEvent& aEvent [[maybe_unused]] )
 {
     // Only process when the popup is actually visible to avoid ClientToScreen warnings.
     // Use IsShownOnScreen() instead of IsShown() because wx may report the window as shown
@@ -492,13 +492,13 @@ void FILTER_COMBOPOPUP::onKeyDown( wxKeyEvent& aEvent )
 }
 
 
-void FILTER_COMBOPOPUP::onEnter( wxCommandEvent& aEvent )
+void FILTER_COMBOPOPUP::onEnter( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     Accept();
 }
 
 
-void FILTER_COMBOPOPUP::onFilterEdit( wxCommandEvent& aEvent )
+void FILTER_COMBOPOPUP::onFilterEdit( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     rebuildList();
     updateSize();
@@ -542,7 +542,7 @@ void FILTER_COMBOPOPUP::doStartingKey( wxKeyEvent& aEvent )
 }
 
 
-void FILTER_COMBOPOPUP::doSetFocus( wxWindow* aWindow )
+void FILTER_COMBOPOPUP::doSetFocus( wxWindow* aWindow [[maybe_unused]] )
 {
 #ifndef __WXGTK__ // Cannot focus in non-toplevel windows on GTK
     KIPLATFORM::UI::ForceFocus( aWindow );

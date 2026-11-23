@@ -372,19 +372,19 @@ class BOARD_LISTENER
 {
 public:
     virtual ~BOARD_LISTENER() { }
-    virtual void OnBoardItemAdded( BOARD& aBoard, BOARD_ITEM* aBoardItem ) { }
-    virtual void OnBoardItemsAdded( BOARD& aBoard, std::vector<BOARD_ITEM*>& aBoardItems ) { }
-    virtual void OnBoardItemRemoved( BOARD& aBoard, BOARD_ITEM* aBoardItem ) { }
-    virtual void OnBoardItemsRemoved( BOARD& aBoard, std::vector<BOARD_ITEM*>& aBoardItems ) { }
-    virtual void OnBoardNetSettingsChanged( BOARD& aBoard ) { }
-    virtual void OnBoardItemChanged( BOARD& aBoard, BOARD_ITEM* aBoardItem ) { }
-    virtual void OnBoardItemsChanged( BOARD& aBoard, std::vector<BOARD_ITEM*>& aBoardItems ) { }
-    virtual void OnBoardSelectionChanged( BOARD& aBoard ) { }
-    virtual void OnBoardHighlightNetChanged( BOARD& aBoard ) { }
-    virtual void OnBoardRatsnestChanged( BOARD& aBoard ) { }
-    virtual void OnBoardCompositeUpdate( BOARD& aBoard, std::vector<BOARD_ITEM*>& aAddedItems,
-                                         std::vector<BOARD_ITEM*>& aRemovedItems,
-                                         std::vector<BOARD_ITEM*>& aChangedItems )
+    virtual void OnBoardItemAdded( BOARD& aBoard [[maybe_unused]], BOARD_ITEM* aBoardItem [[maybe_unused]] ) { }
+    virtual void OnBoardItemsAdded( BOARD& aBoard [[maybe_unused]], std::vector<BOARD_ITEM*>& aBoardItems [[maybe_unused]] ) { }
+    virtual void OnBoardItemRemoved( BOARD& aBoard [[maybe_unused]], BOARD_ITEM* aBoardItem [[maybe_unused]] ) { }
+    virtual void OnBoardItemsRemoved( BOARD& aBoard [[maybe_unused]], std::vector<BOARD_ITEM*>& aBoardItems [[maybe_unused]] ) { }
+    virtual void OnBoardNetSettingsChanged( BOARD& aBoard [[maybe_unused]] ) { }
+    virtual void OnBoardItemChanged( BOARD& aBoard [[maybe_unused]], BOARD_ITEM* aBoardItem [[maybe_unused]] ) { }
+    virtual void OnBoardItemsChanged( BOARD& aBoard [[maybe_unused]], std::vector<BOARD_ITEM*>& aBoardItems [[maybe_unused]] ) { }
+    virtual void OnBoardSelectionChanged( BOARD& aBoard [[maybe_unused]] ) { }
+    virtual void OnBoardHighlightNetChanged( BOARD& aBoard [[maybe_unused]] ) { }
+    virtual void OnBoardRatsnestChanged( BOARD& aBoard [[maybe_unused]] ) { }
+    virtual void OnBoardCompositeUpdate( BOARD& aBoard [[maybe_unused]], std::vector<BOARD_ITEM*>& aAddedItems [[maybe_unused]],
+                                         std::vector<BOARD_ITEM*>& aRemovedItems [[maybe_unused]],
+                                         std::vector<BOARD_ITEM*>& aChangedItems [[maybe_unused]] )
     {
     }
 };
@@ -1423,7 +1423,7 @@ public:
     /**
      * Return the Similarity.  Because we compare board to board, we just return 1.0 here
     */
-    double Similarity( const BOARD_ITEM& aOther ) const override
+    double Similarity( const BOARD_ITEM& aOther [[maybe_unused]] ) const override
     {
         return 1.0;
     }

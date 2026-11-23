@@ -438,7 +438,7 @@ void PANEL_FAB_EXPORT_CONTENT::changed()
 }
 
 
-void PANEL_FAB_EXPORT_CONTENT::onDataSetChange( wxCommandEvent& aEvent )
+void PANEL_FAB_EXPORT_CONTENT::onDataSetChange( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     // A new function mode removes the section key of the previous function mode
     m_sectionKey.reset();
@@ -447,7 +447,7 @@ void PANEL_FAB_EXPORT_CONTENT::onDataSetChange( wxCommandEvent& aEvent )
 }
 
 
-void PANEL_FAB_EXPORT_CONTENT::onVariantChange( wxCommandEvent& aEvent )
+void PANEL_FAB_EXPORT_CONTENT::onVariantChange( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( m_format == FAB_CONTENT_FORMAT::ODBPP && m_board )
     {
@@ -500,14 +500,14 @@ void PANEL_FAB_EXPORT_CONTENT::onVariantChange( wxCommandEvent& aEvent )
 }
 
 
-void PANEL_FAB_EXPORT_CONTENT::onVariantOutputChange( wxCommandEvent& aEvent )
+void PANEL_FAB_EXPORT_CONTENT::onVariantOutputChange( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     updateVariantOutput();
     changed();
 }
 
 
-void PANEL_FAB_EXPORT_CONTENT::onCustomizeClick( wxCommandEvent& aEvent )
+void PANEL_FAB_EXPORT_CONTENT::onCustomizeClick( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     DIALOG_FAB_CUSTOMIZE dialog( this, m_format, GetDataSet(), ResolvedSections(), m_boardMetadata );
 
@@ -528,7 +528,7 @@ void PANEL_FAB_EXPORT_CONTENT::onCustomizeClick( wxCommandEvent& aEvent )
 }
 
 
-void PANEL_FAB_EXPORT_CONTENT::onBomFieldsClick( wxCommandEvent& aEvent )
+void PANEL_FAB_EXPORT_CONTENT::onBomFieldsClick( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( !m_board )
         return;

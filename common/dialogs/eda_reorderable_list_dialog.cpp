@@ -119,7 +119,7 @@ void EDA_REORDERABLE_LIST_DIALOG::updateItems()
 }
 
 
-void EDA_REORDERABLE_LIST_DIALOG::onAddItem( wxCommandEvent& aEvent )
+void EDA_REORDERABLE_LIST_DIALOG::onAddItem( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     wxListItem info;
 
@@ -142,7 +142,7 @@ void EDA_REORDERABLE_LIST_DIALOG::onAddItem( wxCommandEvent& aEvent )
 }
 
 
-void EDA_REORDERABLE_LIST_DIALOG::onRemoveItem( wxCommandEvent& aEvent )
+void EDA_REORDERABLE_LIST_DIALOG::onRemoveItem( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     wxListItem info;
 
@@ -169,7 +169,7 @@ void EDA_REORDERABLE_LIST_DIALOG::onRemoveItem( wxCommandEvent& aEvent )
 }
 
 
-void EDA_REORDERABLE_LIST_DIALOG::onMoveUp( wxCommandEvent& aEvent )
+void EDA_REORDERABLE_LIST_DIALOG::onMoveUp( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     wxListItem info;
 
@@ -190,7 +190,7 @@ void EDA_REORDERABLE_LIST_DIALOG::onMoveUp( wxCommandEvent& aEvent )
 }
 
 
-void EDA_REORDERABLE_LIST_DIALOG::onMoveDown( wxCommandEvent& aEvent )
+void EDA_REORDERABLE_LIST_DIALOG::onMoveDown( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     wxListItem info;
 
@@ -230,7 +230,7 @@ bool EDA_REORDERABLE_LIST_DIALOG::getSelectedItem( wxListCtrl* aList, wxListItem
 }
 
 
-void EDA_REORDERABLE_LIST_DIALOG::onEnabledListItemSelected( wxListEvent& event )
+void EDA_REORDERABLE_LIST_DIALOG::onEnabledListItemSelected( wxListEvent& event [[maybe_unused]] )
 {
     wxListItem info;
 
@@ -244,7 +244,7 @@ void EDA_REORDERABLE_LIST_DIALOG::onEnabledListItemSelected( wxListEvent& event 
 }
 
 
-void EDA_REORDERABLE_LIST_DIALOG::onAvailableListItemSelected( wxListEvent& event )
+void EDA_REORDERABLE_LIST_DIALOG::onAvailableListItemSelected( wxListEvent& event [[maybe_unused]] )
 {
     wxListItem info;
 

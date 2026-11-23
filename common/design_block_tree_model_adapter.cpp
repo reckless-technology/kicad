@@ -101,7 +101,7 @@ void DESIGN_BLOCK_TREE_MODEL_ADAPTER::ClearLibraries()
 }
 
 
-std::vector<LIB_TREE_ITEM*> DESIGN_BLOCK_TREE_MODEL_ADAPTER::getDesignBlocks( EDA_BASE_FRAME* aParent,
+std::vector<LIB_TREE_ITEM*> DESIGN_BLOCK_TREE_MODEL_ADAPTER::getDesignBlocks( EDA_BASE_FRAME* aParent [[maybe_unused]],
                                                                               const wxString& aLibName )
 {
     std::vector<LIB_TREE_ITEM*> libList;
@@ -122,7 +122,7 @@ std::vector<LIB_TREE_ITEM*> DESIGN_BLOCK_TREE_MODEL_ADAPTER::getDesignBlocks( ED
 }
 
 
-wxString DESIGN_BLOCK_TREE_MODEL_ADAPTER::GenerateInfo( LIB_ID const& aLibId, int aUnit )
+wxString DESIGN_BLOCK_TREE_MODEL_ADAPTER::GenerateInfo( LIB_ID const& aLibId, int aUnit [[maybe_unused]] )
 {
     static const wxString DescriptionFormat = wxT(
             "<b>__NAME__</b>"

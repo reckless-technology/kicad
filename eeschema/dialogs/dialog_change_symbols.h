@@ -68,22 +68,22 @@ protected:
     void onMatchByValue( wxCommandEvent& aEvent ) override;
     void onMatchById( wxCommandEvent& aEvent ) override;
 
-    void onSelectAll( wxCommandEvent& event ) override
+    void onSelectAll( wxCommandEvent& event [[maybe_unused]] ) override
     {
         selectAll( true );
     }
 
-    void onSelectNone( wxCommandEvent& event ) override
+    void onSelectNone( wxCommandEvent& event [[maybe_unused]] ) override
     {
         selectAll( false );
     }
 
-    void onCheckAll( wxCommandEvent& aEvent ) override
+    void onCheckAll( wxCommandEvent& aEvent [[maybe_unused]] ) override
     {
         checkAll( true );
     }
 
-    void onUncheckAll( wxCommandEvent& aEvent ) override
+    void onUncheckAll( wxCommandEvent& aEvent [[maybe_unused]] ) override
     {
         checkAll( false );
     }

@@ -164,9 +164,9 @@ int checkGlError( const std::string& aInfo, const char* aFile, int aLine, bool a
 
 // debugMsgCallback is a callback function for glDebugMessageCallback.
 // It must have the right type ( GLAPIENTRY )
-static void GLAPIENTRY debugMsgCallback( GLenum aSource, GLenum aType, GLuint aId, GLenum aSeverity,
-                                         GLsizei aLength, const GLchar* aMessage,
-                                         const void* aUserParam )
+static void GLAPIENTRY debugMsgCallback( GLenum aSource [[maybe_unused]], GLenum aType [[maybe_unused]], GLuint aId [[maybe_unused]], GLenum aSeverity,
+                                         GLsizei aLength [[maybe_unused]], const GLchar* aMessage,
+                                         const void* aUserParam [[maybe_unused]] )
 {
     switch( aSeverity )
     {

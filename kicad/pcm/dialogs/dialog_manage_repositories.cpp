@@ -91,7 +91,7 @@ void DIALOG_MANAGE_REPOSITORIES::setColumnWidths()
 }
 
 
-void DIALOG_MANAGE_REPOSITORIES::OnAdd( wxCommandEvent& event )
+void DIALOG_MANAGE_REPOSITORIES::OnAdd( wxCommandEvent& event [[maybe_unused]] )
 {
     wxTextEntryDialog entry_dialog( this, _( "Fully qualified repository url:" ),
                                     _( "Add Repository" ) );
@@ -153,13 +153,13 @@ void DIALOG_MANAGE_REPOSITORIES::addRepository( const wxString& aUrl )
 }
 
 
-void DIALOG_MANAGE_REPOSITORIES::OnAddDefault( wxCommandEvent& event )
+void DIALOG_MANAGE_REPOSITORIES::OnAddDefault( wxCommandEvent& event [[maybe_unused]] )
 {
     addRepository( PCM_DEFAULT_REPOSITORY_URL );
 }
 
 
-void DIALOG_MANAGE_REPOSITORIES::OnRemoveButtonClicked( wxCommandEvent& event )
+void DIALOG_MANAGE_REPOSITORIES::OnRemoveButtonClicked( wxCommandEvent& event [[maybe_unused]] )
 {
     m_grid->OnDeleteRows(
             [&]( int row )
@@ -170,7 +170,7 @@ void DIALOG_MANAGE_REPOSITORIES::OnRemoveButtonClicked( wxCommandEvent& event )
 }
 
 
-void DIALOG_MANAGE_REPOSITORIES::OnMoveUpButtonClicked( wxCommandEvent& event )
+void DIALOG_MANAGE_REPOSITORIES::OnMoveUpButtonClicked( wxCommandEvent& event [[maybe_unused]] )
 {
     m_grid->OnMoveRowUp(
             [&]( int row )
@@ -180,7 +180,7 @@ void DIALOG_MANAGE_REPOSITORIES::OnMoveUpButtonClicked( wxCommandEvent& event )
 }
 
 
-void DIALOG_MANAGE_REPOSITORIES::OnMoveDownButtonClicked( wxCommandEvent& event )
+void DIALOG_MANAGE_REPOSITORIES::OnMoveDownButtonClicked( wxCommandEvent& event [[maybe_unused]] )
 {
     m_grid->OnMoveRowDown(
             [&]( int row )
@@ -235,7 +235,7 @@ std::vector<std::pair<wxString, wxString>> DIALOG_MANAGE_REPOSITORIES::GetData()
 }
 
 
-void DIALOG_MANAGE_REPOSITORIES::OnSaveClicked( wxCommandEvent& event )
+void DIALOG_MANAGE_REPOSITORIES::OnSaveClicked( wxCommandEvent& event [[maybe_unused]] )
 {
     EndModal( wxID_SAVE );
 }

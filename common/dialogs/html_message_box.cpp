@@ -258,13 +258,13 @@ void HTML_MESSAGE_BOX::OnCharHook( wxKeyEvent& aEvent )
     aEvent.Skip();
 }
 
-void HTML_MESSAGE_BOX::OnSearchText( wxCommandEvent& aEvent )
+void HTML_MESSAGE_BOX::OnSearchText( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     m_currentMatch = 0;
     updateSearch();
 }
 
-void HTML_MESSAGE_BOX::OnNext( wxCommandEvent& aEvent )
+void HTML_MESSAGE_BOX::OnNext( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( !m_matchPos.empty() )
     {
@@ -273,7 +273,7 @@ void HTML_MESSAGE_BOX::OnNext( wxCommandEvent& aEvent )
     }
 }
 
-void HTML_MESSAGE_BOX::OnPrev( wxCommandEvent& aEvent )
+void HTML_MESSAGE_BOX::OnPrev( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( !m_matchPos.empty() )
     {

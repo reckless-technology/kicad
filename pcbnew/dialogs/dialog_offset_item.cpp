@@ -94,7 +94,7 @@ void DIALOG_OFFSET_ITEM::OnClear( wxCommandEvent& event )
     }
 }
 
-void DIALOG_OFFSET_ITEM::OnPolarChanged( wxCommandEvent& event )
+void DIALOG_OFFSET_ITEM::OnPolarChanged( wxCommandEvent& event [[maybe_unused]] )
 {
     bool   newPolar = m_polarCoords->IsChecked();
     double xOffset = m_xOffset.GetDoubleValue();

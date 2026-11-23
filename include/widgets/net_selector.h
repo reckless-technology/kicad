@@ -48,7 +48,7 @@ public:
     int GetSelectedNetcode();
     wxString GetSelectedNetname();
 
-    void SetSelectedString( const wxString& aString ) override
+    void SetSelectedString( const wxString& aString [[maybe_unused]] ) override
     {
         wxFAIL_MSG( "Unsupported; use SetSelectedNet() or SetSelectedNetcode()" );
     }

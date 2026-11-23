@@ -379,7 +379,7 @@ void HIERARCHY_PANE::UpdateHierarchyTree( bool aClear )
 }
 
 
-void HIERARCHY_PANE::onSelectSheetPath( wxTreeEvent& aEvent )
+void HIERARCHY_PANE::onSelectSheetPath( wxTreeEvent& aEvent [[maybe_unused]] )
 {
     wxTreeItemId  itemSel = m_tree->GetSelection();
 
@@ -487,7 +487,7 @@ void HIERARCHY_PANE::onTreeItemRightClick( wxTreeEvent& aEvent )
 }
 
 
-void HIERARCHY_PANE::onContextMenu( wxContextMenuEvent& aEvent )
+void HIERARCHY_PANE::onContextMenu( wxContextMenuEvent& aEvent [[maybe_unused]] )
 {
     // wxEVT_CONTEXT_MENU fires after wxEVT_TREE_ITEM_RIGHT_CLICK for the same right-click.
     // Skip if the tree item handler already showed the menu.

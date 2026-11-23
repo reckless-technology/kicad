@@ -68,8 +68,8 @@ wxGridCellRenderer* GRID_CELL_COLOR_RENDERER::Clone() const
 }
 
 
-wxSize GRID_CELL_COLOR_RENDERER::GetBestSize( wxGrid& grid, wxGridCellAttr& attr, wxDC& dc,
-                                              int row, int col )
+wxSize GRID_CELL_COLOR_RENDERER::GetBestSize( wxGrid& grid [[maybe_unused]], wxGridCellAttr& attr, wxDC& dc,
+                                              int row [[maybe_unused]], int col [[maybe_unused]] )
 {
     if( m_size != wxDefaultSize )
         return m_size;
@@ -177,8 +177,8 @@ void GRID_CELL_COLOR_SELECTOR::BeginEdit( int row, int col, wxGrid* grid )
 }
 
 
-bool GRID_CELL_COLOR_SELECTOR::EndEdit( int row, int col, const wxGrid* grid,
-                                        const wxString& oldval, wxString *newval )
+bool GRID_CELL_COLOR_SELECTOR::EndEdit( int row [[maybe_unused]], int col [[maybe_unused]], const wxGrid* grid [[maybe_unused]],
+                                        const wxString& oldval [[maybe_unused]], wxString *newval )
 {
     if ( newval )
         *newval = GetValue();

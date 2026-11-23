@@ -168,7 +168,7 @@ std::optional<LIB_STATUS> FOOTPRINT_LIBRARY_ADAPTER::LoadOne( const wxString& ni
 }
 
 
-std::vector<FOOTPRINT*> FOOTPRINT_LIBRARY_ADAPTER::GetFootprints( const wxString& aNickname, bool aBestEfforts )
+std::vector<FOOTPRINT*> FOOTPRINT_LIBRARY_ADAPTER::GetFootprints( const wxString& aNickname, bool aBestEfforts [[maybe_unused]] )
 {
     std::vector<FOOTPRINT*>        footprints;
     std::optional<const LIB_DATA*> lib = fetchIfLoaded( aNickname );

@@ -226,7 +226,7 @@ int journalFormat( const std::string& aPath )
 
 // SQLite opens files on Windows without FILE_SHARE_DELETE, so an idle handle stops a sync client from replacing a
 // local library. A share is not replaced that way, and reopening it every read upsets other clients' leases
-bool closeWhenIdleFor( const std::string& aPath )
+bool closeWhenIdleFor( const std::string& aPath [[maybe_unused]] )
 {
 #ifdef _WIN32
     return !SQLITE_BACKEND::IsNetworkPath( aPath );

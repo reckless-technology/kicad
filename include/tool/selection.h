@@ -160,7 +160,7 @@ public:
 
     virtual BOX2I GetBoundingBox() const;
 
-    virtual EDA_ITEM* GetTopLeftItem( bool onlyModules = false ) const
+    virtual EDA_ITEM* GetTopLeftItem( bool onlyModules [[maybe_unused]] = false ) const
     {
         return nullptr;
     }

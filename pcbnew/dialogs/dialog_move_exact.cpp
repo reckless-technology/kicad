@@ -135,7 +135,7 @@ bool DIALOG_MOVE_EXACT::GetTranslationInIU( wxRealPoint& val, bool polar )
 }
 
 
-void DIALOG_MOVE_EXACT::OnPolarChanged( wxCommandEvent& event )
+void DIALOG_MOVE_EXACT::OnPolarChanged( wxCommandEvent& event [[maybe_unused]] )
 {
     bool newPolar = m_polarCoords->IsChecked();
     double moveX = m_moveX.GetDoubleValue();

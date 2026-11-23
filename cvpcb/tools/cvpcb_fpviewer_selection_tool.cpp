@@ -40,13 +40,13 @@ bool CVPCB_FOOTPRINT_VIEWER_SELECTION_TOOL::Init()
 }
 
 
-void CVPCB_FOOTPRINT_VIEWER_SELECTION_TOOL::Reset( RESET_REASON aReason )
+void CVPCB_FOOTPRINT_VIEWER_SELECTION_TOOL::Reset( RESET_REASON aReason [[maybe_unused]] )
 {
     m_frame = getEditFrame<DISPLAY_FOOTPRINTS_FRAME>();
 }
 
 
-int CVPCB_FOOTPRINT_VIEWER_SELECTION_TOOL::Main( const TOOL_EVENT& aEvent )
+int CVPCB_FOOTPRINT_VIEWER_SELECTION_TOOL::Main( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     // Main loop: keep receiving events
     while( TOOL_EVENT* evt = Wait() )

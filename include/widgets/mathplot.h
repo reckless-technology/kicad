@@ -617,7 +617,7 @@ public:
      *  Override this function in your implementation.
      */
     virtual void Rewind() = 0;
-    virtual void SetSweepWindow( int aSweepIdx ) { Rewind(); }
+    virtual void SetSweepWindow( int aSweepIdx [[maybe_unused]] ) { Rewind(); }
 
     /** Get locus value for next N.
      *  Override this function in your implementation.
@@ -784,8 +784,8 @@ public:
         return m_axisLocked;
     }
 
-    virtual double TransformToPlot( double x ) const { return 0.0; };
-    virtual double TransformFromPlot( double xplot ) const { return 0.0; };
+    virtual double TransformToPlot( double x [[maybe_unused]] ) const { return 0.0; };
+    virtual double TransformFromPlot( double xplot [[maybe_unused]] ) const { return 0.0; };
 
     struct TICK_LABEL
     {
@@ -806,8 +806,8 @@ protected:
     void computeLabelExtents( wxDC& dc, mpWindow& w );
 
     // virtual int getLabelDecimalDigits(int maxDigits) const;
-    virtual void getVisibleDataRange( mpWindow& w, double& minV, double& maxV ) {};
-    virtual void recalculateTicks( wxDC& dc, mpWindow& w ) {};
+    virtual void getVisibleDataRange( mpWindow& w [[maybe_unused]], double& minV [[maybe_unused]], double& maxV [[maybe_unused]] ) {};
+    virtual void recalculateTicks( wxDC& dc [[maybe_unused]], mpWindow& w [[maybe_unused]] ) {};
 
     virtual void formatLabels() {};
 

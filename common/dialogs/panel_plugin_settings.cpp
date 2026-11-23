@@ -80,13 +80,13 @@ bool PANEL_PLUGIN_SETTINGS::TransferDataFromWindow()
 }
 
 
-void PANEL_PLUGIN_SETTINGS::OnPythonInterpreterChanged( wxFileDirPickerEvent& event )
+void PANEL_PLUGIN_SETTINGS::OnPythonInterpreterChanged( wxFileDirPickerEvent& event [[maybe_unused]] )
 {
     validatePythonInterpreter();
 }
 
 
-void PANEL_PLUGIN_SETTINGS::OnBtnDetectAutomaticallyClicked( wxCommandEvent& aEvent )
+void PANEL_PLUGIN_SETTINGS::OnBtnDetectAutomaticallyClicked( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     wxString interpreter = PYTHON_MANAGER::FindPythonInterpreter();
 
@@ -98,7 +98,7 @@ void PANEL_PLUGIN_SETTINGS::OnBtnDetectAutomaticallyClicked( wxCommandEvent& aEv
 }
 
 
-void PANEL_PLUGIN_SETTINGS::OnEnableApiChecked( wxCommandEvent& aEvent )
+void PANEL_PLUGIN_SETTINGS::OnEnableApiChecked( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     validatePythonInterpreter();
     updateApiStatusText();
@@ -142,7 +142,7 @@ void PANEL_PLUGIN_SETTINGS::validatePythonInterpreter()
     PYTHON_MANAGER manager( pythonExe.GetFullPath() );
 
     manager.Execute( { wxS( "--version" ) },
-                     [&]( int aRetCode, const wxString& aStdOut, const wxString& aStdErr )
+                     [&]( int aRetCode, const wxString& aStdOut, const wxString& aStdErr [[maybe_unused]] )
                      {
                          wxString msg;
 

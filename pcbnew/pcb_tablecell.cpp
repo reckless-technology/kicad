@@ -113,7 +113,7 @@ bool PCB_TABLECELL::Deserialize( const google::protobuf::Any& aContainer )
 }
 
 
-wxString PCB_TABLECELL::GetItemDescription( UNITS_PROVIDER* aUnitsProvider, bool aFull ) const
+wxString PCB_TABLECELL::GetItemDescription( UNITS_PROVIDER* aUnitsProvider [[maybe_unused]], bool aFull [[maybe_unused]] ) const
 {
     return wxString::Format( _( "Table cell %s" ), GetAddr() );
 }

@@ -61,7 +61,7 @@ public:
 
     std::vector<int> ViewGetLayers() const override;
 
-    virtual void SetEnd( const VECTOR2I& aPos ) { /* not all types will need this */ }
+    virtual void SetEnd( const VECTOR2I& aPos [[maybe_unused]] ) { /* not all types will need this */ }
 
     virtual int GetPenWidth() const
     {
@@ -284,12 +284,12 @@ public:
     double GetMarkerSize() const { return m_markerSize; }
 
     VECTOR2I GetPosition() const override { return VECTOR2I( 0, 0 ); }
-    void SetPosition( const VECTOR2I& aPos ) override { /* do nothing */ }
+    void SetPosition( const VECTOR2I& aPos [[maybe_unused]] ) override { /* do nothing */ }
 
     void PrintWsItem( const RENDER_SETTINGS* , const VECTOR2I& ) override { /* do nothing */ }
 
     const BOX2I GetBoundingBox() const override;
-    bool HitTest( const VECTOR2I& aPosition, int aAccuracy = 0 ) const override { return false; }
+    bool HitTest( const VECTOR2I& aPosition [[maybe_unused]], int aAccuracy [[maybe_unused]] = 0 ) const override { return false; }
 
     wxString GetItemDescription( UNITS_PROVIDER* aUnitsProvider, bool aFull ) const override;
 

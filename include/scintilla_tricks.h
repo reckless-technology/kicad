@@ -34,7 +34,7 @@ public:
 
     SCINTILLA_TRICKS( wxStyledTextCtrl* aScintilla, const wxString& aBraces, bool aSingleLine,
                       std::function<void( wxKeyEvent& )> onAcceptHandler =
-                            []( wxKeyEvent& aEvent )
+                            []( wxKeyEvent& aEvent [[maybe_unused]] )
                             { },
                       std::function<void( wxStyledTextEvent& )> onCharAddedHandler =
                             []( wxStyledTextEvent& )

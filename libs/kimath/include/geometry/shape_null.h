@@ -35,7 +35,7 @@ public:
         SHAPE( SH_NULL )
     {}
 
-    SHAPE_NULL( const SHAPE_NULL& aOther ) :
+    SHAPE_NULL( const SHAPE_NULL& aOther [[maybe_unused]] ) :
         SHAPE( SH_NULL )
     {};
 
@@ -49,22 +49,22 @@ public:
 
     SHAPE_NULL& operator=( const SHAPE_NULL& ) = default;
 
-    const BOX2I BBox( int aClearance = 0 ) const override
+    const BOX2I BBox( int aClearance [[maybe_unused]] = 0 ) const override
     {
         return BOX2I();
     }
 
-    bool Collide( const SEG& aSeg, int aClearance = 0, int* aActual = nullptr,
-                  VECTOR2I* aLocation = nullptr ) const override
+    bool Collide( const SEG& aSeg [[maybe_unused]], int aClearance [[maybe_unused]] = 0, int* aActual [[maybe_unused]] = nullptr,
+                  VECTOR2I* aLocation [[maybe_unused]] = nullptr ) const override
     {
         return false;
     }
 
-    void Move( const VECTOR2I& aVector ) override
+    void Move( const VECTOR2I& aVector [[maybe_unused]] ) override
     {
     }
 
-    void Rotate( const EDA_ANGLE& aAngle, const VECTOR2I& aCenter = { 0, 0 } ) override
+    void Rotate( const EDA_ANGLE& aAngle [[maybe_unused]], const VECTOR2I& aCenter [[maybe_unused]] = { 0, 0 } ) override
     {
     }
 
@@ -73,8 +73,8 @@ public:
         return false;
     }
 
-    void TransformToPolygon( SHAPE_POLY_SET& aBuffer, int aError,
-                             ERROR_LOC aErrorLoc ) const override {}
+    void TransformToPolygon( SHAPE_POLY_SET& aBuffer [[maybe_unused]], int aError [[maybe_unused]],
+                             ERROR_LOC aErrorLoc [[maybe_unused]] ) const override {}
 };
 
 #endif

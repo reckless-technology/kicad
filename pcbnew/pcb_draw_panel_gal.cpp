@@ -706,7 +706,7 @@ void PCB_DRAW_PANEL_GAL::SyncLayersVisibility( KIGFX::VIEW& aView, const BOARD* 
 }
 
 
-void PCB_DRAW_PANEL_GAL::GetMsgPanelInfo( EDA_DRAW_FRAME* aFrame,
+void PCB_DRAW_PANEL_GAL::GetMsgPanelInfo( EDA_DRAW_FRAME* aFrame [[maybe_unused]],
                                           std::vector<MSG_PANEL_ITEM>& aList )
 {
     BOARD*        board = static_cast<PCB_BASE_FRAME*>( GetParentEDAFrame() )->GetBoard();

@@ -646,7 +646,7 @@ bool SCH_PIN::Matches( const EDA_SEARCH_DATA& aSearchData, void* aAuxData ) cons
 }
 
 
-bool SCH_PIN::Replace( const EDA_SEARCH_DATA& aSearchData, void* aAuxData )
+bool SCH_PIN::Replace( const EDA_SEARCH_DATA& aSearchData, void* aAuxData [[maybe_unused]] )
 {
     bool isReplaced = false;
 
@@ -1604,8 +1604,8 @@ void SCH_PIN::Rotate( const VECTOR2I& aCenter, bool aRotateCCW )
 }
 
 
-void SCH_PIN::Plot( PLOTTER* aPlotter, bool aBackground, const SCH_PLOT_OPTS& aPlotOpts,
-                    int aUnit, int aBodyStyle, const VECTOR2I& aOffset, bool aDimmed )
+void SCH_PIN::Plot( PLOTTER* aPlotter, bool aBackground, const SCH_PLOT_OPTS& aPlotOpts [[maybe_unused]],
+                    int aUnit [[maybe_unused]], int aBodyStyle [[maybe_unused]], const VECTOR2I& aOffset, bool aDimmed )
 {
     if( aBackground )
         return;
@@ -1809,7 +1809,7 @@ PIN_LAYOUT_CACHE& SCH_PIN::GetLayoutCache() const
 
 
 bool SCH_PIN::HasConnectivityChanges( const SCH_ITEM* aItem,
-                                      const SCH_SHEET_PATH* aInstance ) const
+                                      const SCH_SHEET_PATH* aInstance [[maybe_unused]] ) const
 {
     // Do not compare to ourself.
     if( aItem == this )
@@ -1850,7 +1850,7 @@ bool SCH_PIN::HasConnectivityChanges( const SCH_ITEM* aItem,
 }
 
 
-bool SCH_PIN::ConnectionPropagatesTo( const EDA_ITEM* aItem ) const
+bool SCH_PIN::ConnectionPropagatesTo( const EDA_ITEM* aItem [[maybe_unused]] ) const
 {
     return GetType() != ELECTRICAL_PINTYPE::PT_NC;
 }
@@ -1877,13 +1877,13 @@ BITMAPS SCH_PIN::GetMenuImage() const
 }
 
 
-wxString SCH_PIN::GetItemDescription( UNITS_PROVIDER* aUnitsProvider, ALT* aAlt ) const
+wxString SCH_PIN::GetItemDescription( UNITS_PROVIDER* aUnitsProvider [[maybe_unused]], ALT* aAlt ) const
 {
     return getItemDescription( aAlt );
 }
 
 
-wxString SCH_PIN::GetItemDescription( UNITS_PROVIDER* aUnitsProvider, bool aFull ) const
+wxString SCH_PIN::GetItemDescription( UNITS_PROVIDER* aUnitsProvider, bool aFull [[maybe_unused]] ) const
 {
     if( m_libPin )
     {

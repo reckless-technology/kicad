@@ -197,7 +197,7 @@ bool SCH_EDITOR_CONTROL::processCmpToFootprintLinkFile( const wxString& aFullFil
 }
 
 
-int SCH_EDITOR_CONTROL::ImportFPAssignments( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::ImportFPAssignments( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     wxString path = wxPathOnly( m_frame->Prj().GetProjectFullName() );
 

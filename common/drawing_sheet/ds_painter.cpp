@@ -65,7 +65,7 @@ void DS_RENDER_SETTINGS::LoadColors( const COLOR_SETTINGS* aSettings )
 }
 
 
-COLOR4D DS_RENDER_SETTINGS::GetColor( const VIEW_ITEM* aItem, int aLayer ) const
+COLOR4D DS_RENDER_SETTINGS::GetColor( const VIEW_ITEM* aItem, int aLayer [[maybe_unused]] ) const
 {
     const EDA_ITEM* item = dynamic_cast<const EDA_ITEM*>( aItem );
 
@@ -314,7 +314,7 @@ void KIGFX::DS_PAINTER::draw( const DS_DRAW_ITEM_TEXT* aItem, int aLayer ) const
 }
 
 
-void KIGFX::DS_PAINTER::draw( const DS_DRAW_ITEM_BITMAP* aItem, int aLayer ) const
+void KIGFX::DS_PAINTER::draw( const DS_DRAW_ITEM_BITMAP* aItem, int aLayer [[maybe_unused]] ) const
 {
     m_gal->Save();
     auto* bitmap = static_cast<DS_DATA_ITEM_BITMAP*>( aItem->GetPeer() );
@@ -352,7 +352,7 @@ void KIGFX::DS_PAINTER::draw( const DS_DRAW_ITEM_BITMAP* aItem, int aLayer ) con
 }
 
 
-void KIGFX::DS_PAINTER::draw( const DS_DRAW_ITEM_PAGE* aItem, int aLayer ) const
+void KIGFX::DS_PAINTER::draw( const DS_DRAW_ITEM_PAGE* aItem, int aLayer [[maybe_unused]] ) const
 {
     VECTOR2D origin = VECTOR2D( 0.0, 0.0 );
     VECTOR2D end = VECTOR2D( aItem->GetPageSize().x,

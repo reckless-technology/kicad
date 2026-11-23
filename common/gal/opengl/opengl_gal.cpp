@@ -2174,7 +2174,7 @@ void OPENGL_GAL::BitmapText( const wxString& aText, const VECTOR2I& aPosition,
     int overbarsCount = 0;
 
     iterateString(
-            [&overbarsCount]( int aOverbarLength, int aOverbarHeight )
+            [&overbarsCount]( int aOverbarLength [[maybe_unused]], int aOverbarHeight [[maybe_unused]] )
             {
                 overbarsCount++;
             },
@@ -3114,7 +3114,7 @@ void OPENGL_GAL::drawPolyline( const std::function<VECTOR2D( int )>& aPointGette
 
 
 void OPENGL_GAL::drawSegmentChain( const std::function<VECTOR2D( int )>& aPointGetter,
-                                   int aPointCount, double aWidth, bool aReserve )
+                                   int aPointCount, double aWidth, bool aReserve [[maybe_unused]] )
 {
     wxCHECK( aPointCount >= 2, /* return */ );
 
@@ -3549,13 +3549,13 @@ void CALLBACK CombineCallback( GLdouble coords[3], GLdouble* vertex_data[4], GLf
 }
 
 
-void CALLBACK EdgeCallback( GLboolean aEdgeFlag )
+void CALLBACK EdgeCallback( GLboolean aEdgeFlag [[maybe_unused]] )
 {
     // This callback is needed to force GLU tesselator to use triangles only
 }
 
 
-void CALLBACK ErrorCallback( GLenum aErrorCode )
+void CALLBACK ErrorCallback( GLenum aErrorCode [[maybe_unused]] )
 {
     //throw std::runtime_error( std::string( "Tessellation error: " ) +
     //std::string( (const char*) gluErrorString( aErrorCode ) );
@@ -3599,7 +3599,7 @@ void OPENGL_GAL::ComputeWorldScreenMatrix()
 }
 
 
-void OPENGL_GAL::DrawGlyph( const KIFONT::GLYPH& aGlyph, int aNth, int aTotal )
+void OPENGL_GAL::DrawGlyph( const KIFONT::GLYPH& aGlyph, int aNth [[maybe_unused]], int aTotal [[maybe_unused]] )
 {
     if( aGlyph.IsStroke() )
     {

@@ -1229,7 +1229,7 @@ bool IbisParser::readDvdt( dvdt& aDest )
 }
 
 
-bool IbisParser::parseDouble( double& aDest, std::string& aStr, bool aAllowModifiers )
+bool IbisParser::parseDouble( double& aDest, std::string& aStr, bool aAllowModifiers [[maybe_unused]] )
 {
     // "  an entry of the C matrix could be given as 1.23e-12 or as 1.23p or 1.23pF."
     // Kibis: This implementation will also allow 1.23e-3n

@@ -386,7 +386,7 @@ void CVPCB_MAINFRAME::setupEventHandlers()
 }
 
 
-bool CVPCB_MAINFRAME::canCloseWindow( wxCloseEvent& aEvent )
+bool CVPCB_MAINFRAME::canCloseWindow( wxCloseEvent& aEvent [[maybe_unused]] )
 {
     if( m_modified )
     {
@@ -433,7 +433,7 @@ void CVPCB_MAINFRAME::doCloseWindow()
 }
 
 
-void CVPCB_MAINFRAME::onTextFilterChanged( wxCommandEvent& event )
+void CVPCB_MAINFRAME::onTextFilterChanged( wxCommandEvent& event [[maybe_unused]] )
 {
     // Called when changing the filter string in main toolbar.
     // If the option FOOTPRINTS_LISTBOX::FILTERING_BY_TEXT_PATTERN is set, update the list
@@ -443,7 +443,7 @@ void CVPCB_MAINFRAME::onTextFilterChanged( wxCommandEvent& event )
 }
 
 
-void CVPCB_MAINFRAME::onTextFilterChangedTimer( wxTimerEvent& aEvent )
+void CVPCB_MAINFRAME::onTextFilterChangedTimer( wxTimerEvent& aEvent [[maybe_unused]] )
 {
     // GTK loses the search-control's focus on a Refresh event, so we record the focus and
     // insertion point here and then restore them at the end.
@@ -473,7 +473,7 @@ void CVPCB_MAINFRAME::onTextFilterChangedTimer( wxTimerEvent& aEvent )
 }
 
 
-void CVPCB_MAINFRAME::OnSelectComponent( wxListEvent& event )
+void CVPCB_MAINFRAME::OnSelectComponent( wxListEvent& event [[maybe_unused]] )
 {
     if( m_skipComponentSelect )
         return;
@@ -505,7 +505,7 @@ void CVPCB_MAINFRAME::RefreshFootprintViewer()
 }
 
 
-void CVPCB_MAINFRAME::updateFootprintViewerOnIdle( wxIdleEvent& aEvent )
+void CVPCB_MAINFRAME::updateFootprintViewerOnIdle( wxIdleEvent& aEvent [[maybe_unused]] )
 {
     Unbind( wxEVT_IDLE, &CVPCB_MAINFRAME::updateFootprintViewerOnIdle, this );
     m_viewerPendingUpdate = false;
@@ -697,7 +697,7 @@ void CVPCB_MAINFRAME::AssociateFootprint( const CVPCB_ASSOCIATION& aAssociation,
 }
 
 
-bool CVPCB_MAINFRAME::OpenProjectFiles( const std::vector<wxString>& aFileSet, int aCtl )
+bool CVPCB_MAINFRAME::OpenProjectFiles( const std::vector<wxString>& aFileSet [[maybe_unused]], int aCtl [[maybe_unused]] )
 {
     return true;
 }

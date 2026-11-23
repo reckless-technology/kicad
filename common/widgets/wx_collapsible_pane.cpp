@@ -291,7 +291,7 @@ wxSize WX_COLLAPSIBLE_PANE_HEADER::DoGetBestClientSize() const
 }
 
 
-void WX_COLLAPSIBLE_PANE_HEADER::onPaint( wxPaintEvent& aEvent )
+void WX_COLLAPSIBLE_PANE_HEADER::onPaint( wxPaintEvent& aEvent [[maybe_unused]] )
 {
     wxPaintDC dc( this );
     wxRect    rect( wxPoint( 0, 0 ), GetClientSize() );

@@ -57,7 +57,7 @@ git_repository* PROJECT_GIT_UTILS::GetRepositoryForFile( const char* aFilename, 
 }
 
 
-int PROJECT_GIT_UTILS::AllowLongPaths( git_repository* aRepo )
+int PROJECT_GIT_UTILS::AllowLongPaths( git_repository* aRepo [[maybe_unused]] )
 {
 #ifdef __WINDOWS__
     git_config* config = nullptr;
@@ -103,7 +103,7 @@ wxString PROJECT_GIT_UTILS::LongPathsConfigPath()
 }
 
 
-int PROJECT_GIT_UTILS::AttachLongPaths( git_repository* aRepo )
+int PROJECT_GIT_UTILS::AttachLongPaths( git_repository* aRepo [[maybe_unused]] )
 {
 #ifdef __WINDOWS__
     static const std::string expected = "[core]\n\tlongpaths = true\n";

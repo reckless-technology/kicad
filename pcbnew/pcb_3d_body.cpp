@@ -36,7 +36,7 @@ PCB_3D_BODY::PCB_3D_BODY( BOARD_ITEM* aParent ) :
 }
 
 
-void PCB_3D_BODY::Flip( const VECTOR2I& aCentre, FLIP_DIRECTION aFlipDirection )
+void PCB_3D_BODY::Flip( const VECTOR2I& aCentre [[maybe_unused]], FLIP_DIRECTION aFlipDirection [[maybe_unused]] )
 {
     if( m_extruded.m_layer == UNDEFINED_LAYER )
         return;

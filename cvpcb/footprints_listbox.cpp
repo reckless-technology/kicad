@@ -73,7 +73,7 @@ wxString FOOTPRINTS_LISTBOX::GetSelectedFootprint()
 }
 
 
-wxString FOOTPRINTS_LISTBOX::OnGetItemText( long item, long column ) const
+wxString FOOTPRINTS_LISTBOX::OnGetItemText( long item, long column [[maybe_unused]] ) const
 {
     if( item < 0 || item >= (long)m_footprintList.GetCount() )
         return wxEmptyString;
@@ -188,7 +188,7 @@ BEGIN_EVENT_TABLE( FOOTPRINTS_LISTBOX, ITEMS_LISTBOX_BASE )
 END_EVENT_TABLE()
 
 
-void FOOTPRINTS_LISTBOX::OnLeftClick( wxListEvent& event )
+void FOOTPRINTS_LISTBOX::OnLeftClick( wxListEvent& event [[maybe_unused]] )
 {
     if( m_isClosing )
         return;
@@ -197,7 +197,7 @@ void FOOTPRINTS_LISTBOX::OnLeftClick( wxListEvent& event )
 }
 
 
-void FOOTPRINTS_LISTBOX::OnLeftDClick( wxListEvent& event )
+void FOOTPRINTS_LISTBOX::OnLeftDClick( wxListEvent& event [[maybe_unused]] )
 {
     if( m_isClosing )
         return;

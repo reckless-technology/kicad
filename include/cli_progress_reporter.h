@@ -49,13 +49,13 @@ public:
     /**
      * Set the number of phases.
      */
-    virtual void SetNumPhases( int aNumPhases ) override {}
-    virtual void AddPhases( int aNumPhases ) override {};
+    virtual void SetNumPhases( int aNumPhases [[maybe_unused]] ) override {}
+    virtual void AddPhases( int aNumPhases [[maybe_unused]] ) override {};
 
     /**
      * Initialize the \a aPhase virtual zone of the dialog progress bar.
      */
-    virtual void BeginPhase( int aPhase ) override {}
+    virtual void BeginPhase( int aPhase [[maybe_unused]] ) override {}
 
     /**
      * Use the next available virtual zone of the dialog progress bar.
@@ -75,13 +75,13 @@ public:
     /**
      * Set the progress value to aProgress (0..1).
      */
-    virtual void SetCurrentProgress( double aProgress ) override {}
+    virtual void SetCurrentProgress( double aProgress [[maybe_unused]] ) override {}
 
     /**
      * Fix the value that gives the 100 percent progress bar length
      * (inside the current virtual zone).
      */
-    virtual void SetMaxProgress( int aMaxProgress ) override {}
+    virtual void SetMaxProgress( int aMaxProgress [[maybe_unused]] ) override {}
 
     /**
      * Increment the progress bar length (inside the current virtual zone).
@@ -95,7 +95,7 @@ public:
      *
      * @return false if the user cancelled.
      */
-    virtual bool KeepRefreshing( bool aWait = false ) override { return false; }
+    virtual bool KeepRefreshing( bool aWait [[maybe_unused]] = false ) override { return false; }
 
     /**
      * Change the title displayed on the window caption.
@@ -104,7 +104,7 @@ public:
      *
      * @warning This should only be called from the main thread.
      */
-    virtual void SetTitle( const wxString& aTitle ) override {}
+    virtual void SetTitle( const wxString& aTitle [[maybe_unused]] ) override {}
 
     virtual bool IsCancelled() const override { return false; }
 

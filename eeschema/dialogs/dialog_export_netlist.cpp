@@ -454,7 +454,7 @@ EXPORT_NETLIST_PAGE* DIALOG_EXPORT_NETLIST::AddOneCustomPage( const wxString& aT
 }
 
 
-void DIALOG_EXPORT_NETLIST::OnNetlistTypeSelection( wxNotebookEvent& event )
+void DIALOG_EXPORT_NETLIST::OnNetlistTypeSelection( wxNotebookEvent& event [[maybe_unused]] )
 {
     updateGeneratorButtons();
 }
@@ -810,7 +810,7 @@ void DIALOG_EXPORT_NETLIST::WriteCurrentNetlistSetup()
 }
 
 
-void DIALOG_EXPORT_NETLIST::OnDelGenerator( wxCommandEvent& event )
+void DIALOG_EXPORT_NETLIST::OnDelGenerator( wxCommandEvent& event [[maybe_unused]] )
 {
     EXPORT_NETLIST_PAGE* currPage = (EXPORT_NETLIST_PAGE*) m_NoteBook->GetCurrentPage();
 
@@ -826,7 +826,7 @@ void DIALOG_EXPORT_NETLIST::OnDelGenerator( wxCommandEvent& event )
 }
 
 
-void DIALOG_EXPORT_NETLIST::OnAddGenerator( wxCommandEvent& event )
+void DIALOG_EXPORT_NETLIST::OnAddGenerator( wxCommandEvent& event [[maybe_unused]] )
 {
     NETLIST_DIALOG_ADD_GENERATOR dlg( this );
 
@@ -897,7 +897,7 @@ bool NETLIST_DIALOG_ADD_GENERATOR::TransferDataFromWindow()
 }
 
 
-void NETLIST_DIALOG_ADD_GENERATOR::OnBrowseGenerators( wxCommandEvent& event )
+void NETLIST_DIALOG_ADD_GENERATOR::OnBrowseGenerators( wxCommandEvent& event [[maybe_unused]] )
 {
     wxString FullFileName, Path;
 

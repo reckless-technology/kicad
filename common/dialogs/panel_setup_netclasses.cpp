@@ -233,7 +233,7 @@ PANEL_SETUP_NETCLASSES::PANEL_SETUP_NETCLASSES( wxWindow* aParentWindow, EDA_DRA
     m_assignmentGrid->EndBatch();
 
     Bind( wxEVT_IDLE,
-          [this]( wxIdleEvent& aEvent )
+          [this]( wxIdleEvent& aEvent [[maybe_unused]] )
           {
               // Careful of consuming CPU in an idle event handler.  Check the ticker first to
               // see if there's even a possibility of the netclasses having changed.
@@ -754,7 +754,7 @@ void PANEL_SETUP_NETCLASSES::OnNetclassGridMouseEvent( wxMouseEvent& aEvent )
 }
 
 
-void PANEL_SETUP_NETCLASSES::OnAddNetclassClick( wxCommandEvent& event )
+void PANEL_SETUP_NETCLASSES::OnAddNetclassClick( wxCommandEvent& event [[maybe_unused]] )
 {
     m_netclassGrid->OnAddRow(
             [&]() -> std::pair<int, int>
@@ -776,7 +776,7 @@ void PANEL_SETUP_NETCLASSES::OnAddNetclassClick( wxCommandEvent& event )
 }
 
 
-void PANEL_SETUP_NETCLASSES::OnRemoveNetclassClick( wxCommandEvent& event )
+void PANEL_SETUP_NETCLASSES::OnRemoveNetclassClick( wxCommandEvent& event [[maybe_unused]] )
 {
     m_netclassGrid->OnDeleteRows(
             [&]( int row )
@@ -837,7 +837,7 @@ void PANEL_SETUP_NETCLASSES::OnSizeNetclassGrid( wxSizeEvent& event )
 }
 
 
-void PANEL_SETUP_NETCLASSES::OnAddAssignmentClick( wxCommandEvent& event )
+void PANEL_SETUP_NETCLASSES::OnAddAssignmentClick( wxCommandEvent& event [[maybe_unused]] )
 {
     m_assignmentGrid->OnAddRow(
             [&]() -> std::pair<int, int>
@@ -850,7 +850,7 @@ void PANEL_SETUP_NETCLASSES::OnAddAssignmentClick( wxCommandEvent& event )
 }
 
 
-void PANEL_SETUP_NETCLASSES::OnRemoveAssignmentClick( wxCommandEvent& event )
+void PANEL_SETUP_NETCLASSES::OnRemoveAssignmentClick( wxCommandEvent& event [[maybe_unused]] )
 {
     m_assignmentGrid->OnDeleteRows(
             [&]( int row )
@@ -860,7 +860,7 @@ void PANEL_SETUP_NETCLASSES::OnRemoveAssignmentClick( wxCommandEvent& event )
 }
 
 
-void PANEL_SETUP_NETCLASSES::OnImportColorsClick( wxCommandEvent& event )
+void PANEL_SETUP_NETCLASSES::OnImportColorsClick( wxCommandEvent& event [[maybe_unused]] )
 {
     const std::map<wxString, std::shared_ptr<NETCLASS>>& netclasses =
             m_netSettings->GetNetclasses();
@@ -897,7 +897,7 @@ void PANEL_SETUP_NETCLASSES::OnSizeAssignmentGrid( wxSizeEvent& event )
 }
 
 
-void PANEL_SETUP_NETCLASSES::OnUpdateUI( wxUpdateUIEvent& event )
+void PANEL_SETUP_NETCLASSES::OnUpdateUI( wxUpdateUIEvent& event [[maybe_unused]] )
 {
     if( m_netclassesDirty )
     {
@@ -993,7 +993,7 @@ void PANEL_SETUP_NETCLASSES::ImportSettingsFrom( const std::shared_ptr<NET_SETTI
 }
 
 
-void PANEL_SETUP_NETCLASSES::OnMoveNetclassUpClick( wxCommandEvent& event )
+void PANEL_SETUP_NETCLASSES::OnMoveNetclassUpClick( wxCommandEvent& event [[maybe_unused]] )
 {
     m_netclassGrid->OnMoveRowUp(
             [&]( int row )
@@ -1009,7 +1009,7 @@ void PANEL_SETUP_NETCLASSES::OnMoveNetclassUpClick( wxCommandEvent& event )
 }
 
 
-void PANEL_SETUP_NETCLASSES::OnMoveNetclassDownClick( wxCommandEvent& event )
+void PANEL_SETUP_NETCLASSES::OnMoveNetclassDownClick( wxCommandEvent& event [[maybe_unused]] )
 {
     m_netclassGrid->OnMoveRowDown(
             [&]( int row )

@@ -59,7 +59,7 @@ PANEL_SETUP_RULES::PANEL_SETUP_RULES( wxWindow* aParentWindow, PCB_EDIT_FRAME* a
 
     m_scintillaTricks = new SCINTILLA_TRICKS( m_textEditor, wxT( "()" ), false,
             // onAcceptFn
-            [this]( wxKeyEvent& aEvent )
+            [this]( wxKeyEvent& aEvent [[maybe_unused]] )
             {
                 wxPostEvent( PAGED_DIALOG::GetDialog( this ),
                              wxCommandEvent( wxEVT_COMMAND_BUTTON_CLICKED, wxID_OK ) );
@@ -145,7 +145,7 @@ const DRC_RULE_DOCUMENT& PANEL_SETUP_RULES::GetSearchDocument() const
 }
 
 
-void PANEL_SETUP_RULES::OnContextMenu(wxMouseEvent &event)
+void PANEL_SETUP_RULES::OnContextMenu(wxMouseEvent &event [[maybe_unused]])
 {
     wxMenu   menu;
 
@@ -952,7 +952,7 @@ void PANEL_SETUP_RULES::onScintillaCharAdded( wxStyledTextEvent &aEvent )
 }
 
 
-void PANEL_SETUP_RULES::OnCompile( wxCommandEvent& event )
+void PANEL_SETUP_RULES::OnCompile( wxCommandEvent& event [[maybe_unused]] )
 {
     m_errorsReport->Clear();
 
@@ -1123,7 +1123,7 @@ bool PANEL_SETUP_RULES::TransferDataFromWindow()
 }
 
 
-void PANEL_SETUP_RULES::OnSyntaxHelp( wxHyperlinkEvent& aEvent )
+void PANEL_SETUP_RULES::OnSyntaxHelp( wxHyperlinkEvent& aEvent [[maybe_unused]] )
 {
     if( m_helpWindow )
     {

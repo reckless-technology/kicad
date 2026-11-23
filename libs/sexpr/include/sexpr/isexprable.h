@@ -30,7 +30,7 @@ namespace SEXPR
     public:
         virtual ~ISEXPRABLE() {}
         virtual SEXPR* SerializeSEXPR() const { return nullptr; }
-        virtual void DeserializeSEXPR( SEXPR& sexp ) {}
+        virtual void DeserializeSEXPR( SEXPR& sexp [[maybe_unused]] ) {}
     };
 }
 

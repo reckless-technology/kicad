@@ -33,7 +33,7 @@ SCH_SELECTION::SCH_SELECTION( SCH_SCREEN* aScreen ) :
 }
 
 
-EDA_ITEM* SCH_SELECTION::GetTopLeftItem( bool onlyModules ) const
+EDA_ITEM* SCH_SELECTION::GetTopLeftItem( bool onlyModules [[maybe_unused]] ) const
 {
     EDA_ITEM* topLeftConnectedItem = nullptr;
     VECTOR2I  topLeftConnectedPos;

@@ -128,7 +128,7 @@ DIALOG_ZONE_MANAGER::DIALOG_ZONE_MANAGER( PCB_BASE_FRAME* aParent ) :
     Bind( wxEVT_IDLE, &DIALOG_ZONE_MANAGER::OnIdle, this );
     Bind( wxEVT_CHAR_HOOK, &DIALOG_ZONE_MANAGER::OnDialogCharHook, this );
     Bind( wxEVT_BOOKCTRL_PAGE_CHANGED,
-          [this]( wxNotebookEvent& aEvent )
+          [this]( wxNotebookEvent& aEvent [[maybe_unused]] )
           {
               Layout();
               SelectZoneOnCanvas( m_panelZoneProperties->GetZone(), m_zonePreviewNotebook->GetCurrentLayer() );
@@ -248,7 +248,7 @@ void DIALOG_ZONE_MANAGER::OnTableCharHook( wxKeyEvent& aEvent )
 }
 
 
-void DIALOG_ZONE_MANAGER::OnIdle( wxIdleEvent& aEvent )
+void DIALOG_ZONE_MANAGER::OnIdle( wxIdleEvent& aEvent [[maybe_unused]] )
 {
     WXUNUSED( aEvent )
     m_viewZonesOverview->SetFocus();
@@ -325,7 +325,7 @@ void DIALOG_ZONE_MANAGER::SelectZoneOnCanvas( ZONE* aClone, PCB_LAYER_ID aLayer 
 }
 
 
-void DIALOG_ZONE_MANAGER::OnViewZonesOverviewOnLeftUp( wxMouseEvent& aEvent )
+void DIALOG_ZONE_MANAGER::OnViewZonesOverviewOnLeftUp( wxMouseEvent& aEvent [[maybe_unused]] )
 {
     Bind( wxEVT_IDLE, &DIALOG_ZONE_MANAGER::OnIdle, this );
 }
@@ -433,31 +433,31 @@ void DIALOG_ZONE_MANAGER::OnDrop( wxDataViewEvent& aEvent )
 #endif // wxUSE_DRAG_AND_DROP
 
 
-void DIALOG_ZONE_MANAGER::OnMoveTopClick( wxCommandEvent& aEvent )
+void DIALOG_ZONE_MANAGER::OnMoveTopClick( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     MoveSelectedZonePriority( ZONE_INDEX_MOVEMENT::MOVE_TO_TOP );
 }
 
 
-void DIALOG_ZONE_MANAGER::OnMoveUpClick( wxCommandEvent& aEvent )
+void DIALOG_ZONE_MANAGER::OnMoveUpClick( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     MoveSelectedZonePriority( ZONE_INDEX_MOVEMENT::MOVE_UP );
 }
 
 
-void DIALOG_ZONE_MANAGER::OnMoveDownClick( wxCommandEvent& aEvent )
+void DIALOG_ZONE_MANAGER::OnMoveDownClick( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     MoveSelectedZonePriority( ZONE_INDEX_MOVEMENT::MOVE_DOWN );
 }
 
 
-void DIALOG_ZONE_MANAGER::OnMoveBottomClick( wxCommandEvent& aEvent )
+void DIALOG_ZONE_MANAGER::OnMoveBottomClick( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     MoveSelectedZonePriority( ZONE_INDEX_MOVEMENT::MOVE_TO_BOTTOM );
 }
 
 
-void DIALOG_ZONE_MANAGER::OnDeleteClick( wxCommandEvent& aEvent )
+void DIALOG_ZONE_MANAGER::OnDeleteClick( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( !m_viewZonesOverview->HasSelection() )
         return;
@@ -541,7 +541,7 @@ void DIALOG_ZONE_MANAGER::OnDeleteClick( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_ZONE_MANAGER::OnAutoAssignClick( wxCommandEvent& aEvent )
+void DIALOG_ZONE_MANAGER::OnAutoAssignClick( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     BOARD* board = m_pcbFrame->GetBoard();
 
@@ -601,7 +601,7 @@ void DIALOG_ZONE_MANAGER::OnFilterCtrlEnter( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_ZONE_MANAGER::OnLayerFilterChanged( wxCommandEvent& aEvent )
+void DIALOG_ZONE_MANAGER::OnLayerFilterChanged( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     int sel = m_layerFilter->GetSelection();
 
@@ -621,7 +621,7 @@ void DIALOG_ZONE_MANAGER::OnLayerFilterChanged( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_ZONE_MANAGER::OnUpdateDisplayedZonesClick( wxCommandEvent& aEvent )
+void DIALOG_ZONE_MANAGER::OnUpdateDisplayedZonesClick( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( m_isFillingZones )
         return;
@@ -669,14 +669,14 @@ void DIALOG_ZONE_MANAGER::OnUpdateDisplayedZonesClick( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_ZONE_MANAGER::OnZoneNameUpdate( wxCommandEvent& aEvent )
+void DIALOG_ZONE_MANAGER::OnZoneNameUpdate( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( ZONE* zone = m_panelZoneProperties->GetZone() )
         m_modelZonesOverview->RowChanged( m_modelZonesOverview->GetRow( m_modelZonesOverview->GetItemByZone( zone ) ) );
 }
 
 
-void DIALOG_ZONE_MANAGER::OnZoneNetUpdate( wxCommandEvent& aEvent )
+void DIALOG_ZONE_MANAGER::OnZoneNetUpdate( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( ZONE* zone = m_panelZoneProperties->GetZone() )
         m_modelZonesOverview->RowChanged( m_modelZonesOverview->GetRow( m_modelZonesOverview->GetItemByZone( zone ) ) );

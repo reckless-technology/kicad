@@ -50,7 +50,7 @@ void DIALOG_CONSTRAINT_LIST::Populate()
             m_board ? DiagnoseBoardConstraints( m_board ) : BOARD_CONSTRAINT_DIAGNOSTICS();
 
     PopulateConstraintList( m_list, m_board, m_parentFrame, diag,
-                            [&]( long aRow, PCB_CONSTRAINT* aConstraint )
+                            [&]( long aRow [[maybe_unused]], PCB_CONSTRAINT* aConstraint )
                             {
                                 m_rows.push_back( aConstraint );
                             } );
@@ -68,7 +68,7 @@ PCB_CONSTRAINT* DIALOG_CONSTRAINT_LIST::selectedConstraint() const
 }
 
 
-void DIALOG_CONSTRAINT_LIST::onRowActivated( wxListEvent& aEvent )
+void DIALOG_CONSTRAINT_LIST::onRowActivated( wxListEvent& aEvent [[maybe_unused]] )
 {
     if( PCB_CONSTRAINT* constraint = selectedConstraint() )
     {
@@ -80,7 +80,7 @@ void DIALOG_CONSTRAINT_LIST::onRowActivated( wxListEvent& aEvent )
 }
 
 
-void DIALOG_CONSTRAINT_LIST::onDelete( wxCommandEvent& aEvent )
+void DIALOG_CONSTRAINT_LIST::onDelete( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( PCB_CONSTRAINT* constraint = selectedConstraint() )
     {

@@ -193,7 +193,7 @@ long long DESIGN_BLOCK_IO::GetLibraryTimestamp( const wxString& aLibraryPath ) c
 
 
 void DESIGN_BLOCK_IO::CreateLibrary( const wxString&                    aLibraryPath,
-                                     const std::map<std::string, UTF8>* aProperties )
+                                     const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     if( wxDir::Exists( aLibraryPath ) )
         THROW_IO_ERRORF( _( "Cannot overwrite library path '%s'." ), aLibraryPath.GetData() );
@@ -210,7 +210,7 @@ void DESIGN_BLOCK_IO::CreateLibrary( const wxString&                    aLibrary
 
 
 bool DESIGN_BLOCK_IO::DeleteLibrary( const wxString&                    aLibraryPath,
-                                     const std::map<std::string, UTF8>* aProperties )
+                                     const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     wxFileName fn;
     fn.SetPath( aLibraryPath );
@@ -271,8 +271,8 @@ bool DESIGN_BLOCK_IO::DeleteLibrary( const wxString&                    aLibrary
 
 
 void DESIGN_BLOCK_IO::DesignBlockEnumerate( wxArrayString&  aDesignBlockNames,
-                                            const wxString& aLibraryPath, bool aBestEfforts,
-                                            const std::map<std::string, UTF8>* aProperties )
+                                            const wxString& aLibraryPath, bool aBestEfforts [[maybe_unused]],
+                                            const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     // From the starting directory, look for all directories ending in the .kicad_block extension
     wxDir dir( aLibraryPath );
@@ -293,8 +293,8 @@ void DESIGN_BLOCK_IO::DesignBlockEnumerate( wxArrayString&  aDesignBlockNames,
 
 
 DESIGN_BLOCK* DESIGN_BLOCK_IO::DesignBlockLoad( const wxString& aLibraryPath,
-                                                const wxString& aDesignBlockName, bool aKeepUUID,
-                                                const std::map<std::string, UTF8>* aProperties )
+                                                const wxString& aDesignBlockName, bool aKeepUUID [[maybe_unused]],
+                                                const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     wxString dbPath = aLibraryPath + wxFileName::GetPathSeparator() + aDesignBlockName + wxT( "." )
                       + FILEEXT::KiCadDesignBlockPathExtension + wxFileName::GetPathSeparator();
@@ -359,7 +359,7 @@ DESIGN_BLOCK* DESIGN_BLOCK_IO::DesignBlockLoad( const wxString& aLibraryPath,
 
 bool DESIGN_BLOCK_IO::DesignBlockExists( const wxString&                    aLibraryPath,
                                          const wxString&                    aDesignBlockName,
-                                         const std::map<std::string, UTF8>* aProperties )
+                                         const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     wxString dbPath = aLibraryPath + wxFileName::GetPathSeparator() + aDesignBlockName + wxT( "." )
                       + FILEEXT::KiCadDesignBlockPathExtension + wxFileName::GetPathSeparator();
@@ -370,7 +370,7 @@ bool DESIGN_BLOCK_IO::DesignBlockExists( const wxString&                    aLib
 
 void DESIGN_BLOCK_IO::DesignBlockSave( const wxString&                    aLibraryPath,
                                        const DESIGN_BLOCK*                aDesignBlock,
-                                       const std::map<std::string, UTF8>* aProperties )
+                                       const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     // Make sure we have a valid LIB_ID or we can't save the design block
     if( !aDesignBlock->GetLibId().IsValid() )
@@ -471,7 +471,7 @@ void DESIGN_BLOCK_IO::DesignBlockSave( const wxString&                    aLibra
 
 
 void DESIGN_BLOCK_IO::DesignBlockDelete( const wxString& aLibPath, const wxString& aDesignBlockName,
-                                         const std::map<std::string, UTF8>* aProperties )
+                                         const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     wxFileName dbDir = wxFileName( aLibPath + wxFileName::GetPathSeparator() + aDesignBlockName
                                    + wxT( "." ) + FILEEXT::KiCadDesignBlockPathExtension );

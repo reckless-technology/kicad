@@ -228,7 +228,7 @@ void DIALOG_PCM::OnUpdateEventButtons( wxUpdateUIEvent& event )
 }
 
 
-void DIALOG_PCM::OnCloseClicked( wxCommandEvent& event )
+void DIALOG_PCM::OnCloseClicked( wxCommandEvent& event [[maybe_unused]] )
 {
     if( m_pendingActions.size() == 0
         || wxMessageBox( _( "Are you sure you want to close the package manager and discard pending changes?" ),
@@ -240,7 +240,7 @@ void DIALOG_PCM::OnCloseClicked( wxCommandEvent& event )
 }
 
 
-void DIALOG_PCM::OnCloseWindow( wxCloseEvent& aEvent )
+void DIALOG_PCM::OnCloseWindow( wxCloseEvent& aEvent [[maybe_unused]] )
 {
     wxCommandEvent dummy;
 
@@ -248,7 +248,7 @@ void DIALOG_PCM::OnCloseWindow( wxCloseEvent& aEvent )
 }
 
 
-void DIALOG_PCM::OnManageRepositoriesClicked( wxCommandEvent& event )
+void DIALOG_PCM::OnManageRepositoriesClicked( wxCommandEvent& event [[maybe_unused]] )
 {
     DIALOG_MANAGE_REPOSITORIES* dialog = new DIALOG_MANAGE_REPOSITORIES( this, m_pcm );
 
@@ -331,7 +331,7 @@ void DIALOG_PCM::setRepositoryListFromPcm()
 }
 
 
-void DIALOG_PCM::OnRefreshClicked( wxCommandEvent& event )
+void DIALOG_PCM::OnRefreshClicked( wxCommandEvent& event [[maybe_unused]] )
 {
     if( m_selectedRepositoryId == ALL_REPOSITORIES )
     {
@@ -348,7 +348,7 @@ void DIALOG_PCM::OnRefreshClicked( wxCommandEvent& event )
 }
 
 
-void DIALOG_PCM::OnInstallFromFileClicked( wxCommandEvent& event )
+void DIALOG_PCM::OnInstallFromFileClicked( wxCommandEvent& event [[maybe_unused]] )
 {
     wxFileDialog open_file_dialog( this, _( "Install Package" ), wxEmptyString, wxEmptyString,
                                    wxT( "Zip files (*.zip)|*.zip" ), wxFD_OPEN | wxFD_FILE_MUST_EXIST );
@@ -372,7 +372,7 @@ void DIALOG_PCM::OnInstallFromFileClicked( wxCommandEvent& event )
 }
 
 
-void DIALOG_PCM::OnRepositoryChoice( wxCommandEvent& event )
+void DIALOG_PCM::OnRepositoryChoice( wxCommandEvent& event [[maybe_unused]] )
 {
     wxStringClientData* data = static_cast<wxStringClientData*>(
             m_choiceRepository->GetClientObject( m_choiceRepository->GetSelection() ) );
@@ -617,7 +617,7 @@ void DIALOG_PCM::setInstalledPackages()
 }
 
 
-void DIALOG_PCM::OnApplyChangesClicked( wxCommandEvent& event )
+void DIALOG_PCM::OnApplyChangesClicked( wxCommandEvent& event [[maybe_unused]] )
 {
     if( m_pendingActions.size() == 0 )
         return;
@@ -660,7 +660,7 @@ void DIALOG_PCM::OnApplyChangesClicked( wxCommandEvent& event )
 }
 
 
-void DIALOG_PCM::OnDiscardChangesClicked( wxCommandEvent& event )
+void DIALOG_PCM::OnDiscardChangesClicked( wxCommandEvent& event [[maybe_unused]] )
 {
     m_gridPendingActions->Freeze();
 
@@ -672,7 +672,7 @@ void DIALOG_PCM::OnDiscardChangesClicked( wxCommandEvent& event )
 }
 
 
-void DIALOG_PCM::OnDiscardActionClicked( wxCommandEvent& event )
+void DIALOG_PCM::OnDiscardActionClicked( wxCommandEvent& event [[maybe_unused]] )
 {
     wxArrayInt rows = m_gridPendingActions->GetSelectedRows();
 
@@ -718,7 +718,7 @@ void DIALOG_PCM::updatePackageState( const wxString& aPackageId, const PCM_PACKA
 }
 
 
-void DIALOG_PCM::OnOpenPackageDirClicked( wxCommandEvent& event )
+void DIALOG_PCM::OnOpenPackageDirClicked( wxCommandEvent& event [[maybe_unused]] )
 {
     LaunchExternal( m_pcm->Get3rdPartyPath() );
 }

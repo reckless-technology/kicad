@@ -75,7 +75,7 @@ public:
 
     bool CachesEnumeratedFootprints() const override { return true; }
 
-    bool IsLibraryWritable( const wxString& aLibraryPath ) override { return false; }
+    bool IsLibraryWritable( const wxString& aLibraryPath [[maybe_unused]] ) override { return false; }
 
     wxString GetImportedDesignRules() const override { return m_importedDesignRules; }
 

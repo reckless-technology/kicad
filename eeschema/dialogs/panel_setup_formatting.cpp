@@ -46,7 +46,7 @@ PANEL_SETUP_FORMATTING::PANEL_SETUP_FORMATTING( wxWindow* aWindow, SCH_EDIT_FRAM
 }
 
 
-void PANEL_SETUP_FORMATTING::onCheckBoxIref( wxCommandEvent& event )
+void PANEL_SETUP_FORMATTING::onCheckBoxIref( wxCommandEvent& event [[maybe_unused]] )
 {
     bool enabled = m_showIntersheetsReferences->GetValue();
 

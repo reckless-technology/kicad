@@ -84,7 +84,7 @@ public:
     void MirrorVertically( int aCenter ) override;
     void Rotate( const VECTOR2I& aCenter, bool aRotateCCW ) override;
 
-    wxString GetItemDescription( UNITS_PROVIDER* aUnitsProvider, bool aFull ) const override
+    wxString GetItemDescription( UNITS_PROVIDER* aUnitsProvider [[maybe_unused]], bool aFull [[maybe_unused]] ) const override
     {
         return wxString( _( "Image" ) );
     }

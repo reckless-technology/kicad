@@ -334,7 +334,7 @@ static void registerVariant( SCHEMATIC* aSchematic, const wxString& aName, const
 
 
 /// Make the set of variant records on one placement of a symbol match @a aInput, by name.
-static bool applySymbolVariants( kiapi::common::commands::ItemStatus* aStatus, SCH_SYMBOL* aSymbol,
+static bool applySymbolVariants( kiapi::common::commands::ItemStatus* aStatus [[maybe_unused]], SCH_SYMBOL* aSymbol,
                                  const kiapi::schematic::types::SchematicSymbolVariants& aInput,
                                  const SCH_SHEET_PATH& aPath, SCHEMATIC* aSchematic )
 {

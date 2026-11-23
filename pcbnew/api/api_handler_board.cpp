@@ -1498,7 +1498,7 @@ HANDLER_RESULT<SavedDocumentResponse> API_HANDLER_BOARD::handleSaveDocumentToStr
 
 
 HANDLER_RESULT<SavedSelectionResponse> API_HANDLER_BOARD::handleSaveSelectionToString(
-        const HANDLER_CONTEXT<SaveSelectionToString>& aCtx )
+        const HANDLER_CONTEXT<SaveSelectionToString>& aCtx [[maybe_unused]] )
 {
     if( std::optional<ApiResponseStatus> headless = checkForHeadless( "SaveSelectionToString" ) )
         return tl::unexpected( *headless );

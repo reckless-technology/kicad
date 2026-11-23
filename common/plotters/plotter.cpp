@@ -255,7 +255,7 @@ void PLOTTER::BezierCurve( const VECTOR2I& aStart, const VECTOR2I& aControl1,
 }
 
 
-void PLOTTER::PlotImage( const wxImage& aImage, const VECTOR2I& aPos, double aScaleFactor, double aAlpha )
+void PLOTTER::PlotImage( const wxImage& aImage, const VECTOR2I& aPos, double aScaleFactor, double aAlpha [[maybe_unused]] )
 {
     // This is the fallback plotter implementation for plotting an image as a rectangle.
     VECTOR2I size( aImage.GetWidth() * aScaleFactor, aImage.GetHeight() * aScaleFactor );
@@ -475,7 +475,7 @@ void PLOTTER::ThickSegment( const VECTOR2I& start, const VECTOR2I& end, int widt
 
 
 void PLOTTER::ThickArc( const VECTOR2D& centre, const EDA_ANGLE& aStartAngle,
-                        const EDA_ANGLE& aAngle, double aRadius, int aWidth, void* aData )
+                        const EDA_ANGLE& aAngle, double aRadius, int aWidth, void* aData [[maybe_unused]] )
 {
     Arc( centre, aStartAngle, aAngle, aRadius, FILL_T::NO_FILL, aWidth );
 }
@@ -506,19 +506,19 @@ void PLOTTER::ThickArc( const EDA_SHAPE& aArcShape, void* aData, int aWidth )
 }
 
 
-void PLOTTER::ThickRect( const VECTOR2I& p1, const VECTOR2I& p2, int width, void* aData )
+void PLOTTER::ThickRect( const VECTOR2I& p1, const VECTOR2I& p2, int width, void* aData [[maybe_unused]] )
 {
     Rect( p1, p2, FILL_T::NO_FILL, width, 0 );
 }
 
 
-void PLOTTER::ThickCircle( const VECTOR2I& pos, int diametre, int width, void* aData )
+void PLOTTER::ThickCircle( const VECTOR2I& pos, int diametre, int width, void* aData [[maybe_unused]] )
 {
     Circle( pos, diametre, FILL_T::NO_FILL, width );
 }
 
 
-void PLOTTER::FilledCircle( const VECTOR2I& pos, int diametre, void* aData )
+void PLOTTER::FilledCircle( const VECTOR2I& pos, int diametre, void* aData [[maybe_unused]] )
 {
     Circle( pos, diametre, FILL_T::FILLED_SHAPE, 0 );
 }
@@ -555,7 +555,7 @@ void PLOTTER::Text( const VECTOR2I&        aPos,
                     int                    aPenWidth,
                     bool                   aItalic,
                     bool                   aBold,
-                    bool                   aMultilineAllowed,
+                    bool                   aMultilineAllowed [[maybe_unused]],
                     KIFONT::FONT*          aFont,
                     const KIFONT::METRICS& aFontMetrics,
                     void*                  aData )

@@ -149,7 +149,7 @@ void renderDocumentGeometry( KIGFX::VIEW_OVERLAY& aOverlay, const DOCUMENT_GEOME
 
 
 void RenderSceneToOverlay( KIGFX::VIEW_OVERLAY& aOverlay, const DIFF_SCENE& aScene,
-                           const std::array<bool, CATEGORY_COUNT>& aVisible, const std::optional<KIID_PATH>& aHighlight,
+                           const std::array<bool, CATEGORY_COUNT>& aVisible, const std::optional<KIID_PATH>& aHighlight [[maybe_unused]],
                            const std::set<KIID_PATH>& aHidden )
 {
     aOverlay.Clear();

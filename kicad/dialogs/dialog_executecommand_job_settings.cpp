@@ -51,17 +51,17 @@ DIALOG_EXECUTECOMMAND_JOB_SETTINGS::DIALOG_EXECUTECOMMAND_JOB_SETTINGS( wxWindow
 
     m_scintillaTricks = new SCINTILLA_TRICKS( m_textCtrlCommand, wxT( "{}" ), false,
             // onAcceptFn
-            [this]( wxKeyEvent& aEvent )
+            [this]( wxKeyEvent& aEvent [[maybe_unused]] )
             {
                 wxPostEvent( this, wxCommandEvent( wxEVT_COMMAND_BUTTON_CLICKED, wxID_OK ) );
             },
 
             // onCharFn
-            [this]( wxStyledTextEvent& aEvent )
+            [this]( wxStyledTextEvent& aEvent [[maybe_unused]] )
             {
                 m_scintillaTricks->DoTextVarAutocomplete(
                         // getTokensFn
-                        [this]( const wxString& xRef, wxArrayString* tokens )
+                        [this]( const wxString& xRef [[maybe_unused]], wxArrayString* tokens )
                         {
                             ENV_VAR::GetEnvVarAutocompleteTokens( tokens );
                             tokens->Add( OUTPUT_TMP_PATH_VAR_NAME );
@@ -154,7 +154,7 @@ bool DIALOG_EXECUTECOMMAND_JOB_SETTINGS::TransferDataToWindow()
 }
 
 
-void DIALOG_EXECUTECOMMAND_JOB_SETTINGS::OnRecordOutputClicked( wxCommandEvent& aEvent )
+void DIALOG_EXECUTECOMMAND_JOB_SETTINGS::OnRecordOutputClicked( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     m_textCtrlOutputPath->Enable( m_cbRecordOutput->GetValue() );
 }

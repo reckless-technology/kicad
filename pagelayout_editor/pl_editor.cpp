@@ -54,7 +54,7 @@ static struct IFACE : public KIFACE_BASE, public UNITS_PROVIDER
     void OnKifaceEnd() override;
 
     wxWindow* CreateKiWindow( wxWindow* aParent, int aClassId, KIWAY* aKiway,
-                              int aCtlBits = 0 ) override
+                              int aCtlBits [[maybe_unused]] = 0 ) override
     {
         switch( aClassId )
         {
@@ -116,7 +116,7 @@ static struct IFACE : public KIFACE_BASE, public UNITS_PROVIDER
      * @param aDataId identifies which object you want the address of.
      * @return the object requested and must be cast into the know type.
      */
-    void* IfaceOrAddress( int aDataId ) override
+    void* IfaceOrAddress( int aDataId [[maybe_unused]] ) override
     {
         return nullptr;
     }
@@ -143,12 +143,12 @@ KIFACE_BASE& Kiface() { return kiface; }
 
 // KIFACE_GETTER's actual spelling is a substitution macro found in kiway.h.
 // KIFACE_GETTER will not have name mangling due to declaration in kiway.h.
-KIFACE_API KIFACE* KIFACE_GETTER(  int* aKIFACEversion, int aKiwayVersion, PGM_BASE* aProgram )
+KIFACE_API KIFACE* KIFACE_GETTER(  int* aKIFACEversion [[maybe_unused]], int aKiwayVersion [[maybe_unused]], PGM_BASE* aProgram [[maybe_unused]] )
 {
     return &kiface;
 }
 
-bool IFACE::OnKifaceStart( PGM_BASE* aProgram, int aCtlBits, KIWAY* aKiway )
+bool IFACE::OnKifaceStart( PGM_BASE* aProgram, int aCtlBits, KIWAY* aKiway [[maybe_unused]] )
 {
     InitSettings( new PL_EDITOR_SETTINGS );
     aProgram->GetSettingsManager().RegisterSettings( KifaceSettings() );

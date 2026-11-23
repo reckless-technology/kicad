@@ -528,7 +528,7 @@ void PGM_KICAD::OnPgmExit()
 }
 
 
-void PGM_KICAD::MacOpenFile( const wxString& aFileName )
+void PGM_KICAD::MacOpenFile( const wxString& aFileName [[maybe_unused]] )
 {
 #if defined(__WXMAC__)
 

@@ -211,7 +211,7 @@ void DIALOG_MIGRATE_BUSES::onItemSelected( wxListEvent& aEvent )
 }
 
 
-void DIALOG_MIGRATE_BUSES::onAcceptClicked( wxCommandEvent& aEvent )
+void DIALOG_MIGRATE_BUSES::onAcceptClicked( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     wxASSERT( m_selected_index < m_items.size() );
 

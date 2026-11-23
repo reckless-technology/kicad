@@ -178,13 +178,13 @@ void DIALOG_GIT_SWITCH::OnBranchListSelection( wxListEvent& aEvent )
 }
 
 
-void DIALOG_GIT_SWITCH::OnSwitchButton( wxCommandEvent& aEvent )
+void DIALOG_GIT_SWITCH::OnSwitchButton( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     EndModal( branchExists( m_branchNameText->GetValue() ) ? wxID_OK : wxID_ADD );
 }
 
 
-void DIALOG_GIT_SWITCH::OnCancelButton(wxCommandEvent& aEvent)
+void DIALOG_GIT_SWITCH::OnCancelButton(wxCommandEvent& aEvent [[maybe_unused]])
 {
     EndModal(wxID_CANCEL); // Return Cancel code
 }
@@ -218,7 +218,7 @@ void DIALOG_GIT_SWITCH::updateSwitchButton()
 }
 
 
-void DIALOG_GIT_SWITCH::OnTextChanged( wxCommandEvent& aEvt )
+void DIALOG_GIT_SWITCH::OnTextChanged( wxCommandEvent& aEvt [[maybe_unused]] )
 {
     m_branchNameDebounce.Restart();
 }

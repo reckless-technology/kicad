@@ -44,5 +44,5 @@ public:
 
     virtual void RemoveFromScreen( EDA_ITEM* aItem, SCH_SCREEN* aScreen ) = 0;
 
-    virtual void IntersheetRefUpdate( SCH_GLOBALLABEL* aItem ) {}
+    virtual void IntersheetRefUpdate( SCH_GLOBALLABEL* aItem [[maybe_unused]] ) {}
 };

@@ -72,7 +72,7 @@ public:
         return SCH_API_SAVE::SaveSchematic( m_frame->Schematic(), m_frame->Prj() );
     }
 
-    bool SaveSchematicAs( const wxString& aFileName ) override
+    bool SaveSchematicAs( const wxString& aFileName [[maybe_unused]] ) override
     {
         return false;
     }

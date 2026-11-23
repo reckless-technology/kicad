@@ -190,7 +190,7 @@ void DIALOG_PLUGIN_OPTIONS::onListBoxItemSelected( wxCommandEvent& event )
 }
 
 
-void DIALOG_PLUGIN_OPTIONS::onListBoxItemDoubleClicked( wxCommandEvent& event )
+void DIALOG_PLUGIN_OPTIONS::onListBoxItemDoubleClicked( wxCommandEvent& event [[maybe_unused]] )
 {
     appendOption();
 }

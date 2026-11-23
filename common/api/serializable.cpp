@@ -21,13 +21,13 @@
 #include <api/serializable.h>
 
 
-void SERIALIZABLE::Serialize( google::protobuf::Any &aContainer ) const
+void SERIALIZABLE::Serialize( google::protobuf::Any &aContainer [[maybe_unused]] ) const
 {
     wxASSERT_MSG( false, wxS( "Serialize called on an object that doesn't implement it!" ) );
 }
 
 
-bool SERIALIZABLE::Deserialize( const google::protobuf::Any &aContainer )
+bool SERIALIZABLE::Deserialize( const google::protobuf::Any &aContainer [[maybe_unused]] )
 {
     wxASSERT_MSG( false, wxS( "Deserialize called on an object that doesn't implement it!" ) );
     return false;

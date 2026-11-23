@@ -725,7 +725,7 @@ bool ExportBoardToHyperlynxFile( BOARD* aBoard, const wxString& aFullFilename )
 }
 
 
-int BOARD_EDITOR_CONTROL::ExportHyperlynx( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::ExportHyperlynx( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     BOARD*      board = m_frame->GetBoard();
     wxFileName  fn = board->GetFileName();

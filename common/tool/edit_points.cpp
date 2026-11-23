@@ -247,7 +247,7 @@ const BOX2I EDIT_POINTS::ViewBBox() const
 }
 
 
-void EDIT_POINTS::ViewDraw( int aLayer, KIGFX::VIEW* aView ) const
+void EDIT_POINTS::ViewDraw( int aLayer [[maybe_unused]], KIGFX::VIEW* aView ) const
 {
     KIGFX::GAL*             gal = aView->GetGAL();
     KIGFX::RENDER_SETTINGS* settings = aView->GetPainter()->GetSettings();

@@ -175,14 +175,14 @@ bool WRL2INLINE::Read( WRLPROC& proc, WRL2BASE* aTopNode )
 }
 
 
-bool WRL2INLINE::AddRefNode( WRL2NODE* aNode )
+bool WRL2INLINE::AddRefNode( WRL2NODE* aNode [[maybe_unused]] )
 {
     // this node may not own or reference any other node
     wxCHECK_MSG( false, false, wxT( "AddRefNode is not applicable." ) );
 }
 
 
-bool WRL2INLINE::AddChildNode( WRL2NODE* aNode )
+bool WRL2INLINE::AddChildNode( WRL2NODE* aNode [[maybe_unused]] )
 {
     // this node may not own or reference any other node
     wxCHECK_MSG( false, false, wxT( "AddChildNode is not applicable." ) );

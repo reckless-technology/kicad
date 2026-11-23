@@ -48,12 +48,12 @@ private:
     void OnOKClicked( wxCommandEvent& aEvent ) override;
     void ViewAndSelectFootprint( wxCommandEvent& aEvent ) override;
 
-    void onCheckAll( wxCommandEvent& aEvent ) override
+    void onCheckAll( wxCommandEvent& aEvent [[maybe_unused]] ) override
     {
         checkAll( true );
     }
 
-    void onUncheckAll( wxCommandEvent& aEvent ) override
+    void onUncheckAll( wxCommandEvent& aEvent [[maybe_unused]] ) override
     {
         checkAll( false );
     }

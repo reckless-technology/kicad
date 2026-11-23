@@ -145,7 +145,7 @@ void DIALOG_GROUP_PROPERTIES::OnMemberSelected( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_GROUP_PROPERTIES::OnAddMember( wxCommandEvent& event )
+void DIALOG_GROUP_PROPERTIES::OnAddMember( wxCommandEvent& event [[maybe_unused]] )
 {
     m_toolMgr->RunAction( ACTIONS::pickNewGroupMember );
 }
@@ -179,7 +179,7 @@ void DIALOG_GROUP_PROPERTIES::DoAddMember( EDA_ITEM* aItem )
 }
 
 
-void DIALOG_GROUP_PROPERTIES::OnRemoveMember( wxCommandEvent& event )
+void DIALOG_GROUP_PROPERTIES::OnRemoveMember( wxCommandEvent& event [[maybe_unused]] )
 {
     int selected = m_membersList->GetSelection();
 

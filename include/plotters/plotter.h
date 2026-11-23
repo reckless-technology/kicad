@@ -524,7 +524,7 @@ public:
      * @param aBox is the rectangular click target
      * @param aDestinationURL is the target URL
      */
-    virtual void HyperlinkBox( const BOX2I& aBox, const wxString& aDestinationURL )
+    virtual void HyperlinkBox( const BOX2I& aBox [[maybe_unused]], const wxString& aDestinationURL [[maybe_unused]] )
     {
         // NOP for most plotters.
     }
@@ -535,7 +535,7 @@ public:
      * @param aBox is the rectangular click target
      * @param aDestURLs is the target URL
      */
-    virtual void HyperlinkMenu( const BOX2I& aBox, const std::vector<wxString>& aDestURLs )
+    virtual void HyperlinkMenu( const BOX2I& aBox [[maybe_unused]], const std::vector<wxString>& aDestURLs [[maybe_unused]] )
     {
         // NOP for most plotters.
     }
@@ -547,8 +547,8 @@ public:
      * @param aName
      * @param aGroupName
      */
-    virtual void Bookmark( const BOX2I& aBox, const wxString& aName,
-                           const wxString& aGroupName = wxEmptyString )
+    virtual void Bookmark( const BOX2I& aBox [[maybe_unused]], const wxString& aName [[maybe_unused]],
+                           const wxString& aGroupName [[maybe_unused]] = wxEmptyString )
     {
         // NOP for most plotters.
     }
@@ -576,7 +576,7 @@ public:
      * It's not useful with most other plotter since they can't 'scratch'
      * the film like photoplotter imagers do
      */
-    virtual void SetLayerPolarity( bool aPositive )
+    virtual void SetLayerPolarity( bool aPositive [[maybe_unused]] )
     {
         // NOP for most plotters
     }
@@ -586,18 +586,18 @@ public:
      *
      * See the PlotTextMode explanation at the beginning of the file.
      */
-    virtual void SetTextMode( PLOT_TEXT_MODE mode )
+    virtual void SetTextMode( PLOT_TEXT_MODE mode [[maybe_unused]] )
     {
         // NOP for most plotters.
     }
 
-    virtual void SetGerberCoordinatesFormat( int aResolution, bool aUseInches = false )
+    virtual void SetGerberCoordinatesFormat( int aResolution [[maybe_unused]], bool aUseInches [[maybe_unused]] = false )
     {
         // NOP for most plotters. Only for Gerber plotter
     }
 
     /// Set the number of digits for mantissa in coordinates in mm for SVG plotter
-    virtual void SetSvgCoordinatesFormat( unsigned aPrecision )
+    virtual void SetSvgCoordinatesFormat( unsigned aPrecision [[maybe_unused]] )
     {
         // NOP for most plotters. Only for SVG plotter
     }
@@ -608,7 +608,7 @@ public:
      * Used by the SVG plotter to derive its viewBox from the content instead of the page
      * size, so the content origin can stay at the SVG origin.
      */
-    virtual void SetPlotBBox( const BOX2I& aBBoxIU )
+    virtual void SetPlotBBox( const BOX2I& aBBoxIU [[maybe_unused]] )
     {
         // NOP for most plotters. Only for SVG plotter
     }
@@ -620,7 +620,7 @@ public:
      * @param aData can define any parameter
      * for most of plotters: do nothing
      */
-    virtual void StartBlock( void* aData ) {}
+    virtual void StartBlock( void* aData [[maybe_unused]] ) {}
 
     /**
      * calling this function allows one to define the end of a group of drawing
@@ -629,7 +629,7 @@ public:
      * @param aData can define any parameter
      * for most of plotters: do nothing
      */
-    virtual void EndBlock( void* aData ) {}
+    virtual void EndBlock( void* aData [[maybe_unused]] ) {}
 
     /**
      * @return the plot offset in IUs, set by SetViewport() and used to plot items.

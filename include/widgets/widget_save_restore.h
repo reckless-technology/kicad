@@ -37,7 +37,7 @@ class EDA_ANGLE;
 class WIDGET_SAVE_RESTORE
 {
 public:
-    WIDGET_SAVE_RESTORE( const EDA_IU_SCALE& aIuScale, bool& aValidFlag ) :
+    WIDGET_SAVE_RESTORE( const EDA_IU_SCALE& aIuScale [[maybe_unused]], bool& aValidFlag ) :
         m_valid( aValidFlag )
     {
     }

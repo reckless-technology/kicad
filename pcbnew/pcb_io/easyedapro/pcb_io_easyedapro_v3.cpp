@@ -135,7 +135,7 @@ long long PCB_IO_EASYEDAPRO_V3::GetLibraryTimestamp( const wxString& aLibraryPat
 
 
 void PCB_IO_EASYEDAPRO_V3::FootprintEnumerate( wxArrayString& aFootprintNames, const wxString& aLibraryPath,
-                                               bool aBestEfforts, const std::map<std::string, UTF8>* aProperties )
+                                               bool aBestEfforts [[maybe_unused]], const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     const EASYEDAPRO::V3_DOC_PARSER& v3 = getCachedLibraryParser( aLibraryPath );
 
@@ -161,8 +161,8 @@ std::vector<FOOTPRINT*> PCB_IO_EASYEDAPRO_V3::GetImportedCachedLibraryFootprints
 
 
 std::unique_ptr<FOOTPRINT> PCB_IO_EASYEDAPRO_V3::FootprintLoad( const wxString& aLibraryPath,
-                                                                const wxString& aFootprintName, bool aKeepUUID,
-                                                                const std::map<std::string, UTF8>* aProperties )
+                                                                const wxString& aFootprintName, bool aKeepUUID [[maybe_unused]],
+                                                                const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     FONTCONFIG_REPORTER_SCOPE fontconfigScope( nullptr );
 
@@ -249,8 +249,8 @@ std::unique_ptr<FOOTPRINT> PCB_IO_EASYEDAPRO_V3::FootprintLoad( const wxString& 
 }
 
 
-void PCB_IO_EASYEDAPRO_V3::loadBoard( const wxString& aFileName, BOARD& aBoard, bool aIsNewLoad,
-                                      const std::map<std::string, UTF8>* aProperties, PROJECT* aProject )
+void PCB_IO_EASYEDAPRO_V3::loadBoard( const wxString& aFileName, BOARD& aBoard, bool aIsNewLoad [[maybe_unused]],
+                                      const std::map<std::string, UTF8>* aProperties, PROJECT* aProject [[maybe_unused]] )
 {
     m_props = aProperties;
     m_importedDesignRules.clear();

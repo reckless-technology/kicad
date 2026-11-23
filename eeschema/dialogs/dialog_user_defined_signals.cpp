@@ -136,7 +136,7 @@ void DIALOG_USER_DEFINED_SIGNALS::addGridRow( const wxString& aText, int aId )
 }
 
 
-void DIALOG_USER_DEFINED_SIGNALS::onAddSignal( wxCommandEvent& event )
+void DIALOG_USER_DEFINED_SIGNALS::onAddSignal( wxCommandEvent& event [[maybe_unused]] )
 {
     m_grid->OnAddRow(
             [&]() -> std::pair<int, int>
@@ -160,7 +160,7 @@ void DIALOG_USER_DEFINED_SIGNALS::onAddSignal( wxCommandEvent& event )
 }
 
 
-void DIALOG_USER_DEFINED_SIGNALS::onDeleteSignal( wxCommandEvent& event )
+void DIALOG_USER_DEFINED_SIGNALS::onDeleteSignal( wxCommandEvent& event [[maybe_unused]] )
 {
     m_grid->OnDeleteRows(
             [&]( int row )
@@ -172,7 +172,7 @@ void DIALOG_USER_DEFINED_SIGNALS::onDeleteSignal( wxCommandEvent& event )
 }
 
 
-void DIALOG_USER_DEFINED_SIGNALS::onCheckSyntax( wxCommandEvent& event )
+void DIALOG_USER_DEFINED_SIGNALS::onCheckSyntax( wxCommandEvent& event [[maybe_unused]] )
 {
     if( !m_grid->CommitPendingChanges() )
         return;
@@ -272,7 +272,7 @@ void DIALOG_USER_DEFINED_SIGNALS::onCheckSyntax( wxCommandEvent& event )
 }
 
 
-void DIALOG_USER_DEFINED_SIGNALS::onScintillaCharAdded( wxStyledTextEvent &aEvent, SCINTILLA_TRICKS* aTricks )
+void DIALOG_USER_DEFINED_SIGNALS::onScintillaCharAdded( wxStyledTextEvent &aEvent [[maybe_unused]], SCINTILLA_TRICKS* aTricks )
 {
     wxStyledTextCtrl*  textCtrl = aTricks->Scintilla();
     wxArrayString      tokens;
@@ -429,7 +429,7 @@ bool DIALOG_USER_DEFINED_SIGNALS::TransferDataFromWindow()
 }
 
 
-void DIALOG_USER_DEFINED_SIGNALS::OnFormattingHelp( wxHyperlinkEvent& aEvent )
+void DIALOG_USER_DEFINED_SIGNALS::OnFormattingHelp( wxHyperlinkEvent& aEvent [[maybe_unused]] )
 {
     wxString msg =
 #include "../sim/user_defined_signals_help_md.h"

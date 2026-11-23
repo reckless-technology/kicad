@@ -40,7 +40,7 @@
 class SIM_VALIDATOR : public wxValidator
 {
 private:
-    bool Validate( wxWindow* aParent ) override { return true; }
+    bool Validate( wxWindow* aParent [[maybe_unused]] ) override { return true; }
     bool TransferToWindow() override { return true; }
     bool TransferFromWindow() override { return true; }
 };

@@ -62,7 +62,7 @@ public:
 };
 
 
-int BOARD_EDITOR_CONTROL::GenBOMFileFromBoard( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::GenBOMFileFromBoard( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     BOARD*     board = m_frame->GetBoard();
     wxFileName fn;

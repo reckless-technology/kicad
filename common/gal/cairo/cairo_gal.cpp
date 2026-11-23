@@ -390,7 +390,7 @@ void CAIRO_GAL_BASE::DrawArc( const VECTOR2D& aCenterPoint, double aRadius,
 
 void CAIRO_GAL_BASE::DrawArcSegment( const VECTOR2D& aCenterPoint, double aRadius,
                                      const EDA_ANGLE& aStartAngle, const EDA_ANGLE& aAngle,
-                                     double aWidth, double aMaxError )
+                                     double aWidth, double aMaxError [[maybe_unused]] )
 {
     // Note: aMaxError is not used because Cairo can draw true arcs
     if( m_isFillEnabled )
@@ -542,7 +542,7 @@ void CAIRO_GAL_BASE::DrawRectangle( const VECTOR2D& aStartPoint, const VECTOR2D&
 }
 
 
-void CAIRO_GAL_BASE::DrawPolygon( const SHAPE_POLY_SET& aPolySet, bool aStrokeTriangulation )
+void CAIRO_GAL_BASE::DrawPolygon( const SHAPE_POLY_SET& aPolySet, bool aStrokeTriangulation [[maybe_unused]] )
 {
     for( int i = 0; i < aPolySet.OutlineCount(); ++i )
         drawPoly( aPolySet.COutline( i ) );
@@ -557,7 +557,7 @@ void CAIRO_GAL_BASE::DrawPolygon( const SHAPE_LINE_CHAIN& aPolygon )
 
 void CAIRO_GAL_BASE::DrawCurve( const VECTOR2D& aStartPoint, const VECTOR2D& aControlPointA,
                                 const VECTOR2D& aControlPointB, const VECTOR2D& aEndPoint,
-                                double aFilterValue )
+                                double aFilterValue [[maybe_unused]] )
 {
     // Note: aFilterValue is not used because the cubic Bezier curve is
     // supported by Cairo.
@@ -1019,7 +1019,7 @@ void CAIRO_GAL_BASE::ChangeGroupColor( int aGroupNumber, const COLOR4D& aNewColo
 }
 
 
-void CAIRO_GAL_BASE::ChangeGroupDepth( int aGroupNumber, int aDepth )
+void CAIRO_GAL_BASE::ChangeGroupDepth( int aGroupNumber [[maybe_unused]], int aDepth [[maybe_unused]] )
 {
     // Cairo does not have any possibilities to change the depth coordinate of stored items,
     // it depends only on the order of drawing
@@ -1089,7 +1089,7 @@ void CAIRO_GAL_BASE::DrawCursor( const VECTOR2D& aCursorPosition )
 }
 
 
-void CAIRO_GAL_BASE::EnableDepthTest( bool aEnabled )
+void CAIRO_GAL_BASE::EnableDepthTest( bool aEnabled [[maybe_unused]] )
 {
 }
 

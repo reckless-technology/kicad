@@ -247,7 +247,7 @@ public:
     /**
      * Set the possible values for for the property.
      */
-    virtual void SetChoices( const wxPGChoices& aChoices )
+    virtual void SetChoices( const wxPGChoices& aChoices [[maybe_unused]] )
     {
         wxFAIL; // only possible for PROPERTY_ENUM
     }
@@ -405,7 +405,7 @@ public:
         return m_validator( std::move( aValue ), aItem );
     }
 
-    static VALIDATOR_RESULT NullValidator( const wxAny&& aValue, EDA_ITEM* aItem )
+    static VALIDATOR_RESULT NullValidator( const wxAny&& aValue [[maybe_unused]], EDA_ITEM* aItem [[maybe_unused]] )
     {
         return std::nullopt;
     }
@@ -644,11 +644,11 @@ public:
     bool IgnoreValue() const override { return true; }
 
 protected:
-    void setter( void* obj, wxAny& v ) override
+    void setter( void* obj [[maybe_unused]], wxAny& v [[maybe_unused]] ) override
     {
     }
 
-    wxAny getter( const void* obj ) const override
+    wxAny getter( const void* obj [[maybe_unused]] ) const override
     {
         return wxAny();
     }

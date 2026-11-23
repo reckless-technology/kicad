@@ -128,7 +128,7 @@ bool PCB_IO_AUTOTRAX::CanReadBoard( const wxString& aFileName ) const
 
 
 void PCB_IO_AUTOTRAX::loadBoard( const wxString& aFileName, BOARD& aBoard, bool aIsNewLoad,
-                                 const std::map<std::string, UTF8>* aProperties, PROJECT* aProject )
+                                 const std::map<std::string, UTF8>* aProperties, PROJECT* aProject [[maybe_unused]] )
 {
     m_props = aProperties;
     m_board = &aBoard;

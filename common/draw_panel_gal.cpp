@@ -1052,7 +1052,7 @@ bool EDA_DRAW_PANEL_GAL::DoRePaint( bool aAllowSkip )
 }
 
 
-void EDA_DRAW_PANEL_GAL::onSize( wxSizeEvent& aEvent )
+void EDA_DRAW_PANEL_GAL::onSize( wxSizeEvent& aEvent [[maybe_unused]] )
 {
     ResizeGal();
 
@@ -1258,7 +1258,7 @@ float EDA_DRAW_PANEL_GAL::displayRefreshRate()
 }
 
 
-void EDA_DRAW_PANEL_GAL::Refresh( bool aEraseBackground, const wxRect* aRect )
+void EDA_DRAW_PANEL_GAL::Refresh( bool aEraseBackground [[maybe_unused]], const wxRect* aRect [[maybe_unused]] )
 {
     auto now = std::chrono::steady_clock::now();
     auto delta = std::chrono::duration_cast<std::chrono::milliseconds>( now - m_lastRepaintStart ).count();
@@ -1827,7 +1827,7 @@ void EDA_DRAW_PANEL_GAL::onIdle( wxIdleEvent& aEvent )
 }
 
 
-void EDA_DRAW_PANEL_GAL::onRefreshTimer( wxTimerEvent& aEvent )
+void EDA_DRAW_PANEL_GAL::onRefreshTimer( wxTimerEvent& aEvent [[maybe_unused]] )
 {
     const bool deferred = m_refreshDeferred;
 

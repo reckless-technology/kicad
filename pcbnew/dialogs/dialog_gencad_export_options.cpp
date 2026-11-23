@@ -109,7 +109,7 @@ DIALOG_GENCAD_EXPORT_OPTIONS::~DIALOG_GENCAD_EXPORT_OPTIONS()
 }
 
 
-void DIALOG_GENCAD_EXPORT_OPTIONS::onBrowseClicked( wxCommandEvent& aEvent )
+void DIALOG_GENCAD_EXPORT_OPTIONS::onBrowseClicked( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     wxFileName brdFile( m_frame->GetBoard()->GetFileName() );
     wxString   fileDialogName( wxString::Format( wxS( "%s-gencad" ), brdFile.GetName() ) );

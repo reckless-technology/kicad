@@ -66,7 +66,7 @@ DIALOG_CLEANUP_GRAPHICS::~DIALOG_CLEANUP_GRAPHICS()
 }
 
 
-void DIALOG_CLEANUP_GRAPHICS::OnCheckBox( wxCommandEvent& anEvent )
+void DIALOG_CLEANUP_GRAPHICS::OnCheckBox( wxCommandEvent& anEvent [[maybe_unused]] )
 {
     doCleanup( true );
 }

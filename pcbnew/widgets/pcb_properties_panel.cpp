@@ -109,7 +109,7 @@ public:
         UpdateControl( aProperty, editor );
 
         editor->Bind( FILTERED_ITEM_SELECTED,
-                      [=]( wxCommandEvent& aEvt )
+                      [=]( wxCommandEvent& aEvt [[maybe_unused]] )
                       {
                           auto& choices = const_cast<wxPGChoices&>( aProperty->GetChoices() );
                           wxString netname = editor->GetSelectedNetname();
@@ -135,7 +135,7 @@ public:
         }
     }
 
-    bool GetValueFromControl( wxVariant& aVariant, wxPGProperty* aProperty, wxWindow* aCtrl ) const override
+    bool GetValueFromControl( wxVariant& aVariant, wxPGProperty* aProperty [[maybe_unused]], wxWindow* aCtrl ) const override
     {
         NET_SELECTOR* editor = dynamic_cast<NET_SELECTOR*>( aCtrl );
 
@@ -146,7 +146,7 @@ public:
         return true;
     }
 
-    bool OnEvent( wxPropertyGrid* aGrid, wxPGProperty* aProperty, wxWindow* aWindow, wxEvent& aEvent ) const override
+    bool OnEvent( wxPropertyGrid* aGrid [[maybe_unused]], wxPGProperty* aProperty [[maybe_unused]], wxWindow* aWindow [[maybe_unused]], wxEvent& aEvent [[maybe_unused]] ) const override
     {
         return false;
     }
@@ -299,7 +299,7 @@ public:
             m_unitBinder->ChangeValue( aProperty->GetValue().GetLong() );
     }
 
-    bool GetValueFromControl( wxVariant& aVariant, wxPGProperty* aProperty, wxWindow* aCtrl ) const override
+    bool GetValueFromControl( wxVariant& aVariant, wxPGProperty* aProperty [[maybe_unused]], wxWindow* aCtrl ) const override
     {
         if( !m_unitBinder )
             return false;
@@ -322,7 +322,7 @@ public:
         return changed;
     }
 
-    bool OnEvent( wxPropertyGrid* aGrid, wxPGProperty* aProperty, wxWindow* aWindow, wxEvent& aEvent ) const override
+    bool OnEvent( wxPropertyGrid* aGrid [[maybe_unused]], wxPGProperty* aProperty [[maybe_unused]], wxWindow* aWindow [[maybe_unused]], wxEvent& aEvent [[maybe_unused]] ) const override
     {
         return false;
     }

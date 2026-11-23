@@ -59,7 +59,7 @@ void PANEL_CONSTRAINTS::RefreshList( const BOARD_CONSTRAINT_DIAGNOSTICS& aDiag )
     m_rows.clear();
 
     PopulateConstraintList( m_list, m_frame->GetBoard(), m_frame, aDiag,
-                            [&]( long aRow, PCB_CONSTRAINT* aConstraint )
+                            [&]( long aRow [[maybe_unused]], PCB_CONSTRAINT* aConstraint )
                             {
                                 m_rows.push_back( aConstraint->m_Uuid );
                             } );
@@ -139,7 +139,7 @@ void PANEL_CONSTRAINTS::onRowActivated( wxListEvent& aEvent )
 }
 
 
-void PANEL_CONSTRAINTS::onDelete( wxCommandEvent& aEvent )
+void PANEL_CONSTRAINTS::onDelete( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     long row = m_list->GetNextItem( -1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED );
 
@@ -156,7 +156,7 @@ void PANEL_CONSTRAINTS::onDelete( wxCommandEvent& aEvent )
 }
 
 
-void PANEL_CONSTRAINTS::onRefresh( wxCommandEvent& aEvent )
+void PANEL_CONSTRAINTS::onRefresh( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     RefreshList();
 }

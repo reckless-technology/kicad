@@ -57,7 +57,7 @@ MEANDER_PLACER::~MEANDER_PLACER()
 }
 
 
-NODE* MEANDER_PLACER::CurrentNode( bool aLoopsRemoved ) const
+NODE* MEANDER_PLACER::CurrentNode( bool aLoopsRemoved [[maybe_unused]] ) const
 {
     if( !m_currentNode )
         return m_world;
@@ -227,7 +227,7 @@ bool MEANDER_PLACER::Move( const VECTOR2I& aP, ITEM* aEndItem )
 }
 
 
-bool MEANDER_PLACER::doMove( const VECTOR2I& aP, ITEM* aEndItem, long long int aTargetLength,
+bool MEANDER_PLACER::doMove( const VECTOR2I& aP, ITEM* aEndItem [[maybe_unused]], long long int aTargetLength,
                              long long int aTargetMin, long long int aTargetMax )
 {
     m_hasMeanders = false;
@@ -366,7 +366,7 @@ bool MEANDER_PLACER::doMove( const VECTOR2I& aP, ITEM* aEndItem, long long int a
 }
 
 
-bool MEANDER_PLACER::FixRoute( const VECTOR2I& aP, ITEM* aEndItem, bool aForceFinish )
+bool MEANDER_PLACER::FixRoute( const VECTOR2I& aP [[maybe_unused]], ITEM* aEndItem [[maybe_unused]], bool aForceFinish [[maybe_unused]] )
 {
     if( !m_currentNode )
         return false;

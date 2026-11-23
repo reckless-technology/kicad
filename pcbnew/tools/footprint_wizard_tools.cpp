@@ -29,12 +29,12 @@ bool FOOTPRINT_WIZARD_TOOLS::Init()
 }
 
 
-void FOOTPRINT_WIZARD_TOOLS::Reset( RESET_REASON aReason )
+void FOOTPRINT_WIZARD_TOOLS::Reset( RESET_REASON aReason [[maybe_unused]] )
 {
 }
 
 
-int FOOTPRINT_WIZARD_TOOLS::ShowWizards( const TOOL_EVENT& aEvent )
+int FOOTPRINT_WIZARD_TOOLS::ShowWizards( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     wxCommandEvent dummy;
     frame()->SelectCurrentWizard( dummy );
@@ -42,7 +42,7 @@ int FOOTPRINT_WIZARD_TOOLS::ShowWizards( const TOOL_EVENT& aEvent )
 }
 
 
-int FOOTPRINT_WIZARD_TOOLS::ResetWizardPrms( const TOOL_EVENT& aEvent )
+int FOOTPRINT_WIZARD_TOOLS::ResetWizardPrms( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     frame()->DefaultParameters();
     return 0;
@@ -50,7 +50,7 @@ int FOOTPRINT_WIZARD_TOOLS::ResetWizardPrms( const TOOL_EVENT& aEvent )
 
 
 
-int FOOTPRINT_WIZARD_TOOLS::ExportFpToEditor( const TOOL_EVENT& aEvent )
+int FOOTPRINT_WIZARD_TOOLS::ExportFpToEditor( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     wxPostEvent( frame(), wxCommandEvent( wxEVT_TOOL, ID_FOOTPRINT_WIZARD_DONE ) );
     return 0;

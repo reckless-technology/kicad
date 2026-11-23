@@ -53,14 +53,14 @@ WRL1MATBINDING::~WRL1MATBINDING()
 }
 
 
-bool WRL1MATBINDING::AddRefNode( WRL1NODE* aNode )
+bool WRL1MATBINDING::AddRefNode( WRL1NODE* aNode [[maybe_unused]] )
 {
     // this node may not own or reference any other node
     wxCHECK_MSG( false, false, wxT( "AddRefNode is not applicable." ) );
 }
 
 
-bool WRL1MATBINDING::AddChildNode( WRL1NODE* aNode )
+bool WRL1MATBINDING::AddChildNode( WRL1NODE* aNode [[maybe_unused]] )
 {
     // this node may not own or reference any other node
     wxCHECK_MSG( false, false, wxT( "AddChildNode is not applicable." ) );
@@ -192,7 +192,7 @@ bool WRL1MATBINDING::Read( WRLPROC& proc, WRL1BASE* aTopNode )
 }
 
 
-SGNODE* WRL1MATBINDING::TranslateToSG( SGNODE* aParent, WRL1STATUS* sp )
+SGNODE* WRL1MATBINDING::TranslateToSG( SGNODE* aParent [[maybe_unused]], WRL1STATUS* sp )
 {
     wxCHECK_MSG ( sp, nullptr, wxT( "Bad model: no base data given." ) );
 

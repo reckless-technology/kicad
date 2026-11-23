@@ -147,7 +147,7 @@ void VIA_CROSS_SECTION_PREVIEW::SetState( const STATE& aState )
 }
 
 
-void VIA_CROSS_SECTION_PREVIEW::onPaint( wxPaintEvent& aEvent )
+void VIA_CROSS_SECTION_PREVIEW::onPaint( wxPaintEvent& aEvent [[maybe_unused]] )
 {
     wxPaintDC dc( this );
 

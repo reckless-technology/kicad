@@ -53,7 +53,7 @@ public:
      */
     virtual VALIDATION_RESULT Validate() const { return VALIDATION_RESULT(); }
 
-    virtual wxString GenerateRule( const RULE_GENERATION_CONTEXT& aContext ) { return wxEmptyString; }
+    virtual wxString GenerateRule( const RULE_GENERATION_CONTEXT& aContext [[maybe_unused]] ) { return wxEmptyString; }
 
     /**
      * Returns the bitmap to use for the overlay panel background.
@@ -76,7 +76,7 @@ public:
      * Returns just the constraint clauses without the rule wrapper.
      * Used for merging multiple constraint panels into a single rule.
      */
-    virtual std::vector<wxString> GetConstraintClauses( const RULE_GENERATION_CONTEXT& aContext ) const
+    virtual std::vector<wxString> GetConstraintClauses( const RULE_GENERATION_CONTEXT& aContext [[maybe_unused]] ) const
     {
         return {};
     }

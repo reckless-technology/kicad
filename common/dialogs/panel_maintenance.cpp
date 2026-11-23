@@ -75,7 +75,7 @@ void PANEL_MAINTENANCE::applySettingsToPanel( COMMON_SETTINGS& aSettings )
 }
 
 
-void PANEL_MAINTENANCE::onClearFileHistory( wxCommandEvent& event )
+void PANEL_MAINTENANCE::onClearFileHistory( wxCommandEvent& event [[maybe_unused]] )
 {
     Pgm().GetSettingsManager().ClearFileHistory();
 
@@ -101,7 +101,7 @@ void PANEL_MAINTENANCE::doClearDontShowAgain()
 }
 
 
-void PANEL_MAINTENANCE::onClearDontShowAgain( wxCommandEvent& event )
+void PANEL_MAINTENANCE::onClearDontShowAgain( wxCommandEvent& event [[maybe_unused]] )
 {
     doClearDontShowAgain();
 
@@ -122,7 +122,7 @@ void PANEL_MAINTENANCE::doClearDialogState()
 }
 
 
-void PANEL_MAINTENANCE::onClearDialogState( wxCommandEvent& event )
+void PANEL_MAINTENANCE::onClearDialogState( wxCommandEvent& event [[maybe_unused]] )
 {
     doClearDialogState();
 
@@ -131,7 +131,7 @@ void PANEL_MAINTENANCE::onClearDialogState( wxCommandEvent& event )
 }
 
 
-void PANEL_MAINTENANCE::onResetAll( wxCommandEvent& event )
+void PANEL_MAINTENANCE::onResetAll( wxCommandEvent& event [[maybe_unused]] )
 {
     doClearDialogState();
     Pgm().GetSettingsManager().ResetToDefaults();

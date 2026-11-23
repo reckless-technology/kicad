@@ -1185,7 +1185,7 @@ bool LOCAL_HISTORY::Init( const wxString& aProjectPath )
 
 
 static SNAPSHOT_COMMIT_RESULT commitSnapshotWithLock( git_repository* repo, git_index* index,
-                                                      const wxString& aHistoryPath, const wxString& aProjectPath,
+                                                      const wxString& aHistoryPath [[maybe_unused]], const wxString& aProjectPath,
                                                       const std::vector<wxString>& aFiles, const wxString& aTitle )
 {
     std::vector<std::string> filesArrStr;
@@ -1718,7 +1718,7 @@ static bool writePack( git_packbuilder* aPb, const wxString& aPackDir, PROGRESS_
     {
         git_packbuilder_set_callbacks(
                 aPb,
-                []( int aStage, uint32_t aCurrent, uint32_t aTotal, void* aPayload )
+                []( int aStage [[maybe_unused]], uint32_t aCurrent, uint32_t aTotal, void* aPayload )
                 {
                     auto* progress = static_cast<PROGRESS_STATE*>( aPayload );
 

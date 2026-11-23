@@ -20,7 +20,7 @@
 #include "gerber_collectors.h"
 
 
-INSPECT_RESULT GERBER_COLLECTOR::Inspect( EDA_ITEM* testItem, void* testData )
+INSPECT_RESULT GERBER_COLLECTOR::Inspect( EDA_ITEM* testItem, void* testData [[maybe_unused]] )
 {
     if( testItem->HitTest( m_refPos ) )
         Append( testItem );

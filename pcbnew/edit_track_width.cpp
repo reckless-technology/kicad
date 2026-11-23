@@ -98,7 +98,7 @@ void PCB_EDIT_FRAME::SetTrackSegmentWidth( PCB_TRACK* aItem, PICKED_ITEMS_LIST* 
 }
 
 
-void PCB_EDIT_FRAME::SelectViaStack_Event( wxCommandEvent& event )
+void PCB_EDIT_FRAME::SelectViaStack_Event( wxCommandEvent& event [[maybe_unused]] )
 {
     int nPresets = (int) GetDesignSettings().m_ViaStackPresets.size();
     int sel = m_SelViaStackBox->GetSelection();

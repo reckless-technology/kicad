@@ -118,12 +118,12 @@ bool POSITION_RELATIVE_TOOL::Init()
 }
 
 
-int POSITION_RELATIVE_TOOL::PositionRelative( const TOOL_EVENT& aEvent )
+int POSITION_RELATIVE_TOOL::PositionRelative( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     PCB_BASE_FRAME* editFrame = getEditFrame<PCB_BASE_FRAME>();
 
     const auto& selection = m_selectionTool->RequestSelection(
-            []( const VECTOR2I& aPt, GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
+            []( const VECTOR2I& aPt [[maybe_unused]], GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
             {
                 sTool->FilterCollectorForHierarchy( aCollector, true );
                 sTool->FilterCollectorForMarkers( aCollector );
@@ -186,7 +186,7 @@ int POSITION_RELATIVE_TOOL::InteractiveOffset( const TOOL_EVENT& aEvent )
 
     // First, acquire the selection that we will be moving after we have the new offset vector.
     const PCB_SELECTION& selection = m_selectionTool->RequestSelection(
-            []( const VECTOR2I& aPt, GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
+            []( const VECTOR2I& aPt [[maybe_unused]], GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
             {
                 sTool->FilterCollectorForHierarchy( aCollector, true );
                 sTool->FilterCollectorForMarkers( aCollector );

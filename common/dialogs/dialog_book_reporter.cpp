@@ -109,7 +109,7 @@ void DIALOG_BOOK_REPORTER::OnClose( wxCloseEvent& aEvent )
 }
 
 
-void DIALOG_BOOK_REPORTER::OnApply( wxCommandEvent& event )
+void DIALOG_BOOK_REPORTER::OnApply( wxCommandEvent& event [[maybe_unused]] )
 {
     wxCloseEvent closeEvent;
     closeEvent.SetId( m_sdbSizerApply->GetId() );
@@ -117,7 +117,7 @@ void DIALOG_BOOK_REPORTER::OnApply( wxCommandEvent& event )
 }
 
 
-void DIALOG_BOOK_REPORTER::OnOK( wxCommandEvent& event )
+void DIALOG_BOOK_REPORTER::OnOK( wxCommandEvent& event [[maybe_unused]] )
 {
     wxCloseEvent closeEvent;
     closeEvent.SetId( m_sdbSizerOK->GetId() );

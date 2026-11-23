@@ -474,12 +474,12 @@ public:
             aVariant = node->value;
     }
 
-    bool SetValue( const wxVariant& aVariant, const wxDataViewItem& aItem, unsigned int aCol ) override
+    bool SetValue( const wxVariant& aVariant [[maybe_unused]], const wxDataViewItem& aItem [[maybe_unused]], unsigned int aCol [[maybe_unused]] ) override
     {
         return false; // the tree is driven by its context menu, never edited in place
     }
 
-    bool GetAttr( const wxDataViewItem& aItem, unsigned int aCol, wxDataViewItemAttr& aAttr ) const override
+    bool GetAttr( const wxDataViewItem& aItem, unsigned int aCol [[maybe_unused]], wxDataViewItemAttr& aAttr ) const override
     {
         NODE* node = ToNode( aItem );
 
@@ -657,7 +657,7 @@ SIMULATOR_FRAME_UI::SIMULATOR_FRAME_UI( SIMULATOR_FRAME* aSimulatorFrame, SCH_ED
     m_filter->SetHint( _( "Filter" ) );
 
     Bind( EVT_SIM_VIEWS_CHANGED,
-          [&]( wxCommandEvent& aEvent )
+          [&]( wxCommandEvent& aEvent [[maybe_unused]] )
           {
               rebuildSignalsTree( m_filter->GetValue() );
               updatePlotCursors();
@@ -768,7 +768,7 @@ SIMULATOR_FRAME_UI::SIMULATOR_FRAME_UI( SIMULATOR_FRAME* aSimulatorFrame, SCH_ED
           } );
 
     Bind( wxEVT_TIMER,
-            [&]( wxTimerEvent& aEvent )
+            [&]( wxTimerEvent& aEvent [[maybe_unused]] )
             {
                 OnSimRefresh( false );
 
@@ -1935,13 +1935,13 @@ SIM_TAB* SIMULATOR_FRAME_UI::NewSimTab( const wxString& aSimCommand )
 }
 
 
-void SIMULATOR_FRAME_UI::OnFilterText( wxCommandEvent& aEvent )
+void SIMULATOR_FRAME_UI::OnFilterText( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     rebuildSignalsTree( m_filter->GetValue() );
 }
 
 
-void SIMULATOR_FRAME_UI::OnFilterMouseMoved( wxMouseEvent& aEvent )
+void SIMULATOR_FRAME_UI::OnFilterMouseMoved( wxMouseEvent& aEvent [[maybe_unused]] )
 {
 #if defined( __WXOSX__ ) // Doesn't work properly on other ports
     wxPoint pos = aEvent.GetPosition();
@@ -3035,7 +3035,7 @@ void SIMULATOR_FRAME_UI::deleteMeasurements( std::vector<int> aRows )
 }
 
 
-void SIMULATOR_FRAME_UI::OnUpdateUI( wxUpdateUIEvent& event )
+void SIMULATOR_FRAME_UI::OnUpdateUI( wxUpdateUIEvent& event [[maybe_unused]] )
 {
     if( SIM_PLOT_TAB* plotTab = dynamic_cast<SIM_PLOT_TAB*>( GetCurrentSimTab() ) )
     {
@@ -5124,13 +5124,13 @@ void SIMULATOR_FRAME_UI::ToggleSmithChart()
 }
 
 
-void SIMULATOR_FRAME_UI::onPlotClose( wxAuiNotebookEvent& event )
+void SIMULATOR_FRAME_UI::onPlotClose( wxAuiNotebookEvent& event [[maybe_unused]] )
 {
     OnModify();
 }
 
 
-void SIMULATOR_FRAME_UI::onPlotClosed( wxAuiNotebookEvent& event )
+void SIMULATOR_FRAME_UI::onPlotClosed( wxAuiNotebookEvent& event [[maybe_unused]] )
 {
     CallAfter(
             [this]()
@@ -5188,7 +5188,7 @@ void SIMULATOR_FRAME_UI::onPlotChanged( wxAuiNotebookEvent& event )
 }
 
 
-void SIMULATOR_FRAME_UI::onPlotDragged( wxAuiNotebookEvent& event )
+void SIMULATOR_FRAME_UI::onPlotDragged( wxAuiNotebookEvent& event [[maybe_unused]] )
 {
 }
 
@@ -5548,7 +5548,7 @@ void SIMULATOR_FRAME_UI::updatePlotCursors()
 }
 
 
-void SIMULATOR_FRAME_UI::onPlotCursorUpdate( wxCommandEvent& aEvent )
+void SIMULATOR_FRAME_UI::onPlotCursorUpdate( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     updatePlotCursors();
     OnModify();

@@ -33,7 +33,7 @@ DIALOG_FILTER_SELECTION::DIALOG_FILTER_SELECTION( PCB_BASE_FRAME* aParent, OPTIO
 }
 
 
-void DIALOG_FILTER_SELECTION::checkBoxClicked( wxCommandEvent& aEvent )
+void DIALOG_FILTER_SELECTION::checkBoxClicked( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( m_Include_Modules->GetValue() )
         m_IncludeLockedModules->Enable();
@@ -146,7 +146,7 @@ wxCheckBoxState DIALOG_FILTER_SELECTION::GetSuggestedAllItemsState( void )
 }
 
 
-void DIALOG_FILTER_SELECTION::allItemsClicked( wxCommandEvent& aEvent )
+void DIALOG_FILTER_SELECTION::allItemsClicked( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( m_All_Items->Get3StateValue() == wxCHK_CHECKED )
         forceCheckboxStates( true ); // Select all items

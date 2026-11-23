@@ -67,7 +67,7 @@ public:
                                   SCH_SHEET*             aAppendToMe = nullptr,
                                   const std::map<std::string, UTF8>* aProperties = nullptr ) override;
 
-    bool IsLibraryWritable( const wxString& aLibraryPath ) override { return false; }
+    bool IsLibraryWritable( const wxString& aLibraryPath [[maybe_unused]] ) override { return false; }
 };
 
 #endif // SCH_IO_DIPTRACE_H_

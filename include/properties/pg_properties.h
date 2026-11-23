@@ -223,7 +223,7 @@ class PGPROPERTY_COLORENUM : public wxEnumProperty
 public:
     PGPROPERTY_COLORENUM( wxPGChoices* aChoices ) :
             wxEnumProperty( wxPG_LABEL, wxPG_LABEL, *aChoices, 0 ),
-            m_colorFunc( []( int aDummy ) { return wxNullColour; } )
+            m_colorFunc( []( int aDummy [[maybe_unused]] ) { return wxNullColour; } )
     {
 #if wxCHECK_VERSION( 3, 3, 1 )
         SetFlag( wxPGFlags::CustomImage );

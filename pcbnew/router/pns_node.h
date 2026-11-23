@@ -199,7 +199,7 @@ public:
     virtual bool QueryConstraint( CONSTRAINT_TYPE aType, const ITEM* aItemA, const ITEM* aItemB,
                                   int aLayer, CONSTRAINT* aConstraint ) = 0;
 
-    virtual void ClearCacheForItems( std::vector<const ITEM*>& aItems ) {}
+    virtual void ClearCacheForItems( std::vector<const ITEM*>& aItems [[maybe_unused]] ) {}
     virtual void ClearCaches() {}
     virtual void ClearTemporaryCaches() {}
 

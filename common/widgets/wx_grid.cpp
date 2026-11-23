@@ -148,7 +148,7 @@ wxColour getBorderColour()
 class WX_GRID_CORNER_HEADER_RENDERER : public wxGridCornerHeaderRendererDefault
 {
 public:
-    void DrawBorder( const wxGrid& grid, wxDC& dc, wxRect& rect ) const override
+    void DrawBorder( const wxGrid& grid [[maybe_unused]], wxDC& dc, wxRect& rect ) const override
     {
         wxDCBrushChanger SetBrush( dc, *wxTRANSPARENT_BRUSH );
         wxDCPenChanger   SetPen( dc, wxPen( getBorderColour(), 1 ) );
@@ -165,7 +165,7 @@ public:
 class WX_GRID_COLUMN_HEADER_RENDERER : public wxGridColumnHeaderRendererDefault
 {
 public:
-    void DrawBorder( const wxGrid& grid, wxDC& dc, wxRect& rect ) const override
+    void DrawBorder( const wxGrid& grid [[maybe_unused]], wxDC& dc, wxRect& rect ) const override
     {
         wxDCBrushChanger SetBrush( dc, *wxTRANSPARENT_BRUSH );
         wxDCPenChanger   SetPen( dc, wxPen( getBorderColour(), 1 ) );
@@ -182,7 +182,7 @@ public:
 class WX_GRID_ROW_HEADER_RENDERER : public wxGridRowHeaderRendererDefault
 {
 public:
-    void DrawBorder( const wxGrid& grid, wxDC& dc, wxRect& rect ) const override
+    void DrawBorder( const wxGrid& grid [[maybe_unused]], wxDC& dc, wxRect& rect ) const override
     {
         wxDCBrushChanger SetBrush( dc, *wxTRANSPARENT_BRUSH );
         wxDCPenChanger   SetPen( dc, wxPen( getBorderColour(), 1 ) );
@@ -366,7 +366,7 @@ void WX_GRID::SetColLabelSize( int aHeight )
 }
 
 
-void WX_GRID::SetLabelFont( const wxFont& aFont )
+void WX_GRID::SetLabelFont( const wxFont& aFont [[maybe_unused]] )
 {
     wxGrid::SetLabelFont( KIUI::GetControlFont( this ) );
 }
@@ -877,7 +877,7 @@ void WX_GRID::OnAddRow( const std::function<std::pair<int, int>()>& aAdder )
 void WX_GRID::OnDeleteRows( const std::function<void( int row )>& aDeleter )
 {
     OnDeleteRows(
-            []( int row )
+            []( int row [[maybe_unused]] )
             {
                 return true;
             },
@@ -957,7 +957,7 @@ void WX_GRID::SwapRows( int aRowA, int aRowB )
 void WX_GRID::OnMoveRowUp( const std::function<void( int row )>& aMover )
 {
     OnMoveRowUp(
-            []( int row )
+            []( int row [[maybe_unused]] )
             {
                 return true;
             },
@@ -990,7 +990,7 @@ void WX_GRID::OnMoveRowUp( const std::function<bool( int row )>& aFilter,
 void WX_GRID::OnMoveRowDown( const std::function<void( int row )>& aMover )
 {
     OnMoveRowDown(
-            []( int row )
+            []( int row [[maybe_unused]] )
             {
                 return true;
             },
@@ -1104,7 +1104,7 @@ void WX_GRID::SetOptionalUnitValue( int aRow, int aCol, std::optional<int> aValu
 }
 
 
-void WX_GRID::onGridColMove( wxGridEvent& aEvent )
+void WX_GRID::onGridColMove( wxGridEvent& aEvent [[maybe_unused]] )
 {
     // wxWidgets won't move an open editor, so better just to close it
     CommitPendingChanges( true );

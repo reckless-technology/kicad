@@ -152,13 +152,13 @@ bool BOARD_INSPECTION_TOOL::Init()
 }
 
 
-void BOARD_INSPECTION_TOOL::Reset( RESET_REASON aReason )
+void BOARD_INSPECTION_TOOL::Reset( RESET_REASON aReason [[maybe_unused]] )
 {
     m_frame = getEditFrame<PCB_EDIT_FRAME>();
 }
 
 
-int BOARD_INSPECTION_TOOL::ShowBoardStatistics( const TOOL_EVENT& aEvent )
+int BOARD_INSPECTION_TOOL::ShowBoardStatistics( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     DIALOG_BOARD_STATISTICS dialog( m_frame );
     dialog.ShowModal();
@@ -394,7 +394,7 @@ BOARD_ITEM* BOARD_INSPECTION_TOOL::pickItemForInspection( const TOOL_EVENT& aEve
             } );
 
     picker->SetFinalizeHandler(
-            [&]( const int& aFinalState )
+            [&]( const int& aFinalState [[maybe_unused]] )
             {
                 if( highlightedItem && highlightedItem != aLockedHighlight )
                     selTool->UnbrightenItem( highlightedItem );
@@ -468,7 +468,7 @@ namespace
 class VECTOR_REPORTER : public REPORTER
 {
 public:
-    REPORTER& Report( const wxString& aText, SEVERITY aSeverity = RPT_SEVERITY_UNDEFINED ) override
+    REPORTER& Report( const wxString& aText, SEVERITY aSeverity [[maybe_unused]] = RPT_SEVERITY_UNDEFINED ) override
     {
         m_messages.push_back( aText );
         return *this;
@@ -895,7 +895,7 @@ void BOARD_INSPECTION_TOOL::InspectDRCError( const std::shared_ptr<RC_ITEM>& aDR
         if( compileError )
             reportCompileError( r );
 
-        drcEngine->ProcessAssertions( a, []( const DRC_CONSTRAINT* c ){}, r );
+        drcEngine->ProcessAssertions( a, []( const DRC_CONSTRAINT* c [[maybe_unused]] ){}, r );
         break;
 
     default:
@@ -1916,7 +1916,7 @@ int BOARD_INSPECTION_TOOL::InspectConstraints( const TOOL_EVENT& aEvent )
                    + wxS( "</a>" ) );
     }
 
-    drcEngine->ProcessAssertions( item, []( const DRC_CONSTRAINT* c ){}, r );
+    drcEngine->ProcessAssertions( item, []( const DRC_CONSTRAINT* c [[maybe_unused]] ){}, r );
     r->Flush();
 
     dialog->Raise();
@@ -1925,7 +1925,7 @@ int BOARD_INSPECTION_TOOL::InspectConstraints( const TOOL_EVENT& aEvent )
 }
 
 
-int BOARD_INSPECTION_TOOL::DiffFootprint( const TOOL_EVENT& aEvent )
+int BOARD_INSPECTION_TOOL::DiffFootprint( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     wxCHECK( m_frame, 0 );
 
@@ -1934,7 +1934,7 @@ int BOARD_INSPECTION_TOOL::DiffFootprint( const TOOL_EVENT& aEvent )
     wxCHECK( selTool, 0 );
 
     const PCB_SELECTION& selection = selTool->RequestSelection(
-            []( const VECTOR2I& aPt, GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
+            []( const VECTOR2I& aPt [[maybe_unused]], GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool [[maybe_unused]] )
             {
                 // Iterate from the back so we don't have to worry about removals.
                 for( int i = aCollector.GetCount() - 1; i >= 0; --i )
@@ -1955,7 +1955,7 @@ int BOARD_INSPECTION_TOOL::DiffFootprint( const TOOL_EVENT& aEvent )
 }
 
 
-int BOARD_INSPECTION_TOOL::CompareBoardWithFile( const TOOL_EVENT& aEvent )
+int BOARD_INSPECTION_TOOL::CompareBoardWithFile( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     wxCHECK( m_frame, 0 );
 
@@ -2216,7 +2216,7 @@ int BOARD_INSPECTION_TOOL::showBoardComparison( const wxString& aOtherPath, cons
 }
 
 
-int BOARD_INSPECTION_TOOL::CompareBoardWithHistory( const TOOL_EVENT& aEvent )
+int BOARD_INSPECTION_TOOL::CompareBoardWithHistory( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     wxCHECK( m_frame, 0 );
 
@@ -2455,7 +2455,7 @@ int BOARD_INSPECTION_TOOL::CompareBoardWithHistory( const TOOL_EVENT& aEvent )
 }
 
 
-int BOARD_INSPECTION_TOOL::ShowFootprintLinks( const TOOL_EVENT& aEvent )
+int BOARD_INSPECTION_TOOL::ShowFootprintLinks( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     wxCHECK( m_frame, 0 );
 
@@ -3031,7 +3031,7 @@ int BOARD_INSPECTION_TOOL::ReplaceTerminalPad( const TOOL_EVENT& aEvent )
 }
 
 
-int BOARD_INSPECTION_TOOL::ClearHighlight( const TOOL_EVENT& aEvent )
+int BOARD_INSPECTION_TOOL::ClearHighlight( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     BOARD*                  board = static_cast<BOARD*>( m_toolMgr->GetModel() );
     KIGFX::RENDER_SETTINGS* settings = m_toolMgr->GetView()->GetPainter()->GetSettings();
@@ -3065,7 +3065,7 @@ int BOARD_INSPECTION_TOOL::LocalRatsnestTool( const TOOL_EVENT& aEvent )
     picker->ClearHandlers();
 
     picker->SetClickHandler(
-            [this]( const VECTOR2D& pt ) -> bool
+            [this]( const VECTOR2D& pt [[maybe_unused]] ) -> bool
             {
                 PCB_SELECTION_TOOL* selectionTool = m_toolMgr->GetTool<PCB_SELECTION_TOOL>();
 
@@ -3166,7 +3166,7 @@ int BOARD_INSPECTION_TOOL::UpdateLocalRatsnest( const TOOL_EVENT& aEvent )
 }
 
 
-int BOARD_INSPECTION_TOOL::HideLocalRatsnest( const TOOL_EVENT& aEvent )
+int BOARD_INSPECTION_TOOL::HideLocalRatsnest( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     getModel<BOARD>()->GetConnectivity()->ClearLocalRatsnest();
     delete m_dynamicData;

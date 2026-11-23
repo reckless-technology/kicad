@@ -2611,13 +2611,13 @@ SIM_PLOT_TAB::SIM_PLOT_TAB( const wxString& aSimCommand, wxWindow* parent ) :
     viewButtonsSizer->Add( removeViewButton, 0, wxLEFT, 30 );
 
     addViewButton->Bind( wxEVT_BUTTON,
-            [this]( wxCommandEvent& aEvent )
+            [this]( wxCommandEvent& aEvent [[maybe_unused]] )
             {
                 AddView();
             } );
 
     removeViewButton->Bind( wxEVT_BUTTON,
-            [this]( wxCommandEvent& aEvent )
+            [this]( wxCommandEvent& aEvent [[maybe_unused]] )
             {
                 const std::vector<SIM_VIEW*>& views = GetViews();
 

@@ -645,7 +645,7 @@ bool ROUTER_TOOL::Init()
     ACTION_MANAGER* mgr = frame->GetToolManager()->GetActionManager();
 
     auto haveHighlight =
-            [this]( const SELECTION& sel )
+            [this]( const SELECTION& sel [[maybe_unused]] )
             {
                 KIGFX::RENDER_SETTINGS* cfg = m_toolMgr->GetView()->GetPainter()->GetSettings();
 
@@ -1036,7 +1036,7 @@ int ROUTER_TOOL::handlePnSCornerModeChange( const TOOL_EVENT& aEvent )
 }
 
 
-PCB_LAYER_ID ROUTER_TOOL::getStartLayer( const PNS::ITEM* aItem )
+PCB_LAYER_ID ROUTER_TOOL::getStartLayer( const PNS::ITEM* aItem [[maybe_unused]] )
 {
     PCB_LAYER_ID tl = static_cast<PCB_LAYER_ID>( getView()->GetTopLayer() );
 
@@ -2121,7 +2121,7 @@ void ROUTER_TOOL::performRouting( VECTOR2D aStartPosition )
 }
 
 
-int ROUTER_TOOL::DpDimensionsDialog( const TOOL_EVENT& aEvent )
+int ROUTER_TOOL::DpDimensionsDialog( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     PNS::SIZES_SETTINGS sizes = m_router->Sizes();
     DIALOG_PNS_DIFF_PAIR_DIMENSIONS settingsDlg( frame(), sizes );
@@ -2141,7 +2141,7 @@ int ROUTER_TOOL::DpDimensionsDialog( const TOOL_EVENT& aEvent )
 }
 
 
-int ROUTER_TOOL::SettingsDialog( const TOOL_EVENT& aEvent )
+int ROUTER_TOOL::SettingsDialog( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     DIALOG_PNS_SETTINGS settingsDlg( frame(), m_router->Settings() );
 
@@ -2165,7 +2165,7 @@ int ROUTER_TOOL::ChangeRouterMode( const TOOL_EVENT& aEvent )
 }
 
 
-int ROUTER_TOOL::CycleRouterMode( const TOOL_EVENT& aEvent )
+int ROUTER_TOOL::CycleRouterMode( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     PNS::ROUTING_SETTINGS& settings = m_router->Settings();
     PNS::PNS_MODE mode = settings.Mode();
@@ -2357,7 +2357,7 @@ int ROUTER_TOOL::RouteSelected( const TOOL_EVENT& aEvent )
 }
 
 
-int ROUTER_TOOL::OptimizeSelected( const TOOL_EVENT& aEvent )
+int ROUTER_TOOL::OptimizeSelected( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     PCB_EDIT_FRAME* frame = getEditFrame<PCB_EDIT_FRAME>();
     const PCB_SELECTION& selection = m_toolMgr->GetTool<PCB_SELECTION_TOOL>()->GetSelection();
@@ -2971,7 +2971,7 @@ void ROUTER_TOOL::performDragging( int aMode )
 
 
 void ROUTER_TOOL::NeighboringSegmentFilter( const VECTOR2I& aPt, GENERAL_COLLECTOR& aCollector,
-                                            PCB_SELECTION_TOOL* aSelTool )
+                                            PCB_SELECTION_TOOL* aSelTool [[maybe_unused]] )
 {
     /*
      * If the collection contains a trivial line corner (two connected segments)
@@ -3760,7 +3760,7 @@ int ROUTER_TOOL::InlineBreakTrack( const TOOL_EVENT& aEvent )
 }
 
 
-int ROUTER_TOOL::CustomTrackWidthDialog( const TOOL_EVENT& aEvent )
+int ROUTER_TOOL::CustomTrackWidthDialog( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     BOARD_DESIGN_SETTINGS& bds = board()->GetDesignSettings();
     DIALOG_TRACK_VIA_SIZE sizeDlg( frame(), bds );

@@ -262,7 +262,7 @@ void DIALOG_CREATE_NET_CHAIN::OnChainSelected( wxGridEvent& aEvent )
 }
 
 
-void DIALOG_CREATE_NET_CHAIN::OnRefreshClicked( wxCommandEvent& aEvent )
+void DIALOG_CREATE_NET_CHAIN::OnRefreshClicked( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     // Clear any focus-hint filter so Refresh truly restores the full list.  Otherwise the
     // empty-state message ("Use Refresh to restore the full list.") would refresh and
@@ -290,7 +290,7 @@ void DIALOG_CREATE_NET_CHAIN::recalculateAndReload( bool aRunRecalculate )
 }
 
 
-void DIALOG_CREATE_NET_CHAIN::OnFindPathClicked( wxCommandEvent& aEvent )
+void DIALOG_CREATE_NET_CHAIN::OnFindPathClicked( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     wxString fromRef = m_fromComponent->GetValue().Trim().Trim( false );
     wxString toRef = m_toComponent->GetValue().Trim().Trim( false );
@@ -626,7 +626,7 @@ void DIALOG_CREATE_NET_CHAIN::loadPotentials()
 }
 
 
-void DIALOG_CREATE_NET_CHAIN::OnFilterChanged( wxCommandEvent& aEvent )
+void DIALOG_CREATE_NET_CHAIN::OnFilterChanged( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     // Sync any edited names back before rebuilding
     for( size_t gi = 0; gi < m_filteredIndices.size(); ++gi )

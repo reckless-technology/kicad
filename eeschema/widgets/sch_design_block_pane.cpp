@@ -129,7 +129,7 @@ void SCH_DESIGN_BLOCK_PANE::setLabelsAndTooltips()
 }
 
 
-void SCH_DESIGN_BLOCK_PANE::OnCheckBox( wxCommandEvent& aEvent )
+void SCH_DESIGN_BLOCK_PANE::OnCheckBox( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( EESCHEMA_SETTINGS* cfg = dynamic_cast<EESCHEMA_SETTINGS*>( Kiface().KifaceSettings() ) )
     {

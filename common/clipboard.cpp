@@ -333,7 +333,7 @@ static wxImage FlattenAlphaOnWhite( const wxImage& aImage )
 
 
 bool AddPngToClipboardData( wxDataObjectComposite* aData, const wxMemoryBuffer& aPngData,
-                            const wxImage* aFallbackImage )
+                            const wxImage* aFallbackImage [[maybe_unused]] )
 {
     wxCHECK( wxTheClipboard->IsOpened(), false );
     wxCHECK( aPngData.GetDataLen() > 0, false );

@@ -60,13 +60,13 @@ bool GERBVIEW_INSPECTION_TOOL::Init()
 }
 
 
-void GERBVIEW_INSPECTION_TOOL::Reset( RESET_REASON aReason )
+void GERBVIEW_INSPECTION_TOOL::Reset( RESET_REASON aReason [[maybe_unused]] )
 {
     m_frame = getEditFrame<GERBVIEW_FRAME>();
 }
 
 
-int GERBVIEW_INSPECTION_TOOL::ShowDCodes( const TOOL_EVENT& aEvent )
+int GERBVIEW_INSPECTION_TOOL::ShowDCodes( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     wxString        Line;
     wxArrayString   list;
@@ -151,7 +151,7 @@ int GERBVIEW_INSPECTION_TOOL::ShowDCodes( const TOOL_EVENT& aEvent )
 }
 
 
-int GERBVIEW_INSPECTION_TOOL::ShowSource( const TOOL_EVENT& aEvent )
+int GERBVIEW_INSPECTION_TOOL::ShowSource( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     int                layer        = m_frame->GetActiveLayer();
     GERBER_FILE_IMAGE* gerber_layer = m_frame->GetGbrImage( layer );

@@ -601,13 +601,13 @@ bool SCH_SELECTION_TOOL::Init()
             };
 
     auto schEditCondition =
-            [this] ( const SELECTION& aSel )
+            [this] ( const SELECTION& aSel [[maybe_unused]] )
             {
                 return !m_isSymbolEditor && !m_isSymbolViewer;
             };
 
     auto belowRootSheetCondition =
-            [this]( const SELECTION& aSel )
+            [this]( const SELECTION& aSel [[maybe_unused]] )
             {
                 SCH_EDIT_FRAME* editFrame = dynamic_cast<SCH_EDIT_FRAME*>( m_frame );
 
@@ -615,7 +615,7 @@ bool SCH_SELECTION_TOOL::Init()
             };
 
     auto haveHighlight =
-            [this]( const SELECTION& sel )
+            [this]( const SELECTION& sel [[maybe_unused]] )
             {
                 SCH_EDIT_FRAME* editFrame = dynamic_cast<SCH_EDIT_FRAME*>( m_frame );
 
@@ -623,7 +623,7 @@ bool SCH_SELECTION_TOOL::Init()
             };
 
     auto haveSymbol =
-            [this]( const SELECTION& sel )
+            [this]( const SELECTION& sel [[maybe_unused]] )
             {
                 return m_isSymbolEditor && static_cast<SYMBOL_EDIT_FRAME*>( m_frame )->GetCurSymbol();
             };
@@ -806,7 +806,7 @@ void SCH_SELECTION_TOOL::Reset( RESET_REASON aReason )
     getView()->Add( &m_enteredGroupOverlay );
 }
 
-int SCH_SELECTION_TOOL::Main( const TOOL_EVENT& aEvent )
+int SCH_SELECTION_TOOL::Main( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->GetCanvas()->SetCurrentCursor( KICURSOR::ARROW );
 
@@ -1742,7 +1742,7 @@ OPT_TOOL_EVENT SCH_SELECTION_TOOL::autostartEvent( TOOL_EVENT* aEvent, EE_GRID_H
 }
 
 
-int SCH_SELECTION_TOOL::disambiguateCursor( const TOOL_EVENT& aEvent )
+int SCH_SELECTION_TOOL::disambiguateCursor( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     wxMouseState keyboardState = wxGetMouseState();
 
@@ -1757,7 +1757,7 @@ int SCH_SELECTION_TOOL::disambiguateCursor( const TOOL_EVENT& aEvent )
 }
 
 
-void SCH_SELECTION_TOOL::OnIdle( wxIdleEvent& aEvent )
+void SCH_SELECTION_TOOL::OnIdle( wxIdleEvent& aEvent [[maybe_unused]] )
 {
     if( m_frame->IsActive() && m_frame->IsEnabled() && m_frame->ToolStackIsEmpty() && !m_inSelectMultiple )
     {
@@ -2050,7 +2050,7 @@ bool SCH_SELECTION_TOOL::SelectPoint( const VECTOR2I& aWhere, const std::vector<
 }
 
 
-int SCH_SELECTION_TOOL::SelectAll( const TOOL_EVENT& aEvent )
+int SCH_SELECTION_TOOL::SelectAll( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SCH_COLLECTOR collection;
     m_inSelectMultiple = true;          // Multiple selection mode is active
@@ -2109,7 +2109,7 @@ int SCH_SELECTION_TOOL::SelectAll( const TOOL_EVENT& aEvent )
     return 0;
 }
 
-int SCH_SELECTION_TOOL::UnselectAll( const TOOL_EVENT& aEvent )
+int SCH_SELECTION_TOOL::UnselectAll( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_inSelectMultiple = true;          // Multiple selection mode is active
     KIGFX::VIEW* view = getView();
@@ -2438,7 +2438,7 @@ SCH_SELECTION& SCH_SELECTION_TOOL::RequestSelection( const std::vector<KICAD_T>&
 }
 
 
-void SCH_SELECTION_TOOL::filterCollectedItems( SCH_COLLECTOR& aCollector, bool aMultiSelect )
+void SCH_SELECTION_TOOL::filterCollectedItems( SCH_COLLECTOR& aCollector, bool aMultiSelect [[maybe_unused]] )
 {
     if( aCollector.GetCount() == 0 )
         return;
@@ -2626,7 +2626,7 @@ void SCH_SELECTION_TOOL::updateReferencePoint()
 }
 
 
-int SCH_SELECTION_TOOL::SetSelectPoly( const TOOL_EVENT& aEvent )
+int SCH_SELECTION_TOOL::SetSelectPoly( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_selectionMode = SELECTION_MODE::INSIDE_LASSO;
     m_nonModifiedCursor = KICURSOR::SELECT_LASSO;
@@ -2636,7 +2636,7 @@ int SCH_SELECTION_TOOL::SetSelectPoly( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_SELECTION_TOOL::SetSelectRect( const TOOL_EVENT& aEvent )
+int SCH_SELECTION_TOOL::SetSelectRect( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_selectionMode = SELECTION_MODE::INSIDE_RECTANGLE;
     m_nonModifiedCursor = KICURSOR::ARROW;
@@ -3203,7 +3203,7 @@ void SCH_SELECTION_TOOL::FilterSelectionForLockedItems()
 }
 
 
-int SCH_SELECTION_TOOL::updateSelection( const TOOL_EVENT& aEvent )
+int SCH_SELECTION_TOOL::updateSelection( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     getView()->Update( &m_selection );
     getView()->Update( &m_enteredGroupOverlay );
@@ -3345,7 +3345,7 @@ EDA_ITEM* SCH_SELECTION_TOOL::GetNode( const VECTOR2I& aPosition )
 }
 
 
-int SCH_SELECTION_TOOL::SelectNode( const TOOL_EVENT& aEvent )
+int SCH_SELECTION_TOOL::SelectNode( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     VECTOR2I cursorPos = getViewControls()->GetCursorPosition( false );
 
@@ -3602,7 +3602,7 @@ std::set<SCH_ITEM*> SCH_SELECTION_TOOL::expandConnectionGraphically( const SCH_S
 }
 
 
-int SCH_SELECTION_TOOL::SelectConnection( const TOOL_EVENT& aEvent )
+int SCH_SELECTION_TOOL::SelectConnection( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SCH_SELECTION originalSelection = RequestSelection( expandConnectionGraphTypes );
 
@@ -3716,7 +3716,7 @@ int SCH_SELECTION_TOOL::SelectConnection( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_SELECTION_TOOL::SelectColumns( const TOOL_EVENT& aEvent )
+int SCH_SELECTION_TOOL::SelectColumns( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     std::set<std::pair<SCH_TABLE*, int>> columns;
     bool                                 added = false;
@@ -3751,7 +3751,7 @@ int SCH_SELECTION_TOOL::SelectColumns( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_SELECTION_TOOL::SelectRows( const TOOL_EVENT& aEvent )
+int SCH_SELECTION_TOOL::SelectRows( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     std::set<std::pair<SCH_TABLE*, int>> rows;
     bool                                 added = false;
@@ -3786,7 +3786,7 @@ int SCH_SELECTION_TOOL::SelectRows( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_SELECTION_TOOL::SelectTable( const TOOL_EVENT& aEvent )
+int SCH_SELECTION_TOOL::SelectTable( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     std::set<SCH_TABLE*> tables;
     bool                 added = false;
@@ -3815,7 +3815,7 @@ int SCH_SELECTION_TOOL::SelectTable( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_SELECTION_TOOL::ClearSelection( const TOOL_EVENT& aEvent )
+int SCH_SELECTION_TOOL::ClearSelection( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     ClearSelection();
     return 0;
@@ -4074,7 +4074,7 @@ void SCH_SELECTION_TOOL::RebuildSelection()
 }
 
 
-bool SCH_SELECTION_TOOL::Selectable( const EDA_ITEM* aItem, const VECTOR2I* aPos, bool checkVisibilityOnly ) const
+bool SCH_SELECTION_TOOL::Selectable( const EDA_ITEM* aItem, const VECTOR2I* aPos, bool checkVisibilityOnly [[maybe_unused]] ) const
 {
     // NOTE: in the future this is where Eeschema layer/itemtype visibility will be handled
 
@@ -4344,7 +4344,7 @@ bool SCH_SELECTION_TOOL::selectionContains( const VECTOR2I& aPoint ) const
 }
 
 
-int SCH_SELECTION_TOOL::SelectNext( const TOOL_EVENT& aEvent )
+int SCH_SELECTION_TOOL::SelectNext( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SCH_EDIT_FRAME* editFrame = dynamic_cast<SCH_EDIT_FRAME*>( m_frame );
 
@@ -4365,7 +4365,7 @@ int SCH_SELECTION_TOOL::SelectNext( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_SELECTION_TOOL::SelectPrevious( const TOOL_EVENT& aEvent )
+int SCH_SELECTION_TOOL::SelectPrevious( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SCH_EDIT_FRAME* editFrame = dynamic_cast<SCH_EDIT_FRAME*>( m_frame );
 

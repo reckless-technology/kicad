@@ -22,7 +22,7 @@
 #include <tools/pl_selection.h>
 
 
-EDA_ITEM* PL_SELECTION::GetTopLeftItem( bool onlyModules ) const
+EDA_ITEM* PL_SELECTION::GetTopLeftItem( bool onlyModules [[maybe_unused]] ) const
 {
     EDA_ITEM* topLeftItem = nullptr;
     BOX2I     topLeftItemBB;

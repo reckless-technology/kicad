@@ -154,7 +154,7 @@ void SCH_NO_CONNECT::Rotate( const VECTOR2I& aCenter, bool aRotateCCW )
 
 
 bool SCH_NO_CONNECT::HasConnectivityChanges( const SCH_ITEM* aItem,
-                                             const SCH_SHEET_PATH* aInstance ) const
+                                             const SCH_SHEET_PATH* aInstance [[maybe_unused]] ) const
 {
     // Do not compare to ourself.
     if( aItem == this )
@@ -213,8 +213,8 @@ bool SCH_NO_CONNECT::HitTest( const SHAPE_LINE_CHAIN& aPoly, bool aContained ) c
 }
 
 
-void SCH_NO_CONNECT::Plot( PLOTTER* aPlotter, bool aBackground, const SCH_PLOT_OPTS& aPlotOpts,
-                           int aUnit, int aBodyStyle, const VECTOR2I& aOffset, bool aDimmed )
+void SCH_NO_CONNECT::Plot( PLOTTER* aPlotter, bool aBackground, const SCH_PLOT_OPTS& aPlotOpts [[maybe_unused]],
+                           int aUnit [[maybe_unused]], int aBodyStyle [[maybe_unused]], const VECTOR2I& aOffset [[maybe_unused]], bool aDimmed [[maybe_unused]] )
 {
     if( aBackground )
         return;

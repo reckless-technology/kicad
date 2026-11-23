@@ -67,7 +67,7 @@ void DRC_RE_OBJECT_SELECTOR_PANEL::SetCustomQueryCtrl( wxStyledTextCtrl* ctrl )
     m_customQueryCtrl = ctrl;
 }
 
-void DRC_RE_OBJECT_SELECTOR_PANEL::onChoice( const wxCommandEvent& aEvent )
+void DRC_RE_OBJECT_SELECTOR_PANEL::onChoice( const wxCommandEvent& aEvent [[maybe_unused]] )
 {
     m_netSelector->Hide();
     m_netclassSelector->Hide();

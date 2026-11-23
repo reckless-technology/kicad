@@ -603,7 +603,7 @@ void DIALOG_SHEET_PROPERTIES::OnGridCellChanging( wxGridEvent& event )
 }
 
 
-void DIALOG_SHEET_PROPERTIES::OnAddField( wxCommandEvent& event )
+void DIALOG_SHEET_PROPERTIES::OnAddField( wxCommandEvent& event [[maybe_unused]] )
 {
     m_grid->OnAddRow(
             [&]() -> std::pair<int, int>
@@ -622,7 +622,7 @@ void DIALOG_SHEET_PROPERTIES::OnAddField( wxCommandEvent& event )
 }
 
 
-void DIALOG_SHEET_PROPERTIES::OnDeleteField( wxCommandEvent& event )
+void DIALOG_SHEET_PROPERTIES::OnDeleteField( wxCommandEvent& event [[maybe_unused]] )
 {
     m_grid->OnDeleteRows(
             [&]( int row )
@@ -654,7 +654,7 @@ void DIALOG_SHEET_PROPERTIES::OnDeleteField( wxCommandEvent& event )
 }
 
 
-void DIALOG_SHEET_PROPERTIES::OnMoveUp( wxCommandEvent& event )
+void DIALOG_SHEET_PROPERTIES::OnMoveUp( wxCommandEvent& event [[maybe_unused]] )
 {
     m_grid->OnMoveRowUp(
             [&]( int row )
@@ -669,7 +669,7 @@ void DIALOG_SHEET_PROPERTIES::OnMoveUp( wxCommandEvent& event )
 }
 
 
-void DIALOG_SHEET_PROPERTIES::OnMoveDown( wxCommandEvent& event )
+void DIALOG_SHEET_PROPERTIES::OnMoveDown( wxCommandEvent& event [[maybe_unused]] )
 {
     m_grid->OnMoveRowDown(
             [&]( int row )
@@ -684,7 +684,7 @@ void DIALOG_SHEET_PROPERTIES::OnMoveDown( wxCommandEvent& event )
 }
 
 
-void DIALOG_SHEET_PROPERTIES::OnUpdateUI( wxUpdateUIEvent& event )
+void DIALOG_SHEET_PROPERTIES::OnUpdateUI( wxUpdateUIEvent& event [[maybe_unused]] )
 {
     std::bitset<64> shownColumns = m_grid->GetShownColumns();
 

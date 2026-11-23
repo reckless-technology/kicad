@@ -77,12 +77,12 @@ DIALOG_TABLECELL_PROPERTIES::DIALOG_TABLECELL_PROPERTIES( PCB_BASE_EDIT_FRAME*  
     m_scintillaTricks = new SCINTILLA_TRICKS(
             m_cellText, wxT( "{}" ), false,
             // onAcceptFn
-            [this]( wxKeyEvent& aEvent )
+            [this]( wxKeyEvent& aEvent [[maybe_unused]] )
             {
                 wxPostEvent( this, wxCommandEvent( wxEVT_COMMAND_BUTTON_CLICKED, wxID_OK ) );
             },
             // onCharFn
-            [this]( wxStyledTextEvent& aEvent )
+            [this]( wxStyledTextEvent& aEvent [[maybe_unused]] )
             {
                 m_scintillaTricks->DoTextVarAutocomplete(
                         // getTokensFn
@@ -324,7 +324,7 @@ bool DIALOG_TABLECELL_PROPERTIES::TransferDataToWindow()
     return true;
 }
 
-void DIALOG_TABLECELL_PROPERTIES::onTextSize( wxCommandEvent& aEvent )
+void DIALOG_TABLECELL_PROPERTIES::onTextSize( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( m_autoTextThickness->IsChecked() )
         m_textThickness.SetValue( GetPenSizeForNormal( m_textWidth.GetIntValue() ) );
@@ -486,7 +486,7 @@ bool DIALOG_TABLECELL_PROPERTIES::TransferDataFromWindow()
 }
 
 
-void DIALOG_TABLECELL_PROPERTIES::onEditTable( wxCommandEvent& aEvent )
+void DIALOG_TABLECELL_PROPERTIES::onEditTable( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( TransferDataFromWindow() )
     {
@@ -496,7 +496,7 @@ void DIALOG_TABLECELL_PROPERTIES::onEditTable( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_TABLECELL_PROPERTIES::onSyntaxHelp( wxHyperlinkEvent& aEvent )
+void DIALOG_TABLECELL_PROPERTIES::onSyntaxHelp( wxHyperlinkEvent& aEvent [[maybe_unused]] )
 {
     if( m_helpWindow )
     {

@@ -133,7 +133,7 @@ size_t ALIGN_DISTRIBUTE_TOOL::GetSelections( std::vector<std::pair<BOARD_ITEM*, 
                                              T aCompare )
 {
     PCB_SELECTION& selection = m_selectionTool->RequestSelection(
-            []( const VECTOR2I& aPt, GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
+            []( const VECTOR2I& aPt [[maybe_unused]], GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool [[maybe_unused]] )
             {
                 // Iterate from the back so we don't have to worry about removals.
                 for( int i = aCollector.GetCount() - 1; i >= 0; --i )
@@ -217,7 +217,7 @@ size_t ALIGN_DISTRIBUTE_TOOL::GetSelections( std::vector<std::pair<BOARD_ITEM*, 
 }
 
 
-int ALIGN_DISTRIBUTE_TOOL::AlignTop( const TOOL_EVENT& aEvent )
+int ALIGN_DISTRIBUTE_TOOL::AlignTop( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     std::vector<std::pair<BOARD_ITEM*, BOX2I>> itemsToAlign;
     std::vector<std::pair<BOARD_ITEM*, BOX2I>> locked_items;
@@ -256,7 +256,7 @@ int ALIGN_DISTRIBUTE_TOOL::AlignTop( const TOOL_EVENT& aEvent )
 }
 
 
-int ALIGN_DISTRIBUTE_TOOL::AlignBottom( const TOOL_EVENT& aEvent )
+int ALIGN_DISTRIBUTE_TOOL::AlignBottom( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     std::vector<std::pair<BOARD_ITEM*, BOX2I>> itemsToAlign;
     std::vector<std::pair<BOARD_ITEM*, BOX2I>> locked_items;
@@ -295,7 +295,7 @@ int ALIGN_DISTRIBUTE_TOOL::AlignBottom( const TOOL_EVENT& aEvent )
 }
 
 
-int ALIGN_DISTRIBUTE_TOOL::AlignLeft( const TOOL_EVENT& aEvent )
+int ALIGN_DISTRIBUTE_TOOL::AlignLeft( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     // Because this tool uses bounding boxes and they aren't mirrored even when
     // the view is mirrored, we need to call the other one if mirrored.
@@ -345,7 +345,7 @@ int ALIGN_DISTRIBUTE_TOOL::doAlignLeft()
 }
 
 
-int ALIGN_DISTRIBUTE_TOOL::AlignRight( const TOOL_EVENT& aEvent )
+int ALIGN_DISTRIBUTE_TOOL::AlignRight( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     // Because this tool uses bounding boxes and they aren't mirrored even when
     // the view is mirrored, we need to call the other one if mirrored.
@@ -395,7 +395,7 @@ int ALIGN_DISTRIBUTE_TOOL::doAlignRight()
 }
 
 
-int ALIGN_DISTRIBUTE_TOOL::AlignCenterX( const TOOL_EVENT& aEvent )
+int ALIGN_DISTRIBUTE_TOOL::AlignCenterX( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     std::vector<std::pair<BOARD_ITEM*, BOX2I>> itemsToAlign;
     std::vector<std::pair<BOARD_ITEM*, BOX2I>> locked_items;
@@ -434,7 +434,7 @@ int ALIGN_DISTRIBUTE_TOOL::AlignCenterX( const TOOL_EVENT& aEvent )
 }
 
 
-int ALIGN_DISTRIBUTE_TOOL::AlignCenterY( const TOOL_EVENT& aEvent )
+int ALIGN_DISTRIBUTE_TOOL::AlignCenterY( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     std::vector<std::pair<BOARD_ITEM*, BOX2I>> itemsToAlign;
     std::vector<std::pair<BOARD_ITEM*, BOX2I>> locked_items;
@@ -476,7 +476,7 @@ int ALIGN_DISTRIBUTE_TOOL::AlignCenterY( const TOOL_EVENT& aEvent )
 int ALIGN_DISTRIBUTE_TOOL::DistributeItems( const TOOL_EVENT& aEvent )
 {
     PCB_SELECTION& selection = m_selectionTool->RequestSelection(
-            []( const VECTOR2I& aPt, GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
+            []( const VECTOR2I& aPt [[maybe_unused]], GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
             {
                 sTool->FilterCollectorForMarkers( aCollector );
                 sTool->FilterCollectorForHierarchy( aCollector, true );

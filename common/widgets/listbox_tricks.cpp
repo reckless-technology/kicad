@@ -197,7 +197,7 @@ void LISTBOX_TRICKS::listBoxCut()
 }
 
 
-void LISTBOX_TRICKS::OnListBoxRDown( wxMouseEvent& aEvent )
+void LISTBOX_TRICKS::OnListBoxRDown( wxMouseEvent& aEvent [[maybe_unused]] )
 {
     wxMenu menu;
 
@@ -252,31 +252,31 @@ void LISTBOX_TRICKS::OnListBoxKeyDown( wxKeyEvent& aEvent )
 }
 
 
-void LISTBOX_TRICKS::OnListBoxDelete( wxCommandEvent& aEvent )
+void LISTBOX_TRICKS::OnListBoxDelete( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     listBoxDeleteSelected();
 }
 
 
-void LISTBOX_TRICKS::OnListBoxCopy( wxCommandEvent& aEvent )
+void LISTBOX_TRICKS::OnListBoxCopy( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     listBoxCopy();
 }
 
 
-void LISTBOX_TRICKS::OnListBoxCut( wxCommandEvent& aEvent )
+void LISTBOX_TRICKS::OnListBoxCut( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     listBoxCut();
 }
 
 
-void LISTBOX_TRICKS::OnListBoxPaste( wxCommandEvent& aEvent )
+void LISTBOX_TRICKS::OnListBoxPaste( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     listBoxPaste();
 }
 
 
-void LISTBOX_TRICKS::OnListBoxDuplicate( wxCommandEvent& aEvent )
+void LISTBOX_TRICKS::OnListBoxDuplicate( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     listBoxDuplicateSelected();
 }

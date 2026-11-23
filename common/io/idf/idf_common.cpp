@@ -404,7 +404,7 @@ bool IDF_DRILL_DATA::Matches( double aDrillDia, double aPosX, double aPosY ) con
 
 
 bool IDF_DRILL_DATA::read( std::istream& aBoardFile, IDF3::IDF_UNIT aBoardUnit,
-                           IDF3::FILE_STATE aBoardState, IDF3::IDF_VERSION aIdfVersion )
+                           IDF3::FILE_STATE aBoardState [[maybe_unused]], IDF3::IDF_VERSION aIdfVersion )
 {
     std::string iline;      // the input line
     bool isComment;         // true if a line just read in is a comment line

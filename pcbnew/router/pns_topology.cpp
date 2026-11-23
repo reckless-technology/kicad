@@ -1026,13 +1026,13 @@ const ITEM_SET TOPOLOGY::AssembleTuningPath( ROUTER_IFACE* aRouterIface, ITEM* a
 }
 
 
-const ITEM_SET TOPOLOGY::ConnectedItems( const JOINT* aStart, int aKindMask )
+const ITEM_SET TOPOLOGY::ConnectedItems( const JOINT* aStart [[maybe_unused]], int aKindMask [[maybe_unused]] )
 {
     return ITEM_SET();
 }
 
 
-const ITEM_SET TOPOLOGY::ConnectedItems( ITEM* aStart, int aKindMask )
+const ITEM_SET TOPOLOGY::ConnectedItems( ITEM* aStart [[maybe_unused]], int aKindMask [[maybe_unused]] )
 {
     return ITEM_SET();
 }

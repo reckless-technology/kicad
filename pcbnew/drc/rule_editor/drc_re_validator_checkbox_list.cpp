@@ -32,7 +32,7 @@ wxObject* VALIDATE_CHECKBOX_LIST::Clone() const
 }
 
 
-bool VALIDATE_CHECKBOX_LIST::Validate( wxWindow* aParent )
+bool VALIDATE_CHECKBOX_LIST::Validate( wxWindow* aParent [[maybe_unused]] )
 {
     for( wxCheckBox* checkbox : m_checkboxes )
     {

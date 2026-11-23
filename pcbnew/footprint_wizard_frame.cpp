@@ -237,7 +237,7 @@ void FOOTPRINT_WIZARD_FRAME::doCloseWindow()
 }
 
 
-void FOOTPRINT_WIZARD_FRAME::ExportSelectedFootprint( wxCommandEvent& aEvent )
+void FOOTPRINT_WIZARD_FRAME::ExportSelectedFootprint( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     DismissModal( true );
     Close();
@@ -253,7 +253,7 @@ void FOOTPRINT_WIZARD_FRAME::OnSize( wxSizeEvent& SizeEv )
 }
 
 
-COLOR_SETTINGS* FOOTPRINT_WIZARD_FRAME::GetColorSettings( bool aForceRefresh ) const
+COLOR_SETTINGS* FOOTPRINT_WIZARD_FRAME::GetColorSettings( bool aForceRefresh [[maybe_unused]] ) const
 {
     FOOTPRINT_EDITOR_SETTINGS* cfg = GetFootprintEditorSettings();
     return ::GetColorSettings( cfg ? cfg->m_ColorTheme : DEFAULT_THEME );
@@ -378,7 +378,7 @@ void FOOTPRINT_WIZARD_FRAME::OnActivate( wxActivateEvent& event )
 }
 
 
-void FOOTPRINT_WIZARD_FRAME::Update3DView( bool aMarkDirty, bool aRefresh, const wxString* aTitle )
+void FOOTPRINT_WIZARD_FRAME::Update3DView( bool aMarkDirty, bool aRefresh, const wxString* aTitle [[maybe_unused]] )
 {
     wxString wizardName = m_currentWizard ? m_currentWizard->Info().meta.name : _( "no wizard selected" );
     wxString frm3Dtitle;

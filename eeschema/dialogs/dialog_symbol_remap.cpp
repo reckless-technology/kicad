@@ -86,7 +86,7 @@ DIALOG_SYMBOL_REMAP::DIALOG_SYMBOL_REMAP( SCH_EDIT_FRAME* aParent ) :
 }
 
 
-void DIALOG_SYMBOL_REMAP::OnRemapSymbols( wxCommandEvent& aEvent )
+void DIALOG_SYMBOL_REMAP::OnRemapSymbols( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     SCH_EDIT_FRAME* parent = dynamic_cast< SCH_EDIT_FRAME* >( GetParent() );
 

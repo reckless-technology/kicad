@@ -61,7 +61,7 @@ DIALOG_GLOBAL_DELETION::DIALOG_GLOBAL_DELETION( PCB_EDIT_FRAME* parent ) :
 }
 
 
-int GLOBAL_EDIT_TOOL::GlobalDeletions( const TOOL_EVENT& aEvent )
+int GLOBAL_EDIT_TOOL::GlobalDeletions( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     PCB_EDIT_FRAME* editFrame = getEditFrame<PCB_EDIT_FRAME>();
     DIALOG_GLOBAL_DELETION dlg( editFrame );
@@ -84,7 +84,7 @@ void DIALOG_GLOBAL_DELETION::SetCurrentLayer( int aLayer )
 }
 
 
-void DIALOG_GLOBAL_DELETION::onCheckDeleteTracks( wxCommandEvent& event )
+void DIALOG_GLOBAL_DELETION::onCheckDeleteTracks( wxCommandEvent& event [[maybe_unused]] )
 {
     m_trackFilterLocked->Enable( m_delTracks->GetValue() );
     m_trackFilterUnlocked->Enable( m_delTracks->GetValue() );
@@ -93,14 +93,14 @@ void DIALOG_GLOBAL_DELETION::onCheckDeleteTracks( wxCommandEvent& event )
 }
 
 
-void DIALOG_GLOBAL_DELETION::onCheckDeleteFootprints( wxCommandEvent& event )
+void DIALOG_GLOBAL_DELETION::onCheckDeleteFootprints( wxCommandEvent& event [[maybe_unused]] )
 {
     m_footprintFilterLocked->Enable( m_delFootprints->GetValue() );
     m_footprintFilterUnlocked->Enable( m_delFootprints->GetValue() );
 }
 
 
-void DIALOG_GLOBAL_DELETION::onCheckDeleteDrawings( wxCommandEvent& event )
+void DIALOG_GLOBAL_DELETION::onCheckDeleteDrawings( wxCommandEvent& event [[maybe_unused]] )
 {
     bool enable = m_delDrawings->GetValue() || m_delBoardEdges->GetValue();
 
@@ -109,7 +109,7 @@ void DIALOG_GLOBAL_DELETION::onCheckDeleteDrawings( wxCommandEvent& event )
 }
 
 
-void DIALOG_GLOBAL_DELETION::onCheckDeleteBoardOutlines( wxCommandEvent& event )
+void DIALOG_GLOBAL_DELETION::onCheckDeleteBoardOutlines( wxCommandEvent& event [[maybe_unused]] )
 {
     bool enable = m_delDrawings->GetValue() || m_delBoardEdges->GetValue();
 

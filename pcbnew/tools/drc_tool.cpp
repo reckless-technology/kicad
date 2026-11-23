@@ -54,7 +54,7 @@ DRC_TOOL::~DRC_TOOL()
 }
 
 
-void DRC_TOOL::Reset( RESET_REASON aReason )
+void DRC_TOOL::Reset( RESET_REASON aReason [[maybe_unused]] )
 {
     m_editFrame = getEditFrame<PCB_EDIT_FRAME>();
 
@@ -104,7 +104,7 @@ void DRC_TOOL::ShowDRCDialog( wxWindow* aParent )
 }
 
 
-int DRC_TOOL::ShowDRCDialog( const TOOL_EVENT& aEvent )
+int DRC_TOOL::ShowDRCDialog( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     ShowDRCDialog( nullptr );
     return 0;
@@ -230,7 +230,7 @@ void DRC_TOOL::updatePointers( bool aDRCWasCancelled )
 }
 
 
-int DRC_TOOL::PrevMarker( const TOOL_EVENT& aEvent )
+int DRC_TOOL::PrevMarker( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( m_drcDialog )
     {
@@ -247,7 +247,7 @@ int DRC_TOOL::PrevMarker( const TOOL_EVENT& aEvent )
 }
 
 
-int DRC_TOOL::NextMarker( const TOOL_EVENT& aEvent )
+int DRC_TOOL::NextMarker( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( m_drcDialog )
     {
@@ -264,7 +264,7 @@ int DRC_TOOL::NextMarker( const TOOL_EVENT& aEvent )
 }
 
 
-int DRC_TOOL::CrossProbe( const TOOL_EVENT& aEvent )
+int DRC_TOOL::CrossProbe( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( m_drcDialog && m_drcDialog->IsShownOnScreen() )
     {
@@ -288,7 +288,7 @@ void DRC_TOOL::CrossProbe( const PCB_MARKER* aMarker )
 }
 
 
-int DRC_TOOL::ExcludeMarker( const TOOL_EVENT& aEvent )
+int DRC_TOOL::ExcludeMarker( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( m_drcDialog )
         m_drcDialog->ExcludeMarker();

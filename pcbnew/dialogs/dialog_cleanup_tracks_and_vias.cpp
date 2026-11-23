@@ -92,7 +92,7 @@ void DIALOG_CLEANUP_TRACKS_AND_VIAS::setupOKButtonLabel()
 }
 
 
-void DIALOG_CLEANUP_TRACKS_AND_VIAS::OnCheckBox( wxCommandEvent& anEvent )
+void DIALOG_CLEANUP_TRACKS_AND_VIAS::OnCheckBox( wxCommandEvent& anEvent [[maybe_unused]] )
 {
     m_changesTreeModel->Update( nullptr, RPT_SEVERITY_ACTION );
     m_firstRun = true;

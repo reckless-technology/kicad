@@ -477,7 +477,7 @@ std::optional<DP_GATEWAY> DP_GATEWAY::Extend( int aLength )
 }
 
 
-std::optional<DP_GATEWAY> DP_GATEWAY::AddTurns( bool aSide, bool a90Deg, bool aLeft, bool aWiggle )
+std::optional<DP_GATEWAY> DP_GATEWAY::AddTurns( bool aSide [[maybe_unused]], bool a90Deg [[maybe_unused]], bool aLeft, bool aWiggle )
 {
     DIRECTION_45 dP = m_dirP;
     DIRECTION_45 dN = m_dirN;
@@ -849,7 +849,7 @@ void DP_GATEWAYS::BuildFromPrimitivePair( const DP_PRIMITIVE_PAIR& aPair, bool a
 }
 
 
-void DP_GATEWAYS::BuildForCursor( const VECTOR2I& aCursorPos, int aDirectionMask  )
+void DP_GATEWAYS::BuildForCursor( const VECTOR2I& aCursorPos, int aDirectionMask [[maybe_unused]]  )
 {
     int gap = m_fitVias ? m_dims.ViaGap() + m_dims.ViaDiameter() : m_dims.Gap() + m_dims.Width();
 

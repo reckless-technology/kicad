@@ -44,7 +44,7 @@ SIM_LIBRARY::Create( const wxString& aFilePath, bool aForceFullParse, REPORTER& 
 }
 
 
-void SIM_LIBRARY::ReadFile( const wxString& aFilePath, REPORTER& aReporter )
+void SIM_LIBRARY::ReadFile( const wxString& aFilePath, REPORTER& aReporter [[maybe_unused]] )
 {
     m_filePath = aFilePath;
 }

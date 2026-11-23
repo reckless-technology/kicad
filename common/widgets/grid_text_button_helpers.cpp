@@ -111,7 +111,7 @@ public:
     }
 
 protected:
-    void DoSetPopupControl( wxComboPopup* popup ) override
+    void DoSetPopupControl( wxComboPopup* popup [[maybe_unused]] ) override
     {
         m_popup = nullptr;
     }
@@ -178,7 +178,7 @@ public:
     }
 
 protected:
-    void DoSetPopupControl( wxComboPopup* popup ) override
+    void DoSetPopupControl( wxComboPopup* popup [[maybe_unused]] ) override
     {
         m_popup = nullptr;
     }
@@ -278,7 +278,7 @@ public:
     // We don't own any of our raw pointers, so compiler's copy c'tor an operator= are OK.
 
 protected:
-    void DoSetPopupControl( wxComboPopup* popup ) override
+    void DoSetPopupControl( wxComboPopup* popup [[maybe_unused]] ) override
     {
         m_popup = nullptr;
     }
@@ -430,7 +430,7 @@ public:
 
 
 protected:
-    void DoSetPopupControl( wxComboPopup* popup ) override
+    void DoSetPopupControl( wxComboPopup* popup [[maybe_unused]] ) override
     {
         m_popup = nullptr;
     }
@@ -589,7 +589,7 @@ public:
     }
 
 protected:
-    void DoSetPopupControl( wxComboPopup* popup ) override { m_popup = nullptr; }
+    void DoSetPopupControl( wxComboPopup* popup [[maybe_unused]] ) override { m_popup = nullptr; }
 
     void OnButtonClick() override { m_function( m_row, m_col ); }
 

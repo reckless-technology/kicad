@@ -123,7 +123,7 @@ public:
     {
     }
 
-    void OnSimStateChange( SIMULATOR* aObject, SIM_STATE aNewState ) override
+    void OnSimStateChange( SIMULATOR* aObject [[maybe_unused]], SIM_STATE aNewState ) override
     {
         wxCommandEvent* event = nullptr;
 
@@ -748,7 +748,7 @@ bool SIMULATOR_FRAME::EditAnalysis()
 }
 
 
-bool SIMULATOR_FRAME::canCloseWindow( wxCloseEvent& aEvent )
+bool SIMULATOR_FRAME::canCloseWindow( wxCloseEvent& aEvent [[maybe_unused]] )
 {
     if( m_workbookModified )
     {
@@ -800,85 +800,85 @@ void SIMULATOR_FRAME::setupUIConditions()
     wxASSERT( mgr );
 
     auto showGridCondition =
-            [this]( const SELECTION& aSel )
+            [this]( const SELECTION& aSel [[maybe_unused]] )
             {
                 SIM_PLOT_TAB* plotTab = dynamic_cast<SIM_PLOT_TAB*>( GetCurrentSimTab() );
                 return plotTab && plotTab->IsGridShown();
             };
 
     auto showLegendCondition =
-            [this]( const SELECTION& aSel )
+            [this]( const SELECTION& aSel [[maybe_unused]] )
             {
                 SIM_PLOT_TAB* plotTab = dynamic_cast<SIM_PLOT_TAB*>( GetCurrentSimTab() );
                 return plotTab && plotTab->IsLegendShown();
             };
 
     auto showDottedCondition =
-            [this]( const SELECTION& aSel )
+            [this]( const SELECTION& aSel [[maybe_unused]] )
             {
                 SIM_PLOT_TAB* plotTab = dynamic_cast<SIM_PLOT_TAB*>( GetCurrentSimTab() );
                 return plotTab && plotTab->GetDottedSecondary();
             };
 
     auto darkModePlotCondition =
-            [this]( const SELECTION& aSel )
+            [this]( const SELECTION& aSel [[maybe_unused]] )
             {
                 return m_ui->DarkModePlots();
             };
 
     auto smithChartCondition =
-            [this]( const SELECTION& aSel )
+            [this]( const SELECTION& aSel [[maybe_unused]] )
             {
                 SIM_PLOT_TAB* plotTab = dynamic_cast<SIM_PLOT_TAB*>( GetCurrentSimTab() );
                 return plotTab && plotTab->IsSmithMode();
             };
 
     auto haveSPPlot =
-            [this]( const SELECTION& aSel )
+            [this]( const SELECTION& aSel [[maybe_unused]] )
             {
                 SIM_PLOT_TAB* plotTab = dynamic_cast<SIM_PLOT_TAB*>( GetCurrentSimTab() );
                 return plotTab && plotTab->GetSimType() == ST_SP;
             };
 
-    auto trackCursorCondition = [this]( const SELECTION& aSel )
+    auto trackCursorCondition = [this]( const SELECTION& aSel [[maybe_unused]] )
     {
         SIM_PLOT_TAB* plotTab = dynamic_cast<SIM_PLOT_TAB*>( GetCurrentSimTab() );
         return plotTab && plotTab->IsTrackCursorEnabled();
     };
 
     auto simRunning =
-            [this]( const SELECTION& aSel )
+            [this]( const SELECTION& aSel [[maybe_unused]] )
             {
                 return m_simulator && m_simulator->IsRunning();
             };
 
     auto simFinished =
-            [this]( const SELECTION& aSel )
+            [this]( const SELECTION& aSel [[maybe_unused]] )
             {
                 return m_simFinished;
             };
 
     auto haveSim =
-            [this]( const SELECTION& aSel )
+            [this]( const SELECTION& aSel [[maybe_unused]] )
             {
                 return GetCurrentSimTab() != nullptr;
             };
 
     auto havePlot =
-            [this]( const SELECTION& aSel )
+            [this]( const SELECTION& aSel [[maybe_unused]] )
             {
                 return dynamic_cast<SIM_PLOT_TAB*>( GetCurrentSimTab() ) != nullptr;
             };
 
     auto haveZoomUndo =
-            [this]( const SELECTION& aSel )
+            [this]( const SELECTION& aSel [[maybe_unused]] )
             {
                 SIM_PLOT_TAB* plotTab = dynamic_cast<SIM_PLOT_TAB*>( GetCurrentSimTab() );
                 return plotTab && plotTab->GetPlotWin()->UndoZoomStackSize() > 0;
             };
 
     auto haveZoomRedo =
-            [this]( const SELECTION& aSel )
+            [this]( const SELECTION& aSel [[maybe_unused]] )
             {
                 SIM_PLOT_TAB* plotTab = dynamic_cast<SIM_PLOT_TAB*>( GetCurrentSimTab() );
                 return plotTab && plotTab->GetPlotWin()->RedoZoomStackSize() > 0;
@@ -886,7 +886,7 @@ void SIMULATOR_FRAME::setupUIConditions()
 
     // clang-format off
     auto isSimConsoleShown =
-            [this]( const SELECTION& aSel )
+            [this]( const SELECTION& aSel [[maybe_unused]] )
             {
                 bool aBool = false;
 
@@ -897,7 +897,7 @@ void SIMULATOR_FRAME::setupUIConditions()
             };
 
     auto isSimSidePanelShown =
-            [this]( const SELECTION& aSel )
+            [this]( const SELECTION& aSel [[maybe_unused]] )
             {
                 bool aBool = false;
 
@@ -946,7 +946,7 @@ void SIMULATOR_FRAME::setupUIConditions()
 }
 
 
-void SIMULATOR_FRAME::onSimStarted( wxCommandEvent& aEvent )
+void SIMULATOR_FRAME::onSimStarted( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     SetCursor( wxCURSOR_ARROWWAIT );
 }
@@ -958,7 +958,7 @@ std::vector<SIM_CONSOLE_ENTRY> SIMULATOR_FRAME::TakeSimReportEntries()
 }
 
 
-void SIMULATOR_FRAME::onSimFinished( wxCommandEvent& aEvent )
+void SIMULATOR_FRAME::onSimFinished( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( IsClosing() )
         return;
@@ -998,7 +998,7 @@ void SIMULATOR_FRAME::onSimFinished( wxCommandEvent& aEvent )
 }
 
 
-void SIMULATOR_FRAME::onUpdateSim( wxCommandEvent& aEvent )
+void SIMULATOR_FRAME::onUpdateSim( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     static bool updateInProgress = false;
 

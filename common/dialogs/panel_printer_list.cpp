@@ -168,7 +168,7 @@ bool PANEL_PRINTER_LIST::HasPrintersAvailable()
 }
 
 
-void PANEL_PRINTER_LIST::onPrinterChoice( wxCommandEvent& event )
+void PANEL_PRINTER_LIST::onPrinterChoice( wxCommandEvent& event [[maybe_unused]] )
 {
     int select = m_choicePrinter->GetSelection();
 

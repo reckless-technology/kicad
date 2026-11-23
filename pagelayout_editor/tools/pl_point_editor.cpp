@@ -502,7 +502,7 @@ void PL_POINT_EDITOR::setEditedPoint( EDIT_POINT* aPoint )
 }
 
 
-int PL_POINT_EDITOR::modifiedSelection( const TOOL_EVENT& aEvent )
+int PL_POINT_EDITOR::modifiedSelection( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     updatePoints();
     return 0;

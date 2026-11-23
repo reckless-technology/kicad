@@ -164,7 +164,7 @@ void EDIT_RELATION::Apply( EDIT_POINT& aHandle, const GRID_HELPER& aGrid ) const
 }
 
 
-void EDIT_RELATION::Apply( EDIT_LINE& aHandle, const GRID_HELPER& aGrid ) const
+void EDIT_RELATION::Apply( EDIT_LINE& aHandle, const GRID_HELPER& aGrid [[maybe_unused]] ) const
 {
     if( m_kind != EDIT_RELATION_KIND::PERPENDICULAR_TRANSLATION )
         return;
@@ -204,7 +204,7 @@ POLYGON_EDGE_DRAG_POLICY::POLYGON_EDGE_DRAG_POLICY( EDIT_LINE& aLine, EDIT_POINT
 }
 
 
-void POLYGON_EDGE_DRAG_POLICY::Apply( EDIT_LINE& aHandle, const GRID_HELPER& aGrid )
+void POLYGON_EDGE_DRAG_POLICY::Apply( EDIT_LINE& aHandle, const GRID_HELPER& aGrid [[maybe_unused]] )
 {
     SEG      perpendicular( m_originalCenter, m_originalCenter + m_perpVector );
     SEG      throughHandle( aHandle.GetPosition(), aHandle.GetPosition() + m_draggedVector );

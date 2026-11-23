@@ -66,17 +66,17 @@ public:
     void EraseView() override {};
     void SetBoard( BOARD* aBoard );
     void SyncWorld( PNS::NODE* aWorld ) override;
-    bool IsAnyLayerVisible( const PNS_LAYER_RANGE& aLayer ) const override { return true; };
+    bool IsAnyLayerVisible( const PNS_LAYER_RANGE& aLayer [[maybe_unused]] ) const override { return true; };
     bool IsFlashedOnLayer( const PNS::ITEM* aItem, int aLayer ) const override;
     bool IsFlashedOnLayer( const PNS::ITEM* aItem, const PNS_LAYER_RANGE& aLayer ) const override;
-    bool IsItemVisible( const PNS::ITEM* aItem ) const override { return true; };
+    bool IsItemVisible( const PNS::ITEM* aItem [[maybe_unused]] ) const override { return true; };
     bool IsPNSCopperLayer( int aPNSLayer ) const override;
     bool IsKicadCopperLayer( PCB_LAYER_ID aPcbnewLayer ) const;
-    void HideItem( PNS::ITEM* aItem ) override {}
-    void DisplayItem( const PNS::ITEM* aItem, int aClearance, bool aEdit = false,
-                      int aFlags = 0 ) override {}
-    void DisplayPathLine( const SHAPE_LINE_CHAIN& aLine, int aImportance ) override {}
-    void DisplayRatline( const SHAPE_LINE_CHAIN& aRatline, PNS::NET_HANDLE aNet ) override {}
+    void HideItem( PNS::ITEM* aItem [[maybe_unused]] ) override {}
+    void DisplayItem( const PNS::ITEM* aItem [[maybe_unused]], int aClearance [[maybe_unused]], bool aEdit [[maybe_unused]] = false,
+                      int aFlags [[maybe_unused]] = 0 ) override {}
+    void DisplayPathLine( const SHAPE_LINE_CHAIN& aLine [[maybe_unused]], int aImportance [[maybe_unused]] ) override {}
+    void DisplayRatline( const SHAPE_LINE_CHAIN& aRatline [[maybe_unused]], PNS::NET_HANDLE aNet [[maybe_unused]] ) override {}
     void AddItem( PNS::ITEM* aItem ) override;
     void UpdateItem( PNS::ITEM* aItem ) override;
     void RemoveItem( PNS::ITEM* aItem ) override;
@@ -85,9 +85,9 @@ public:
                       VECTOR2D aStartPosition ) override;
     int StackupHeight( int aFirstLayer, int aSecondLayer ) const override;
 
-    int GetNetCode( PNS::NET_HANDLE aNet ) const override { return -1; }
-    wxString GetNetName( PNS::NET_HANDLE aNet ) const override { return wxEmptyString; }
-    void UpdateNet( PNS::NET_HANDLE aNet ) override {}
+    int GetNetCode( PNS::NET_HANDLE aNet [[maybe_unused]] ) const override { return -1; }
+    wxString GetNetName( PNS::NET_HANDLE aNet [[maybe_unused]] ) const override { return wxEmptyString; }
+    void UpdateNet( PNS::NET_HANDLE aNet [[maybe_unused]] ) override {}
     PNS::NET_HANDLE GetOrphanedNetHandle() override;
 
     void SetDebugDecorator( PNS::DEBUG_DECORATOR* aDec );

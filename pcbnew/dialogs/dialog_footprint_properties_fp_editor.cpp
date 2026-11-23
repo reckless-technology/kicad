@@ -108,13 +108,13 @@ LAYERS_GRID_TABLE::~LAYERS_GRID_TABLE()
 }
 
 
-bool LAYERS_GRID_TABLE::CanGetValueAs( int aRow, int aCol, const wxString& aTypeName )
+bool LAYERS_GRID_TABLE::CanGetValueAs( int aRow [[maybe_unused]], int aCol [[maybe_unused]], const wxString& aTypeName )
 {
     return aTypeName == wxGRID_VALUE_NUMBER;
 }
 
 
-bool LAYERS_GRID_TABLE::CanSetValueAs( int aRow, int aCol, const wxString& aTypeName )
+bool LAYERS_GRID_TABLE::CanSetValueAs( int aRow [[maybe_unused]], int aCol [[maybe_unused]], const wxString& aTypeName )
 {
     return aTypeName == wxGRID_VALUE_NUMBER;
 }
@@ -127,25 +127,25 @@ wxGridCellAttr* LAYERS_GRID_TABLE::GetAttr( int aRow, int aCol, wxGridCellAttr::
 }
 
 
-wxString LAYERS_GRID_TABLE::GetValue( int aRow, int aCol )
+wxString LAYERS_GRID_TABLE::GetValue( int aRow, int aCol [[maybe_unused]] )
 {
     return m_frame->GetBoard()->GetLayerName( this->at( (size_t) aRow ) );
 }
 
 
-long LAYERS_GRID_TABLE::GetValueAsLong( int aRow, int aCol )
+long LAYERS_GRID_TABLE::GetValueAsLong( int aRow, int aCol [[maybe_unused]] )
 {
     return this->at( (size_t) aRow );
 }
 
 
-void LAYERS_GRID_TABLE::SetValue( int aRow, int aCol, const wxString& aValue )
+void LAYERS_GRID_TABLE::SetValue( int aRow [[maybe_unused]], int aCol, const wxString& aValue [[maybe_unused]] )
 {
     wxFAIL_MSG( wxString::Format( wxT( "column %d doesn't hold a string value" ), aCol ) );
 }
 
 
-void LAYERS_GRID_TABLE::SetValueAsLong( int aRow, int aCol, long aValue )
+void LAYERS_GRID_TABLE::SetValueAsLong( int aRow, int aCol [[maybe_unused]], long aValue )
 {
     this->at( (size_t) aRow ) = ToLAYER_ID( (int) aValue );
 }
@@ -939,7 +939,7 @@ bool DIALOG_FOOTPRINT_PROPERTIES_FP_EDITOR::TransferDataFromWindow()
 }
 
 
-void DIALOG_FOOTPRINT_PROPERTIES_FP_EDITOR::OnAddField( wxCommandEvent& event )
+void DIALOG_FOOTPRINT_PROPERTIES_FP_EDITOR::OnAddField( wxCommandEvent& event [[maybe_unused]] )
 {
     m_itemsGrid->OnAddRow(
             [&]() -> std::pair<int, int>
@@ -970,7 +970,7 @@ void DIALOG_FOOTPRINT_PROPERTIES_FP_EDITOR::OnAddField( wxCommandEvent& event )
 }
 
 
-void DIALOG_FOOTPRINT_PROPERTIES_FP_EDITOR::OnDeleteField( wxCommandEvent& event )
+void DIALOG_FOOTPRINT_PROPERTIES_FP_EDITOR::OnDeleteField( wxCommandEvent& event [[maybe_unused]] )
 {
     m_itemsGrid->OnDeleteRows(
             [&]( int row )
@@ -1025,7 +1025,7 @@ std::pair<int, int> DIALOG_FOOTPRINT_PROPERTIES_FP_EDITOR::onLayerGridRowAddUser
 }
 
 
-void DIALOG_FOOTPRINT_PROPERTIES_FP_EDITOR::OnAddPrivateLayer( wxCommandEvent& event )
+void DIALOG_FOOTPRINT_PROPERTIES_FP_EDITOR::OnAddPrivateLayer( wxCommandEvent& event [[maybe_unused]] )
 {
     m_privateLayersGrid->OnAddRow(
             [&]()
@@ -1035,7 +1035,7 @@ void DIALOG_FOOTPRINT_PROPERTIES_FP_EDITOR::OnAddPrivateLayer( wxCommandEvent& e
 }
 
 
-void DIALOG_FOOTPRINT_PROPERTIES_FP_EDITOR::OnDeletePrivateLayer( wxCommandEvent& event )
+void DIALOG_FOOTPRINT_PROPERTIES_FP_EDITOR::OnDeletePrivateLayer( wxCommandEvent& event [[maybe_unused]] )
 {
     m_privateLayersGrid->OnDeleteRows(
             [&]( int row )
@@ -1045,13 +1045,13 @@ void DIALOG_FOOTPRINT_PROPERTIES_FP_EDITOR::OnDeletePrivateLayer( wxCommandEvent
 }
 
 
-void DIALOG_FOOTPRINT_PROPERTIES_FP_EDITOR::OnUseCustomLayers( wxCommandEvent& event )
+void DIALOG_FOOTPRINT_PROPERTIES_FP_EDITOR::OnUseCustomLayers( wxCommandEvent& event [[maybe_unused]] )
 {
     setCustomLayerCtrlEnablement();
 }
 
 
-void DIALOG_FOOTPRINT_PROPERTIES_FP_EDITOR::OnAddCustomLayer( wxCommandEvent& event )
+void DIALOG_FOOTPRINT_PROPERTIES_FP_EDITOR::OnAddCustomLayer( wxCommandEvent& event [[maybe_unused]] )
 {
     m_customUserLayersGrid->OnAddRow(
             [&]()
@@ -1061,7 +1061,7 @@ void DIALOG_FOOTPRINT_PROPERTIES_FP_EDITOR::OnAddCustomLayer( wxCommandEvent& ev
 }
 
 
-void DIALOG_FOOTPRINT_PROPERTIES_FP_EDITOR::OnDeleteCustomLayer( wxCommandEvent& event )
+void DIALOG_FOOTPRINT_PROPERTIES_FP_EDITOR::OnDeleteCustomLayer( wxCommandEvent& event [[maybe_unused]] )
 {
     m_customUserLayersGrid->OnDeleteRows(
             [&]( int row )
@@ -1071,25 +1071,25 @@ void DIALOG_FOOTPRINT_PROPERTIES_FP_EDITOR::OnDeleteCustomLayer( wxCommandEvent&
 }
 
 
-void DIALOG_FOOTPRINT_PROPERTIES_FP_EDITOR::OnAddNettieGroup( wxCommandEvent& event )
+void DIALOG_FOOTPRINT_PROPERTIES_FP_EDITOR::OnAddNettieGroup( wxCommandEvent& event [[maybe_unused]] )
 {
     onAddGroup( m_nettieGroupsGrid );
 }
 
 
-void DIALOG_FOOTPRINT_PROPERTIES_FP_EDITOR::OnRemoveNettieGroup( wxCommandEvent& event )
+void DIALOG_FOOTPRINT_PROPERTIES_FP_EDITOR::OnRemoveNettieGroup( wxCommandEvent& event [[maybe_unused]] )
 {
     onRemoveGroup( m_nettieGroupsGrid );
 }
 
 
-void DIALOG_FOOTPRINT_PROPERTIES_FP_EDITOR::OnAddJumperGroup( wxCommandEvent& event )
+void DIALOG_FOOTPRINT_PROPERTIES_FP_EDITOR::OnAddJumperGroup( wxCommandEvent& event [[maybe_unused]] )
 {
     onAddGroup( m_jumperGroupsGrid );
 }
 
 
-void DIALOG_FOOTPRINT_PROPERTIES_FP_EDITOR::OnRemoveJumperGroup( wxCommandEvent& event )
+void DIALOG_FOOTPRINT_PROPERTIES_FP_EDITOR::OnRemoveJumperGroup( wxCommandEvent& event [[maybe_unused]] )
 {
     onRemoveGroup( m_jumperGroupsGrid );
 }
@@ -1159,7 +1159,7 @@ void DIALOG_FOOTPRINT_PROPERTIES_FP_EDITOR::OnGridCellChanging( wxGridEvent& aEv
 }
 
 
-void DIALOG_FOOTPRINT_PROPERTIES_FP_EDITOR::OnUpdateUI( wxUpdateUIEvent& event )
+void DIALOG_FOOTPRINT_PROPERTIES_FP_EDITOR::OnUpdateUI( wxUpdateUIEvent& event [[maybe_unused]] )
 {
     // Handle a delayed focus.  The delay allows us to:
     // a) change focus when the error was triggered from within a killFocus handler
@@ -1246,21 +1246,21 @@ void DIALOG_FOOTPRINT_PROPERTIES_FP_EDITOR::OnPageChanging( wxNotebookEvent& aEv
 }
 
 
-void DIALOG_FOOTPRINT_PROPERTIES_FP_EDITOR::OnCheckBox( wxCommandEvent& event )
+void DIALOG_FOOTPRINT_PROPERTIES_FP_EDITOR::OnCheckBox( wxCommandEvent& event [[maybe_unused]] )
 {
     if( m_initialized )
         OnModify();
 }
 
 
-void DIALOG_FOOTPRINT_PROPERTIES_FP_EDITOR::OnText( wxCommandEvent& event )
+void DIALOG_FOOTPRINT_PROPERTIES_FP_EDITOR::OnText( wxCommandEvent& event [[maybe_unused]] )
 {
     if( m_initialized )
         OnModify();
 }
 
 
-void DIALOG_FOOTPRINT_PROPERTIES_FP_EDITOR::OnChoice( wxCommandEvent& event )
+void DIALOG_FOOTPRINT_PROPERTIES_FP_EDITOR::OnChoice( wxCommandEvent& event [[maybe_unused]] )
 {
     if( m_initialized )
         OnModify();

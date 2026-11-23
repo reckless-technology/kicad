@@ -105,20 +105,20 @@ bool SCH_DRAWING_TOOLS::Init()
     SCH_TOOL_BASE::Init();
 
     auto belowRootSheetCondition =
-            [this]( const SELECTION& aSel )
+            [this]( const SELECTION& aSel [[maybe_unused]] )
             {
                 return m_frame->GetCurrentSheet().Last() != &m_frame->Schematic().Root();
             };
 
     // some interactive drawing tools can undo the last point
     auto canUndoPoint =
-            [this]( const SELECTION& aSel )
+            [this]( const SELECTION& aSel [[maybe_unused]] )
             {
                 return ( m_mode == MODE::RULE_AREA );
             };
 
     auto inDrawingRuleArea =
-            [this]( const SELECTION& aSel )
+            [this]( const SELECTION& aSel [[maybe_unused]] )
             {
                 return m_mode == MODE::RULE_AREA;
             };
@@ -1974,7 +1974,7 @@ int SCH_DRAWING_TOOLS::TwoClickPlace( const TOOL_EVENT& aEvent )
             };
 
     auto prepItemForPlacement =
-            [&]( SCH_ITEM* aItem, const VECTOR2I& cursorPos )
+            [&]( SCH_ITEM* aItem [[maybe_unused]], const VECTOR2I& cursorPos )
             {
                 item->SetPosition( cursorPos );
 
@@ -3234,7 +3234,7 @@ int SCH_DRAWING_TOOLS::doSyncSheetsPins( std::list<SCH_SHEET_PATH> sheetPaths, S
 }
 
 
-int SCH_DRAWING_TOOLS::SyncSheetsPins( const TOOL_EVENT& aEvent )
+int SCH_DRAWING_TOOLS::SyncSheetsPins( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SCH_SHEET* sheet = dynamic_cast<SCH_SHEET*>( m_selectionTool->GetSelection().Front() );
 
@@ -3298,7 +3298,7 @@ int SCH_DRAWING_TOOLS::AutoPlaceAllSheetPins( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_DRAWING_TOOLS::SyncAllSheetsPins( const TOOL_EVENT& aEvent )
+int SCH_DRAWING_TOOLS::SyncAllSheetsPins( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     static const std::function<void( std::list<SCH_SHEET_PATH>&, SCH_SCREEN*, std::set<SCH_SCREEN*>&,
                                      SCH_SHEET_PATH const& )> getSheetChildren =

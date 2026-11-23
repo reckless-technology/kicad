@@ -166,33 +166,33 @@ bool DIALOG_CHANGE_SYMBOLS::TransferDataToWindow()
 }
 
 
-void DIALOG_CHANGE_SYMBOLS::onMatchByAll( wxCommandEvent& aEvent )
+void DIALOG_CHANGE_SYMBOLS::onMatchByAll( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     updateFieldsList();
 }
 
 
-void DIALOG_CHANGE_SYMBOLS::onMatchBySelected( wxCommandEvent& aEvent )
+void DIALOG_CHANGE_SYMBOLS::onMatchBySelected( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     updateFieldsList();
 }
 
 
-void DIALOG_CHANGE_SYMBOLS::onMatchByReference( wxCommandEvent& aEvent )
+void DIALOG_CHANGE_SYMBOLS::onMatchByReference( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     updateFieldsList();
     m_specifiedReference->SetFocus();
 }
 
 
-void DIALOG_CHANGE_SYMBOLS::onMatchByValue( wxCommandEvent& aEvent )
+void DIALOG_CHANGE_SYMBOLS::onMatchByValue( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     updateFieldsList();
     m_specifiedValue->SetFocus();
 }
 
 
-void DIALOG_CHANGE_SYMBOLS::onMatchById( wxCommandEvent& aEvent )
+void DIALOG_CHANGE_SYMBOLS::onMatchById( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     updateFieldsList();
     m_specifiedId->SetFocus();
@@ -243,7 +243,7 @@ wxString getLibIdValue( const wxTextCtrl* aCtrl )
 }
 
 
-void DIALOG_CHANGE_SYMBOLS::launchMatchIdSymbolBrowser( wxCommandEvent& aEvent )
+void DIALOG_CHANGE_SYMBOLS::launchMatchIdSymbolBrowser( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     wxString newName = getLibIdValue( m_specifiedId );
 
@@ -260,7 +260,7 @@ void DIALOG_CHANGE_SYMBOLS::launchMatchIdSymbolBrowser( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_CHANGE_SYMBOLS::launchNewIdSymbolBrowser( wxCommandEvent& aEvent )
+void DIALOG_CHANGE_SYMBOLS::launchNewIdSymbolBrowser( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     wxString newName = getLibIdValue( m_newId );
 
@@ -429,7 +429,7 @@ void DIALOG_CHANGE_SYMBOLS::checkAll( bool aCheck )
 }
 
 
-void DIALOG_CHANGE_SYMBOLS::onOkButtonClicked( wxCommandEvent& aEvent )
+void DIALOG_CHANGE_SYMBOLS::onOkButtonClicked( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     SCH_EDIT_FRAME* parent = dynamic_cast<SCH_EDIT_FRAME*>( GetParent() );
 

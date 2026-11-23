@@ -64,7 +64,7 @@ void STRIPLINE::Analyse()
 }
 
 
-bool STRIPLINE::Synthesize( const SYNTHESIZE_OPTS aOpts )
+bool STRIPLINE::Synthesize( const SYNTHESIZE_OPTS aOpts [[maybe_unused]] )
 {
     return MinimiseZ0Error1D( TCP::PHYS_WIDTH, TCP::Z0 );
 }

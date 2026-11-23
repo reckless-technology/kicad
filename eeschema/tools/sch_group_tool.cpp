@@ -90,7 +90,7 @@ int SCH_GROUP_TOOL::PickNewMember( const TOOL_EVENT& aEvent )
     statusPopup.SetText( _( "Click on new member..." ) );
 
     picker->SetClickHandler(
-            [&]( const VECTOR2D& aPoint ) -> bool
+            [&]( const VECTOR2D& aPoint [[maybe_unused]] ) -> bool
             {
                 m_toolMgr->RunAction( ACTIONS::selectionClear );
 
@@ -125,7 +125,7 @@ int SCH_GROUP_TOOL::PickNewMember( const TOOL_EVENT& aEvent )
             } );
 
     picker->SetMotionHandler(
-            [&]( const VECTOR2D& aPos )
+            [&]( const VECTOR2D& aPos [[maybe_unused]] )
             {
                 statusPopup.Move( KIPLATFORM::UI::GetMousePosition() + wxPoint( 20, -50 ) );
             } );
@@ -140,7 +140,7 @@ int SCH_GROUP_TOOL::PickNewMember( const TOOL_EVENT& aEvent )
             } );
 
     picker->SetFinalizeHandler(
-            [&]( const int& aFinalState )
+            [&]( const int& aFinalState [[maybe_unused]] )
             {
                 done = true;
             } );
@@ -167,7 +167,7 @@ int SCH_GROUP_TOOL::PickNewMember( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_GROUP_TOOL::Group( const TOOL_EVENT& aEvent )
+int SCH_GROUP_TOOL::Group( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     bool                isSymbolEditor = m_frame->GetFrameType() == FRAME_SCH_SYMBOL_EDITOR;
     SCH_SELECTION_TOOL* selTool = m_toolMgr->GetTool<SCH_SELECTION_TOOL>();

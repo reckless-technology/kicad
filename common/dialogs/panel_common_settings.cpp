@@ -376,13 +376,13 @@ void PANEL_COMMON_SETTINGS::applySettingsToPanel( COMMON_SETTINGS& aSettings )
 }
 
 
-void PANEL_COMMON_SETTINGS::OnCanvasScaleChange( wxCommandEvent& aEvent )
+void PANEL_COMMON_SETTINGS::OnCanvasScaleChange( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     m_canvasScaleAuto->SetValue( false );
 }
 
 
-void PANEL_COMMON_SETTINGS::OnCanvasScaleAuto( wxCommandEvent& aEvent )
+void PANEL_COMMON_SETTINGS::OnCanvasScaleAuto( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     const bool automatic = m_canvasScaleAuto->GetValue();
 
@@ -397,7 +397,7 @@ void PANEL_COMMON_SETTINGS::OnCanvasScaleAuto( wxCommandEvent& aEvent )
 }
 
 
-void PANEL_COMMON_SETTINGS::OnTextEditorClick( wxCommandEvent& event )
+void PANEL_COMMON_SETTINGS::OnTextEditorClick( wxCommandEvent& event [[maybe_unused]] )
 {
     // Ask the user to select a new editor, but suggest the current one as the default.
     wxString editorname = Pgm().AskUserForPreferredEditor( m_textEditorPath->GetValue() );
@@ -432,7 +432,7 @@ void PANEL_COMMON_SETTINGS::ShowFileManagerWidgets( bool aBool )
 }
 
 
-void PANEL_COMMON_SETTINGS::OnPDFViewerClick( wxCommandEvent& event )
+void PANEL_COMMON_SETTINGS::OnPDFViewerClick( wxCommandEvent& event [[maybe_unused]] )
 {
     wxString mask( wxT( "*" ) );
 
@@ -460,7 +460,7 @@ void PANEL_COMMON_SETTINGS::OnPDFViewerClick( wxCommandEvent& event )
 }
 
 
-void PANEL_COMMON_SETTINGS::OnRadioButtonPdfViewer( wxCommandEvent& event )
+void PANEL_COMMON_SETTINGS::OnRadioButtonPdfViewer( wxCommandEvent& event [[maybe_unused]] )
 {
     setPdfViewerPathState();
 }

@@ -229,7 +229,7 @@ const LIB_SYMBOL* DB_LIB_PREVIEW_PANEL::findSymbol( const LIB_ID& aLibId ) const
 }
 
 
-void DB_LIB_PREVIEW_PANEL::onSymbolSelected( wxCommandEvent& aEvent )
+void DB_LIB_PREVIEW_PANEL::onSymbolSelected( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     int    unit = 0;
     LIB_ID id = m_tree->GetSelectedLibId( &unit );
@@ -290,7 +290,7 @@ void DB_LIB_PREVIEW_PANEL::showSymbol( const LIB_SYMBOL* aSymbol, int aUnit )
 }
 
 
-void DB_LIB_PREVIEW_PANEL::onFootprintSelected( wxCommandEvent& aEvent )
+void DB_LIB_PREVIEW_PANEL::onFootprintSelected( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     showFootprint( m_footprintChoice->GetStringSelection() );
 }

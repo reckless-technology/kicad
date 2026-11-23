@@ -92,7 +92,7 @@ std::vector<FOOTPRINT*> PCB_IO_CADSTAR_ARCHIVE::GetImportedCachedLibraryFootprin
 }
 
 
-void PCB_IO_CADSTAR_ARCHIVE::loadBoard( const wxString& aFileName, BOARD& aBoard, bool aIsNewLoad,
+void PCB_IO_CADSTAR_ARCHIVE::loadBoard( const wxString& aFileName, BOARD& aBoard, bool aIsNewLoad [[maybe_unused]],
                                         const std::map<std::string, UTF8>* aProperties, PROJECT* aProject )
 {
     m_props = aProperties;
@@ -179,8 +179,8 @@ bool PCB_IO_CADSTAR_ARCHIVE::CanReadFootprint( const wxString& aFileName ) const
 
 void PCB_IO_CADSTAR_ARCHIVE::FootprintEnumerate( wxArrayString&         aFootprintNames,
                                                      const wxString&        aLibraryPath,
-                                                     bool                   aBestEfforts,
-                                                     const std::map<std::string, UTF8>* aProperties )
+                                                     bool                   aBestEfforts [[maybe_unused]],
+                                                     const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     ensureLoadedLibrary( aLibraryPath );
 
@@ -194,7 +194,7 @@ void PCB_IO_CADSTAR_ARCHIVE::FootprintEnumerate( wxArrayString&         aFootpri
 
 bool PCB_IO_CADSTAR_ARCHIVE::FootprintExists( const wxString&        aLibraryPath,
                                                   const wxString&        aFootprintName,
-                                                  const std::map<std::string, UTF8>* aProperties )
+                                                  const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     ensureLoadedLibrary( aLibraryPath );
 
@@ -209,8 +209,8 @@ bool PCB_IO_CADSTAR_ARCHIVE::FootprintExists( const wxString&        aLibraryPat
 
 
 std::unique_ptr<FOOTPRINT> PCB_IO_CADSTAR_ARCHIVE::FootprintLoad( const wxString& aLibraryPath,
-                                                                  const wxString& aFootprintName, bool aKeepUUID,
-                                                                  const std::map<std::string, UTF8>* aProperties )
+                                                                  const wxString& aFootprintName, bool aKeepUUID [[maybe_unused]],
+                                                                  const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     ensureLoadedLibrary( aLibraryPath );
 

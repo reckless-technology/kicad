@@ -33,7 +33,7 @@
 // Small margin in internal units between the pin text and the pin line
 static const int PIN_TEXT_MARGIN = 4;
 
-std::optional<PIN_LAYOUT_CACHE::TEXT_INFO> PIN_LAYOUT_CACHE::GetPinNumberInfo( int aShadowWidth )
+std::optional<PIN_LAYOUT_CACHE::TEXT_INFO> PIN_LAYOUT_CACHE::GetPinNumberInfo( int aShadowWidth [[maybe_unused]] )
 {
     recomputeCaches();
 

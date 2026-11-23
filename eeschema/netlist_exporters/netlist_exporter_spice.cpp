@@ -117,13 +117,13 @@ bool NETLIST_EXPORTER_SPICE::DoWriteNetlist( const wxString& aSimCommand, unsign
 }
 
 
-void NETLIST_EXPORTER_SPICE::WriteHead( OUTPUTFORMATTER& aFormatter, unsigned aNetlistOptions )
+void NETLIST_EXPORTER_SPICE::WriteHead( OUTPUTFORMATTER& aFormatter, unsigned aNetlistOptions [[maybe_unused]] )
 {
     aFormatter.Print( 0, ".title KiCad schematic\n" );
 }
 
 
-void NETLIST_EXPORTER_SPICE::WriteTail( OUTPUTFORMATTER& aFormatter, unsigned aNetlistOptions )
+void NETLIST_EXPORTER_SPICE::WriteTail( OUTPUTFORMATTER& aFormatter, unsigned aNetlistOptions [[maybe_unused]] )
 {
     aFormatter.Print( 0, ".end\n" );
 }
@@ -721,7 +721,7 @@ void NETLIST_EXPORTER_SPICE::readModel( SCH_SHEET_PATH& aSheet, SCH_SYMBOL& aSym
 }
 
 
-void NETLIST_EXPORTER_SPICE::readPinNumbers( SCH_SYMBOL& aSymbol, SPICE_ITEM& aItem,
+void NETLIST_EXPORTER_SPICE::readPinNumbers( SCH_SYMBOL& aSymbol [[maybe_unused]], SPICE_ITEM& aItem,
                                              const std::vector<PIN_INFO>& aPins  )
 {
     for( const PIN_INFO& pin : aPins )
@@ -729,7 +729,7 @@ void NETLIST_EXPORTER_SPICE::readPinNumbers( SCH_SYMBOL& aSymbol, SPICE_ITEM& aI
 }
 
 
-void NETLIST_EXPORTER_SPICE::readPinNetNames( SCH_SYMBOL& aSymbol, SPICE_ITEM& aItem,
+void NETLIST_EXPORTER_SPICE::readPinNetNames( SCH_SYMBOL& aSymbol [[maybe_unused]], SPICE_ITEM& aItem,
                                               const std::vector<PIN_INFO>& aPins, int& aNcCounter )
 {
     for( const PIN_INFO& pinInfo : aPins )
@@ -893,7 +893,7 @@ void NETLIST_EXPORTER_SPICE::writeItems( OUTPUTFORMATTER& aFormatter )
 }
 
 
-void NETLIST_EXPORTER_SPICE::WriteDirectives( const wxString& aSimCommand, unsigned aSimOptions,
+void NETLIST_EXPORTER_SPICE::WriteDirectives( const wxString& aSimCommand [[maybe_unused]], unsigned aSimOptions,
                                               OUTPUTFORMATTER& aFormatter ) const
 {
     if( aSimOptions & OPTION_SAVE_ALL_VOLTAGES )

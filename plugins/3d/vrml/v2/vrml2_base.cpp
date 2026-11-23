@@ -74,7 +74,7 @@ WRL2BASE::~WRL2BASE()
 }
 
 
-bool WRL2BASE::SetParent( WRL2NODE* aParent, bool /* doUnlink */ )
+bool WRL2BASE::SetParent( WRL2NODE* aParent [[maybe_unused]], bool /* doUnlink */ )
 {
     wxCHECK_MSG( false, false, wxT( "Attempt to set parent on WRL2BASE node." ) );
 }
@@ -180,7 +180,7 @@ std::string WRL2BASE::GetName( void )
 }
 
 
-bool WRL2BASE::SetName( const std::string& aName )
+bool WRL2BASE::SetName( const std::string& aName [[maybe_unused]] )
 {
     wxCHECK_MSG( false, false, wxT( "Attempt to set name of base node." ) );
 }
@@ -655,7 +655,7 @@ bool WRL2BASE::ReadNode( WRLPROC& proc, WRL2NODE* aParent, WRL2NODE** aNode )
 }
 
 
-bool WRL2BASE::Read( WRLPROC& proc, WRL2BASE* aTopNode )
+bool WRL2BASE::Read( WRLPROC& proc [[maybe_unused]], WRL2BASE* aTopNode [[maybe_unused]] )
 {
     wxCHECK_MSG( false, false, wxT( "This method must never be invoked on a WRL2BASE object." ) );
 }

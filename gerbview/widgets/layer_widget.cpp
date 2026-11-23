@@ -118,7 +118,7 @@ void LAYER_WIDGET::OnLeftDownLayers( wxMouseEvent& event )
 }
 
 
-void LAYER_WIDGET::OnRightDownLayer( wxMouseEvent& aEvent, COLOR_SWATCH* aColorSwatch,
+void LAYER_WIDGET::OnRightDownLayer( wxMouseEvent& aEvent [[maybe_unused]], COLOR_SWATCH* aColorSwatch,
                                      const wxString& aLayerName )
 {
     wxMenu menu;
@@ -174,7 +174,7 @@ void LAYER_WIDGET::OnLayerCheckBox( wxCommandEvent& event )
 }
 
 
-void LAYER_WIDGET::OnRightDownRender( wxMouseEvent& aEvent, COLOR_SWATCH* aColorSwatch,
+void LAYER_WIDGET::OnRightDownRender( wxMouseEvent& aEvent [[maybe_unused]], COLOR_SWATCH* aColorSwatch,
                                       const wxString& aRenderName )
 {
     wxMenu menu;
@@ -244,7 +244,7 @@ void LAYER_WIDGET::OnRenderCheckBox( wxCommandEvent& event )
 }
 
 
-void LAYER_WIDGET::OnTabChange( wxNotebookEvent& event )
+void LAYER_WIDGET::OnTabChange( wxNotebookEvent& event [[maybe_unused]] )
 {
 //    wxFocusEvent    event( wxEVT_SET_FOCUS );
 //    m_FocusOwner->AddPendingEvent( event );

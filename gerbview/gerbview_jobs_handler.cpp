@@ -38,19 +38,19 @@ GERBVIEW_JOBS_HANDLER::GERBVIEW_JOBS_HANDLER( KIWAY* aKiway ) :
         JOB_DISPATCHER( aKiway )
 {
     Register( "gerber_info", std::bind( &GERBVIEW_JOBS_HANDLER::JobGerberInfo, this, std::placeholders::_1 ),
-              []( JOB* job, wxWindow* aParent ) -> bool
+              []( JOB* job [[maybe_unused]], wxWindow* aParent [[maybe_unused]] ) -> bool
               {
                   return true;
               } );
 
     Register( "gerber_export_png", std::bind( &GERBVIEW_JOBS_HANDLER::JobGerberExportPng, this, std::placeholders::_1 ),
-              []( JOB* job, wxWindow* aParent ) -> bool
+              []( JOB* job [[maybe_unused]], wxWindow* aParent [[maybe_unused]] ) -> bool
               {
                   return true;
               } );
 
     Register( "gerber_diff", std::bind( &GERBVIEW_JOBS_HANDLER::JobGerberDiff, this, std::placeholders::_1 ),
-              []( JOB* job, wxWindow* aParent ) -> bool
+              []( JOB* job [[maybe_unused]], wxWindow* aParent [[maybe_unused]] ) -> bool
               {
                   return true;
               } );

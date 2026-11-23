@@ -211,13 +211,13 @@ public:
                 } );
     }
 
-    void Add( BOARD_ITEM* aItem, ADD_MODE aMode = ADD_MODE::INSERT,
-              bool aSkipConnectivity = false ) override
+    void Add( BOARD_ITEM* aItem [[maybe_unused]], ADD_MODE aMode [[maybe_unused]] = ADD_MODE::INSERT,
+              bool aSkipConnectivity [[maybe_unused]] = false ) override
     {
         wxFAIL_MSG( wxT( "Use AddCell()/InsertCell() instead." ) );
     }
 
-    void Remove( BOARD_ITEM* aItem, REMOVE_MODE aMode = REMOVE_MODE::NORMAL ) override
+    void Remove( BOARD_ITEM* aItem [[maybe_unused]], REMOVE_MODE aMode [[maybe_unused]] = REMOVE_MODE::NORMAL ) override
     {
         wxFAIL_MSG( wxT( "Use DeleteMarkedCells() instead." ) );
     }
@@ -279,7 +279,7 @@ public:
     INSPECT_RESULT Visit( INSPECTOR inspector, void* testData,
                           const std::vector<KICAD_T>& aScanTypes ) override;
 
-    bool Matches( const EDA_SEARCH_DATA& aSearchData, void* aAuxData ) const override
+    bool Matches( const EDA_SEARCH_DATA& aSearchData [[maybe_unused]], void* aAuxData [[maybe_unused]] ) const override
     {
         // Symbols are searchable via the child field and pin item text.
         return false;

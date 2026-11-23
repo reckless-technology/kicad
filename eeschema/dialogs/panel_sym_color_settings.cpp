@@ -85,7 +85,7 @@ bool PANEL_SYM_COLOR_SETTINGS::TransferDataFromWindow()
 }
 
 
-void PANEL_SYM_COLOR_SETTINGS::OnThemeChanged( wxCommandEvent& event )
+void PANEL_SYM_COLOR_SETTINGS::OnThemeChanged( wxCommandEvent& event [[maybe_unused]] )
 {
     m_themeRB->SetValue( true );
 }

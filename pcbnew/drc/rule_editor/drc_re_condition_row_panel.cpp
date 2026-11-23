@@ -133,7 +133,7 @@ DRC_RE_CONDITION_ROW_PANEL::DRC_RE_CONDITION_ROW_PANEL( wxWindow* aParent, BOARD
         {
             aEvent.Skip();
         },
-        []( wxStyledTextEvent& aEvent )
+        []( wxStyledTextEvent& aEvent [[maybe_unused]] )
         {
         } );
 
@@ -356,14 +356,14 @@ bool DRC_RE_CONDITION_ROW_PANEL::HasCustomQuerySelected() const
 }
 
 
-void DRC_RE_CONDITION_ROW_PANEL::onObjectChoice( wxCommandEvent& aEvent )
+void DRC_RE_CONDITION_ROW_PANEL::onObjectChoice( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( m_changeCallback )
         m_changeCallback();
 }
 
 
-void DRC_RE_CONDITION_ROW_PANEL::onConditionChoice( wxCommandEvent& aEvent )
+void DRC_RE_CONDITION_ROW_PANEL::onConditionChoice( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     updateVisibility();
 
@@ -372,21 +372,21 @@ void DRC_RE_CONDITION_ROW_PANEL::onConditionChoice( wxCommandEvent& aEvent )
 }
 
 
-void DRC_RE_CONDITION_ROW_PANEL::onDeleteClicked( wxCommandEvent& aEvent )
+void DRC_RE_CONDITION_ROW_PANEL::onDeleteClicked( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( m_deleteCallback )
         m_deleteCallback();
 }
 
 
-void DRC_RE_CONDITION_ROW_PANEL::onValueChanged( wxCommandEvent& aEvent )
+void DRC_RE_CONDITION_ROW_PANEL::onValueChanged( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( m_changeCallback )
         m_changeCallback();
 }
 
 
-void DRC_RE_CONDITION_ROW_PANEL::onCustomQueryChanged( wxStyledTextEvent& aEvent )
+void DRC_RE_CONDITION_ROW_PANEL::onCustomQueryChanged( wxStyledTextEvent& aEvent [[maybe_unused]] )
 {
     if( m_changeCallback )
         m_changeCallback();

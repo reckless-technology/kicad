@@ -341,7 +341,7 @@ void DIALOG_EXPORT_ODBPP::updateVariantFilename()
 }
 
 
-void DIALOG_EXPORT_ODBPP::onBrowseClicked( wxCommandEvent& event )
+void DIALOG_EXPORT_ODBPP::onBrowseClicked( wxCommandEvent& event [[maybe_unused]] )
 {
     // clang-format off
     wxString filter = _( "zip files" )
@@ -390,7 +390,7 @@ void DIALOG_EXPORT_ODBPP::onBrowseClicked( wxCommandEvent& event )
 }
 
 
-void DIALOG_EXPORT_ODBPP::onFormatChoice( wxCommandEvent& event )
+void DIALOG_EXPORT_ODBPP::onFormatChoice( wxCommandEvent& event [[maybe_unused]] )
 {
     OnFmtChoiceOptionChanged();
 }

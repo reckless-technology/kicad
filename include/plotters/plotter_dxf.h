@@ -318,7 +318,7 @@ public:
     bool EndPlot() override;
 
     // For now we don't use 'thick' primitives, so no line width
-    void SetCurrentLineWidth( int width, void* aData = nullptr ) override
+    void SetCurrentLineWidth( int width [[maybe_unused]], void* aData [[maybe_unused]] = nullptr ) override
     {
         m_currentPenWidth = 0;
     }

@@ -212,7 +212,7 @@ protected:
     /**
      * Called once the cells are laid out, with the content they were built from.
      */
-    virtual void onRebuilt( const BOARD& aBoard, const GENERATED_TABLE_CONTENT& aContent ) {}
+    virtual void onRebuilt( const BOARD& aBoard [[maybe_unused]], const GENERATED_TABLE_CONTENT& aContent [[maybe_unused]] ) {}
 
     /**
      * Called once a rebuild has moved the rows to where the new content puts them, before
@@ -223,7 +223,7 @@ protected:
     /**
      * Called for each cell a rebuild creates, before its text is set.
      */
-    virtual void styleNewCell( PCB_TABLECELL* aCell, bool aIsHeading ) {}
+    virtual void styleNewCell( PCB_TABLECELL* aCell [[maybe_unused]], bool aIsHeading [[maybe_unused]] ) {}
 
     /**
      * Called once the columns have been reversed, for any column index a subclass keeps.

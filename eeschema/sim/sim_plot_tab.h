@@ -68,7 +68,7 @@ class TRACE;
 class CURSOR : public mpInfoLayer
 {
 public:
-    CURSOR( TRACE* aTrace, SIM_PLOT_TAB* aPlotTab ) :
+    CURSOR( TRACE* aTrace, SIM_PLOT_TAB* aPlotTab [[maybe_unused]] ) :
             mpInfoLayer( wxRect( 0, 0, DRAG_MARGIN, DRAG_MARGIN ), wxTRANSPARENT_BRUSH ),
             m_trace( aTrace ),
             m_updateRequired( true ),
@@ -381,8 +381,8 @@ public:
     void Plot( wxDC& aDC, mpWindow& aWindow ) override;
 
     // Never draggable/clickable; it just tracks the mouse.
-    bool Inside( const wxPoint& aPoint ) const override { return false; }
-    void Move( wxPoint aDelta ) override {}
+    bool Inside( const wxPoint& aPoint [[maybe_unused]] ) const override { return false; }
+    void Move( wxPoint aDelta [[maybe_unused]] ) override {}
     void UpdateReference() override {}
 
     /// The X position is kept in plot space (not pixels), because the stacked views share an

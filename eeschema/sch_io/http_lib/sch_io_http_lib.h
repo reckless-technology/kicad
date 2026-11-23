@@ -87,7 +87,7 @@ public:
 
     void GetDefaultSymbolFields( std::vector<wxString>& aNames ) override;
 
-    bool IsLibraryWritable( const wxString& aLibraryPath ) override { return false; }
+    bool IsLibraryWritable( const wxString& aLibraryPath [[maybe_unused]] ) override { return false; }
 
     void SetLibraryManagerAdapter( SYMBOL_LIBRARY_ADAPTER* aAdapter ) override
     {

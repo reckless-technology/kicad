@@ -99,7 +99,7 @@ public:
     LIB_SYMBOL* LoadSymbol( const wxString& aLibraryPath, const wxString& aAliasName,
                             const std::map<std::string, UTF8>* aProperties = nullptr ) override;
 
-    bool IsLibraryWritable( const wxString& aLibraryPath ) override { return false; }
+    bool IsLibraryWritable( const wxString& aLibraryPath [[maybe_unused]] ) override { return false; }
 
 private:
     /** Parse an .OLB and build its KiCad library symbols, cached by library path.

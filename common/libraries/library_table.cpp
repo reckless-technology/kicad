@@ -111,7 +111,7 @@ LIBRARY_TABLE::LIBRARY_TABLE( const wxFileName &aPath, LIBRARY_TABLE_SCOPE aScop
 }
 
 
-LIBRARY_TABLE::LIBRARY_TABLE( bool aFromClipboard, const wxString &aBuffer, LIBRARY_TABLE_SCOPE aScope ) :
+LIBRARY_TABLE::LIBRARY_TABLE( bool aFromClipboard [[maybe_unused]], const wxString &aBuffer, LIBRARY_TABLE_SCOPE aScope ) :
         m_path( wxEmptyString ),
         m_scope( aScope )
 {

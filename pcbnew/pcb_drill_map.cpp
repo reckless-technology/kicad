@@ -60,14 +60,14 @@ PCB_DRILL_MAP::PCB_DRILL_MAP( const PCB_DRILL_MAP& aOther ) :
 }
 
 
-void PCB_DRILL_MAP::Rotate( const VECTOR2I& aCentre, const EDA_ANGLE& aAngle )
+void PCB_DRILL_MAP::Rotate( const VECTOR2I& aCentre [[maybe_unused]], const EDA_ANGLE& aAngle [[maybe_unused]] )
 {
     // The marks sit at their own holes and the offset is a displacement from each one, so
     // there is no geometry here to turn
 }
 
 
-void PCB_DRILL_MAP::Flip( const VECTOR2I& aCentre, FLIP_DIRECTION aDirection )
+void PCB_DRILL_MAP::Flip( const VECTOR2I& aCentre [[maybe_unused]], FLIP_DIRECTION aDirection [[maybe_unused]] )
 {
     // The offset is a displacement of every mark from its own hole, so there is nothing to
     // mirror. The side the map documents is still the side it belongs on
@@ -206,13 +206,13 @@ std::vector<int> PCB_DRILL_MAP::ViewGetLayers() const
 }
 
 
-wxString PCB_DRILL_MAP::GetItemDescription( UNITS_PROVIDER* aUnitsProvider, bool aFull ) const
+wxString PCB_DRILL_MAP::GetItemDescription( UNITS_PROVIDER* aUnitsProvider [[maybe_unused]], bool aFull [[maybe_unused]] ) const
 {
     return wxString::Format( _( "Drill Map on %s" ), GetLayerName() );
 }
 
 
-void PCB_DRILL_MAP::GetMsgPanelInfo( EDA_DRAW_FRAME* aFrame, std::vector<MSG_PANEL_ITEM>& aList )
+void PCB_DRILL_MAP::GetMsgPanelInfo( EDA_DRAW_FRAME* aFrame [[maybe_unused]], std::vector<MSG_PANEL_ITEM>& aList )
 {
     aList.emplace_back( _( "Drill Map" ), wxEmptyString );
     aList.emplace_back( _( "Layer" ), GetLayerName() );

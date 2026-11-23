@@ -242,7 +242,7 @@ static void printLabel( TDF_Label aLabel, Handle( XCAFDoc_ShapeTool ) aShapeTool
 }
 
 
-void WRITER::getMeshName( const TDF_Label& label, Handle( XCAFDoc_ShapeTool ) shapeTool, MESH* mesh )
+void WRITER::getMeshName( const TDF_Label& label, Handle( XCAFDoc_ShapeTool ) shapeTool [[maybe_unused]], MESH* mesh )
 {
     Handle( TDataStd_Name ) n;
 

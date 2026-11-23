@@ -105,7 +105,7 @@ bool SHAPE_RECT::Collide( const SEG& aSeg, int aClearance, int* aActual, VECTOR2
     return false;
 }
 
-const std::string SHAPE_RECT::Format( bool aCplusPlus ) const
+const std::string SHAPE_RECT::Format( bool aCplusPlus [[maybe_unused]] ) const
 {
     std::stringstream ss;
 
@@ -125,7 +125,7 @@ const std::string SHAPE_RECT::Format( bool aCplusPlus ) const
 }
 
 
-void SHAPE_RECT::TransformToPolygon( SHAPE_POLY_SET& aBuffer, int aError, ERROR_LOC aErrorLoc ) const
+void SHAPE_RECT::TransformToPolygon( SHAPE_POLY_SET& aBuffer, int aError, ERROR_LOC aErrorLoc [[maybe_unused]] ) const
 {
     if( m_radius > 0 )
     {

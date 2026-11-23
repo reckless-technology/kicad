@@ -68,7 +68,7 @@ AR_AUTOPLACER::AR_AUTOPLACER( BOARD* aBoard )
 }
 
 
-void AR_AUTOPLACER::placeFootprint( FOOTPRINT* aFootprint, bool aDoNotRecreateRatsnest, const VECTOR2I& aPos )
+void AR_AUTOPLACER::placeFootprint( FOOTPRINT* aFootprint, bool aDoNotRecreateRatsnest [[maybe_unused]], const VECTOR2I& aPos )
 {
     if( !aFootprint )
         return;

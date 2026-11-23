@@ -386,7 +386,7 @@ void D_CODE::ConvertShapeToPolygon( const GERBER_DRAW_ITEM* aParent )
 // The helper function for D_CODE::ConvertShapeToPolygon().
 // Add a hole to a polygon
 static void addHoleToPolygon( SHAPE_POLY_SET* aPolygon, APERTURE_DEF_HOLETYPE aHoleShape,
-                              const VECTOR2I& aSize, const VECTOR2I& aAnchorPos )
+                              const VECTOR2I& aSize, const VECTOR2I& aAnchorPos [[maybe_unused]] )
 {
     VECTOR2I       currpos;
     SHAPE_POLY_SET holeBuffer;

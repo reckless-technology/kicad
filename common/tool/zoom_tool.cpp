@@ -54,7 +54,7 @@ bool ZOOM_TOOL::Init()
 }
 
 
-void ZOOM_TOOL::Reset( RESET_REASON aReason )
+void ZOOM_TOOL::Reset( RESET_REASON aReason [[maybe_unused]] )
 {
     m_frame = getEditFrame<EDA_DRAW_FRAME>();
 }

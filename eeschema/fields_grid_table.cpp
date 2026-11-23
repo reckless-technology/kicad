@@ -204,7 +204,7 @@ FIELDS_GRID_TABLE::FIELDS_GRID_TABLE( DIALOG_SHIM* aDialog, SCH_EDIT_FRAME* aFra
 
 
 FIELDS_GRID_TABLE::FIELDS_GRID_TABLE( DIALOG_SHIM* aDialog, SCH_EDIT_FRAME* aFrame, WX_GRID* aGrid,
-                                      SCH_SHEET* aSheet, std::vector<EMBEDDED_FILES*>& aFilesStack ) :
+                                      SCH_SHEET* aSheet [[maybe_unused]], std::vector<EMBEDDED_FILES*>& aFilesStack ) :
         m_frame( aFrame ),
         m_dialog( aDialog ),
         m_parentType( SCH_SHEET_T ),
@@ -222,7 +222,7 @@ FIELDS_GRID_TABLE::FIELDS_GRID_TABLE( DIALOG_SHIM* aDialog, SCH_EDIT_FRAME* aFra
 
 
 FIELDS_GRID_TABLE::FIELDS_GRID_TABLE( DIALOG_SHIM* aDialog, SCH_EDIT_FRAME* aFrame, WX_GRID* aGrid,
-                                      SCH_LABEL_BASE* aLabel, std::vector<EMBEDDED_FILES*>& aFilesStack ) :
+                                      SCH_LABEL_BASE* aLabel [[maybe_unused]], std::vector<EMBEDDED_FILES*>& aFilesStack ) :
         m_frame( aFrame ),
         m_dialog( aDialog ),
         m_parentType( SCH_LABEL_LOCATE_ANY_T ),
@@ -553,7 +553,7 @@ wxString FIELDS_GRID_TABLE::GetColLabelValue( int aCol )
 }
 
 
-bool FIELDS_GRID_TABLE::CanGetValueAs( int aRow, int aCol, const wxString& aTypeName )
+bool FIELDS_GRID_TABLE::CanGetValueAs( int aRow [[maybe_unused]], int aCol, const wxString& aTypeName )
 {
     switch( aCol )
     {

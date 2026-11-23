@@ -46,7 +46,7 @@ FOOTPRINT_NAME_VALIDATOR::FOOTPRINT_NAME_VALIDATOR( wxString* aValue ) :
 }
 
 
-ENV_VAR_NAME_VALIDATOR::ENV_VAR_NAME_VALIDATOR( wxString* aValue ) :
+ENV_VAR_NAME_VALIDATOR::ENV_VAR_NAME_VALIDATOR( wxString* aValue [[maybe_unused]] ) :
     wxTextValidator()
 {
     Connect( wxEVT_CHAR, wxKeyEventHandler( ENV_VAR_NAME_VALIDATOR::OnChar ) );
@@ -158,7 +158,7 @@ void ENV_VAR_NAME_VALIDATOR::OnTextChanged( wxCommandEvent& event )
 }
 
 
-NETNAME_VALIDATOR::NETNAME_VALIDATOR( wxString *aVal ) :
+NETNAME_VALIDATOR::NETNAME_VALIDATOR( wxString *aVal [[maybe_unused]] ) :
          wxTextValidator(),
          m_allowSpaces( true )
 {

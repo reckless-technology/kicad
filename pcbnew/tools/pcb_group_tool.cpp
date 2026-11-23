@@ -86,12 +86,12 @@ int PCB_GROUP_TOOL::PickNewMember( const TOOL_EVENT& aEvent )
     picker->ClearHandlers();
 
     picker->SetClickHandler(
-            [&]( const VECTOR2D& aPoint ) -> bool
+            [&]( const VECTOR2D& aPoint [[maybe_unused]] ) -> bool
             {
                 m_toolMgr->RunAction( ACTIONS::selectionClear );
 
                 const PCB_SELECTION& sel = selTool->RequestSelection(
-                        []( const VECTOR2I& aPt, GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
+                        []( const VECTOR2I& aPt [[maybe_unused]], GENERAL_COLLECTOR& aCollector [[maybe_unused]], PCB_SELECTION_TOOL* sTool [[maybe_unused]] )
                         {
                         } );
 
@@ -124,7 +124,7 @@ int PCB_GROUP_TOOL::PickNewMember( const TOOL_EVENT& aEvent )
             } );
 
     picker->SetMotionHandler(
-            [&]( const VECTOR2D& aPos )
+            [&]( const VECTOR2D& aPos [[maybe_unused]] )
             {
                 statusPopup.Move( KIPLATFORM::UI::GetMousePosition() + wxPoint( 20, -50 ) );
             } );
@@ -139,7 +139,7 @@ int PCB_GROUP_TOOL::PickNewMember( const TOOL_EVENT& aEvent )
             } );
 
     picker->SetFinalizeHandler(
-            [&]( const int& aFinalState )
+            [&]( const int& aFinalState [[maybe_unused]] )
             {
                 done = true;
             } );
@@ -166,7 +166,7 @@ int PCB_GROUP_TOOL::PickNewMember( const TOOL_EVENT& aEvent )
 }
 
 
-int PCB_GROUP_TOOL::Group( const TOOL_EVENT& aEvent )
+int PCB_GROUP_TOOL::Group( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     bool                isFootprintEditor = m_frame->GetFrameType() == FRAME_FOOTPRINT_EDITOR;
     PCB_SELECTION_TOOL* selTool = m_toolMgr->GetTool<PCB_SELECTION_TOOL>();

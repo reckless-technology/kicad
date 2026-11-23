@@ -195,7 +195,7 @@ void GERBER_LAYER_WIDGET::AddRightClickMenuItems( wxMenu* aMenu )
 }
 
 
-void GERBER_LAYER_WIDGET::onRightDownLayers( wxMouseEvent& event )
+void GERBER_LAYER_WIDGET::onRightDownLayers( wxMouseEvent& event [[maybe_unused]] )
 {
     wxMenu          menu;
 

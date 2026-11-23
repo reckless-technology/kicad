@@ -1272,7 +1272,7 @@ int SCH_SHEET::GetPenWidth() const
 }
 
 
-void SCH_SHEET::AutoplaceFields( SCH_SCREEN* aScreen, AUTOPLACE_ALGO aAlgo )
+void SCH_SHEET::AutoplaceFields( SCH_SCREEN* aScreen [[maybe_unused]], AUTOPLACE_ALGO aAlgo )
 {
     SCH_FIELD* sheetNameField = GetField( FIELD_T::SHEET_NAME );
     VECTOR2I   textSize = sheetNameField->GetTextSize();
@@ -1696,7 +1696,7 @@ void SCH_SHEET::Resize( const VECTOR2I& aSize )
 }
 
 
-bool SCH_SHEET::Matches( const EDA_SEARCH_DATA& aSearchData, void* aAuxData ) const
+bool SCH_SHEET::Matches( const EDA_SEARCH_DATA& aSearchData [[maybe_unused]], void* aAuxData [[maybe_unused]] ) const
 {
     // Sheets are searchable via the child field and pin item text.
     return false;
@@ -1749,7 +1749,7 @@ void SCH_SHEET::GetEndPoints( std::vector <DANGLING_END_ITEM>& aItemList )
 
 bool SCH_SHEET::UpdateDanglingState( std::vector<DANGLING_END_ITEM>& aItemListByType,
                                      std::vector<DANGLING_END_ITEM>& aItemListByPos,
-                                     const SCH_SHEET_PATH*           aPath )
+                                     const SCH_SHEET_PATH*           aPath [[maybe_unused]] )
 {
     bool changed = false;
 
@@ -1760,7 +1760,7 @@ bool SCH_SHEET::UpdateDanglingState( std::vector<DANGLING_END_ITEM>& aItemListBy
 }
 
 
-bool SCH_SHEET::HasConnectivityChanges( const SCH_ITEM* aItem, const SCH_SHEET_PATH* aInstance ) const
+bool SCH_SHEET::HasConnectivityChanges( const SCH_ITEM* aItem, const SCH_SHEET_PATH* aInstance [[maybe_unused]] ) const
 {
     // Do not compare to ourself.
     if( aItem == this )
@@ -1804,7 +1804,7 @@ std::vector<VECTOR2I> SCH_SHEET::GetConnectionPoints() const
 }
 
 
-INSPECT_RESULT SCH_SHEET::Visit( INSPECTOR aInspector, void* testData, const std::vector<KICAD_T>& aScanTypes )
+INSPECT_RESULT SCH_SHEET::Visit( INSPECTOR aInspector, void* testData [[maybe_unused]], const std::vector<KICAD_T>& aScanTypes )
 {
     for( KICAD_T scanType : aScanTypes )
     {
@@ -1840,7 +1840,7 @@ INSPECT_RESULT SCH_SHEET::Visit( INSPECTOR aInspector, void* testData, const std
 }
 
 
-void SCH_SHEET::RunOnChildren( const std::function<void( SCH_ITEM* )>& aFunction, RECURSE_MODE aMode )
+void SCH_SHEET::RunOnChildren( const std::function<void( SCH_ITEM* )>& aFunction, RECURSE_MODE aMode [[maybe_unused]] )
 {
     for( SCH_FIELD& field : m_fields )
         aFunction( &field );
@@ -1850,7 +1850,7 @@ void SCH_SHEET::RunOnChildren( const std::function<void( SCH_ITEM* )>& aFunction
 }
 
 
-wxString SCH_SHEET::GetItemDescription( UNITS_PROVIDER* aUnitsProvider, bool aFull ) const
+wxString SCH_SHEET::GetItemDescription( UNITS_PROVIDER* aUnitsProvider [[maybe_unused]], bool aFull ) const
 {
     const SCH_FIELD* sheetnameField = GetField( FIELD_T::SHEET_NAME );
 

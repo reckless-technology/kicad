@@ -50,7 +50,7 @@ public:
      * Retrieves a key/value map of the fields on this item that should be exposed to the library
      * browser/chooser for displaying in columns, searching, etc
      */
-    virtual void GetChooserFields( std::map<wxString , wxString>& aColumnMap ) {}
+    virtual void GetChooserFields( std::map<wxString , wxString>& aColumnMap [[maybe_unused]] ) {}
 
     virtual std::vector<SEARCH_TERM>& GetSearchTerms() = 0;
 
@@ -80,7 +80,7 @@ public:
     /**
      * For items with units, return an identifier for unit x.
      */
-    virtual wxString GetUnitName( int aUnit ) const { return wxEmptyString; }
+    virtual wxString GetUnitName( int aUnit [[maybe_unused]] ) const { return wxEmptyString; }
 };
 
 #endif //LIB_TREE_ITEM_H

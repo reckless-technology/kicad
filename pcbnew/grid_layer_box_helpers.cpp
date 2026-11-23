@@ -233,7 +233,7 @@ void GRID_CELL_LAYER_SELECTOR::Reset()
 }
 
 
-void GRID_CELL_LAYER_SELECTOR::onComboDropDown( wxCommandEvent& aEvent )
+void GRID_CELL_LAYER_SELECTOR::onComboDropDown( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     // On other platforms this is done in BeginEdit()
 #if defined(__WXGTK__)
@@ -246,7 +246,7 @@ void GRID_CELL_LAYER_SELECTOR::onComboDropDown( wxCommandEvent& aEvent )
 }
 
 
-void GRID_CELL_LAYER_SELECTOR::onComboCloseUp( wxCommandEvent& aEvent )
+void GRID_CELL_LAYER_SELECTOR::onComboCloseUp( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     auto evtHandler = static_cast<wxGridCellEditorEvtHandler*>( m_control->GetEventHandler() );
 

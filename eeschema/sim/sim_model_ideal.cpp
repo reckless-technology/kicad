@@ -24,7 +24,7 @@
 #include <fmt/format.h>
 #include <wx/regex.h>
 
-std::string SPICE_GENERATOR_IDEAL::ModelLine( const SPICE_ITEM& aItem ) const
+std::string SPICE_GENERATOR_IDEAL::ModelLine( const SPICE_ITEM& aItem [[maybe_unused]] ) const
 {
     return "";
 }

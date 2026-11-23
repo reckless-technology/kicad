@@ -196,7 +196,7 @@ public:
         return wxEmptyString;
     }
 
-    virtual double Convert( const wxString& aString, int unitType ) const
+    virtual double Convert( const wxString& aString [[maybe_unused]], int unitType [[maybe_unused]] ) const
     {
         return 0.0;
     }
@@ -526,12 +526,12 @@ public:
     VALUE* Run( CONTEXT* ctx );
     wxString Dump() const;
 
-    virtual std::unique_ptr<VAR_REF> CreateVarRef( const wxString& var, const wxString& field )
+    virtual std::unique_ptr<VAR_REF> CreateVarRef( const wxString& var [[maybe_unused]], const wxString& field [[maybe_unused]] )
     {
         return nullptr;
     }
 
-    virtual FUNC_CALL_REF CreateFuncCall( const wxString& name )
+    virtual FUNC_CALL_REF CreateFuncCall( const wxString& name [[maybe_unused]] )
     {
         return nullptr;
     }

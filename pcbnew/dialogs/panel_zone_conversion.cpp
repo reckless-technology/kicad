@@ -58,7 +58,7 @@ bool PANEL_ZONE_CONVERSION::TransferDataFromWindow()
 }
 
 
-void PANEL_ZONE_CONVERSION::OnUpdateUI( wxUpdateUIEvent& aEvent )
+void PANEL_ZONE_CONVERSION::OnUpdateUI( wxUpdateUIEvent& aEvent [[maybe_unused]] )
 {
     m_gap.Enable( m_rbEnvelope->GetValue() );
 }

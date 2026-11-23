@@ -939,28 +939,28 @@ void DIALOG_FOOTPRINT_PROPERTIES::OnPageChanging( wxNotebookEvent& aEvent )
 }
 
 
-void DIALOG_FOOTPRINT_PROPERTIES::OnCheckBox( wxCommandEvent& event )
+void DIALOG_FOOTPRINT_PROPERTIES::OnCheckBox( wxCommandEvent& event [[maybe_unused]] )
 {
     if( m_initialized )
         OnModify();
 }
 
 
-void DIALOG_FOOTPRINT_PROPERTIES::OnCombobox( wxCommandEvent& event )
+void DIALOG_FOOTPRINT_PROPERTIES::OnCombobox( wxCommandEvent& event [[maybe_unused]] )
 {
     if( m_initialized )
         OnModify();
 }
 
 
-void DIALOG_FOOTPRINT_PROPERTIES::OnText( wxCommandEvent& event )
+void DIALOG_FOOTPRINT_PROPERTIES::OnText( wxCommandEvent& event [[maybe_unused]] )
 {
     if( m_initialized )
         OnModify();
 }
 
 
-void DIALOG_FOOTPRINT_PROPERTIES::OnChoice( wxCommandEvent& event )
+void DIALOG_FOOTPRINT_PROPERTIES::OnChoice( wxCommandEvent& event [[maybe_unused]] )
 {
     if( m_initialized )
         OnModify();

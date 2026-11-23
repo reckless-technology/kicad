@@ -275,7 +275,7 @@ private:
 class AREA_CONSTRAINT : public OPT_CONSTRAINT
 {
 public:
-    AREA_CONSTRAINT( NODE* aWorld, const  BOX2I& aAllowedArea, bool aAllowedAreaStrict ) :
+    AREA_CONSTRAINT( NODE* aWorld, const  BOX2I& aAllowedArea, bool aAllowedAreaStrict [[maybe_unused]] ) :
         OPT_CONSTRAINT( aWorld ),
         m_allowedArea ( aAllowedArea )
     {
@@ -341,7 +341,7 @@ private:
 class RESTRICT_VERTEX_RANGE_CONSTRAINT: public OPT_CONSTRAINT
 {
 public:
-    RESTRICT_VERTEX_RANGE_CONSTRAINT( NODE* aWorld, int aStart, int aEnd ) :
+    RESTRICT_VERTEX_RANGE_CONSTRAINT( NODE* aWorld, int aStart [[maybe_unused]], int aEnd [[maybe_unused]] ) :
         OPT_CONSTRAINT( aWorld )
     {
     };
@@ -355,7 +355,7 @@ public:
 class CORNER_COUNT_LIMIT_CONSTRAINT: public OPT_CONSTRAINT
 {
 public:
-    CORNER_COUNT_LIMIT_CONSTRAINT( NODE* aWorld, int aMinCorners, int aMaxCorners,
+    CORNER_COUNT_LIMIT_CONSTRAINT( NODE* aWorld, int aMinCorners, int aMaxCorners [[maybe_unused]],
                                    int aAngleMask ) :
         OPT_CONSTRAINT( aWorld ),
         m_minCorners( aMinCorners ),

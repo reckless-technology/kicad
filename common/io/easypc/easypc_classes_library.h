@@ -51,7 +51,7 @@ struct SELF_VERSIONED
 struct SOURCE_SYMBOL : SOURCE_DESIGN_ITEM, SELF_VERSIONED
 {
     LOAD_TASK Load( ARCHIVE& aAr ) override;
-    int       ItemFormat( const ARCHIVE& aAr ) const override { return Format; }
+    int       ItemFormat( const ARCHIVE& aAr [[maybe_unused]] ) const override { return Format; }
 
     wxString Name;
     OBJECT*  Shapes = nullptr; ///< free copper list
@@ -156,7 +156,7 @@ struct SOURCE_GATE_PIN : SOURCE_DESIGN_ITEM
 struct SOURCE_SCM_COMPONENT : SOURCE_DESIGN_ITEM, SELF_VERSIONED
 {
     LOAD_TASK Load( ARCHIVE& aAr ) override;
-    int       ItemFormat( const ARCHIVE& aAr ) const override { return Format; }
+    int       ItemFormat( const ARCHIVE& aAr [[maybe_unused]] ) const override { return Format; }
 
     wxString Name;
     wxString Package;
@@ -172,7 +172,7 @@ struct SOURCE_SCM_COMPONENT : SOURCE_DESIGN_ITEM, SELF_VERSIONED
 struct SOURCE_PCB_COMPONENT : SOURCE_DESIGN_ITEM, SELF_VERSIONED
 {
     LOAD_TASK Load( ARCHIVE& aAr ) override;
-    int       ItemFormat( const ARCHIVE& aAr ) const override { return Format; }
+    int       ItemFormat( const ARCHIVE& aAr [[maybe_unused]] ) const override { return Format; }
 
     wxString Package;
     wxString Symbol;             ///< footprint name

@@ -204,7 +204,7 @@ public:
         return true;
     }
 
-    void UpdateItem( const EDIT_POINT& aEditedPoints, EDIT_POINTS& aPoints, COMMIT& aCommit,
+    void UpdateItem( const EDIT_POINT& aEditedPoints [[maybe_unused]], EDIT_POINTS& aPoints, COMMIT& aCommit,
                      std::vector<EDA_ITEM*>& aUpdatedItems ) override
     {
         m_line.SetStartPoint( aPoints.Point( LINE_START ).GetPosition() );
@@ -677,8 +677,8 @@ public:
         return true;
     }
 
-    void UpdateItem( const EDIT_POINT& aEditedPoint, EDIT_POINTS& aPoints, COMMIT& aCommit,
-                     std::vector<EDA_ITEM*>& aUpdatedItems ) override
+    void UpdateItem( const EDIT_POINT& aEditedPoint, EDIT_POINTS& aPoints, COMMIT& aCommit [[maybe_unused]],
+                     std::vector<EDA_ITEM*>& aUpdatedItems [[maybe_unused]] ) override
     {
         m_textbox.ClearBoundingBoxCache();
         VECTOR2I minSize = m_textbox.GetMinSize();
@@ -1053,7 +1053,7 @@ bool SCH_POINT_EDITOR::Init()
 }
 
 
-int SCH_POINT_EDITOR::clearEditedPoints( const TOOL_EVENT& aEvent )
+int SCH_POINT_EDITOR::clearEditedPoints( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     setEditedPoint( nullptr );
 
@@ -1432,7 +1432,7 @@ int SCH_POINT_EDITOR::Main( const TOOL_EVENT& aEvent )
 }
 
 
-void SCH_POINT_EDITOR::updateParentItem( bool aSnapToGrid, SCH_COMMIT& aCommit ) const
+void SCH_POINT_EDITOR::updateParentItem( bool aSnapToGrid [[maybe_unused]], SCH_COMMIT& aCommit ) const
 {
     EDA_ITEM* item = m_editPoints->GetParent();
 
@@ -1594,7 +1594,7 @@ int SCH_POINT_EDITOR::addCorner( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_POINT_EDITOR::removeCorner( const TOOL_EVENT& aEvent )
+int SCH_POINT_EDITOR::removeCorner( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( !m_editPoints || !m_editedPoint || !m_editPoints->GetParent()->IsType( { SCH_SHAPE_T, SCH_RULE_AREA_T } ) )
         return 0;
@@ -1669,7 +1669,7 @@ int SCH_POINT_EDITOR::changeArcEditMode( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_POINT_EDITOR::modifiedSelection( const TOOL_EVENT& aEvent )
+int SCH_POINT_EDITOR::modifiedSelection( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     updatePoints();
     return 0;

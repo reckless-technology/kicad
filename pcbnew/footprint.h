@@ -643,7 +643,7 @@ public:
     /// @copydoc BOARD_ITEM::FitsEnabledLayers
     /// Only the mounting side is judged -- the children are exempt per IsLayerAgnostic, but a
     /// footprint that names no side at all is malformed and no board can hold it.
-    bool FitsEnabledLayers( const LSET& aEnabledLayers, int aCopperLayerCount ) const override
+    bool FitsEnabledLayers( const LSET& aEnabledLayers [[maybe_unused]], int aCopperLayerCount [[maybe_unused]] ) const override
     {
         return GetLayer() == F_Cu || GetLayer() == B_Cu;
     }

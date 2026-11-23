@@ -100,7 +100,7 @@ void SCH_TABLECELL::swapData( SCH_ITEM* aItem )
 }
 
 
-wxString SCH_TABLECELL::GetItemDescription( UNITS_PROVIDER* aUnitsProvider, bool aFull ) const
+wxString SCH_TABLECELL::GetItemDescription( UNITS_PROVIDER* aUnitsProvider [[maybe_unused]], bool aFull [[maybe_unused]] ) const
 {
     return wxString::Format( _( "Table Cell %s" ), GetAddr() );
 }
@@ -394,7 +394,7 @@ void SCH_TABLECELL::SetRowHeight( int aHeight )
 
 
 void SCH_TABLECELL::Plot( PLOTTER* aPlotter, bool aBackground, const SCH_PLOT_OPTS& aPlotOpts, int aUnit,
-                          int aBodyStyle, const VECTOR2I& aOffset, bool aDimmed )
+                          int aBodyStyle [[maybe_unused]], const VECTOR2I& aOffset, bool aDimmed )
 {
     const int cell_body_style = -1; // flag to disable box ouline plotting
 

@@ -77,7 +77,7 @@ public:
 
     ARC* Clone() const override;
 
-    const SHAPE* Shape( int aLayer ) const override
+    const SHAPE* Shape( int aLayer [[maybe_unused]] ) const override
     {
         return static_cast<const SHAPE*>( &m_arc );
     }

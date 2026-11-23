@@ -25,7 +25,7 @@
 #include <fmt/format.h>
 
 
-std::string SPICE_GENERATOR_BEHAVIORAL::ModelLine( const SPICE_ITEM& aItem ) const
+std::string SPICE_GENERATOR_BEHAVIORAL::ModelLine( const SPICE_ITEM& aItem [[maybe_unused]] ) const
 {
     return "";
 }

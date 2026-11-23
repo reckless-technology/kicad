@@ -1512,7 +1512,7 @@ bool EXPRESSION_EVALUATOR::TestExpression( const wxString& aExpression )
 
     // Create a minimal callback that returns errors for all variables
     auto testCallback =
-            []( const std::string& aVarName ) -> calc_parser::RESULT<calc_parser::VALUE>
+            []( const std::string& aVarName [[maybe_unused]] ) -> calc_parser::RESULT<calc_parser::VALUE>
             {
                 return calc_parser::MakeError<calc_parser::VALUE>( "Test mode - no variables available" );
             };
@@ -1818,7 +1818,7 @@ EXPRESSION_EVALUATOR::createCombinedCallback( const std::unordered_map<wxString,
                     // Create a resolver that will return true if the variable was found
                     bool                             wasResolved = false;
                     std::function<bool( wxString* )> resolver =
-                            [&wasResolved]( wxString* token ) -> bool
+                            [&wasResolved]( wxString* token [[maybe_unused]] ) -> bool
                             {
                                 // If we get here, ExpandTextVars found the variable and wants to resolve it
                                 // For our purposes, we just want to know if it exists, so return false
@@ -1833,7 +1833,7 @@ EXPRESSION_EVALUATOR::createCombinedCallback( const std::unordered_map<wxString,
                     {
                         // Variable exists in KiCad's system, now get its actual value
                         std::function<bool( wxString* )> valueResolver =
-                                []( wxString* token ) -> bool
+                                []( wxString* token [[maybe_unused]] ) -> bool
                                 {
                                     // Let ExpandTextVars resolve this normally
                                     // We'll get the resolved value in token

@@ -423,7 +423,7 @@ bool SCH_FIND_REPLACE_TOOL::HasMatch()
 }
 
 
-int SCH_FIND_REPLACE_TOOL::ReplaceAndFindNext( const TOOL_EVENT& aEvent )
+int SCH_FIND_REPLACE_TOOL::ReplaceAndFindNext( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     EDA_SEARCH_DATA& data = m_frame->GetFindReplaceData();
     EDA_ITEM*        item = getCurrentMatch();
@@ -462,7 +462,7 @@ int SCH_FIND_REPLACE_TOOL::ReplaceAndFindNext( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_FIND_REPLACE_TOOL::ReplaceAll( const TOOL_EVENT& aEvent )
+int SCH_FIND_REPLACE_TOOL::ReplaceAll( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     EDA_SEARCH_DATA& data = m_frame->GetFindReplaceData();
     SCH_SHEET_PATH*  currentSheet = nullptr;

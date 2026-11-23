@@ -103,7 +103,7 @@ void GERBVIEW_FRAME::OnSelectHighlightChoice( wxCommandEvent& event )
 }
 
 
-void GERBVIEW_FRAME::OnSelectActiveDCode( wxCommandEvent& event )
+void GERBVIEW_FRAME::OnSelectActiveDCode( wxCommandEvent& event [[maybe_unused]] )
 {
     GERBER_FILE_IMAGE* gerber_image = GetGbrImage( GetActiveLayer() );
 
@@ -139,7 +139,7 @@ void GERBVIEW_FRAME::OnSelectActiveLayer( wxCommandEvent& event )
 }
 
 
-void GERBVIEW_FRAME::OnQuit( wxCommandEvent& event )
+void GERBVIEW_FRAME::OnQuit( wxCommandEvent& event [[maybe_unused]] )
 {
     Close( true );
 }

@@ -164,7 +164,7 @@ void DIALOG_GEN_FOOTPRINT_POSITION::updateOptionCheckbox( wxUpdateUIEvent& aEven
 }
 
 
-void DIALOG_GEN_FOOTPRINT_POSITION::onUpdateUIUnits( wxUpdateUIEvent& event )
+void DIALOG_GEN_FOOTPRINT_POSITION::onUpdateUIUnits( wxUpdateUIEvent& event [[maybe_unused]] )
 {
     bool textFormat = selectedFormat() != JOB_EXPORT_PCB_POS::FORMAT::GERBER;
 
@@ -173,7 +173,7 @@ void DIALOG_GEN_FOOTPRINT_POSITION::onUpdateUIUnits( wxUpdateUIEvent& event )
 }
 
 
-void DIALOG_GEN_FOOTPRINT_POSITION::onUpdateUIFileOpt( wxUpdateUIEvent& event )
+void DIALOG_GEN_FOOTPRINT_POSITION::onUpdateUIFileOpt( wxUpdateUIEvent& event [[maybe_unused]] )
 {
     m_singleFile->Enable( selectedFormat() != JOB_EXPORT_PCB_POS::FORMAT::GERBER );
 }
@@ -206,13 +206,13 @@ void DIALOG_GEN_FOOTPRINT_POSITION::onUpdateUIExcludeTH( wxUpdateUIEvent& event 
 }
 
 
-void DIALOG_GEN_FOOTPRINT_POSITION::onUpdateUIincludeBoardEdge( wxUpdateUIEvent& event )
+void DIALOG_GEN_FOOTPRINT_POSITION::onUpdateUIincludeBoardEdge( wxUpdateUIEvent& event [[maybe_unused]] )
 {
     m_cbIncludeBoardEdge->Enable( selectedFormat() == JOB_EXPORT_PCB_POS::FORMAT::GERBER );
 }
 
 
-void DIALOG_GEN_FOOTPRINT_POSITION::onOutputDirectoryBrowseClicked( wxCommandEvent& event )
+void DIALOG_GEN_FOOTPRINT_POSITION::onOutputDirectoryBrowseClicked( wxCommandEvent& event [[maybe_unused]] )
 {
     // Build the absolute path of current output directory to preselect it in the file browser.
     wxString path = ResolveProjectPath( m_outputDirectoryName->GetValue(), &Prj() );
@@ -529,7 +529,7 @@ wxString DIALOG_GEN_FOOTPRINT_POSITION::getSelectedVariant() const
 }
 
 
-int BOARD_EDITOR_CONTROL::GeneratePosFile( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::GeneratePosFile( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     DIALOG_GEN_FOOTPRINT_POSITION dlg( getEditFrame<PCB_EDIT_FRAME>() );
     dlg.ShowModal();
@@ -578,7 +578,7 @@ int PCB_EDIT_FRAME::DoGenFootprintsPositionFile( const wxString& aFullFileName, 
 }
 
 
-int BOARD_EDITOR_CONTROL::GenFootprintsReport( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::GenFootprintsReport( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     BOARD*     board = m_frame->GetBoard();
     wxFileName fn;

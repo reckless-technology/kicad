@@ -867,7 +867,7 @@ void PCB_DIMENSION_BASE::GetMsgPanelInfo( EDA_DRAW_FRAME* aFrame,
 }
 
 
-std::shared_ptr<SHAPE> PCB_DIMENSION_BASE::GetEffectiveShape( PCB_LAYER_ID aLayer, FLASHING, DRC_CONSTRAINT_T ) const
+std::shared_ptr<SHAPE> PCB_DIMENSION_BASE::GetEffectiveShape( PCB_LAYER_ID aLayer [[maybe_unused]], FLASHING, DRC_CONSTRAINT_T ) const
 {
     std::shared_ptr<SHAPE_COMPOUND> effectiveShape = std::make_shared<SHAPE_COMPOUND>();
 
@@ -965,7 +965,7 @@ const BOX2I PCB_DIMENSION_BASE::GetBoundingBox() const
 }
 
 
-wxString PCB_DIMENSION_BASE::GetItemDescription( UNITS_PROVIDER* aUnitsProvider, bool aFull ) const
+wxString PCB_DIMENSION_BASE::GetItemDescription( UNITS_PROVIDER* aUnitsProvider [[maybe_unused]], bool aFull ) const
 {
     return wxString::Format( _( "Dimension '%s' on %s" ),
                              aFull ? GetShownText( FOR_GUI ) : KIUI::EllipsizeMenuText( GetText() ),
@@ -1025,7 +1025,7 @@ double PCB_DIMENSION_BASE::GetCoverageArea( int aTextMargin ) const
 }
 
 
-void PCB_DIMENSION_BASE::TransformShapeToPolygon( SHAPE_POLY_SET& aBuffer, PCB_LAYER_ID aLayer,
+void PCB_DIMENSION_BASE::TransformShapeToPolygon( SHAPE_POLY_SET& aBuffer, PCB_LAYER_ID aLayer [[maybe_unused]],
                                                   int aClearance, int aError, ERROR_LOC aErrorLoc,
                                                   bool aIgnoreLineWidth ) const
 {
@@ -2393,16 +2393,16 @@ static struct ALIGNED_DIMENSION_DESC
 
         propMgr.OverrideAvailability( TYPE_HASH( PCB_DIM_ALIGNED ), TYPE_HASH( EDA_TEXT ),
                                       _HKI( "Text" ),
-                                      []( INSPECTABLE* aItem ) { return false; } );
+                                      []( INSPECTABLE* aItem [[maybe_unused]] ) { return false; } );
         propMgr.OverrideAvailability( TYPE_HASH( PCB_DIM_ALIGNED ), TYPE_HASH( EDA_TEXT ),
                                       _HKI( "Vertical Justification" ),
-                                      []( INSPECTABLE* aItem ) { return false; } );
+                                      []( INSPECTABLE* aItem [[maybe_unused]] ) { return false; } );
         propMgr.OverrideAvailability( TYPE_HASH( PCB_DIM_ALIGNED ), TYPE_HASH( EDA_TEXT ),
                                       _HKI( "Hyperlink" ),
-                                      []( INSPECTABLE* aItem ) { return false; } );
+                                      []( INSPECTABLE* aItem [[maybe_unused]] ) { return false; } );
         propMgr.OverrideAvailability( TYPE_HASH( PCB_DIM_ALIGNED ), TYPE_HASH( BOARD_ITEM ),
                                       _HKI( "Knockout" ),
-                                      []( INSPECTABLE* aItem ) { return false; } );
+                                      []( INSPECTABLE* aItem [[maybe_unused]] ) { return false; } );
     }
 } ALIGNED_DIMENSION_DESC;
 
@@ -2426,16 +2426,16 @@ static struct ORTHOGONAL_DIMENSION_DESC
 
         propMgr.OverrideAvailability( TYPE_HASH( PCB_DIM_ORTHOGONAL ), TYPE_HASH( EDA_TEXT ),
                                       _HKI( "Text" ),
-                                      []( INSPECTABLE* aItem ) { return false; } );
+                                      []( INSPECTABLE* aItem [[maybe_unused]] ) { return false; } );
         propMgr.OverrideAvailability( TYPE_HASH( PCB_DIM_ORTHOGONAL ), TYPE_HASH( EDA_TEXT ),
                                       _HKI( "Vertical Justification" ),
-                                      []( INSPECTABLE* aItem ) { return false; } );
+                                      []( INSPECTABLE* aItem [[maybe_unused]] ) { return false; } );
         propMgr.OverrideAvailability( TYPE_HASH( PCB_DIM_ORTHOGONAL ), TYPE_HASH( EDA_TEXT ),
                                       _HKI( "Hyperlink" ),
-                                      []( INSPECTABLE* aItem ) { return false; } );
+                                      []( INSPECTABLE* aItem [[maybe_unused]] ) { return false; } );
         propMgr.OverrideAvailability( TYPE_HASH( PCB_DIM_ORTHOGONAL ), TYPE_HASH( BOARD_ITEM ),
                                       _HKI( "Knockout" ),
-                                      []( INSPECTABLE* aItem ) { return false; } );
+                                      []( INSPECTABLE* aItem [[maybe_unused]] ) { return false; } );
     }
 } ORTHOGONAL_DIMENSION_DESC;
 
@@ -2464,16 +2464,16 @@ static struct RADIAL_DIMENSION_DESC
 
         propMgr.OverrideAvailability( TYPE_HASH( PCB_DIM_RADIAL ), TYPE_HASH( EDA_TEXT ),
                                       _HKI( "Text" ),
-                                      []( INSPECTABLE* aItem ) { return false; } );
+                                      []( INSPECTABLE* aItem [[maybe_unused]] ) { return false; } );
         propMgr.OverrideAvailability( TYPE_HASH( PCB_DIM_RADIAL ), TYPE_HASH( EDA_TEXT ),
                                       _HKI( "Vertical Justification" ),
-                                      []( INSPECTABLE* aItem ) { return false; } );
+                                      []( INSPECTABLE* aItem [[maybe_unused]] ) { return false; } );
         propMgr.OverrideAvailability( TYPE_HASH( PCB_DIM_RADIAL ), TYPE_HASH( EDA_TEXT ),
                                       _HKI( "Hyperlink" ),
-                                      []( INSPECTABLE* aItem ) { return false; } );
+                                      []( INSPECTABLE* aItem [[maybe_unused]] ) { return false; } );
         propMgr.OverrideAvailability( TYPE_HASH( PCB_DIM_RADIAL ), TYPE_HASH( BOARD_ITEM ),
                                       _HKI( "Knockout" ),
-                                      []( INSPECTABLE* aItem ) { return false; } );
+                                      []( INSPECTABLE* aItem [[maybe_unused]] ) { return false; } );
     }
 } RADIAL_DIMENSION_DESC;
 
@@ -2506,16 +2506,16 @@ static struct LEADER_DIMENSION_DESC
 
         propMgr.OverrideAvailability( TYPE_HASH( PCB_DIM_LEADER ), TYPE_HASH( EDA_TEXT ),
                                       _HKI( "Text" ),
-                                      []( INSPECTABLE* aItem ) { return false; } );
+                                      []( INSPECTABLE* aItem [[maybe_unused]] ) { return false; } );
         propMgr.OverrideAvailability( TYPE_HASH( PCB_DIM_LEADER ), TYPE_HASH( EDA_TEXT ),
                                       _HKI( "Vertical Justification" ),
-                                      []( INSPECTABLE* aItem ) { return false; } );
+                                      []( INSPECTABLE* aItem [[maybe_unused]] ) { return false; } );
         propMgr.OverrideAvailability( TYPE_HASH( PCB_DIM_LEADER ), TYPE_HASH( EDA_TEXT ),
                                       _HKI( "Hyperlink" ),
-                                      []( INSPECTABLE* aItem ) { return false; } );
+                                      []( INSPECTABLE* aItem [[maybe_unused]] ) { return false; } );
         propMgr.OverrideAvailability( TYPE_HASH( PCB_DIM_LEADER ), TYPE_HASH( BOARD_ITEM ),
                                       _HKI( "Knockout" ),
-                                      []( INSPECTABLE* aItem ) { return false; } );
+                                      []( INSPECTABLE* aItem [[maybe_unused]] ) { return false; } );
     }
 } LEADER_DIMENSION_DESC;
 
@@ -2540,15 +2540,15 @@ static struct CENTER_DIMENSION_DESC
 
         propMgr.OverrideAvailability( TYPE_HASH( PCB_DIM_CENTER ), TYPE_HASH( EDA_TEXT ),
                                       _HKI( "Text" ),
-                                      []( INSPECTABLE* aItem ) { return false; } );
+                                      []( INSPECTABLE* aItem [[maybe_unused]] ) { return false; } );
         propMgr.OverrideAvailability( TYPE_HASH( PCB_DIM_CENTER ), TYPE_HASH( EDA_TEXT ),
                                       _HKI( "Vertical Justification" ),
-                                      []( INSPECTABLE* aItem ) { return false; } );
+                                      []( INSPECTABLE* aItem [[maybe_unused]] ) { return false; } );
         propMgr.OverrideAvailability( TYPE_HASH( PCB_DIM_CENTER ), TYPE_HASH( EDA_TEXT ),
                                       _HKI( "Hyperlink" ),
-                                      []( INSPECTABLE* aItem ) { return false; } );
+                                      []( INSPECTABLE* aItem [[maybe_unused]] ) { return false; } );
         propMgr.OverrideAvailability( TYPE_HASH( PCB_DIM_CENTER ), TYPE_HASH( BOARD_ITEM ),
                                       _HKI( "Knockout" ),
-                                      []( INSPECTABLE* aItem ) { return false; } );
+                                      []( INSPECTABLE* aItem [[maybe_unused]] ) { return false; } );
     }
 } CENTER_DIMENSION_DESC;

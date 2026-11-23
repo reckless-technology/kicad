@@ -110,7 +110,7 @@ public:
     virtual void Update3DView( bool aMarkDirty, bool aRefresh, const wxString* aTitle = nullptr );
 
     /// Refresh cached drill symbols in frames that render drill maps.
-    virtual void RefreshDrillSymbols( int aUpdateFlags ) {}
+    virtual void RefreshDrillSymbols( int aUpdateFlags [[maybe_unused]] ) {}
 
     /**
      * Attempt to load \a aFootprintId from the footprint library table.
@@ -163,7 +163,7 @@ public:
     /**
      * Helper to retrieve the current color settings.
      */
-    virtual COLOR_SETTINGS* GetColorSettings( bool aForceRefresh = false ) const override
+    virtual COLOR_SETTINGS* GetColorSettings( bool aForceRefresh [[maybe_unused]] = false ) const override
     {
         wxFAIL_MSG( wxT( "Color settings requested for a PCB_BASE_FRAME that does not override!" ) );
         return nullptr;
@@ -204,7 +204,7 @@ public:
      *
      * @param aFootprint is the footprint to reload.
      */
-    virtual void ReloadFootprint( FOOTPRINT* aFootprint )
+    virtual void ReloadFootprint( FOOTPRINT* aFootprint [[maybe_unused]] )
     {
         wxFAIL_MSG( wxT( "Attempted to reload a footprint for PCB_BASE_FRAME that does not "
                          "override!" ) );
@@ -307,7 +307,7 @@ public:
      * @param aItemToCopy is the board item modified by the command to undo.
      * @param aTypeCommand is the command type (see enum #UNDO_REDO).
      */
-    virtual void SaveCopyInUndoList( EDA_ITEM* aItemToCopy, UNDO_REDO aTypeCommand ) {};
+    virtual void SaveCopyInUndoList( EDA_ITEM* aItemToCopy [[maybe_unused]], UNDO_REDO aTypeCommand [[maybe_unused]] ) {};
 
     /**
      * Create a new entry in undo list of commands.
@@ -315,14 +315,14 @@ public:
      * @param aItemsList is the list of items modified by the command to undo.
      * @param aTypeCommand is the command type (see enum #UNDO_REDO)
      */
-    virtual void SaveCopyInUndoList( const PICKED_ITEMS_LIST& aItemsList,
-                                     UNDO_REDO aTypeCommand ) {};
+    virtual void SaveCopyInUndoList( const PICKED_ITEMS_LIST& aItemsList [[maybe_unused]],
+                                     UNDO_REDO aTypeCommand [[maybe_unused]] ) {};
 
     /**
      * As SaveCopyInUndoList, but appends the changes to the last undo item on the stack.
      */
-    virtual void AppendCopyToUndoList( const PICKED_ITEMS_LIST& aItemsList,
-                                       UNDO_REDO aTypeCommand ) {};
+    virtual void AppendCopyToUndoList( const PICKED_ITEMS_LIST& aItemsList [[maybe_unused]],
+                                       UNDO_REDO aTypeCommand [[maybe_unused]] ) {};
 
 
     /**

@@ -35,7 +35,7 @@ PANEL_PCBNEW_DISPLAY_ORIGIN::PANEL_PCBNEW_DISPLAY_ORIGIN( wxWindow* aParent, APP
 }
 
 
-void PANEL_PCBNEW_DISPLAY_ORIGIN::loadSettings( APP_SETTINGS_BASE* aCfg )
+void PANEL_PCBNEW_DISPLAY_ORIGIN::loadSettings( APP_SETTINGS_BASE* aCfg [[maybe_unused]] )
 {
     if( m_frameType == FRAME_FOOTPRINT_EDITOR )
     {

@@ -144,8 +144,8 @@ int SCH_IO_EASYEDA::GetModifyHash() const
 }
 
 
-LIB_SYMBOL* loadSymbol( const wxString& aLibraryPath, nlohmann::json aFileData,
-                        const wxString& aAliasName, const std::map<std::string, UTF8>* aProperties,
+LIB_SYMBOL* loadSymbol( const wxString& aLibraryPath, nlohmann::json aFileData [[maybe_unused]],
+                        const wxString& aAliasName, const std::map<std::string, UTF8>* aProperties [[maybe_unused]],
                         REPORTER* aReporter )
 {
     SCH_EASYEDA_PARSER      parser( nullptr, nullptr, aReporter );
@@ -320,7 +320,7 @@ LIB_SYMBOL* loadSymbol( const wxString& aLibraryPath, nlohmann::json aFileData,
 
 void SCH_IO_EASYEDA::EnumerateSymbolLib( wxArrayString&         aSymbolNameList,
                                          const wxString&        aLibraryPath,
-                                         const std::map<std::string, UTF8>* aProperties )
+                                         const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     std::map<wxString, int> namesCounter;
 
@@ -604,7 +604,7 @@ static void LoadSchematic( SCHEMATIC* aSchematic, SCH_SHEET* aRootSheet, const w
 
 SCH_SHEET* SCH_IO_EASYEDA::LoadSchematicFile( const wxString& aFileName, SCHEMATIC* aSchematic,
                                               SCH_SHEET*             aAppendToMe,
-                                              const std::map<std::string, UTF8>* aProperties )
+                                              const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     wxCHECK( !aFileName.IsEmpty() && aSchematic, nullptr );
 

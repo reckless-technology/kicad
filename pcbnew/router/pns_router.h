@@ -138,16 +138,16 @@ enum DRAG_MODE
     virtual bool GetSignalAggregate( NET_HANDLE aNetP, NET_HANDLE aNetN,
                                      long long& aExtraLength, long long& aExtraDelay ) const = 0;
 
-    virtual long long GetNetBoardLength( NET_HANDLE aNet ) const { return 0; }
+    virtual long long GetNetBoardLength( NET_HANDLE aNet [[maybe_unused]] ) const { return 0; }
 
     /**
      * Remove from @a aItems every item the board already joins to one of @a aJoined through
      * objects the router does not model, such as zones.
      */
-    virtual void RemoveBoardConnected( const std::vector<const ITEM*>& aJoined, std::set<ITEM*>& aItems ) const {}
+    virtual void RemoveBoardConnected( const std::vector<const ITEM*>& aJoined [[maybe_unused]], std::set<ITEM*>& aItems [[maybe_unused]] ) const {}
 
     /** Copper zones are absent from NODE joints, so tail pruning must keep items that touch one. */
-    virtual bool TouchesCopperZone( const ITEM* aItem ) const { return true; }
+    virtual bool TouchesCopperZone( const ITEM* aItem [[maybe_unused]] ) const { return true; }
 
     /**
      * Return the layer span a via placed with @a aSizes occupies.  A through via always spans

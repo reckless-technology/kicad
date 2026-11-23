@@ -32,7 +32,7 @@
 
 
 SCH_HIERLABEL_SYNCHRONIZATION_ITEM::SCH_HIERLABEL_SYNCHRONIZATION_ITEM( SCH_HIERLABEL* aLabel,
-                                                                        SCH_SHEET*     aSheet ) :
+                                                                        SCH_SHEET*     aSheet [[maybe_unused]] ) :
         m_label( aLabel )
 {
 }
@@ -71,7 +71,7 @@ SHEET_SYNCHRONIZATION_ITEM_KIND SCH_HIERLABEL_SYNCHRONIZATION_ITEM::GetKind() co
 
 
 SCH_SHEET_PIN_SYNCHRONIZATION_ITEM::SCH_SHEET_PIN_SYNCHRONIZATION_ITEM( SCH_SHEET_PIN* aPin,
-                                                                        SCH_SHEET*     aSheet ) :
+                                                                        SCH_SHEET*     aSheet [[maybe_unused]] ) :
         m_pin( aPin )
 {
 }

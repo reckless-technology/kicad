@@ -50,21 +50,21 @@ bool PANEL_IMAGE_EDITOR::TransferDataToWindow()
 }
 
 
-void PANEL_IMAGE_EDITOR::OnGreyScaleConvert( wxCommandEvent& event )
+void PANEL_IMAGE_EDITOR::OnGreyScaleConvert( wxCommandEvent& event [[maybe_unused]] )
 {
     m_workingImage->ConvertToGreyscale();
     m_panelDraw->Refresh();
 }
 
 
-void PANEL_IMAGE_EDITOR::OnInvert( wxCommandEvent& event )
+void PANEL_IMAGE_EDITOR::OnInvert( wxCommandEvent& event [[maybe_unused]] )
 {
     m_workingImage->InvertColors();
     m_panelDraw->Refresh();
 }
 
 
-void PANEL_IMAGE_EDITOR::OnRemoveBackground( wxCommandEvent& event )
+void PANEL_IMAGE_EDITOR::OnRemoveBackground( wxCommandEvent& event [[maybe_unused]] )
 {
     // Nearly all images are white background (probably crops from documents)
     // So that seems a good default on startup.
@@ -166,7 +166,7 @@ VECTOR2I PANEL_IMAGE_EDITOR::GetImageSize() const
 }
 
 
-void PANEL_IMAGE_EDITOR::OnRedrawPanel( wxPaintEvent& event )
+void PANEL_IMAGE_EDITOR::OnRedrawPanel( wxPaintEvent& event [[maybe_unused]] )
 {
     wxPaintDC dc( m_panelDraw );
     wxSize    display_size = m_panelDraw->GetClientSize();

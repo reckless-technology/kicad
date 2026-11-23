@@ -426,7 +426,7 @@ private:
     }
 
     template <typename T>
-    std::string AttrValue2String( ODB_ATTR::BooleanAttribute<T> a )
+    std::string AttrValue2String( ODB_ATTR::BooleanAttribute<T> a [[maybe_unused]] )
     {
         return "";
     }

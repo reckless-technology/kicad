@@ -161,8 +161,8 @@ public:
      * @param aLayer is the layer to build a hull for (the item may have different shapes on each
      *               layer).  If aLayer is -1, the hull will be a merged hull from all layers.
      */
-    virtual const SHAPE_LINE_CHAIN Hull( int aClearance = 0, int aWalkaroundThickness = 0,
-                                         int aLayer = -1 ) const
+    virtual const SHAPE_LINE_CHAIN Hull( int aClearance [[maybe_unused]] = 0, int aWalkaroundThickness [[maybe_unused]] = 0,
+                                         int aLayer [[maybe_unused]] = -1 ) const
     {
         return SHAPE_LINE_CHAIN();
     }
@@ -243,7 +243,7 @@ public:
      * Return the geometrical shape of the item. Used for collision detection and spatial indexing.
      * @param aLayer is the layer to query shape for (items may have different shapes on different layers)
      */
-    virtual const SHAPE* Shape( int aLayer ) const
+    virtual const SHAPE* Shape( int aLayer [[maybe_unused]] ) const
     {
         return nullptr;
     }
@@ -269,7 +269,7 @@ public:
     virtual void SetRank( int aRank ) { m_rank = aRank; }
     virtual int Rank() const { return m_rank; }
 
-    virtual VECTOR2I Anchor( int n ) const
+    virtual VECTOR2I Anchor( int n [[maybe_unused]] ) const
     {
         return VECTOR2I();
     }
@@ -306,7 +306,7 @@ public:
 
     virtual bool HasHole() const { return false; }
     virtual HOLE *Hole() const { return nullptr; }
-    virtual void SetHole( HOLE* aHole ) {};
+    virtual void SetHole( HOLE* aHole [[maybe_unused]] ) {};
 
     virtual const std::string Format() const;
 

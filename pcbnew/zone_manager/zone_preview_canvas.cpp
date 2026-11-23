@@ -133,7 +133,7 @@ ZONE_PREVIEW_CANVAS::ZONE_PREVIEW_CANVAS( BOARD* aPcb, std::unique_ptr<ZONE> aZo
           } );
 
     Bind( wxEVT_RIGHT_UP,
-          [this]( wxMouseEvent& aEvent )
+          [this]( wxMouseEvent& aEvent [[maybe_unused]] )
           {
               wxMenu menu;
               menu.Append( wxID_ANY, _( "Zoom to Fit" ) );

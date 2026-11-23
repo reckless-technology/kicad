@@ -38,7 +38,7 @@
 #include <view/view.h>
 
 
-bool BOARD_ITEM::FitsEnabledLayers( const LSET& aEnabledLayers, int aCopperLayerCount ) const
+bool BOARD_ITEM::FitsEnabledLayers( const LSET& aEnabledLayers, int aCopperLayerCount [[maybe_unused]] ) const
 {
     return IsLayerAgnostic() || ( GetLayerSet() & aEnabledLayers ).any();
 }
@@ -166,7 +166,7 @@ STROKE_PARAMS BOARD_ITEM::GetStroke() const
 }
 
 
-void BOARD_ITEM::SetStroke( const STROKE_PARAMS& aStroke )
+void BOARD_ITEM::SetStroke( const STROKE_PARAMS& aStroke [[maybe_unused]] )
 {
     wxFAIL_MSG( wxString( "SetStroke() not defined by " ) + GetClass() );
 }
@@ -336,7 +336,7 @@ void BOARD_ITEM::DeleteStructure()
 }
 
 
-void BOARD_ITEM::swapData( BOARD_ITEM* aImage )
+void BOARD_ITEM::swapData( BOARD_ITEM* aImage [[maybe_unused]] )
 {
     UNIMPLEMENTED_FOR( GetClass() );
 }
@@ -401,16 +401,16 @@ void BOARD_ITEM::SetDuplicateGroup( BOARD_ITEM* aDupe, bool addToParentGroup, BO
 }
 
 
-void BOARD_ITEM::TransformShapeToPolygon( SHAPE_POLY_SET& aBuffer, PCB_LAYER_ID aLayer,
-                                          int aClearance, int aError, ERROR_LOC aErrorLoc,
-                                          bool ignoreLineWidth ) const
+void BOARD_ITEM::TransformShapeToPolygon( SHAPE_POLY_SET& aBuffer [[maybe_unused]], PCB_LAYER_ID aLayer [[maybe_unused]],
+                                          int aClearance [[maybe_unused]], int aError [[maybe_unused]], ERROR_LOC aErrorLoc [[maybe_unused]],
+                                          bool ignoreLineWidth [[maybe_unused]] ) const
 {
     wxCHECK_MSG( false, /* void */,
                  wxString::Format( wxT( "%s doesn't implement TransformShapeToPolygon()" ), GetClass() ) );
 }
 
 
-double BOARD_ITEM::GetCoverageArea( int aTextMargin ) const
+double BOARD_ITEM::GetCoverageArea( int aTextMargin [[maybe_unused]] ) const
 {
     SHAPE_POLY_SET poly;
     TransformShapeToPolygon( poly, UNDEFINED_LAYER, 0, ARC_LOW_DEF, ERROR_OUTSIDE );
@@ -500,25 +500,25 @@ void BOARD_ITEM::SetFPRelativePosition( const VECTOR2I& aPos )
 }
 
 
-void BOARD_ITEM::Rotate( const VECTOR2I& aRotCentre, const EDA_ANGLE& aAngle )
+void BOARD_ITEM::Rotate( const VECTOR2I& aRotCentre [[maybe_unused]], const EDA_ANGLE& aAngle [[maybe_unused]] )
 {
     wxMessageBox( wxT( "virtual BOARD_ITEM::Rotate used, should not occur" ), GetClass() );
 }
 
 
-void BOARD_ITEM::Flip( const VECTOR2I& aCentre, FLIP_DIRECTION aFlipDirection )
+void BOARD_ITEM::Flip( const VECTOR2I& aCentre [[maybe_unused]], FLIP_DIRECTION aFlipDirection [[maybe_unused]] )
 {
     wxMessageBox( wxT( "virtual BOARD_ITEM::Flip used, should not occur" ), GetClass() );
 }
 
 
-void BOARD_ITEM::Mirror( const VECTOR2I& aCentre, FLIP_DIRECTION aFlipDirection )
+void BOARD_ITEM::Mirror( const VECTOR2I& aCentre [[maybe_unused]], FLIP_DIRECTION aFlipDirection [[maybe_unused]] )
 {
     wxMessageBox( wxT( "virtual BOARD_ITEM::Mirror used, should not occur" ), GetClass() );
 }
 
 
-void BOARD_ITEM::Mirror( const SEG& aAxis )
+void BOARD_ITEM::Mirror( const SEG& aAxis [[maybe_unused]] )
 {
     wxMessageBox( wxT( "virtual BOARD_ITEM::Mirror used, should not occur" ), GetClass() );
 }

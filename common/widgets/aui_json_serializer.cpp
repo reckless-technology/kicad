@@ -605,7 +605,7 @@ nlohmann::json WX_AUI_JSON_SERIALIZER::Serialize() const
     return nlohmann::json();
 }
 
-bool WX_AUI_JSON_SERIALIZER::Deserialize( const nlohmann::json& aState ) const
+bool WX_AUI_JSON_SERIALIZER::Deserialize( const nlohmann::json& aState [[maybe_unused]] ) const
 {
 #if wxCHECK_VERSION( 3, 3, 0 )
     if( aState.is_null() || aState.empty() )

@@ -248,7 +248,7 @@ bool PANEL_GRID_SETTINGS::TransferDataToWindow()
 }
 
 
-void PANEL_GRID_SETTINGS::OnAddGrid( wxCommandEvent& event )
+void PANEL_GRID_SETTINGS::OnAddGrid( wxCommandEvent& event [[maybe_unused]] )
 {
     GRID                 newGrid = GRID{ wxEmptyString, "", "" };
     DIALOG_GRID_SETTINGS dlg( wxGetTopLevelParent( this ), m_eventSource, m_unitsProvider,
@@ -278,7 +278,7 @@ void PANEL_GRID_SETTINGS::OnAddGrid( wxCommandEvent& event )
 }
 
 
-void PANEL_GRID_SETTINGS::OnEditGrid( wxCommandEvent& event )
+void PANEL_GRID_SETTINGS::OnEditGrid( wxCommandEvent& event [[maybe_unused]] )
 {
     onEditGrid();
 }
@@ -323,7 +323,7 @@ void PANEL_GRID_SETTINGS::onEditGrid()
 }
 
 
-void PANEL_GRID_SETTINGS::OnRemoveGrid( wxCommandEvent& event )
+void PANEL_GRID_SETTINGS::OnRemoveGrid( wxCommandEvent& event [[maybe_unused]] )
 {
     int row = m_currentGridCtrl->GetSelection();
 
@@ -338,7 +338,7 @@ void PANEL_GRID_SETTINGS::OnRemoveGrid( wxCommandEvent& event )
 }
 
 
-void PANEL_GRID_SETTINGS::OnMoveGridUp( wxCommandEvent& event )
+void PANEL_GRID_SETTINGS::OnMoveGridUp( wxCommandEvent& event [[maybe_unused]] )
 {
     int row = m_currentGridCtrl->GetSelection();
 
@@ -353,7 +353,7 @@ void PANEL_GRID_SETTINGS::OnMoveGridUp( wxCommandEvent& event )
 }
 
 
-void PANEL_GRID_SETTINGS::OnMoveGridDown( wxCommandEvent& event )
+void PANEL_GRID_SETTINGS::OnMoveGridDown( wxCommandEvent& event [[maybe_unused]] )
 {
     int row = m_currentGridCtrl->GetSelection();
 

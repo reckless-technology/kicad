@@ -69,7 +69,7 @@ void DIALOG_BOARD_STACKUP_JOB::setSelectedFormat( JOB_EXPORT_PCB_STACKUP::OUTPUT
 }
 
 
-void DIALOG_BOARD_STACKUP_JOB::OnFormatChoice( wxCommandEvent& aEvent )
+void DIALOG_BOARD_STACKUP_JOB::OnFormatChoice( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     updateCsvOnlyControls();
 

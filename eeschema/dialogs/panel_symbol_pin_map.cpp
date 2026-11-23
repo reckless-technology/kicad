@@ -677,7 +677,7 @@ const std::set<wxString>& PANEL_SYMBOL_PIN_MAP::padNumbersFor( const wxString& a
 }
 
 
-void PANEL_SYMBOL_PIN_MAP::OnAddMap( wxCommandEvent& aEvent )
+void PANEL_SYMBOL_PIN_MAP::OnAddMap( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( !m_grid->CommitPendingChanges() )
         return;
@@ -688,7 +688,7 @@ void PANEL_SYMBOL_PIN_MAP::OnAddMap( wxCommandEvent& aEvent )
 }
 
 
-void PANEL_SYMBOL_PIN_MAP::OnRemoveMap( wxCommandEvent& aEvent )
+void PANEL_SYMBOL_PIN_MAP::OnRemoveMap( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( !m_grid->CommitPendingChanges() )
         return;

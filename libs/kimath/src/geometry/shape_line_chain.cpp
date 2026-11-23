@@ -2511,7 +2511,7 @@ int SHAPE_LINE_CHAIN::NearestSegment( const VECTOR2I& aP ) const
 }
 
 
-const std::string SHAPE_LINE_CHAIN::Format( bool aCplusPlus ) const
+const std::string SHAPE_LINE_CHAIN::Format( bool aCplusPlus [[maybe_unused]] ) const
 {
     std::stringstream ss;
 
@@ -3132,7 +3132,7 @@ bool SHAPE_LINE_CHAIN::OffsetLine( int aAmount, CORNER_STRATEGY aCornerStrategy,
 }
 
 
-void SHAPE_LINE_CHAIN::TransformToPolygon( SHAPE_POLY_SET& aBuffer, int aError, ERROR_LOC aErrorLoc ) const
+void SHAPE_LINE_CHAIN::TransformToPolygon( SHAPE_POLY_SET& aBuffer, int aError [[maybe_unused]], ERROR_LOC aErrorLoc [[maybe_unused]] ) const
 {
     aBuffer.AddOutline( *this );
 }

@@ -42,7 +42,7 @@ public:
             m_callback( std::move( aCallback ) )
     {}
 
-    void OnTerminate( int aPid, int aStatus ) override
+    void OnTerminate( int aPid [[maybe_unused]], int aStatus ) override
     {
         // Print stdout trace info from the monitor thread
         wxLog::GetActiveTarget()->Flush();

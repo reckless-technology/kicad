@@ -35,7 +35,7 @@ DESIGN_BLOCK_CONTROL::DESIGN_BLOCK_CONTROL( const std::string& aName ) : TOOL_IN
 }
 
 
-void DESIGN_BLOCK_CONTROL::Reset( RESET_REASON aReason )
+void DESIGN_BLOCK_CONTROL::Reset( RESET_REASON aReason [[maybe_unused]] )
 {
     m_frame = getEditFrame<EDA_DRAW_FRAME>();
 }
@@ -44,7 +44,7 @@ void DESIGN_BLOCK_CONTROL::Reset( RESET_REASON aReason )
 void DESIGN_BLOCK_CONTROL::AddContextMenuItems( CONDITIONAL_MENU* aMenu )
 {
     auto pinnedLib =
-            [this]( const SELECTION& aSel )
+            [this]( const SELECTION& aSel [[maybe_unused]] )
             {
                 //
                 LIB_TREE_NODE* current = getCurrentTreeNode();
@@ -53,7 +53,7 @@ void DESIGN_BLOCK_CONTROL::AddContextMenuItems( CONDITIONAL_MENU* aMenu )
             };
 
     auto unpinnedLib =
-            [this](const SELECTION& aSel )
+            [this](const SELECTION& aSel [[maybe_unused]] )
             {
                 LIB_TREE_NODE* current = getCurrentTreeNode();
                 return current && current->m_Type == LIB_TREE_NODE::TYPE::LIBRARY
@@ -70,7 +70,7 @@ void DESIGN_BLOCK_CONTROL::AddContextMenuItems( CONDITIONAL_MENU* aMenu )
 }
 
 
-int DESIGN_BLOCK_CONTROL::PinLibrary( const TOOL_EVENT& aEvent )
+int DESIGN_BLOCK_CONTROL::PinLibrary( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     LIB_TREE_NODE* current = getCurrentTreeNode();
 
@@ -88,7 +88,7 @@ int DESIGN_BLOCK_CONTROL::PinLibrary( const TOOL_EVENT& aEvent )
 }
 
 
-int DESIGN_BLOCK_CONTROL::UnpinLibrary( const TOOL_EVENT& aEvent )
+int DESIGN_BLOCK_CONTROL::UnpinLibrary( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     LIB_TREE_NODE* current = getCurrentTreeNode();
 
@@ -106,7 +106,7 @@ int DESIGN_BLOCK_CONTROL::UnpinLibrary( const TOOL_EVENT& aEvent )
 }
 
 
-int DESIGN_BLOCK_CONTROL::NewLibrary( const TOOL_EVENT& aEvent )
+int DESIGN_BLOCK_CONTROL::NewLibrary( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( !getDesignBlockPane()->CreateNewDesignBlockLibrary( _( "New Design Block Library" ) ).IsEmpty() )
     {
@@ -118,7 +118,7 @@ int DESIGN_BLOCK_CONTROL::NewLibrary( const TOOL_EVENT& aEvent )
 }
 
 
-int DESIGN_BLOCK_CONTROL::DeleteDesignBlock( const TOOL_EVENT& aEvent )
+int DESIGN_BLOCK_CONTROL::DeleteDesignBlock( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     LIB_TREE_NODE* current = getCurrentTreeNode();
 
@@ -135,7 +135,7 @@ int DESIGN_BLOCK_CONTROL::DeleteDesignBlock( const TOOL_EVENT& aEvent )
 }
 
 
-int DESIGN_BLOCK_CONTROL::EditDesignBlockProperties( const TOOL_EVENT& aEvent )
+int DESIGN_BLOCK_CONTROL::EditDesignBlockProperties( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     LIB_TREE_NODE* current = getCurrentTreeNode();
 
@@ -152,14 +152,14 @@ int DESIGN_BLOCK_CONTROL::EditDesignBlockProperties( const TOOL_EVENT& aEvent )
 }
 
 
-int DESIGN_BLOCK_CONTROL::HideLibraryTree( const TOOL_EVENT& aEvent )
+int DESIGN_BLOCK_CONTROL::HideLibraryTree( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->ToggleLibraryTree();
     return 0;
 }
 
 
-bool DESIGN_BLOCK_CONTROL::selIsInLibrary( const SELECTION& aSel )
+bool DESIGN_BLOCK_CONTROL::selIsInLibrary( const SELECTION& aSel [[maybe_unused]] )
 {
     LIB_TREE_NODE* current = getCurrentTreeNode();
     return current
@@ -168,7 +168,7 @@ bool DESIGN_BLOCK_CONTROL::selIsInLibrary( const SELECTION& aSel )
 }
 
 
-bool DESIGN_BLOCK_CONTROL::selIsDesignBlock( const SELECTION& aSel )
+bool DESIGN_BLOCK_CONTROL::selIsDesignBlock( const SELECTION& aSel [[maybe_unused]] )
 {
     LIB_TREE_NODE* current = getCurrentTreeNode();
     return current && current->m_Type == LIB_TREE_NODE::TYPE::ITEM;

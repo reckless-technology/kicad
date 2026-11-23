@@ -82,14 +82,14 @@ bool WRL2MATERIAL::isDangling( void )
 }
 
 
-bool WRL2MATERIAL::AddRefNode( WRL2NODE* aNode )
+bool WRL2MATERIAL::AddRefNode( WRL2NODE* aNode [[maybe_unused]] )
 {
     // this node may not own or reference any other node
     wxCHECK_MSG( false, false, wxT( "AddRefNode is not applicable." ) );
 }
 
 
-bool WRL2MATERIAL::AddChildNode( WRL2NODE* aNode )
+bool WRL2MATERIAL::AddChildNode( WRL2NODE* aNode [[maybe_unused]] )
 {
     // this node may not own or reference any other node
     wxCHECK_MSG( false, false, wxT( "AddChildNode is not applicable." ) );

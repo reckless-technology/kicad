@@ -186,7 +186,7 @@ void DIALOG_VIA_STITCH_PROPERTIES::OnValuesChanged( wxCommandEvent& event )
 }
 
 
-void DIALOG_VIA_STITCH_PROPERTIES::OnViaConfigureClicked( wxCommandEvent& event )
+void DIALOG_VIA_STITCH_PROPERTIES::OnViaConfigureClicked( wxCommandEvent& event [[maybe_unused]] )
 {
     DIALOG_TRACK_VIA_PROPERTIES dlg( m_frame, m_workingCopy->ViaTemplate() );
 
@@ -205,7 +205,7 @@ void DIALOG_VIA_STITCH_PROPERTIES::OnCancel( wxCommandEvent& event )
 }
 
 
-void DIALOG_VIA_STITCH_PROPERTIES::OnUpdateUI( wxUpdateUIEvent& event )
+void DIALOG_VIA_STITCH_PROPERTIES::OnUpdateUI( wxUpdateUIEvent& event [[maybe_unused]] )
 {
     PCB_VIA_STITCH_MODE mode = static_cast<PCB_VIA_STITCH_MODE>( m_modeCombo->GetSelection() );
     bool                stitching = ( mode == PCB_VIA_STITCH_MODE::STITCH );

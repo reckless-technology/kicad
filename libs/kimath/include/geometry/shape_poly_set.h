@@ -88,10 +88,10 @@ public:
             {
             }
 
-            virtual void Rotate( const EDA_ANGLE& aAngle,
-                                 const VECTOR2I& aCenter = { 0, 0 } ) override {};
+            virtual void Rotate( const EDA_ANGLE& aAngle [[maybe_unused]],
+                                 const VECTOR2I& aCenter [[maybe_unused]] = { 0, 0 } ) override {};
 
-            virtual void Move( const VECTOR2I& aVector ) override {};
+            virtual void Move( const VECTOR2I& aVector [[maybe_unused]] ) override {};
 
             virtual bool IsSolid() const override { return true; }
 
@@ -331,7 +331,7 @@ public:
             }
         }
 
-        void operator++( int dummy )
+        void operator++( int dummy [[maybe_unused]] )
         {
             Advance();
         }
@@ -447,7 +447,7 @@ public:
             }
         }
 
-        void operator++( int dummy )
+        void operator++( int dummy [[maybe_unused]] )
         {
             Advance();
         }
@@ -1482,8 +1482,8 @@ public:
     void BuildPolysetFromOrientedPaths( const std::vector<SHAPE_LINE_CHAIN>& aPaths,
                                         bool aEvenOdd = false );
 
-    void TransformToPolygon( SHAPE_POLY_SET& aBuffer, int aError,
-                             ERROR_LOC aErrorLoc ) const override
+    void TransformToPolygon( SHAPE_POLY_SET& aBuffer, int aError [[maybe_unused]],
+                             ERROR_LOC aErrorLoc [[maybe_unused]] ) const override
     {
         aBuffer.Append( *this );
     }

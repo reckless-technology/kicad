@@ -52,7 +52,7 @@ public:
         }
     }
 
-    bool CanGetValueAs( int aRow, int aCol, const wxString& aTypeName ) override
+    bool CanGetValueAs( int aRow [[maybe_unused]], int aCol, const wxString& aTypeName ) override
     {
         switch( aCol )
         {

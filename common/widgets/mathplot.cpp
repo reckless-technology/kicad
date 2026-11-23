@@ -136,7 +136,7 @@ bool mpInfoLayer::Inside( const wxPoint& point ) const
 }
 
 
-bool mpInfoLayer::OnDoubleClick( const wxPoint& point, mpWindow& w )
+bool mpInfoLayer::OnDoubleClick( const wxPoint& point [[maybe_unused]], mpWindow& w [[maybe_unused]] )
 {
     return false;
 }
@@ -872,7 +872,7 @@ mpScaleBase::mpScaleBase()
 }
 
 
-void mpScaleBase::computeLabelExtents( wxDC& dc, mpWindow& w )
+void mpScaleBase::computeLabelExtents( wxDC& dc, mpWindow& w [[maybe_unused]] )
 {
     m_maxLabelHeight    = 0;
     m_maxLabelWidth     = 0;
@@ -1128,7 +1128,7 @@ IMPLEMENT_DYNAMIC_CLASS( mpScaleX, mpScaleXBase )
 IMPLEMENT_DYNAMIC_CLASS( mpScaleXLog, mpScaleXBase )
 
 
-mpScaleXBase::mpScaleXBase( const wxString& name, int flags, bool ticks, unsigned int type )
+mpScaleXBase::mpScaleXBase( const wxString& name, int flags, bool ticks, unsigned int type [[maybe_unused]] )
 {
     SetName( name );
     SetPen( (wxPen&) *wxGREY_PEN );

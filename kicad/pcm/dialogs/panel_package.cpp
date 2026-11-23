@@ -95,7 +95,7 @@ PANEL_PACKAGE::PANEL_PACKAGE( wxWindow* parent, const ActionCallback& aCallback,
 }
 
 
-void PANEL_PACKAGE::OnSize( wxSizeEvent& event )
+void PANEL_PACKAGE::OnSize( wxSizeEvent& event [[maybe_unused]] )
 {
     Layout();
 
@@ -198,7 +198,7 @@ void PANEL_PACKAGE::SetState( PCM_PACKAGE_STATE aState, bool aPinned )
 }
 
 
-void PANEL_PACKAGE::OnButtonClicked( wxCommandEvent& event )
+void PANEL_PACKAGE::OnButtonClicked( wxCommandEvent& event [[maybe_unused]] )
 {
     if( m_data.state == PPS_AVAILABLE )
     {
@@ -228,7 +228,7 @@ void PANEL_PACKAGE::OnPinVersionClick( wxCommandEvent& event )
 }
 
 
-void PANEL_PACKAGE::OnUninstallClick( wxCommandEvent& event )
+void PANEL_PACKAGE::OnUninstallClick( wxCommandEvent& event [[maybe_unused]] )
 {
     if( m_data.state == PPS_UPDATE_AVAILABLE )
     {
@@ -249,13 +249,13 @@ void PANEL_PACKAGE::SetSelectCallback( const std::function<void()>& aCallback )
 }
 
 
-void PANEL_PACKAGE::OnClick( wxMouseEvent& event )
+void PANEL_PACKAGE::OnClick( wxMouseEvent& event [[maybe_unused]] )
 {
     m_selectCallback();
 }
 
 
-void PANEL_PACKAGE::OnPaint( wxPaintEvent& event )
+void PANEL_PACKAGE::OnPaint( wxPaintEvent& event [[maybe_unused]] )
 {
     wxRect    rect( wxPoint( 1, 1 ), GetClientSize() - wxSize( 1, 1 ) );
     wxPaintDC dc( this );

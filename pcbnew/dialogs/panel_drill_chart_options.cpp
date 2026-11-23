@@ -108,7 +108,7 @@ bool PANEL_DRILL_CHART_OPTIONS::TransferFromWindow( PCB_GENERATED_TABLE& aTable,
 }
 
 
-void PANEL_DRILL_CHART_OPTIONS::onImportTemplate( wxCommandEvent& aEvent )
+void PANEL_DRILL_CHART_OPTIONS::onImportTemplate( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     wxFileDialog dlg( this, _( "Import Drill Chart Template" ), wxEmptyString, wxEmptyString,
                       _( "Drill chart templates" ) + wxT( " (*.json)|*.json" ), wxFD_OPEN | wxFD_FILE_MUST_EXIST );
@@ -135,7 +135,7 @@ void PANEL_DRILL_CHART_OPTIONS::onImportTemplate( wxCommandEvent& aEvent )
 }
 
 
-void PANEL_DRILL_CHART_OPTIONS::onExportTemplate( wxCommandEvent& aEvent )
+void PANEL_DRILL_CHART_OPTIONS::onExportTemplate( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     std::optional<GENERATED_TABLE_FORMAT> format = m_GetFormat();
 

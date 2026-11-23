@@ -125,7 +125,7 @@ public:
      *                 be prefixed with a '\'.
      * @param aDepth is used to prevent infinite recursions and loops when expanding text variables.
      */
-    virtual wxString GetShownText( RESOLUTION_CONTEXT aContext, int aDepth = 0 ) const
+    virtual wxString GetShownText( RESOLUTION_CONTEXT aContext, int aDepth [[maybe_unused]] = 0 ) const
     {
         if( aContext == RAW_VALUE )
             return m_text;

@@ -550,7 +550,7 @@ void SCH_EDIT_FRAME::StartCrossProbeFlash( const std::vector<SCH_ITEM*>& aItems 
 }
 
 
-void SCH_EDIT_FRAME::OnCrossProbeFlashTimer( wxTimerEvent& aEvent )
+void SCH_EDIT_FRAME::OnCrossProbeFlashTimer( wxTimerEvent& aEvent [[maybe_unused]] )
 {
     wxLogTrace( traceCrossProbeFlash, "Timer(SCH) fired: phase=%d running=%d items=%zu", m_crossProbeFlashPhase,
                 (int) m_crossProbeFlashing, m_crossProbeFlashItems.size() );
@@ -804,25 +804,25 @@ void SCH_EDIT_FRAME::setupUIConditions()
             };
 
     auto hierarchyNavigatorCond =
-            [ this ] ( const SELECTION& aSel )
+            [ this ] ( const SELECTION& aSel [[maybe_unused]] )
             {
                 return m_auimgr.GetPane( SchematicHierarchyPaneName() ).IsShown();
             };
 
     auto netNavigatorCond =
-            [ this ] (const SELECTION& aSel )
+            [ this ] (const SELECTION& aSel [[maybe_unused]] )
             {
                 return m_auimgr.GetPane( NetNavigatorPaneName() ).IsShown();
             };
 
     auto designBlockCond =
-            [ this ] (const SELECTION& aSel )
+            [ this ] (const SELECTION& aSel [[maybe_unused]] )
             {
                 return m_auimgr.GetPane( DesignBlocksPaneName() ).IsShown();
             };
 
     auto remoteSymbolCond =
-            [ this ] (const SELECTION& aSel )
+            [ this ] (const SELECTION& aSel [[maybe_unused]] )
             {
                 return m_auimgr.GetPane( RemoteSymbolPaneName() ).IsShown();
             };
@@ -978,7 +978,7 @@ void SCH_EDIT_FRAME::setupUIConditions()
             };
 
     auto remapSymbolsCondition =
-            [&]( const SELECTION& aSel )
+            [&]( const SELECTION& aSel [[maybe_unused]] )
             {
                 SCH_SCREENS schematic( Schematic().Root() );
 
@@ -987,7 +987,7 @@ void SCH_EDIT_FRAME::setupUIConditions()
             };
 
     auto belowRootSheetCondition =
-            [this]( const SELECTION& aSel )
+            [this]( const SELECTION& aSel [[maybe_unused]] )
             {
                 SCH_NAVIGATE_TOOL* navigateTool = m_toolManager->GetTool<SCH_NAVIGATE_TOOL>();
                 return navigateTool && navigateTool->CanGoUp();
@@ -1202,7 +1202,7 @@ void SCH_EDIT_FRAME::HardRedraw()
 }
 
 
-bool SCH_EDIT_FRAME::canCloseWindow( wxCloseEvent& aEvent )
+bool SCH_EDIT_FRAME::canCloseWindow( wxCloseEvent& aEvent [[maybe_unused]] )
 {
     // Exit interactive editing
     // Note this this will commit *some* pending changes.  For instance, the SCH_POINT_EDITOR
@@ -1507,7 +1507,7 @@ void SCH_EDIT_FRAME::OnLoadFile( wxCommandEvent& event )
 }
 
 
-void SCH_EDIT_FRAME::OnClearFileHistory( wxCommandEvent& aEvent )
+void SCH_EDIT_FRAME::OnClearFileHistory( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     ClearFileHistory();
 }
@@ -2688,7 +2688,7 @@ void SCH_EDIT_FRAME::RefreshErcMarkers()
 }
 
 
-void SCH_EDIT_FRAME::onCloseErcDialog( wxCommandEvent& aEvent )
+void SCH_EDIT_FRAME::onCloseErcDialog( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( m_ercDialog )
     {
@@ -2723,7 +2723,7 @@ wxGenericTreeCtrl* SCH_EDIT_FRAME::GetNetNavigator()
 }
 
 
-void SCH_EDIT_FRAME::onCloseSymbolFieldsTableDialog( wxCommandEvent& aEvent )
+void SCH_EDIT_FRAME::onCloseSymbolFieldsTableDialog( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( m_symbolFieldsTableDialog )
     {
@@ -2804,7 +2804,7 @@ wxWindow* SCH_EDIT_FRAME::createHighlightedNetNavigator()
     m_netNavigator->Bind( wxEVT_CONTEXT_MENU, &SCH_EDIT_FRAME::onNetNavigatorContextMenu, this );
 
     m_netNavigatorMenuButton->Bind( wxEVT_LEFT_DOWN,
-            [this]( wxMouseEvent& event )
+            [this]( wxMouseEvent& event [[maybe_unused]] )
             {
                 wxMenu menu;
                 wxMenuItem* wildcardItem = menu.AppendRadioItem( ID_NET_NAVIGATOR_SEARCH_WILDCARD,

@@ -336,7 +336,7 @@ std::shared_ptr<SHAPE> PCB_GRID_ITEM::GetEffectiveShape( PCB_LAYER_ID, FLASHING,
 }
 
 
-wxString PCB_GRID_ITEM::GetItemDescription( UNITS_PROVIDER* aUnitsProvider, bool aFull ) const
+wxString PCB_GRID_ITEM::GetItemDescription( UNITS_PROVIDER* aUnitsProvider [[maybe_unused]], bool aFull [[maybe_unused]] ) const
 {
     return _( "Grid Item" );
 }
@@ -354,7 +354,7 @@ EDA_ITEM* PCB_GRID_ITEM::Clone() const
 }
 
 
-void PCB_GRID_ITEM::GetMsgPanelInfo( EDA_DRAW_FRAME* aFrame, std::vector<MSG_PANEL_ITEM>& aList )
+void PCB_GRID_ITEM::GetMsgPanelInfo( EDA_DRAW_FRAME* aFrame [[maybe_unused]], std::vector<MSG_PANEL_ITEM>& aList )
 {
     aList.emplace_back( _( "Grid Item" ), wxEmptyString );
 

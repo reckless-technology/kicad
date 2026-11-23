@@ -72,7 +72,7 @@ int64_t TUNING_PROFILE_PARAMETERS_USER_DEFINED::GetPropagationDelay( const LENGT
 
 
 int64_t TUNING_PROFILE_PARAMETERS_USER_DEFINED::getPropagationDelay( const LENGTH_DELAY_CALCULATION_ITEM&   aItem,
-                                                                     const TUNING_PROFILE_GEOMETRY_CONTEXT& aContext,
+                                                                     const TUNING_PROFILE_GEOMETRY_CONTEXT& aContext [[maybe_unused]],
                                                                      const TUNING_PROFILE* aDelayProfile ) const
 {
     if( aItem.GetMergeStatus() == LENGTH_DELAY_CALCULATION_ITEM::MERGE_STATUS::MERGED_RETIRED )

@@ -215,7 +215,7 @@ void ZOOM_CORRECTION_CTRL::unitsChanged( wxCommandEvent& )
 }
 
 
-void ZOOM_CORRECTION_CTRL::autoPressed( wxCommandEvent& aEvent )
+void ZOOM_CORRECTION_CTRL::autoPressed( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     wxDisplay dpy( this );
     double    val = 0.0;

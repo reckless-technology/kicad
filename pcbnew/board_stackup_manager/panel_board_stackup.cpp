@@ -181,7 +181,7 @@ void PANEL_SETUP_BOARD_STACKUP::onUnitsChanged( wxCommandEvent& event )
 }
 
 
-void PANEL_SETUP_BOARD_STACKUP::onCopperLayersSelCount( wxCommandEvent& event )
+void PANEL_SETUP_BOARD_STACKUP::onCopperLayersSelCount( wxCommandEvent& event [[maybe_unused]] )
 {
     int oldBoardWidth = static_cast<int>( m_frame->ValueFromString( m_tcCTValue->GetValue() ) );
     updateCopperLayerCount();
@@ -193,7 +193,7 @@ void PANEL_SETUP_BOARD_STACKUP::onCopperLayersSelCount( wxCommandEvent& event )
 }
 
 
-void PANEL_SETUP_BOARD_STACKUP::onAdjustDielectricThickness( wxCommandEvent& event )
+void PANEL_SETUP_BOARD_STACKUP::onAdjustDielectricThickness( wxCommandEvent& event [[maybe_unused]] )
 {
     // The list of items that can be modified:
     std::vector< BOARD_STACKUP_ROW_UI_ITEM* > items_candidate;
@@ -297,7 +297,7 @@ void PANEL_SETUP_BOARD_STACKUP::disconnectEvents()
 }
 
 
-void PANEL_SETUP_BOARD_STACKUP::onAddDielectricLayer( wxCommandEvent& event )
+void PANEL_SETUP_BOARD_STACKUP::onAddDielectricLayer( wxCommandEvent& event [[maybe_unused]] )
 {
     wxArrayString headers;
     headers.Add( _( "Layers" ) );
@@ -359,7 +359,7 @@ void PANEL_SETUP_BOARD_STACKUP::onAddDielectricLayer( wxCommandEvent& event )
 }
 
 
-void PANEL_SETUP_BOARD_STACKUP::onRemoveDielectricLayer( wxCommandEvent& event )
+void PANEL_SETUP_BOARD_STACKUP::onRemoveDielectricLayer( wxCommandEvent& event [[maybe_unused]] )
 {
     wxArrayString headers;
     headers.Add( _( "Layers" ) );
@@ -436,7 +436,7 @@ void PANEL_SETUP_BOARD_STACKUP::onRemoveDielUI( wxUpdateUIEvent& event )
 }
 
 
-void PANEL_SETUP_BOARD_STACKUP::onExportToClipboard( wxCommandEvent& event )
+void PANEL_SETUP_BOARD_STACKUP::onExportToClipboard( wxCommandEvent& event [[maybe_unused]] )
 {
     if( !transferDataFromUIToStackup() )
         return;
@@ -1468,7 +1468,7 @@ void PANEL_SETUP_BOARD_STACKUP::ImportSettingsFrom( BOARD* aBoard )
 }
 
 
-void PANEL_SETUP_BOARD_STACKUP::OnLayersOptionsChanged( const LSET& aNewLayerSet )
+void PANEL_SETUP_BOARD_STACKUP::OnLayersOptionsChanged( const LSET& aNewLayerSet [[maybe_unused]] )
 {
     // Can be called spuriously from events before the layers page is even created
     if( !m_panelLayers->IsInitialized() )
@@ -1799,7 +1799,7 @@ wxBitmapComboBox* PANEL_SETUP_BOARD_STACKUP::createColorBox( BOARD_STACKUP_ITEM*
                     nullptr, this );
 
     combo->Bind( wxEVT_COMBOBOX_DROPDOWN,
-            [combo]( wxCommandEvent& aEvent )
+            [combo]( wxCommandEvent& aEvent [[maybe_unused]] )
             {
                 combo->SetString( combo->GetCount() - 1, _( "Custom..." ) );
             } );

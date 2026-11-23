@@ -5429,7 +5429,7 @@ std::vector<VECTOR2I> ORCAD_CONVERTER::computeJunctions( const ORCAD_RAW_PAGE& a
 }
 
 
-void ORCAD_CONVERTER::placeJunctions( const ORCAD_RAW_PAGE& aPage, SCH_SCREEN* aScreen )
+void ORCAD_CONVERTER::placeJunctions( const ORCAD_RAW_PAGE& aPage [[maybe_unused]], SCH_SCREEN* aScreen )
 {
     for( const VECTOR2I& pt : m_netIndex.junctions )
         appendPageItem( aScreen, new SCH_JUNCTION( OrcadDbuToIu( pt.x, pt.y ) ) );

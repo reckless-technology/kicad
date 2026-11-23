@@ -1016,7 +1016,7 @@ void DIALOG_TRACK_VIA_PROPERTIES::onUnitsChanged( wxCommandEvent& aEvent )
 }
 
 
-bool DIALOG_TRACK_VIA_PROPERTIES::confirmShortingNets( int aNet, const std::set<int>& shortingNets )
+bool DIALOG_TRACK_VIA_PROPERTIES::confirmShortingNets( int aNet [[maybe_unused]], const std::set<int>& shortingNets )
 {
     wxString msg;
 
@@ -1708,13 +1708,13 @@ bool DIALOG_TRACK_VIA_PROPERTIES::TransferDataFromWindow()
 }
 
 
-void DIALOG_TRACK_VIA_PROPERTIES::onNetSelector( wxCommandEvent& aEvent )
+void DIALOG_TRACK_VIA_PROPERTIES::onNetSelector( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     m_viaNotFree->SetValue( false );
 }
 
 
-void DIALOG_TRACK_VIA_PROPERTIES::onViaNotFreeClicked( wxCommandEvent& aEvent )
+void DIALOG_TRACK_VIA_PROPERTIES::onViaNotFreeClicked( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( !m_tracks )
     {
@@ -1724,14 +1724,14 @@ void DIALOG_TRACK_VIA_PROPERTIES::onViaNotFreeClicked( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_TRACK_VIA_PROPERTIES::onWidthSelect( wxCommandEvent& aEvent )
+void DIALOG_TRACK_VIA_PROPERTIES::onWidthSelect( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     m_TrackWidthCtrl->ChangeValue( m_predefinedTrackWidthsCtrl->GetStringSelection() );
     m_TrackWidthCtrl->SelectAll();
 }
 
 
-void DIALOG_TRACK_VIA_PROPERTIES::onWidthEdit( wxCommandEvent& aEvent )
+void DIALOG_TRACK_VIA_PROPERTIES::onWidthEdit( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     m_predefinedTrackWidthsCtrl->SetStringSelection( m_TrackWidthCtrl->GetValue() );
 }
@@ -1746,7 +1746,7 @@ void DIALOG_TRACK_VIA_PROPERTIES::onViaSelect( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_TRACK_VIA_PROPERTIES::onPadstackModeChanged( wxCommandEvent& aEvent )
+void DIALOG_TRACK_VIA_PROPERTIES::onPadstackModeChanged( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     wxCHECK_MSG( m_viaStack, /* void */, "Expected valid via stack in onPadstackModeChanged" );
 
@@ -1764,7 +1764,7 @@ void DIALOG_TRACK_VIA_PROPERTIES::onPadstackModeChanged( wxCommandEvent& aEvent 
 }
 
 
-void DIALOG_TRACK_VIA_PROPERTIES::onEditLayerChanged( wxCommandEvent& aEvent )
+void DIALOG_TRACK_VIA_PROPERTIES::onEditLayerChanged( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     wxCHECK_MSG( m_viaStack, /* void */, "Expected valid via stack in onEditLayerChanged" );
 
@@ -1905,7 +1905,7 @@ int DIALOG_TRACK_VIA_PROPERTIES::getLayerDepth()
 }
 
 
-void DIALOG_TRACK_VIA_PROPERTIES::onViaEdit( wxCommandEvent& aEvent )
+void DIALOG_TRACK_VIA_PROPERTIES::onViaEdit( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     m_predefinedViaSizesCtrl->SetSelection( wxNOT_FOUND );
 
@@ -1947,7 +1947,7 @@ void DIALOG_TRACK_VIA_PROPERTIES::onViaEdit( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_TRACK_VIA_PROPERTIES::onTrackEdit( wxCommandEvent& aEvent )
+void DIALOG_TRACK_VIA_PROPERTIES::onTrackEdit( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     bool externalCuLayer = m_TrackLayerCtrl->GetLayerSelection() == F_Cu
                                || m_TrackLayerCtrl->GetLayerSelection() == B_Cu;
@@ -2014,7 +2014,7 @@ void DIALOG_TRACK_VIA_PROPERTIES::syncBackdrillControls( bool aFromUserEvent )
 }
 
 
-void DIALOG_TRACK_VIA_PROPERTIES::onBackdrillChange( wxCommandEvent& aEvent )
+void DIALOG_TRACK_VIA_PROPERTIES::onBackdrillChange( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     syncBackdrillControls( true );
     updateViaPreview();
@@ -2076,27 +2076,27 @@ void DIALOG_TRACK_VIA_PROPERTIES::syncPostMachineControls( bool aFront, bool aFr
 }
 
 
-void DIALOG_TRACK_VIA_PROPERTIES::onTopPostMachineChange( wxCommandEvent& aEvent )
+void DIALOG_TRACK_VIA_PROPERTIES::onTopPostMachineChange( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     syncPostMachineControls( true, true );
     updateViaPreview();
 }
 
 
-void DIALOG_TRACK_VIA_PROPERTIES::onBottomPostMachineChange( wxCommandEvent& aEvent )
+void DIALOG_TRACK_VIA_PROPERTIES::onBottomPostMachineChange( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     syncPostMachineControls( false, true );
     updateViaPreview();
 }
 
 
-void DIALOG_TRACK_VIA_PROPERTIES::onProtectionFeaturesChange( wxCommandEvent& aEvent )
+void DIALOG_TRACK_VIA_PROPERTIES::onProtectionFeaturesChange( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     updateViaPreview();
 }
 
 
-void DIALOG_TRACK_VIA_PROPERTIES::onMachiningEdit( wxCommandEvent& aEvent )
+void DIALOG_TRACK_VIA_PROPERTIES::onMachiningEdit( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     updateViaPreview();
 }

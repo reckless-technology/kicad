@@ -1013,14 +1013,14 @@ void PCB_NET_INSPECTOR_PANEL::OnBoardChanged()
 }
 
 
-void PCB_NET_INSPECTOR_PANEL::OnBoardItemAdded( BOARD& aBoard, BOARD_ITEM* aBoardItem )
+void PCB_NET_INSPECTOR_PANEL::OnBoardItemAdded( BOARD& aBoard [[maybe_unused]], BOARD_ITEM* aBoardItem )
 {
     const std::vector<BOARD_ITEM*> item{ aBoardItem };
     updateBoardItems( item );
 }
 
 
-void PCB_NET_INSPECTOR_PANEL::OnBoardItemsAdded( BOARD& aBoard, std::vector<BOARD_ITEM*>& aBoardItems )
+void PCB_NET_INSPECTOR_PANEL::OnBoardItemsAdded( BOARD& aBoard [[maybe_unused]], std::vector<BOARD_ITEM*>& aBoardItems )
 {
     updateBoardItems( aBoardItems );
 }
@@ -1149,20 +1149,20 @@ void PCB_NET_INSPECTOR_PANEL::updateNets( const std::vector<NETINFO_ITEM*>& aNet
 }
 
 
-void PCB_NET_INSPECTOR_PANEL::OnBoardItemRemoved( BOARD& aBoard, BOARD_ITEM* aBoardItem )
+void PCB_NET_INSPECTOR_PANEL::OnBoardItemRemoved( BOARD& aBoard [[maybe_unused]], BOARD_ITEM* aBoardItem )
 {
     const std::vector<BOARD_ITEM*> item{ aBoardItem };
     updateBoardItems( item );
 }
 
 
-void PCB_NET_INSPECTOR_PANEL::OnBoardItemsRemoved( BOARD& aBoard, std::vector<BOARD_ITEM*>& aBoardItems )
+void PCB_NET_INSPECTOR_PANEL::OnBoardItemsRemoved( BOARD& aBoard [[maybe_unused]], std::vector<BOARD_ITEM*>& aBoardItems )
 {
     updateBoardItems( aBoardItems );
 }
 
 
-void PCB_NET_INSPECTOR_PANEL::OnBoardNetSettingsChanged( BOARD& aBoard )
+void PCB_NET_INSPECTOR_PANEL::OnBoardNetSettingsChanged( BOARD& aBoard [[maybe_unused]] )
 {
     if( !IsShownOnScreen() )
         return;
@@ -1171,20 +1171,20 @@ void PCB_NET_INSPECTOR_PANEL::OnBoardNetSettingsChanged( BOARD& aBoard )
 }
 
 
-void PCB_NET_INSPECTOR_PANEL::OnBoardItemChanged( BOARD& aBoard, BOARD_ITEM* aBoardItem )
+void PCB_NET_INSPECTOR_PANEL::OnBoardItemChanged( BOARD& aBoard [[maybe_unused]], BOARD_ITEM* aBoardItem )
 {
     const std::vector<BOARD_ITEM*> item{ aBoardItem };
     updateBoardItems( item );
 }
 
 
-void PCB_NET_INSPECTOR_PANEL::OnBoardItemsChanged( BOARD& aBoard, std::vector<BOARD_ITEM*>& aBoardItems )
+void PCB_NET_INSPECTOR_PANEL::OnBoardItemsChanged( BOARD& aBoard [[maybe_unused]], std::vector<BOARD_ITEM*>& aBoardItems )
 {
     updateBoardItems( aBoardItems );
 }
 
 
-void PCB_NET_INSPECTOR_PANEL::OnBoardCompositeUpdate( BOARD&                    aBoard,
+void PCB_NET_INSPECTOR_PANEL::OnBoardCompositeUpdate( BOARD&                    aBoard [[maybe_unused]],
                                                       std::vector<BOARD_ITEM*>& aAddedItems,
                                                       std::vector<BOARD_ITEM*>& aRemovedItems,
                                                       std::vector<BOARD_ITEM*>& aChangedItems )
@@ -1199,7 +1199,7 @@ void PCB_NET_INSPECTOR_PANEL::OnBoardCompositeUpdate( BOARD&                    
 }
 
 
-void PCB_NET_INSPECTOR_PANEL::OnBoardHighlightNetChanged( BOARD& aBoard )
+void PCB_NET_INSPECTOR_PANEL::OnBoardHighlightNetChanged( BOARD& aBoard [[maybe_unused]] )
 {
     if( m_highlightingNets || !IsShownOnScreen() )
         return;
@@ -1252,7 +1252,7 @@ void PCB_NET_INSPECTOR_PANEL::OnShowPanel()
 }
 
 
-void PCB_NET_INSPECTOR_PANEL::OnNetsListContextMenu( wxDataViewEvent& event )
+void PCB_NET_INSPECTOR_PANEL::OnNetsListContextMenu( wxDataViewEvent& event [[maybe_unused]] )
 {
     bool             multipleSelections = false;
     const LIST_ITEM* selItem = nullptr;
@@ -1331,7 +1331,7 @@ void PCB_NET_INSPECTOR_PANEL::OnNetsListContextMenu( wxDataViewEvent& event )
 }
 
 
-void PCB_NET_INSPECTOR_PANEL::OnSearchTextChanged( wxCommandEvent& event )
+void PCB_NET_INSPECTOR_PANEL::OnSearchTextChanged( wxCommandEvent& event [[maybe_unused]] )
 {
     SaveSettings();
     buildNetsList();
@@ -1385,7 +1385,7 @@ void PCB_NET_INSPECTOR_PANEL::onClearHighlighting()
 }
 
 
-void PCB_NET_INSPECTOR_PANEL::OnExpandCollapseRow( wxCommandEvent& event )
+void PCB_NET_INSPECTOR_PANEL::OnExpandCollapseRow( wxCommandEvent& event [[maybe_unused]] )
 {
     if( !m_rowExpanding )
         SaveSettings();
@@ -1408,7 +1408,7 @@ void PCB_NET_INSPECTOR_PANEL::OnHeaderContextMenu( wxDataViewEvent& event )
 }
 
 
-void PCB_NET_INSPECTOR_PANEL::OnConfigButton( wxCommandEvent& event )
+void PCB_NET_INSPECTOR_PANEL::OnConfigButton( wxCommandEvent& event [[maybe_unused]] )
 {
     PROJECT_LOCAL_SETTINGS& localSettings = Pgm().GetSettingsManager().Prj().GetLocalSettings();
     auto&                   cfg = localSettings.m_NetInspectorPanel;
@@ -1742,7 +1742,7 @@ void PCB_NET_INSPECTOR_PANEL::generateReport()
 }
 
 
-void PCB_NET_INSPECTOR_PANEL::OnNetsListItemActivated( wxDataViewEvent& event )
+void PCB_NET_INSPECTOR_PANEL::OnNetsListItemActivated( wxDataViewEvent& event [[maybe_unused]] )
 {
     highlightSelectedNets();
 }
@@ -1792,7 +1792,7 @@ void PCB_NET_INSPECTOR_PANEL::highlightSelectedNets()
 }
 
 
-void PCB_NET_INSPECTOR_PANEL::OnColumnSorted( wxDataViewEvent& event )
+void PCB_NET_INSPECTOR_PANEL::OnColumnSorted( wxDataViewEvent& event [[maybe_unused]] )
 {
     if( !m_inBuildNetsList )
         SaveSettings();

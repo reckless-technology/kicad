@@ -146,7 +146,7 @@ bool PANEL_GIT_REPOS::TransferDataToWindow()
     return true;
 }
 
-void PANEL_GIT_REPOS::onDefaultClick( wxCommandEvent& event )
+void PANEL_GIT_REPOS::onDefaultClick( wxCommandEvent& event [[maybe_unused]] )
 {
     m_author->Enable( !m_cbDefault->GetValue() );
     m_authorEmail->Enable( !m_cbDefault->GetValue() );
@@ -154,7 +154,7 @@ void PANEL_GIT_REPOS::onDefaultClick( wxCommandEvent& event )
     m_authorEmailLabel->Enable( !m_cbDefault->GetValue() );
 }
 
-void PANEL_GIT_REPOS::onEnableGitClick( wxCommandEvent& aEvent )
+void PANEL_GIT_REPOS::onEnableGitClick( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     bool enable = m_enableGit->GetValue();
     m_updateInterval->Enable( enable );

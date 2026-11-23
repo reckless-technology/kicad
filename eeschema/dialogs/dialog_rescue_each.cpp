@@ -274,7 +274,7 @@ bool DIALOG_RESCUE_EACH::TransferDataFromWindow()
 }
 
 
-void DIALOG_RESCUE_EACH::OnNeverShowClick( wxCommandEvent& aEvent )
+void DIALOG_RESCUE_EACH::OnNeverShowClick( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     KICAD_MESSAGE_DIALOG dlg( GetParent(),
                               _( "Stop showing this tool?\n"

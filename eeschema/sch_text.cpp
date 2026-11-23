@@ -117,7 +117,7 @@ bool SCH_TEXT::Deserialize( const google::protobuf::Any& aContainer )
 }
 
 
-VECTOR2I SCH_TEXT::GetSchematicTextOffset( const RENDER_SETTINGS* aSettings ) const
+VECTOR2I SCH_TEXT::GetSchematicTextOffset( const RENDER_SETTINGS* aSettings [[maybe_unused]] ) const
 {
     // Fudge factor to match KiCad 6
     return VECTOR2I( 0, -2500 );
@@ -361,7 +361,7 @@ const BOX2I SCH_TEXT::GetBoundingBox() const
 }
 
 
-wxString SCH_TEXT::GetShownText( const SCH_SHEET_PATH* aPath, RESOLUTION_CONTEXT aContext, int aDepth ) const
+wxString SCH_TEXT::GetShownText( const SCH_SHEET_PATH* aPath, RESOLUTION_CONTEXT aContext, int aDepth [[maybe_unused]] ) const
 {
     // Use local depth counter so each text element starts fresh
     int depth = 0;
@@ -420,7 +420,7 @@ bool SCH_TEXT::HasHoveredHypertext() const
 }
 
 
-void SCH_TEXT::DoHypertextAction( EDA_DRAW_FRAME* aFrame, const VECTOR2I& aMousePos ) const
+void SCH_TEXT::DoHypertextAction( EDA_DRAW_FRAME* aFrame, const VECTOR2I& aMousePos [[maybe_unused]] ) const
 {
     SCH_NAVIGATE_TOOL* navTool = aFrame->GetToolManager()->GetTool<SCH_NAVIGATE_TOOL>();
 
@@ -431,7 +431,7 @@ void SCH_TEXT::DoHypertextAction( EDA_DRAW_FRAME* aFrame, const VECTOR2I& aMouse
 }
 
 
-wxString SCH_TEXT::GetItemDescription( UNITS_PROVIDER* aUnitsProvider, bool aFull ) const
+wxString SCH_TEXT::GetItemDescription( UNITS_PROVIDER* aUnitsProvider [[maybe_unused]], bool aFull ) const
 {
     return wxString::Format( _( "Graphic Text '%s'" ), aFull ? GetShownText( FOR_GUI )
                                                              : KIUI::EllipsizeMenuText( GetText() ) );
@@ -516,7 +516,7 @@ VECTOR2I SCH_TEXT::GetOffsetToMatchSCH_FIELD( SCH_RENDER_SETTINGS* aRenderSettin
 }
 
 
-void SCH_TEXT::Plot( PLOTTER* aPlotter, bool aBackground, const SCH_PLOT_OPTS& aPlotOpts, int aUnit, int aBodyStyle,
+void SCH_TEXT::Plot( PLOTTER* aPlotter, bool aBackground, const SCH_PLOT_OPTS& aPlotOpts [[maybe_unused]], int aUnit [[maybe_unused]], int aBodyStyle [[maybe_unused]],
                      const VECTOR2I& aOffset, bool aDimmed )
 {
     if( aBackground || IsPrivate() )

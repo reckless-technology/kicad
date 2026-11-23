@@ -2975,7 +2975,7 @@ void SCH_MOVE_TOOL::moveItem( EDA_ITEM* aItem, const VECTOR2I& aDelta )
 }
 
 
-int SCH_MOVE_TOOL::AlignToGrid( const TOOL_EVENT& aEvent )
+int SCH_MOVE_TOOL::AlignToGrid( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     EE_GRID_HELPER    grid( m_toolMgr);
     SCH_SELECTION&    selection = m_selectionTool->RequestSelection( SCH_COLLECTOR::MovableItems );

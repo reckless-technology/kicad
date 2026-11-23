@@ -99,7 +99,7 @@ public:
      *
      * @warning This should only be called from the main thread.
      */
-    void SetTitle( const wxString& aTitle ) override { }
+    void SetTitle( const wxString& aTitle [[maybe_unused]] ) override { }
 
     bool IsCancelled() const override { return m_cancelled; }
 

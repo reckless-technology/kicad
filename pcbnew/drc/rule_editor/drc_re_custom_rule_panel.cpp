@@ -280,7 +280,7 @@ void DRC_RE_CUSTOM_RULE_PANEL::onScintillaCharAdded( wxStyledTextEvent& aEvent )
 }
 
 
-void DRC_RE_CUSTOM_RULE_PANEL::onCheckSyntax( wxCommandEvent& aEvent )
+void DRC_RE_CUSTOM_RULE_PANEL::onCheckSyntax( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     // Close any existing tip window
     if( m_tipWindow )

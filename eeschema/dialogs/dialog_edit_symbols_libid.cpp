@@ -569,7 +569,7 @@ void DIALOG_EDIT_SYMBOLS_LIBID::onCellBrowseLib( wxGridEvent& event )
 }
 
 
-void DIALOG_EDIT_SYMBOLS_LIBID::onClickOrphansButton( wxCommandEvent& event )
+void DIALOG_EDIT_SYMBOLS_LIBID::onClickOrphansButton( wxCommandEvent& event [[maybe_unused]] )
 {
     std::vector<wxString> libs = PROJECT_SCH::SymbolLibAdapter( &Prj() )->GetLibraryNames();
     std::vector<wxString> aliasNames;

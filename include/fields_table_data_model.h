@@ -171,7 +171,7 @@ public:
     std::vector<BOM_FIELD> GetFieldsOrdered();
     void                   SetFieldsOrder( const std::vector<wxString>& aNewOrder );
 
-    bool IsEmptyCell( int aRow, int aCol ) override
+    bool IsEmptyCell( int aRow [[maybe_unused]], int aCol [[maybe_unused]] ) override
     {
         return false; // don't allow adjacent cell overflow, even if we are actually empty
     }
@@ -296,7 +296,7 @@ protected:
     // a library description property as well as a mandatory description field
     virtual bool fieldIsItemProperty( const wxString& aFieldName ) const;
 
-    virtual bool fieldSupportsVariants( const wxString& aFieldName ) const { return false; }
+    virtual bool fieldSupportsVariants( const wxString& aFieldName [[maybe_unused]] ) const { return false; }
     wxString     fieldVariant( const wxString& aFieldName, const wxString& aVariantName ) const;
     void         updateEditedState();
 
@@ -898,8 +898,8 @@ protected:
         return attributeForcedOnBySheet( aItem, aAttributeName, m_currentVariant );
     }
 
-    virtual bool attributeForcedOnBySheet( const ITEM_TYPE& aItem, const wxString& aAttributeName,
-                                           const wxString& aVariantName ) const
+    virtual bool attributeForcedOnBySheet( const ITEM_TYPE& aItem [[maybe_unused]], const wxString& aAttributeName [[maybe_unused]],
+                                           const wxString& aVariantName [[maybe_unused]] ) const
     {
         return false;
     }
@@ -1089,7 +1089,7 @@ protected:
     virtual bool getLiveFieldValue( const ITEM_TYPE& aItem, const wxString& aFieldName, wxString& aValue ) = 0;
 
     virtual bool getLiveFieldValueForVariant( const ITEM_TYPE& aItem, const wxString& aFieldName,
-                                              const wxString& aVariant, wxString& aValue )
+                                              const wxString& aVariant [[maybe_unused]], wxString& aValue )
     {
         return getLiveFieldValue( aItem, aFieldName, aValue );
     }
@@ -1427,7 +1427,7 @@ public:
     virtual wxString  getItemIdentifier( const ITEM_TYPE& aItem ) const = 0;
 
     /// Return the sheet suffix shown after the item's identifier, which is a base reference.
-    virtual wxString getItemRefSuffix( const ITEM_TYPE& aItem ) const { return wxEmptyString; }
+    virtual wxString getItemRefSuffix( const ITEM_TYPE& aItem [[maybe_unused]] ) const { return wxEmptyString; }
 
     /**
      * Explicitly bypasses the data store's field values and retries them from

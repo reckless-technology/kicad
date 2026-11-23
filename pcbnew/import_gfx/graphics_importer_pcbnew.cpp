@@ -137,7 +137,7 @@ void GRAPHICS_IMPORTER_PCBNEW::AddLine( const VECTOR2D& aStart, const VECTOR2D& 
 
 void GRAPHICS_IMPORTER_PCBNEW::AddCircle( const VECTOR2D& aCenter, double aRadius,
                                           const IMPORTED_STROKE& aStroke, bool aFilled,
-                                          const COLOR4D& aFillColor )
+                                          const COLOR4D& aFillColor [[maybe_unused]] )
 {
     std::unique_ptr<PCB_SHAPE> circle = std::make_unique<PCB_SHAPE>( m_parent );
     circle->SetShape( SHAPE_T::CIRCLE );
@@ -192,7 +192,7 @@ void GRAPHICS_IMPORTER_PCBNEW::AddArc( const VECTOR2D& aCenter, const VECTOR2D& 
 
 void GRAPHICS_IMPORTER_PCBNEW::AddPolygon( const std::vector<VECTOR2D>& aVertices,
                                            const IMPORTED_STROKE& aStroke, bool aFilled,
-                                           const COLOR4D& aFillColor )
+                                           const COLOR4D& aFillColor [[maybe_unused]] )
 {
     std::vector<VECTOR2I> convertedPoints;
     convertedPoints.reserve( aVertices.size() );
@@ -222,7 +222,7 @@ void GRAPHICS_IMPORTER_PCBNEW::AddPolygon( const std::vector<VECTOR2D>& aVertice
 void GRAPHICS_IMPORTER_PCBNEW::AddText( const VECTOR2D& aOrigin, const wxString& aText,
                                         double aHeight, double aWidth, double aThickness,
                                         double aOrientation, GR_TEXT_H_ALIGN_T aHJustify,
-                                        GR_TEXT_V_ALIGN_T aVJustify, const COLOR4D& aColor )
+                                        GR_TEXT_V_ALIGN_T aVJustify, const COLOR4D& aColor [[maybe_unused]] )
 {
     std::unique_ptr<PCB_TEXT> textItem = std::make_unique<PCB_TEXT>( m_parent );
     textItem->SetLayer( GetLayer() );
@@ -261,7 +261,7 @@ void GRAPHICS_IMPORTER_PCBNEW::AddSpline( const VECTOR2D& aStart, const VECTOR2D
 
 void GRAPHICS_IMPORTER_PCBNEW::AddEllipse( const VECTOR2D& aCenter, double aMajorRadius, double aMinorRadius,
                                            const EDA_ANGLE& aRotation, const IMPORTED_STROKE& aStroke, bool aFilled,
-                                           const COLOR4D& aFillColor )
+                                           const COLOR4D& aFillColor [[maybe_unused]] )
 {
     std::unique_ptr<PCB_SHAPE> ellipse = std::make_unique<PCB_SHAPE>( m_parent );
     ellipse->SetShape( SHAPE_T::ELLIPSE );

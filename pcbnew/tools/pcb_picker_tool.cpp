@@ -44,7 +44,7 @@ bool PCB_PICKER_TOOL::Init()
     CONDITIONAL_MENU& menu = m_menu->GetMenu();
 
     auto snapIsSetToAllLayers =
-            [this]( const SELECTION& aSel )
+            [this]( const SELECTION& aSel [[maybe_unused]] )
             {
                 if( PCB_BASE_FRAME* frame = getEditFrame<PCB_BASE_FRAME>() )
                 {
@@ -326,7 +326,7 @@ int PCB_PICKER_TOOL::SelectPointInteractively( const TOOL_EVENT& aEvent )
             } );
 
     SetMotionHandler(
-            [&]( const VECTOR2D& aPos )
+            [&]( const VECTOR2D& aPos [[maybe_unused]] )
             {
                 grid_helper.SetSnap( !( CurrentModifiers() & MD_SHIFT ) );
                 statusPopup.Move( KIPLATFORM::UI::GetMousePosition() + wxPoint( 20, -50 ) );
@@ -339,7 +339,7 @@ int PCB_PICKER_TOOL::SelectPointInteractively( const TOOL_EVENT& aEvent )
             } );
 
     SetFinalizeHandler(
-            [&]( const int& aFinalState )
+            [&]( const int& aFinalState [[maybe_unused]] )
             {
                 done = true;
             } );
@@ -381,11 +381,11 @@ int PCB_PICKER_TOOL::SelectItemInteractively( const TOOL_EVENT& aEvent )
     ClearHandlers();
 
     SetClickHandler(
-            [&]( const VECTOR2D& aPoint ) -> bool
+            [&]( const VECTOR2D& aPoint [[maybe_unused]] ) -> bool
             {
                 m_toolMgr->RunAction( ACTIONS::selectionClear );
                 const PCB_SELECTION& sel = selectionTool->RequestSelection(
-                        []( const VECTOR2I& aPt, GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
+                        []( const VECTOR2I& aPt [[maybe_unused]], GENERAL_COLLECTOR& aCollector [[maybe_unused]], PCB_SELECTION_TOOL* sTool [[maybe_unused]] )
                         {
                         } );
 
@@ -402,7 +402,7 @@ int PCB_PICKER_TOOL::SelectItemInteractively( const TOOL_EVENT& aEvent )
             } );
 
     SetMotionHandler(
-            [&]( const VECTOR2D& aPos )
+            [&]( const VECTOR2D& aPos [[maybe_unused]] )
             {
                 statusPopup.Move( KIPLATFORM::UI::GetMousePosition() + wxPoint( 20, -50 ) );
             } );
@@ -414,7 +414,7 @@ int PCB_PICKER_TOOL::SelectItemInteractively( const TOOL_EVENT& aEvent )
             } );
 
     SetFinalizeHandler(
-            [&]( const int& aFinalState )
+            [&]( const int& aFinalState [[maybe_unused]] )
             {
                 done = true;
             } );

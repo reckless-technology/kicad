@@ -163,7 +163,7 @@ public:
 
     long long GetLibraryTimestamp( const wxString& aLibraryPath ) const override;
 
-    bool IsLibraryWritable( const wxString& aLibraryPath ) override
+    bool IsLibraryWritable( const wxString& aLibraryPath [[maybe_unused]] ) override
     {
         return false;   // until someone writes others like FootprintSave(), etc.
     }

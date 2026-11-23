@@ -71,7 +71,7 @@ bool SYMBOL_EDITOR_CONTROL::Init()
         CONDITIONAL_MENU&       ctxMenu = m_menu->GetMenu();
 
         auto libSelectedCondition =
-                [this]( const SELECTION& aSel )
+                [this]( const SELECTION& aSel [[maybe_unused]] )
                 {
                     if( SYMBOL_EDIT_FRAME* editFrame = getEditFrame<SYMBOL_EDIT_FRAME>() )
                     {
@@ -86,7 +86,7 @@ bool SYMBOL_EDITOR_CONTROL::Init()
         // symbol selected (in other words, when we know the library context even if the library
         // itself isn't selected.
         auto libInferredCondition =
-                [this]( const SELECTION& aSel )
+                [this]( const SELECTION& aSel [[maybe_unused]] )
                 {
                     if( SYMBOL_EDIT_FRAME* editFrame = getEditFrame<SYMBOL_EDIT_FRAME>() )
                     {
@@ -98,7 +98,7 @@ bool SYMBOL_EDITOR_CONTROL::Init()
                 };
 
         auto symbolSelectedCondition =
-                [this]( const SELECTION& aSel )
+                [this]( const SELECTION& aSel [[maybe_unused]] )
                 {
                     if( SYMBOL_EDIT_FRAME* editFrame = getEditFrame<SYMBOL_EDIT_FRAME>() )
                     {
@@ -110,7 +110,7 @@ bool SYMBOL_EDITOR_CONTROL::Init()
                 };
 
         auto derivedSymbolSelectedCondition =
-                [this]( const SELECTION& aSel )
+                [this]( const SELECTION& aSel [[maybe_unused]] )
                 {
                     if( SYMBOL_EDIT_FRAME* editFrame = getEditFrame<SYMBOL_EDIT_FRAME>() )
                     {
@@ -129,7 +129,7 @@ bool SYMBOL_EDITOR_CONTROL::Init()
                 };
 
         auto relatedSymbolSelectedCondition =
-                [this]( const SELECTION& aSel )
+                [this]( const SELECTION& aSel [[maybe_unused]] )
                 {
                     if( SYMBOL_EDIT_FRAME* editFrame = getEditFrame<SYMBOL_EDIT_FRAME>() )
                     {
@@ -150,7 +150,7 @@ bool SYMBOL_EDITOR_CONTROL::Init()
                 };
 
         auto multiSymbolSelectedCondition =
-                [this]( const SELECTION& aSel )
+                [this]( const SELECTION& aSel [[maybe_unused]] )
                 {
                     SYMBOL_EDIT_FRAME* editFrame = getEditFrame<SYMBOL_EDIT_FRAME>();
 
@@ -188,7 +188,7 @@ bool SYMBOL_EDITOR_CONTROL::Init()
                 };
 */
         auto canOpenExternally =
-                [this]( const SELECTION& aSel )
+                [this]( const SELECTION& aSel [[maybe_unused]] )
                 {
                     // The option is shown if the lib has no current edits
                     if( SYMBOL_EDIT_FRAME* editFrame = getEditFrame<SYMBOL_EDIT_FRAME>() )
@@ -202,7 +202,7 @@ bool SYMBOL_EDITOR_CONTROL::Init()
                 };
 
         auto isPackedLibraryCondition =
-                [this]( const SELECTION& aSel )
+                [this]( const SELECTION& aSel [[maybe_unused]] )
                 {
                     // The option is shown if the lib has no current edits
                     if( SYMBOL_EDIT_FRAME* editFrame = getEditFrame<SYMBOL_EDIT_FRAME>() )
@@ -227,7 +227,7 @@ bool SYMBOL_EDITOR_CONTROL::Init()
                 };
 
         auto isUnpackedLibraryCondition =
-                [this]( const SELECTION& aSel )
+                [this]( const SELECTION& aSel [[maybe_unused]] )
                 {
                     // The option is shown if the lib has no current edits
                     if( SYMBOL_EDIT_FRAME* editFrame = getEditFrame<SYMBOL_EDIT_FRAME>() )
@@ -323,7 +323,7 @@ int SYMBOL_EDITOR_CONTROL::DdAddLibrary( const TOOL_EVENT& aEvent )
 }
 
 
-int SYMBOL_EDITOR_CONTROL::EditSymbol( const TOOL_EVENT& aEvent )
+int SYMBOL_EDITOR_CONTROL::EditSymbol( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( !m_isSymbolEditor )
         return 0;
@@ -337,7 +337,7 @@ int SYMBOL_EDITOR_CONTROL::EditSymbol( const TOOL_EVENT& aEvent )
 }
 
 
-int SYMBOL_EDITOR_CONTROL::EditLibrarySymbol( const TOOL_EVENT& aEvent )
+int SYMBOL_EDITOR_CONTROL::EditLibrarySymbol( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SYMBOL_EDIT_FRAME* editFrame = getEditFrame<SYMBOL_EDIT_FRAME>();
     const LIB_SYMBOL*  symbol = editFrame->GetCurSymbol();
@@ -441,7 +441,7 @@ int SYMBOL_EDITOR_CONTROL::Save( const TOOL_EVENT& aEvt )
 }
 
 
-int SYMBOL_EDITOR_CONTROL::Revert( const TOOL_EVENT& aEvent )
+int SYMBOL_EDITOR_CONTROL::Revert( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( m_frame->IsType( FRAME_SCH_SYMBOL_EDITOR ) )
     {
@@ -453,7 +453,7 @@ int SYMBOL_EDITOR_CONTROL::Revert( const TOOL_EVENT& aEvent )
 }
 
 
-int SYMBOL_EDITOR_CONTROL::OpenDirectory( const TOOL_EVENT& aEvent )
+int SYMBOL_EDITOR_CONTROL::OpenDirectory( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( !m_isSymbolEditor )
         return 0;
@@ -507,7 +507,7 @@ int SYMBOL_EDITOR_CONTROL::OpenDirectory( const TOOL_EVENT& aEvent )
 }
 
 
-int SYMBOL_EDITOR_CONTROL::OpenWithTextEditor( const TOOL_EVENT& aEvent )
+int SYMBOL_EDITOR_CONTROL::OpenWithTextEditor( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( !m_isSymbolEditor )
         return 0;
@@ -621,7 +621,7 @@ int SYMBOL_EDITOR_CONTROL::DuplicateSymbol( const TOOL_EVENT& aEvent )
 }
 
 
-int SYMBOL_EDITOR_CONTROL::RenameSymbol( const TOOL_EVENT& aEvent )
+int SYMBOL_EDITOR_CONTROL::RenameSymbol( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( !m_isSymbolEditor )
         return 0;
@@ -732,7 +732,7 @@ int SYMBOL_EDITOR_CONTROL::RenameSymbol( const TOOL_EVENT& aEvent )
 }
 
 
-int SYMBOL_EDITOR_CONTROL::ToggleProperties( const TOOL_EVENT& aEvent )
+int SYMBOL_EDITOR_CONTROL::ToggleProperties( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( m_frame->IsType( FRAME_SCH_SYMBOL_EDITOR ) )
         getEditFrame<SYMBOL_EDIT_FRAME>()->ToggleProperties();
@@ -741,7 +741,7 @@ int SYMBOL_EDITOR_CONTROL::ToggleProperties( const TOOL_EVENT& aEvent )
 }
 
 
-int SYMBOL_EDITOR_CONTROL::ShowElectricalTypes( const TOOL_EVENT& aEvent )
+int SYMBOL_EDITOR_CONTROL::ShowElectricalTypes( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SCH_RENDER_SETTINGS* renderSettings = m_frame->GetRenderSettings();
     renderSettings->m_ShowPinsElectricalType = !renderSettings->m_ShowPinsElectricalType;
@@ -754,7 +754,7 @@ int SYMBOL_EDITOR_CONTROL::ShowElectricalTypes( const TOOL_EVENT& aEvent )
 }
 
 
-int SYMBOL_EDITOR_CONTROL::ShowPinNumbers( const TOOL_EVENT& aEvent )
+int SYMBOL_EDITOR_CONTROL::ShowPinNumbers( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SCH_RENDER_SETTINGS* renderSettings = m_frame->GetRenderSettings();
     renderSettings->m_ShowPinNumbers = !renderSettings->m_ShowPinNumbers;
@@ -767,7 +767,7 @@ int SYMBOL_EDITOR_CONTROL::ShowPinNumbers( const TOOL_EVENT& aEvent )
 }
 
 
-int SYMBOL_EDITOR_CONTROL::ToggleSyncedPinsMode( const TOOL_EVENT& aEvent )
+int SYMBOL_EDITOR_CONTROL::ToggleSyncedPinsMode( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( !m_isSymbolEditor )
         return 0;
@@ -781,7 +781,7 @@ int SYMBOL_EDITOR_CONTROL::ToggleSyncedPinsMode( const TOOL_EVENT& aEvent )
 }
 
 
-int SYMBOL_EDITOR_CONTROL::ToggleHiddenPins( const TOOL_EVENT& aEvent )
+int SYMBOL_EDITOR_CONTROL::ToggleHiddenPins( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( !m_isSymbolEditor )
         return 0;
@@ -797,7 +797,7 @@ int SYMBOL_EDITOR_CONTROL::ToggleHiddenPins( const TOOL_EVENT& aEvent )
 }
 
 
-int SYMBOL_EDITOR_CONTROL::ToggleHiddenFields( const TOOL_EVENT& aEvent )
+int SYMBOL_EDITOR_CONTROL::ToggleHiddenFields( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( !m_isSymbolEditor )
         return 0;
@@ -813,7 +813,7 @@ int SYMBOL_EDITOR_CONTROL::ToggleHiddenFields( const TOOL_EVENT& aEvent )
 }
 
 
-int SYMBOL_EDITOR_CONTROL::TogglePinAltIcons( const TOOL_EVENT& aEvent )
+int SYMBOL_EDITOR_CONTROL::TogglePinAltIcons( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( !m_isSymbolEditor )
         return 0;
@@ -829,7 +829,7 @@ int SYMBOL_EDITOR_CONTROL::TogglePinAltIcons( const TOOL_EVENT& aEvent )
 }
 
 
-int SYMBOL_EDITOR_CONTROL::ExportView( const TOOL_EVENT& aEvent )
+int SYMBOL_EDITOR_CONTROL::ExportView( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( !m_isSymbolEditor )
         return 0;
@@ -869,7 +869,7 @@ int SYMBOL_EDITOR_CONTROL::ExportView( const TOOL_EVENT& aEvent )
 }
 
 
-int SYMBOL_EDITOR_CONTROL::ExportSymbol( const TOOL_EVENT& aEvent )
+int SYMBOL_EDITOR_CONTROL::ExportSymbol( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( m_frame->IsType( FRAME_SCH_SYMBOL_EDITOR ) )
         static_cast<SYMBOL_EDIT_FRAME*>( m_frame )->ExportSymbol();
@@ -878,7 +878,7 @@ int SYMBOL_EDITOR_CONTROL::ExportSymbol( const TOOL_EVENT& aEvent )
 }
 
 
-int SYMBOL_EDITOR_CONTROL::ExportForOlderVersion( const TOOL_EVENT& aEvent )
+int SYMBOL_EDITOR_CONTROL::ExportForOlderVersion( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SYMBOL_EDIT_FRAME* editFrame = getEditFrame<SYMBOL_EDIT_FRAME>();
 
@@ -929,7 +929,7 @@ int SYMBOL_EDITOR_CONTROL::ExportForOlderVersion( const TOOL_EVENT& aEvent )
 }
 
 
-int SYMBOL_EDITOR_CONTROL::ExportSymbolAsSVG( const TOOL_EVENT& aEvent )
+int SYMBOL_EDITOR_CONTROL::ExportSymbolAsSVG( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( !m_isSymbolEditor )
         return 0;
@@ -963,7 +963,7 @@ int SYMBOL_EDITOR_CONTROL::ExportSymbolAsSVG( const TOOL_EVENT& aEvent )
 }
 
 
-int SYMBOL_EDITOR_CONTROL::FlattenSymbol( const TOOL_EVENT& aEvent )
+int SYMBOL_EDITOR_CONTROL::FlattenSymbol( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( !m_isSymbolEditor )
         return 0;
@@ -995,7 +995,7 @@ int SYMBOL_EDITOR_CONTROL::FlattenSymbol( const TOOL_EVENT& aEvent )
 }
 
 
-int SYMBOL_EDITOR_CONTROL::AddSymbolToSchematic( const TOOL_EVENT& aEvent )
+int SYMBOL_EDITOR_CONTROL::AddSymbolToSchematic( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     LIB_SYMBOL* libSymbol = nullptr;
     LIB_ID      libId;
@@ -1080,7 +1080,7 @@ int SYMBOL_EDITOR_CONTROL::ChangeUnit( const TOOL_EVENT& aEvent )
 }
 
 
-int SYMBOL_EDITOR_CONTROL::PreviousSymbol( const TOOL_EVENT& aEvent )
+int SYMBOL_EDITOR_CONTROL::PreviousSymbol( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( SYMBOL_VIEWER_FRAME* viewerFrame = static_cast<SYMBOL_VIEWER_FRAME*>( m_toolMgr->GetToolHolder() ) )
         viewerFrame->SelectPreviousSymbol();
@@ -1089,7 +1089,7 @@ int SYMBOL_EDITOR_CONTROL::PreviousSymbol( const TOOL_EVENT& aEvent )
 }
 
 
-int SYMBOL_EDITOR_CONTROL::NextSymbol( const TOOL_EVENT& aEvent )
+int SYMBOL_EDITOR_CONTROL::NextSymbol( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( SYMBOL_VIEWER_FRAME* viewerFrame = static_cast<SYMBOL_VIEWER_FRAME*>( m_toolMgr->GetToolHolder() ) )
         viewerFrame->SelectNextSymbol();
@@ -1142,7 +1142,7 @@ static void showTabSwitcher( SYMBOL_EDIT_FRAME* aFrame, bool aForward )
 }
 
 
-int SYMBOL_EDITOR_CONTROL::NextTab( const TOOL_EVENT& aEvent )
+int SYMBOL_EDITOR_CONTROL::NextTab( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SYMBOL_EDIT_FRAME* editFrame = getEditFrame<SYMBOL_EDIT_FRAME>();
 
@@ -1156,7 +1156,7 @@ int SYMBOL_EDITOR_CONTROL::NextTab( const TOOL_EVENT& aEvent )
 }
 
 
-int SYMBOL_EDITOR_CONTROL::PrevTab( const TOOL_EVENT& aEvent )
+int SYMBOL_EDITOR_CONTROL::PrevTab( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SYMBOL_EDIT_FRAME* editFrame = getEditFrame<SYMBOL_EDIT_FRAME>();
 
@@ -1170,7 +1170,7 @@ int SYMBOL_EDITOR_CONTROL::PrevTab( const TOOL_EVENT& aEvent )
 }
 
 
-int SYMBOL_EDITOR_CONTROL::CloseTab( const TOOL_EVENT& aEvent )
+int SYMBOL_EDITOR_CONTROL::CloseTab( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SYMBOL_EDIT_FRAME* editFrame = getEditFrame<SYMBOL_EDIT_FRAME>();
 
@@ -1181,7 +1181,7 @@ int SYMBOL_EDITOR_CONTROL::CloseTab( const TOOL_EVENT& aEvent )
 }
 
 
-int SYMBOL_EDITOR_CONTROL::CompareLibraryWithFile( const TOOL_EVENT& aEvent )
+int SYMBOL_EDITOR_CONTROL::CompareLibraryWithFile( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SYMBOL_EDIT_FRAME* editFrame = getEditFrame<SYMBOL_EDIT_FRAME>();
 
