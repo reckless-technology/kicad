@@ -869,6 +869,11 @@ ASCH_SHEET::ASCH_SHEET( const std::map<wxString, wxString>& aProps ) :
     systemFontId = ALTIUM_PROPS_UTILS::ReadInt( aProps, "SYSTEMFONT", 1 );
     sheetOrientation = ReadEnum<ASCH_SHEET_WORKSPACEORIENTATION>(
             aProps, "WORKSPACEORIENTATION", 0, 1, ASCH_SHEET_WORKSPACEORIENTATION::LANDSCAPE );
+
+    borderOn = ALTIUM_PROPS_UTILS::ReadBool( aProps, "BORDERON", false );
+    customXZones = ALTIUM_PROPS_UTILS::ReadInt( aProps, "CUSTOMXZONES", 6 );
+    customYZones = ALTIUM_PROPS_UTILS::ReadInt( aProps, "CUSTOMYZONES", 4 );
+    customMarginWidth = ALTIUM_PROPS_UTILS::ReadInt( aProps, "CUSTOMMARGINWIDTH", 20 );
 }
 
 

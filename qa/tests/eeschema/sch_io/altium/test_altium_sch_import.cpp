@@ -32,6 +32,9 @@
 #include <project/net_settings.h>
 #include <project/project_file.h>
 #include <lib_symbol.h>
+#include <drawing_sheet/ds_data_item.h>
+#include <drawing_sheet/ds_data_model.h>
+#include <embedded_files.h>
 #include <sch_junction.h>
 #include <sch_pin.h>
 #include <sch_shape.h>
@@ -1661,6 +1664,144 @@ BOOST_AUTO_TEST_CASE( AltiumTextFrames )
     SCH_TEXTBOX* plain = boxes.at( wxT( "Plain note" ) );
     BOOST_CHECK( plain->GetStroke().GetWidth() < 0 );
     BOOST_CHECK( !plain->IsSolidFill() );
+}
+
+
+// https://gitlab.com/kicad/code/kicad/-/issues/26128
+// Altium draws a sheet's border and zone references itself and its template's lines and texts
+// on every sheet; none of it is part of the drawing. They become the schematic's drawing sheet,
+// embedded in it and set for the project, rather than items pasted onto the sheet. Altium's
+// special strings become the title block's variables, and the title block is filled from the
+// sheet's parameters.
+BOOST_AUTO_TEST_CASE( Issue26128_TemplateAsDrawingSheet )
+{
+    SCH_IO_ALTIUM plugin;
+
+    SCH_SHEET* rootSheet = plugin.LoadSchematicFile( issue26128DataFile( wxT( "drawing_sheet.SchDoc" ) ),
+                                                     &m_schematic );
+    BOOST_REQUIRE( rootSheet );
+
+    SCH_SCREEN* screen = rootSheet->GetScreen();
+    BOOST_REQUIRE( screen );
+
+    // Only the sheet's own text is on the sheet
+    std::vector<SCH_TEXT*> texts;
+
+    for( SCH_ITEM* item : screen->Items().OfType( SCH_TEXT_T ) )
+        texts.push_back( static_cast<SCH_TEXT*>( item ) );
+
+    BOOST_REQUIRE_EQUAL( texts.size(), 1 );
+    BOOST_CHECK_EQUAL( texts.front()->GetText(), wxT( "Free text" ) );
+    BOOST_CHECK( screen->Items().OfType( SCH_LINE_T ).empty() );
+    BOOST_CHECK( screen->Items().OfType( SCH_SHAPE_T ).empty() );
+
+    // The title block takes the sheet's parameters, in the fields the special strings name
+    const TITLE_BLOCK& titleBlock = screen->GetTitleBlock();
+    BOOST_CHECK_EQUAL( titleBlock.GetTitle(), wxT( "Test board" ) );
+    BOOST_CHECK_EQUAL( titleBlock.GetComment( 0 ), wxT( "CD001" ) );
+    BOOST_CHECK_EQUAL( titleBlock.GetComment( 5 ), wxT( "J. Smith" ) );
+
+    // The drawing sheet is embedded under the template's name and set for the project
+    const wxString drawingSheetName = m_schematic.Settings().m_SchDrawingSheetFileName;
+    BOOST_CHECK_EQUAL( drawingSheetName, wxT( "kicad-embed://House_A4.kicad_wks" ) );
+
+    const EMBEDDED_FILES::EMBEDDED_FILE* file =
+            m_schematic.GetEmbeddedFiles()->GetEmbeddedFile( wxT( "House_A4.kicad_wks" ) );
+    BOOST_REQUIRE( file );
+    BOOST_CHECK( file->type == EMBEDDED_FILES::EMBEDDED_FILE::FILE_TYPE::WORKSHEET );
+
+    std::string   content( file->decompressedData.begin(), file->decompressedData.end() );
+    DS_DATA_MODEL model;
+    model.SetPageLayout( content.c_str() );
+
+    BOOST_CHECK_EQUAL( model.GetLeftMargin(), 0.0 );
+    BOOST_CHECK_EQUAL( model.GetTopMargin(), 0.0 );
+
+    // In page mm from the top left corner; the sheet is 1000 x 800 Altium units, 254 x 203.2 mm
+    std::multiset<std::tuple<int, int, int, int, int, int>> shapes;
+    std::map<wxString, std::vector<DS_DATA_ITEM_TEXT*>> textsByName;
+
+    auto um = []( double aMM )
+    {
+        return KiROUND( aMM * 1000.0 );
+    };
+
+    for( DS_DATA_ITEM* item : model.GetItems() )
+    {
+        BOOST_CHECK( item->m_Pos.m_Anchor == LT_CORNER );
+
+        if( item->GetType() == DS_DATA_ITEM::DS_TEXT )
+        {
+            DS_DATA_ITEM_TEXT* text = static_cast<DS_DATA_ITEM_TEXT*>( item );
+            textsByName[text->m_TextBase].push_back( text );
+            continue;
+        }
+
+        shapes.emplace( item->GetType(), um( item->m_Pos.m_Pos.x ), um( item->m_Pos.m_Pos.y ),
+                        um( item->m_End.m_Pos.x ), um( item->m_End.m_Pos.y ), um( item->m_LineWidth ) );
+    }
+
+    const std::multiset<std::tuple<int, int, int, int, int, int>> expectedShapes = {
+        // Altium's border: the page edge and the zone margin, 20 units in
+        { DS_DATA_ITEM::DS_RECT, 0, 203200, 254000, 0, 42 },
+        { DS_DATA_ITEM::DS_RECT, 5080, 198120, 248920, 5080, 42 },
+        // four zone columns and two rows, divided on both sides
+        { DS_DATA_ITEM::DS_SEGMENT, 63500, 0, 63500, 5080, 25 },
+        { DS_DATA_ITEM::DS_SEGMENT, 63500, 203200, 63500, 198120, 25 },
+        { DS_DATA_ITEM::DS_SEGMENT, 127000, 0, 127000, 5080, 25 },
+        { DS_DATA_ITEM::DS_SEGMENT, 127000, 203200, 127000, 198120, 25 },
+        { DS_DATA_ITEM::DS_SEGMENT, 190500, 0, 190500, 5080, 25 },
+        { DS_DATA_ITEM::DS_SEGMENT, 190500, 203200, 190500, 198120, 25 },
+        { DS_DATA_ITEM::DS_SEGMENT, 0, 101600, 5080, 101600, 25 },
+        { DS_DATA_ITEM::DS_SEGMENT, 254000, 101600, 248920, 101600, 25 },
+        // the template's line, polyline and rectangle in Altium's line widths
+        { DS_DATA_ITEM::DS_SEGMENT, 147320, 182880, 248920, 182880, 254 },
+        { DS_DATA_ITEM::DS_SEGMENT, 147320, 198120, 147320, 177800, 25 },
+        { DS_DATA_ITEM::DS_SEGMENT, 147320, 177800, 248920, 177800, 25 },
+        { DS_DATA_ITEM::DS_RECT, 147320, 198120, 248920, 177800, 254 },
+    };
+
+    BOOST_CHECK( shapes == expectedShapes );
+
+    // Zone references, each twice, and the template's texts with its special strings as variables
+    for( const wxString& zone : { wxT( "1" ), wxT( "2" ), wxT( "3" ), wxT( "4" ), wxT( "A" ), wxT( "B" ) } )
+        BOOST_CHECK_EQUAL( textsByName[zone].size(), 2 );
+
+    BOOST_REQUIRE_EQUAL( textsByName[wxT( "${TITLE}" )].size(), 1 );
+    BOOST_REQUIRE_EQUAL( textsByName[wxT( "${COMMENT6}" )].size(), 1 );
+    BOOST_REQUIRE_EQUAL( textsByName[wxT( "Drawn by:" )].size(), 1 );
+    BOOST_CHECK_EQUAL( textsByName.size(), 9 );
+
+    // The first zone column's references are centred on it, in the system font
+    for( DS_DATA_ITEM_TEXT* zone : textsByName[wxT( "1" )] )
+    {
+        BOOST_CHECK_EQUAL( um( zone->m_Pos.m_Pos.x ), 31750 );
+        BOOST_CHECK( zone->m_Hjustify == GR_TEXT_H_ALIGN_CENTER );
+        BOOST_CHECK( zone->m_Vjustify == GR_TEXT_V_ALIGN_CENTER );
+        BOOST_REQUIRE( zone->m_Font );
+        BOOST_CHECK_EQUAL( zone->m_Font->GetName(), KIFONT::FONT::GetFont( wxT( "Times New Roman" ) )->GetName() );
+    }
+
+    // A template text keeps its font, size and colour, anchored at its bottom left corner
+    DS_DATA_ITEM_TEXT* title = textsByName[wxT( "${TITLE}" )].front();
+    KIFONT::FONT*      arial = KIFONT::FONT::GetFont( wxT( "Arial" ) );
+
+    BOOST_REQUIRE( title->m_Font );
+    BOOST_CHECK_EQUAL( title->m_Font->GetName(), arial->GetName() );
+    BOOST_CHECK( title->m_Hjustify == GR_TEXT_H_ALIGN_LEFT );
+    BOOST_CHECK( title->m_Vjustify == GR_TEXT_V_ALIGN_BOTTOM );
+    BOOST_CHECK_EQUAL( um( title->m_Pos.m_Pos.x ), 177800 );
+    BOOST_CHECK_EQUAL( title->m_TextColor, COLOR4D( 0.0, 0.0, 128.0 / 255.0, 1.0 ) );
+
+    if( arial->IsOutline() )
+    {
+        double size = static_cast<KIFONT::OUTLINE_FONT*>( arial )->GetTextSizeForAscentPlusDescent(
+                schIUScale.MilsToIU( 80 ) );
+        BOOST_CHECK_CLOSE( title->m_TextSize.y, schIUScale.IUTomm( KiROUND( size ) ), 0.01 );
+    }
+
+    // Placed within its 8 point cell of its anchor, 60 units up the sheet
+    BOOST_CHECK_LT( std::abs( title->m_Pos.m_Pos.y - ( 203.2 - 60 * 0.254 ) ), 8 * 0.254 );
 }
 
 

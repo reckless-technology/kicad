@@ -40,6 +40,7 @@ class SCH_SHEET;
 class EDA_TEXT;
 class SCH_DIRECTIVE_LABEL;
 class TITLE_BLOCK;
+class DS_DATA_MODEL;
 
 class ALTIUM_COMPOUND_FILE;
 
@@ -331,6 +332,39 @@ private:
 
     /// Remove the flags of the sheet's parameter sets that name no net class.
     void FinishParameterSets();
+
+    /**
+     * Begin the sheet's drawing sheet with the border and zone references Altium draws round
+     * it, which are not records in the file.
+     */
+    void StartDrawingSheet();
+
+    /**
+     * Put a record of the sheet's template into its drawing sheet rather than on the sheet.
+     *
+     * @return false if \a aProperties is not a template record the drawing sheet can hold.
+     */
+    bool AddTemplateRecord( ALTIUM_SCH_RECORD aRecord, const std::map<wxString, wxString>& aProperties );
+
+    /// Add a text to the drawing sheet, in its Altium font and where Altium draws it.
+    void AddDrawingSheetText( const wxString& aText, const VECTOR2I& aAnchor, int aFontId,
+                              ASCH_LABEL_JUSTIFICATION aJustification, ASCH_RECORD_ORIENTATION aOrientation,
+                              int aColor );
+
+    /// Keep the drawing sheet of the sheet just parsed, counting the sheets that share it.
+    void FinishDrawingSheet();
+
+    /**
+     * Embed the drawing sheet most sheets use in the schematic and make it the project's, as a
+     * KiCad project has one drawing sheet.
+     */
+    void EmbedDrawingSheet();
+
+    /**
+     * Fill each sheet's title block from its parameters, else the project's, in the fields the
+     * drawing sheet's special strings name.
+     */
+    void FillTitleBlocks( const std::map<wxString, wxString>& aProjectParameters );
     void ParseLibParameter( const std::map<wxString, wxString>& aProperties, std::vector<LIB_SYMBOL*>& aSymbol  = nullsym, std::vector<int>& aFontSize = nullint );
     void ParseImplementationList( int aIndex, const std::map<wxString, wxString>& aProperties );
     void ParseImplementation( const std::map<wxString, wxString>& aProperties, std::vector<LIB_SYMBOL*>& aSymbol  = nullsym );
@@ -392,6 +426,23 @@ private:
 
     std::map<int, ASCH_SYMBOL>         m_altiumComponents;
     std::map<int, ASCH_TEMPLATE>       m_altiumTemplates;
+
+    /// The drawing sheet of the sheet being parsed: its border, zones and template
+    std::unique_ptr<DS_DATA_MODEL>     m_drawingSheet;
+    wxString                           m_drawingSheetTemplate;   // its template's file name
+
+    /// A drawing sheet as written, the name it is embedded under and how many sheets use it
+    struct DRAWING_SHEET_USE
+    {
+        wxString name;
+        int      sheets = 0;
+        int      order = 0;
+    };
+
+    std::map<wxString, DRAWING_SHEET_USE> m_drawingSheets;   // by content
+
+    /// Each sheet's own parameters, by upper-case name, for its title block
+    std::map<SCH_SCREEN*, std::map<wxString, wxString>> m_sheetParameters;
     std::map<int, int>                 m_altiumImplementationList;
     std::vector<ASCH_PORT>             m_altiumPortsCurrentSheet; // we require all connections first
 
