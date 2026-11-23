@@ -134,7 +134,7 @@ public:
     void     OnLeftDClick( wxListEvent& event );
     void     OnChar( wxKeyEvent& event );
 
-    DECLARE_EVENT_TABLE();
+    DECLARE_EVENT_TABLE()
 
 private:
     wxArrayString  m_footprintList;
@@ -172,7 +172,7 @@ public:
      */
     void     OnChar( wxKeyEvent& event );
 
-    DECLARE_EVENT_TABLE();
+    DECLARE_EVENT_TABLE()
 
 private:
     wxArrayString  m_libraryList;
@@ -221,7 +221,7 @@ public:
 
     void     OnSelectComponent( wxListEvent& event );
 
-    DECLARE_EVENT_TABLE();
+    DECLARE_EVENT_TABLE()
 
 public:
     wxArrayString                   m_SymbolList;
