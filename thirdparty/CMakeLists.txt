@@ -21,6 +21,9 @@
 #  51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 #
 
+# Third-party code keeps its own flags: KICAD_WERROR (cmake/Warnings.cmake) covers KiCad's own code only
+set( CMAKE_COMPILE_WARNING_AS_ERROR OFF )
+
 # Disable shared library building for all thirdparty libraries
 set( BUILD_SHARED_LIBS OFF )
 

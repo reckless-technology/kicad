@@ -314,13 +314,12 @@ private:
 class ODB_PAD : public ODB_FEATURE
 {
 public:
-    ODB_PAD( uint32_t aIndex, const std::pair<wxString, wxString>& aCenter, uint32_t aSym, EDA_ANGLE aAngle = ANGLE_0,
-             double aResize = 1.0 ) :
+    ODB_PAD( uint32_t aIndex, const std::pair<wxString, wxString>& aCenter, uint32_t aSym,
+             EDA_ANGLE aAngle = ANGLE_0 ) :
             ODB_FEATURE( aIndex ),
             m_center( aCenter ),
             m_symIndex( aSym ),
-            m_angle( aAngle ),
-            m_resize( aResize )
+            m_angle( aAngle )
     {
     }
 
@@ -333,7 +332,6 @@ private:
     std::pair<wxString, wxString> m_center;
     uint32_t                      m_symIndex;
     EDA_ANGLE                     m_angle;
-    double                        m_resize;
 };
 
 class ODB_SURFACE_DATA;

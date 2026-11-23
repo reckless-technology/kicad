@@ -55,7 +55,7 @@ class TARGET3001_SCH_BUILDER
 {
 public:
     TARGET3001_SCH_BUILDER( SCHEMATIC* aSchematic, SCH_SHEET* aRootSheet, const TARGET3001::PROJECT& aProject,
-                            const wxString& aFileName, REPORTER* aReporter );
+                            const wxString& aFileName );
 
     void Build();
 
@@ -139,7 +139,6 @@ private:
     SCH_SHEET*                 m_rootSheet;
     const TARGET3001::PROJECT& m_project;
     wxString                   m_fileName;
-    REPORTER*                  m_reporter;
 
     std::map<int, SCH_SHEET*> m_sheets;     ///< by 1-based sheet number
     std::map<int, BOX2I>      m_extents;    ///< drawn extent of each sheet

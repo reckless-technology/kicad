@@ -85,11 +85,10 @@ static int ReadInt4At( const uint8_t* aData, size_t aPos )
 
 
 SCH_PARSER::SCH_PARSER( const wxString& aFileName, SCHEMATIC* aSchematic, SCH_SHEET* aRootSheet,
-                        PROGRESS_REPORTER* aProgressReporter, REPORTER* aReporter ) :
+                        REPORTER* aReporter ) :
         m_reader( aFileName ),
         m_schematic( aSchematic ),
         m_rootSheet( aRootSheet ),
-        m_progressReporter( aProgressReporter ),
         m_reporter( aReporter ),
         m_version( 38 ),
         m_magicMajor( 0 ),

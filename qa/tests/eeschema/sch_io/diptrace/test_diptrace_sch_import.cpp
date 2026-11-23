@@ -101,7 +101,7 @@ BOOST_AUTO_TEST_CASE( ComponentRecordsAreParsedSequentially )
     screen->SetFileName( newFilename.GetFullPath() );
     rootSheet->SetScreen( screen );
 
-    DIPTRACE::SCH_PARSER parser( wxString::FromUTF8( path ), m_schematic.get(), rootSheet, nullptr, &m_reporter );
+    DIPTRACE::SCH_PARSER parser( wxString::FromUTF8( path ), m_schematic.get(), rootSheet, &m_reporter );
     parser.Parse();
 
     BOOST_CHECK_EQUAL( parser.ComponentBoundaryScanCount(), 0 );
@@ -241,7 +241,7 @@ BOOST_AUTO_TEST_CASE( ViewerExampleComponentRecordsAreParsedSequentiallyOptional
         screen->SetFileName( newFilename.GetFullPath() );
         rootSheet->SetScreen( screen );
 
-        DIPTRACE::SCH_PARSER parser( wxString::FromUTF8( path ), m_schematic.get(), rootSheet, nullptr, &m_reporter );
+        DIPTRACE::SCH_PARSER parser( wxString::FromUTF8( path ), m_schematic.get(), rootSheet, &m_reporter );
         parser.Parse();
 
         BOOST_CHECK_MESSAGE( parser.ComponentBoundaryScanCount() == 0,

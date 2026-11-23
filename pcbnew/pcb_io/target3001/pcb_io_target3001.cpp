@@ -62,7 +62,7 @@ void PCB_IO_TARGET3001::loadBoard( const wxString& aFileName, BOARD& aBoard, boo
 
     TARGET3001::PROJECT project = TARGET3001::ParseFile( aFileName );
 
-    TARGET3001_PCB_BUILDER builder( m_board, project, m_reporter );
+    TARGET3001_PCB_BUILDER builder( m_board, project );
     builder.Build();
 
     m_importedDesignRules = builder.DesignRules();

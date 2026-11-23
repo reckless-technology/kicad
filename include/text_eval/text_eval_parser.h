@@ -435,7 +435,7 @@ namespace calc_parser
          * @param aVariableCallback Function to call when resolving variables
          * @param aErrorCollector Error collector for storing errors
          */
-        explicit EVAL_VISITOR( VAR_CALLBACK aVariableCallback, ERROR_COLLECTOR& aErrorCollector );
+        explicit EVAL_VISITOR( VAR_CALLBACK aVariableCallback );
 
         // Visitor methods for evaluating different node types
         RESULT<VALUE> operator()( const NODE& aNode ) const;
@@ -445,7 +445,6 @@ namespace calc_parser
 
     private:
         VAR_CALLBACK               m_variableCallback;
-        ERROR_COLLECTOR&           m_errors;
         mutable std::random_device m_rd;
         mutable std::mt19937       m_gen;
     };

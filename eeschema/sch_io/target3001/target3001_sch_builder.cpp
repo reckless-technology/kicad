@@ -280,13 +280,11 @@ std::pair<int32_t, int32_t> configureText( EDA_TEXT* aText, const ELEMENT& aElem
 
 
 TARGET3001_SCH_BUILDER::TARGET3001_SCH_BUILDER( SCHEMATIC* aSchematic, SCH_SHEET* aRootSheet,
-                                                const TARGET3001::PROJECT& aProject, const wxString& aFileName,
-                                                REPORTER* aReporter ) :
+                                                const TARGET3001::PROJECT& aProject, const wxString& aFileName ) :
         m_schematic( aSchematic ),
         m_rootSheet( aRootSheet ),
         m_project( aProject ),
-        m_fileName( aFileName ),
-        m_reporter( aReporter )
+        m_fileName( aFileName )
 {
 }
 

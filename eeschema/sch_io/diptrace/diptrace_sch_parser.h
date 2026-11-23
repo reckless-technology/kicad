@@ -238,11 +238,10 @@ public:
      * @param aFileName path to the DipTrace .dch file.
      * @param aSchematic the KiCad schematic object being populated.
      * @param aRootSheet the root sheet to populate.
-     * @param aProgressReporter optional progress reporter (may be nullptr).
      * @param aReporter optional message reporter (may be nullptr).
      */
     SCH_PARSER( const wxString& aFileName, SCHEMATIC* aSchematic, SCH_SHEET* aRootSheet,
-                PROGRESS_REPORTER* aProgressReporter = nullptr, REPORTER* aReporter = nullptr );
+                REPORTER* aReporter = nullptr );
 
     ~SCH_PARSER();
 
@@ -440,7 +439,6 @@ private:
     BINARY_READER      m_reader;
     SCHEMATIC*         m_schematic;
     SCH_SHEET*         m_rootSheet;
-    PROGRESS_REPORTER* m_progressReporter;
     REPORTER*          m_reporter;
     int                m_version;
     int                m_magicMajor;
