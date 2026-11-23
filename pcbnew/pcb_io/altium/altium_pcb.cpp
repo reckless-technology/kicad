@@ -2694,14 +2694,10 @@ void ALTIUM_PCB::ParseComponents6Data( const ALTIUM_PCB_COMPOUND_FILE& aAltiumPc
         wxFileName libName( elem.sourcefootprintlibrary, wxPATH_WIN );
 
         // The pattern field may also contain a path when Altium stores it with a full library path.
-        // Extract just the footprint name portion to avoid creating invalid filenames.
-        wxString fpName = elem.pattern;
-
-        if( fpName.Contains( wxT( "\\" ) ) || fpName.Contains( wxT( "/" ) ) )
-        {
-            wxFileName fpPath( fpName, wxPATH_WIN );
-            fpName = fpPath.GetFullName();
-        }
+        // Extract just the footprint name portion to avoid creating invalid filenames.  Altium
+        // paths are Windows paths; a forward slash is part of a footprint name (SPDT/TOGGLE/PCB)
+        // and is escaped in the LIB_ID like any other, as the library importer does.
+        wxString fpName = elem.pattern.AfterLast( '\\' );
 
         LIB_ID fpID = AltiumToKiCadLibID( libName.GetName(), fpName );
 
