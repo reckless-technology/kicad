@@ -261,6 +261,15 @@ private:
                                 const CFB::COMPOUND_FILE_ENTRY* aEntry );
     void ParseUnionNamesData( const ALTIUM_PCB_COMPOUND_FILE& aAltiumPcbFile, const CFB::COMPOUND_FILE_ENTRY* aEntry );
     void HelperCreateTuningPatterns();
+
+    /**
+     * Remove board tracks that add no copper: exact duplicates of another track, and tracks of
+     * zero length lying wholly inside other copper of their net and layer.  Altium keeps
+     * duplicate primitives, and tracks of a few nanometres that the conversion to KiCad's 10 nm
+     * grid turns into zero-length segments.  A zero-length track standing alone is real copper
+     * (a dot of the track's width) and is kept.
+     */
+    void HelperRemoveRedundantTracks();
     void HelperSetFootprintMountingStyles();
 
     /**
