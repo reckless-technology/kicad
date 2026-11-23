@@ -74,7 +74,7 @@ struct LAYER_OPACITY_ITEM
 {
     PCB_LAYER_ID      m_Layer;
     double            m_Opacity;
-    const BOARD_ITEM* m_Item;;
+    const BOARD_ITEM* m_Item;
 };
 
 

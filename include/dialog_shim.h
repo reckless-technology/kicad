@@ -368,7 +368,7 @@ private:
     wxVariant getControlValue( wxWindow* aCtrl );
     void setControlValue( wxWindow* aCtrl, const wxVariant& aValue );
 
-    DECLARE_EVENT_TABLE();
+    DECLARE_EVENT_TABLE()
 
 protected:
     EDA_UNITS              m_units;    // userUnits for display and parsing
