@@ -2760,35 +2760,45 @@ void ALTIUM_PCB::ConvertComponentBody6ToFootprintItem( const ALTIUM_PCB_COMPOUND
     if( m_progressReporter )
         m_progressReporter->Report( _( "Loading component 3D models..." ) );
 
-    if( !aElem.modelIsEmbedded )
-        return;
-
-    auto model = aAltiumPcbFile.GetLibModel( aElem.modelId );
-
-    if( !model )
-    {
-        if( m_reporter )
-        {
-            m_reporter->Report( wxString::Format( wxT( "Model %s not found for footprint %s" ),
-                                                  aElem.modelId, aFootprint->GetReference() ),
-                                RPT_SEVERITY_ERROR );
-        }
-
-        return;
-    }
-
-    wxString modelName = aElem.modelName.IsEmpty() ? model->first.name : aElem.modelName;
-    bool     isNew = false;
-
-    std::shared_ptr<EMBEDDED_FILES::EMBEDDED_FILE> file =
-            HelperEmbedModel( aFootprint, modelName, model->second, isNew );
-
-    if( isNew )
-        EMBEDDED_FILES::CompressAndEncode( *file );
-
     FP_3DMODEL modelSettings;
 
-    modelSettings.m_Filename = file->GetLink();
+    if( aElem.modelIsEmbedded )
+    {
+        auto model = aAltiumPcbFile.GetLibModel( aElem.modelId );
+
+        if( !model )
+        {
+            if( m_reporter )
+            {
+                m_reporter->Report( wxString::Format( wxT( "Model %s not found for footprint %s" ),
+                                                      aElem.modelId, aFootprint->GetReference() ),
+                                    RPT_SEVERITY_ERROR );
+            }
+
+            return;
+        }
+
+        wxString modelName = aElem.modelName.IsEmpty() ? model->first.name : aElem.modelName;
+        bool     isNew = false;
+
+        std::shared_ptr<EMBEDDED_FILES::EMBEDDED_FILE> file =
+                HelperEmbedModel( aFootprint, modelName, model->second, isNew );
+
+        if( isNew )
+            EMBEDDED_FILES::CompressAndEncode( *file );
+
+        modelSettings.m_Filename = file->GetLink();
+    }
+    else if( !aElem.modelName.IsEmpty() )
+    {
+        // A model Altium links rather than embeds is a file of its own; keep the reference and
+        // its placement, for KiCad to find it by name in the project or the 3D model paths
+        modelSettings.m_Filename = aElem.modelName;
+    }
+    else
+    {
+        return;
+    }
 
     modelSettings.m_Offset.x = pcbIUScale.IUTomm( (int) aElem.modelPosition.x );
     modelSettings.m_Offset.y = -pcbIUScale.IUTomm( (int) aElem.modelPosition.y );
@@ -2857,45 +2867,55 @@ void ALTIUM_PCB::ParseComponentsBodies6Data( const ALTIUM_PCB_COMPOUND_FILE&    
                              m_components.size() );
         }
 
-        if( !elem.modelIsEmbedded )
-            continue;
-
-        auto modelTuple = m_EmbeddedModels.find( elem.modelId );
-
-        if( modelTuple == m_EmbeddedModels.end() )
-        {
-            if( m_reporter )
-            {
-                wxString msg;
-                msg.Printf( wxT( "ComponentsBodies6 stream tries to access model id %s which does "
-                                 "not exist" ), elem.modelId );
-                m_reporter->Report( msg, RPT_SEVERITY_ERROR );
-            }
-
-            continue;
-        }
-
-        const ALTIUM_EMBEDDED_MODEL_DATA& modelData = modelTuple->second;
-        FOOTPRINT*                        footprint = m_components.at( elem.component );
-        bool                              isNew = false;
-
-        std::shared_ptr<EMBEDDED_FILES::EMBEDDED_FILE> file =
-                HelperEmbedModel( footprint, modelData.m_modelname, modelData.m_data, isNew );
-
-        if( isNew )
-        {
-            // The task has to own the payload too; a throw further down the stream skips the
-            // wait below and multi_future abandons whatever is still running
-            embeddedFutures.push_back( tp.submit_task(
-                    [file]()
-                    {
-                        EMBEDDED_FILES::CompressAndEncode( *file );
-                    } ) );
-        }
-
+        FOOTPRINT* footprint = m_components.at( elem.component );
         FP_3DMODEL modelSettings;
 
-        modelSettings.m_Filename = file->GetLink();
+        if( elem.modelIsEmbedded )
+        {
+            auto modelTuple = m_EmbeddedModels.find( elem.modelId );
+
+            if( modelTuple == m_EmbeddedModels.end() )
+            {
+                if( m_reporter )
+                {
+                    wxString msg;
+                    msg.Printf( wxT( "ComponentsBodies6 stream tries to access model id %s which "
+                                     "does not exist" ), elem.modelId );
+                    m_reporter->Report( msg, RPT_SEVERITY_ERROR );
+                }
+
+                continue;
+            }
+
+            const ALTIUM_EMBEDDED_MODEL_DATA& modelData = modelTuple->second;
+            bool                              isNew = false;
+
+            std::shared_ptr<EMBEDDED_FILES::EMBEDDED_FILE> file =
+                    HelperEmbedModel( footprint, modelData.m_modelname, modelData.m_data, isNew );
+
+            if( isNew )
+            {
+                // The task has to own the payload too; a throw further down the stream skips the
+                // wait below and multi_future abandons whatever is still running
+                embeddedFutures.push_back( tp.submit_task(
+                        [file]()
+                        {
+                            EMBEDDED_FILES::CompressAndEncode( *file );
+                        } ) );
+            }
+
+            modelSettings.m_Filename = file->GetLink();
+        }
+        else if( !elem.modelName.IsEmpty() )
+        {
+            // A model Altium links rather than embeds is a file of its own; keep the reference
+            // and its placement, for KiCad to find it by name in the project or the model paths
+            modelSettings.m_Filename = elem.modelName;
+        }
+        else
+        {
+            continue;
+        }
         VECTOR2I fpPosition = footprint->GetPosition();
 
         modelSettings.m_Offset.x =
