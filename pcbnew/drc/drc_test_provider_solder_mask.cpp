@@ -714,6 +714,7 @@ void DRC_TEST_PROVIDER_SOLDER_MASK::testMaskBridges()
 
                 BOX2I itemBBox = item->GetBoundingBox();
 
+                // A non-plated hole without copper has nothing on a copper layer to bridge
                 if( item->IsOnLayer( F_Mask ) && !isNPTHPadWithNoCopper( item ) )
                 {
                     // Test for aperture-to-aperture collisions
@@ -722,7 +723,7 @@ void DRC_TEST_PROVIDER_SOLDER_MASK::testMaskBridges()
                     // Test for aperture-to-zone collisions
                     testMaskItemAgainstZones( item, itemBBox, F_Mask, F_Cu );
                 }
-                else if( item->IsOnLayer( F_Cu ) )
+                else if( item->IsOnLayer( F_Cu ) && !isNPTHPadWithNoCopper( item ) )
                 {
                     // Test for copper-item-to-aperture collisions
                     testItemAgainstItems( item, itemBBox, F_Cu, F_Mask );
@@ -736,7 +737,7 @@ void DRC_TEST_PROVIDER_SOLDER_MASK::testMaskBridges()
                     // Test for aperture-to-zone collisions
                     testMaskItemAgainstZones( item, itemBBox, B_Mask, B_Cu );
                 }
-                else if( item->IsOnLayer( B_Cu ) )
+                else if( item->IsOnLayer( B_Cu ) && !isNPTHPadWithNoCopper( item ) )
                 {
                     // Test for copper-item-to-aperture collisions
                     testItemAgainstItems( item, itemBBox, B_Cu, B_Mask );
