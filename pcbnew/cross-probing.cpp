@@ -831,6 +831,17 @@ void PCB_EDIT_FRAME::KiwayMailIn( KIWAY_MAIL_EVENT& mail )
         break;
     }
 
+    case MAIL_PCB_GET_COPPER_LAYERS:
+    {
+        wxString names;
+
+        for( PCB_LAYER_ID layer : GetBoard()->GetEnabledLayers().CuStack() )
+            names << LSET::Name( layer ) << wxT( "\n" );
+
+        payload = TO_UTF8( names );
+        break;
+    }
+
     case MAIL_PCB_GET_FOOTPRINT_IDS:
         payload = TO_UTF8( IMPORT_PROJ_PROPS::JoinTaggedMap( IMPORT_PROJ_PROPS::FOOTPRINT_ID_MAP_TAG,
                                                              ImportedFootprintIds( *GetBoard() ) ) );
