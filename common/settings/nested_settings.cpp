@@ -42,7 +42,7 @@ NESTED_SETTINGS::~NESTED_SETTINGS()
 }
 
 
-bool NESTED_SETTINGS::LoadFromFile( const wxString& aDirectory )
+bool NESTED_SETTINGS::LoadFromFile( const wxString& aDirectory [[maybe_unused]] )
 {
     m_internals->clear();
     bool success = false;
@@ -163,7 +163,7 @@ void NESTED_SETTINGS::dropFromParentOriginal( const std::string& aPath )
 }
 
 
-bool NESTED_SETTINGS::SaveToFile( const wxString& aDirectory, bool aForce )
+bool NESTED_SETTINGS::SaveToFile( const wxString& aDirectory [[maybe_unused]], bool aForce )
 {
     if( !m_parent )
         return false;

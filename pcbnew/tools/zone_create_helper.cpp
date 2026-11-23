@@ -84,7 +84,7 @@ void ZONE_CREATE_HELPER::setUniquePriority( ZONE_SETTINGS& aZoneInfo )
 }
 
 
-std::unique_ptr<ZONE> ZONE_CREATE_HELPER::createNewZone( bool aKeepout )
+std::unique_ptr<ZONE> ZONE_CREATE_HELPER::createNewZone( bool aKeepout [[maybe_unused]] )
 {
     PCB_BASE_EDIT_FRAME*  frame = m_tool.getEditFrame<PCB_BASE_EDIT_FRAME>();
     BOARD*                board = frame->GetBoard();

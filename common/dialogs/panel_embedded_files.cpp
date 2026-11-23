@@ -245,7 +245,7 @@ bool PANEL_EMBEDDED_FILES::TransferDataFromWindow()
 }
 
 
-void PANEL_EMBEDDED_FILES::onFontEmbedClick( wxCommandEvent& event )
+void PANEL_EMBEDDED_FILES::onFontEmbedClick( wxCommandEvent& event [[maybe_unused]] )
 {
     wxWindowUpdateLocker updateLock( this );
 
@@ -372,7 +372,7 @@ EMBEDDED_FILES::EMBEDDED_FILE* PANEL_EMBEDDED_FILES::AddEmbeddedFile( const wxSt
 }
 
 
-void PANEL_EMBEDDED_FILES::onAddEmbeddedFiles( wxCommandEvent& event )
+void PANEL_EMBEDDED_FILES::onAddEmbeddedFiles( wxCommandEvent& event [[maybe_unused]] )
 {
     // TODO: Update strings to reflect that multiple files can be selected.
     wxFileDialog fileDialog( this, _( "Select a file to embed" ), wxEmptyString, wxEmptyString,
@@ -429,7 +429,7 @@ bool PANEL_EMBEDDED_FILES::RemoveEmbeddedFile( const wxString& aFileName )
 }
 
 
-void PANEL_EMBEDDED_FILES::onDeleteEmbeddedFile( wxCommandEvent& event )
+void PANEL_EMBEDDED_FILES::onDeleteEmbeddedFile( wxCommandEvent& event [[maybe_unused]] )
 {
     m_files_grid->OnDeleteRows(
             [&]( int row )
@@ -441,7 +441,7 @@ void PANEL_EMBEDDED_FILES::onDeleteEmbeddedFile( wxCommandEvent& event )
 }
 
 
-void PANEL_EMBEDDED_FILES::onExportFiles( wxCommandEvent& event )
+void PANEL_EMBEDDED_FILES::onExportFiles( wxCommandEvent& event [[maybe_unused]] )
 {
     wxDirDialog dirDialog( this, _( "Select a directory to export files" ) );
 

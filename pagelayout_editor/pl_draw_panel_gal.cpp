@@ -76,7 +76,8 @@ PL_DRAW_PANEL_GAL::~PL_DRAW_PANEL_GAL()
 }
 
 
-void PL_DRAW_PANEL_GAL::GetMsgPanelInfo( EDA_DRAW_FRAME* aFrame, std::vector<MSG_PANEL_ITEM>& aList )
+void PL_DRAW_PANEL_GAL::GetMsgPanelInfo( EDA_DRAW_FRAME* aFrame [[maybe_unused]],
+                                         std::vector<MSG_PANEL_ITEM>& aList [[maybe_unused]] )
 {
 }
 

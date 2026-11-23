@@ -106,7 +106,7 @@ public:
 
     /// Show grouping controls in the row headers instead of row numbers.
     virtual bool      HasRowLabelExpanders() const { return false; }
-    virtual ROW_STATE GetRowState( int aRow ) const { return ROW_STATE::NON_EXPANDABLE; }
+    virtual ROW_STATE GetRowState( int aRow [[maybe_unused]] ) const { return ROW_STATE::NON_EXPANDABLE; }
 
     /**
      * Optional identity-based serialization for the host dialog's Ctrl+Z/Ctrl+Y.
@@ -117,7 +117,7 @@ public:
      */
     virtual bool     HasUndoStateSerialization() const { return false; }
     virtual wxString SerializeUndoState() const { return wxEmptyString; }
-    virtual void     RestoreUndoState( const wxString& aState ) {}
+    virtual void     RestoreUndoState( const wxString& aState [[maybe_unused]] ) {}
 
     void Clear() override
     {

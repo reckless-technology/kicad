@@ -74,7 +74,7 @@ void FP_TREE_MODEL_ADAPTER::AddLibraries( EDA_BASE_FRAME* aParent )
 }
 
 
-wxString FP_TREE_MODEL_ADAPTER::GenerateInfo( LIB_ID const& aLibId, int aUnit )
+wxString FP_TREE_MODEL_ADAPTER::GenerateInfo( LIB_ID const& aLibId, int aUnit [[maybe_unused]] )
 {
     return GenerateFootprintInfo( m_libs, aLibId );
 }

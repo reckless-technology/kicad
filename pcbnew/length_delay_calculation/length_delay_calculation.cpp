@@ -657,9 +657,9 @@ void LENGTH_DELAY_CALCULATION::optimiseTracesInPads( const std::vector<LENGTH_DE
 
 
 void LENGTH_DELAY_CALCULATION::optimiseVias(
-        const std::vector<LENGTH_DELAY_CALCULATION_ITEM*>& aVias, std::vector<LENGTH_DELAY_CALCULATION_ITEM*>& aLines,
+        const std::vector<LENGTH_DELAY_CALCULATION_ITEM*>& aVias, std::vector<LENGTH_DELAY_CALCULATION_ITEM*>& aLines [[maybe_unused]],
         std::map<VECTOR2I, std::unordered_set<LENGTH_DELAY_CALCULATION_ITEM*>>&       aLinesPositionMap,
-        const std::map<VECTOR2I, std::unordered_set<LENGTH_DELAY_CALCULATION_ITEM*>>& aPadsPositionMap ) const
+        const std::map<VECTOR2I, std::unordered_set<LENGTH_DELAY_CALCULATION_ITEM*>>& aPadsPositionMap [[maybe_unused]] ) const
 {
     for( LENGTH_DELAY_CALCULATION_ITEM* via : aVias )
     {

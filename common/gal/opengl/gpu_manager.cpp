@@ -267,7 +267,7 @@ void GPU_NONCACHED_MANAGER::BeginDrawing()
 }
 
 
-void GPU_NONCACHED_MANAGER::DrawIndices( const VERTEX_ITEM* aItem )
+void GPU_NONCACHED_MANAGER::DrawIndices( const VERTEX_ITEM* aItem [[maybe_unused]] )
 {
     wxASSERT_MSG( false, wxT( "Not implemented yet" ) );
 }

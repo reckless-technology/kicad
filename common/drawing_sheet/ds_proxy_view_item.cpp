@@ -102,7 +102,7 @@ void DS_PROXY_VIEW_ITEM::buildDrawList( VIEW* aView,
 }
 
 
-void DS_PROXY_VIEW_ITEM::ViewDraw( int aLayer, VIEW* aView ) const
+void DS_PROXY_VIEW_ITEM::ViewDraw( int aLayer [[maybe_unused]], VIEW* aView ) const
 {
     GAL*              gal = aView->GetGAL();
     RENDER_SETTINGS*  settings = aView->GetPainter()->GetSettings();

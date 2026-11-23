@@ -63,8 +63,8 @@ KICAD_PLUGIN_EXPORT void GetClassVersion( unsigned char* Major, unsigned char* M
     return;
 }
 
-KICAD_PLUGIN_EXPORT bool CheckClassVersion( unsigned char Major, unsigned char Minor,
-                                            unsigned char Patch, unsigned char Revision )
+KICAD_PLUGIN_EXPORT bool CheckClassVersion( unsigned char Major, unsigned char Minor [[maybe_unused]],
+                                            unsigned char Patch [[maybe_unused]], unsigned char Revision [[maybe_unused]] )
 {
     if( Major != MAJOR )
         return false;

@@ -113,7 +113,7 @@ void PSLIKE_PLOTTER::FlashPadOval( const VECTOR2I& aPadPos, const VECTOR2I& aSiz
 }
 
 
-void PSLIKE_PLOTTER::FlashPadCircle( const VECTOR2I& aPadPos, int aDiameter, void* aData )
+void PSLIKE_PLOTTER::FlashPadCircle( const VECTOR2I& aPadPos, int aDiameter, void* aData [[maybe_unused]] )
 {
     Circle( aPadPos, aDiameter, FILL_T::FILLED_SHAPE, 0 );
 }
@@ -175,8 +175,8 @@ void PSLIKE_PLOTTER::FlashPadRoundRect( const VECTOR2I& aPadPos, const VECTOR2I&
 }
 
 
-void PSLIKE_PLOTTER::FlashPadCustom( const VECTOR2I& aPadPos, const VECTOR2I& aSize,
-                                     const EDA_ANGLE& aOrient, SHAPE_POLY_SET* aPolygons,
+void PSLIKE_PLOTTER::FlashPadCustom( const VECTOR2I& aPadPos [[maybe_unused]], const VECTOR2I& aSize [[maybe_unused]],
+                                     const EDA_ANGLE& aOrient [[maybe_unused]], SHAPE_POLY_SET* aPolygons,
                                      void* aData )
 {
     std::vector<VECTOR2I> cornerList;
@@ -217,8 +217,8 @@ void PSLIKE_PLOTTER::FlashPadTrapez( const VECTOR2I& aPadPos, const VECTOR2I* aC
 }
 
 
-void PSLIKE_PLOTTER::FlashRegularPolygon( const VECTOR2I& aShapePos, int aRadius, int aCornerCount,
-                                          const EDA_ANGLE& aOrient, void* aData )
+void PSLIKE_PLOTTER::FlashRegularPolygon( const VECTOR2I& aShapePos [[maybe_unused]], int aRadius [[maybe_unused]], int aCornerCount [[maybe_unused]],
+                                          const EDA_ANGLE& aOrient [[maybe_unused]], void* aData [[maybe_unused]] )
 {
     // Do nothing
     wxASSERT( 0 );
@@ -304,7 +304,7 @@ void PSLIKE_PLOTTER::computeTextParameters( const VECTOR2I&          aPos,
                                             bool                     aMirror,
                                             enum GR_TEXT_H_ALIGN_T   aH_justify,
                                             enum GR_TEXT_V_ALIGN_T   aV_justify,
-                                            int                      aWidth,
+                                            int                      aWidth [[maybe_unused]],
                                             bool                     aItalic,
                                             bool                     aBold,
                                             double                   *wideningFactor,
@@ -375,7 +375,7 @@ void PSLIKE_PLOTTER::computeTextParameters( const VECTOR2I&          aPos,
 }
 
 
-void PS_PLOTTER::SetCurrentLineWidth( int aWidth, void* aData )
+void PS_PLOTTER::SetCurrentLineWidth( int aWidth, void* aData [[maybe_unused]] )
 {
     wxCHECK2( m_outputFile, return );
 
@@ -541,7 +541,7 @@ void PS_PLOTTER::Arc( const VECTOR2D& aCenter, const EDA_ANGLE& aStartAngle,
 
 
 void PS_PLOTTER::PlotPoly( const std::vector<VECTOR2I>& aCornerList, FILL_T aFill, int aWidth,
-                           void* aData )
+                           void* aData [[maybe_unused]] )
 {
     SetCurrentLineWidth( aWidth );
 

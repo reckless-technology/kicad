@@ -104,7 +104,7 @@ int CN_ZONE_LAYER::AnchorCount() const
 }
 
 
-const VECTOR2I CN_ZONE_LAYER::GetAnchor( int n ) const
+const VECTOR2I CN_ZONE_LAYER::GetAnchor( int n [[maybe_unused]] ) const
 {
     if( !Valid() || !HasValidOutline() )
         return VECTOR2I();

@@ -1101,7 +1101,7 @@ PADSTACK* SPECCTRA_DB::makeVia( const PCB_VIA* aVia )
 }
 
 
-void SPECCTRA_DB::fillBOUNDARY( BOARD* aBoard, BOUNDARY* boundary )
+void SPECCTRA_DB::fillBOUNDARY( BOARD* aBoard [[maybe_unused]], BOUNDARY* boundary )
 {
     for( int cnt = 0; cnt < m_brd_outlines.OutlineCount(); cnt++ )   // Should be one outline
     {

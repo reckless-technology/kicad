@@ -495,7 +495,7 @@ void PCB_WRITER_V9::formatBoardLayers( const BOARD* aBoard ) const
 }
 
 
-void PCB_WRITER_V9::formatNetInformation( const BOARD* aBoard ) const
+void PCB_WRITER_V9::formatNetInformation( const BOARD* aBoard [[maybe_unused]] ) const
 {
     for( NETINFO_ITEM* net : m_mapping.Nets() )
     {

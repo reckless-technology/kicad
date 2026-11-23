@@ -41,7 +41,7 @@ static std::mutex s_initMutex;
 static sigjmp_buf s_jumpBuffer;
 static struct sigaction s_savedSigAbrtAction;
 
-static void navlibSigAbrtHandler( int aSignal )
+static void navlibSigAbrtHandler( int aSignal [[maybe_unused]] )
 {
     siglongjmp( s_jumpBuffer, 1 );
 }

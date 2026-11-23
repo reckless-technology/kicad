@@ -99,7 +99,7 @@ int SCH_IO_EASYEDAPRO::GetModifyHash() const
 
 
 static LIB_SYMBOL* loadSymbol( nlohmann::json project, const wxString& aLibraryPath,
-                               const wxString& aAliasName, const std::map<std::string, UTF8>* aProperties )
+                               const wxString& aAliasName, const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     SCH_EASYEDAPRO_PARSER parser( nullptr, nullptr );
     LIB_SYMBOL*           symbol = nullptr;
@@ -246,7 +246,7 @@ std::vector<LIB_SYMBOL*> SCH_IO_EASYEDAPRO::GetImportedCachedLibrarySymbols()
 
 void SCH_IO_EASYEDAPRO::EnumerateSymbolLib( wxArrayString&         aSymbolNameList,
                                             const wxString&        aLibraryPath,
-                                            const std::map<std::string, UTF8>* aProperties )
+                                            const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     wxFileName fname( aLibraryPath );
 
@@ -524,7 +524,7 @@ SCH_SHEET* SCH_IO_EASYEDAPRO::LoadSchematicFile( const wxString& aFileName,
 
     const int schSheetsCount = prjSchematicSheets.size();
 
-    auto cbs = [&]( const wxString& name, const wxString& baseName, wxInputStream& zip ) -> bool
+    auto cbs = [&]( const wxString& name, const wxString& baseName [[maybe_unused]], wxInputStream& zip ) -> bool
     {
         if( !name.EndsWith( wxS( ".esch" ) ) )
             EASY_IT_CONTINUE;

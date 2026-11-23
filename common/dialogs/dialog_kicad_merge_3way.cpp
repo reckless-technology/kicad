@@ -248,19 +248,19 @@ DIALOG_KICAD_MERGE_3WAY::DIALOG_KICAD_MERGE_3WAY( wxWindow* aParent,
 }
 
 
-void DIALOG_KICAD_MERGE_3WAY::OnClose( wxCloseEvent& aEvent )
+void DIALOG_KICAD_MERGE_3WAY::OnClose( wxCloseEvent& aEvent [[maybe_unused]] )
 {
     EndModal( wxID_CANCEL );
 }
 
 
-void DIALOG_KICAD_MERGE_3WAY::OnCancel( wxCommandEvent& aEvent )
+void DIALOG_KICAD_MERGE_3WAY::OnCancel( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     EndModal( wxID_CANCEL );
 }
 
 
-void DIALOG_KICAD_MERGE_3WAY::OnApply( wxCommandEvent& aEvent )
+void DIALOG_KICAD_MERGE_3WAY::OnApply( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     // Every conflict needs an explicit choice before the plan can be applied.
     const std::vector<KIID_PATH> stillUnresolved =
@@ -284,13 +284,13 @@ void DIALOG_KICAD_MERGE_3WAY::OnApply( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_KICAD_MERGE_3WAY::OnConflictSelected( wxCommandEvent& aEvent )
+void DIALOG_KICAD_MERGE_3WAY::OnConflictSelected( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     showConflict( m_listConflicts->GetSelection() );
 }
 
 
-void DIALOG_KICAD_MERGE_3WAY::OnResolutionChanged( wxCommandEvent& aEvent )
+void DIALOG_KICAD_MERGE_3WAY::OnResolutionChanged( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( m_currentConflict < 0
         || m_currentConflict >= static_cast<int>( m_conflictActionIndex.size() ) )

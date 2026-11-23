@@ -80,7 +80,7 @@ DIALOG_DESTINATION::DIALOG_DESTINATION( wxWindow* aParent, JOBSET* aJobsFile,
 }
 
 
-void DIALOG_DESTINATION::onOutputPathBrowseClicked(wxCommandEvent& event)
+void DIALOG_DESTINATION::onOutputPathBrowseClicked(wxCommandEvent& event [[maybe_unused]])
 {
     bool isFolder = false;
     wxString fileWildcard = "";

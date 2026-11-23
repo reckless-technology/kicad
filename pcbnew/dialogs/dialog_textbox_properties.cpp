@@ -65,12 +65,12 @@ DIALOG_TEXTBOX_PROPERTIES::DIALOG_TEXTBOX_PROPERTIES( PCB_BASE_EDIT_FRAME* aPare
     m_scintillaTricks = new SCINTILLA_TRICKS(
             m_MultiLineText, wxT( "{}" ), false,
             // onAcceptFn
-            [this]( wxKeyEvent& aEvent )
+            [this]( wxKeyEvent& aEvent [[maybe_unused]] )
             {
                 wxPostEvent( this, wxCommandEvent( wxEVT_COMMAND_BUTTON_CLICKED, wxID_OK ) );
             },
             // onCharFn
-            [this]( wxStyledTextEvent& aEvent )
+            [this]( wxStyledTextEvent& aEvent [[maybe_unused]] )
             {
                 m_scintillaTricks->DoTextVarAutocomplete(
                         // getTokensFn
@@ -296,7 +296,7 @@ void DIALOG_TEXTBOX_PROPERTIES::onHalignButton( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_TEXTBOX_PROPERTIES::onTextSize( wxCommandEvent& aEvent )
+void DIALOG_TEXTBOX_PROPERTIES::onTextSize( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( m_autoTextThickness->IsChecked() )
         m_thickness.SetValue( GetPenSizeForNormal( m_textWidth.GetValue() ) );
@@ -321,7 +321,7 @@ void DIALOG_TEXTBOX_PROPERTIES::onAutoTextThickness( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_TEXTBOX_PROPERTIES::onBorderChecked( wxCommandEvent& event )
+void DIALOG_TEXTBOX_PROPERTIES::onBorderChecked( wxCommandEvent& event [[maybe_unused]] )
 {
     bool border = m_borderCheckbox->GetValue();
 
@@ -479,7 +479,7 @@ void DIALOG_TEXTBOX_PROPERTIES::onMultiLineTCLostFocus( wxFocusEvent& event )
 }
 
 
-void DIALOG_TEXTBOX_PROPERTIES::onSyntaxHelp( wxHyperlinkEvent& aEvent )
+void DIALOG_TEXTBOX_PROPERTIES::onSyntaxHelp( wxHyperlinkEvent& aEvent [[maybe_unused]] )
 {
     m_helpWindow = PCB_TEXT::ShowSyntaxHelp( this );
 }

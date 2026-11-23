@@ -201,8 +201,8 @@ public:
 
     const BOX2I GetBoundingBox() const override { return BOX2I(); }
 
-    bool HitTest( const VECTOR2I& aPosition, int aAccuracy = 0 ) const override { return false; }
-    bool HitTest( const BOX2I& aRect, bool aContained, int aAccuracy = 0 ) const override
+    bool HitTest( const VECTOR2I& aPosition [[maybe_unused]], int aAccuracy [[maybe_unused]] = 0 ) const override { return false; }
+    bool HitTest( const BOX2I& aRect [[maybe_unused]], bool aContained [[maybe_unused]], int aAccuracy [[maybe_unused]] = 0 ) const override
     {
         return false;
     }
@@ -211,10 +211,10 @@ public:
 
     // A constraint has no geometry, so the spatial transforms are no-ops (the base
     // implementations wxFAIL_MSG).  Its members move with their own host items.
-    void Move( const VECTOR2I& aMoveVector ) override {}
-    void Rotate( const VECTOR2I& aRotCentre, const EDA_ANGLE& aAngle ) override {}
-    void Flip( const VECTOR2I& aCentre, FLIP_DIRECTION aFlipDirection ) override {}
-    void Mirror( const VECTOR2I& aCentre, FLIP_DIRECTION aFlipDirection ) override {}
+    void Move( const VECTOR2I& aMoveVector [[maybe_unused]] ) override {}
+    void Rotate( const VECTOR2I& aRotCentre [[maybe_unused]], const EDA_ANGLE& aAngle [[maybe_unused]] ) override {}
+    void Flip( const VECTOR2I& aCentre [[maybe_unused]], FLIP_DIRECTION aFlipDirection [[maybe_unused]] ) override {}
+    void Mirror( const VECTOR2I& aCentre [[maybe_unused]], FLIP_DIRECTION aFlipDirection [[maybe_unused]] ) override {}
 
     /// Empty shape so any generic GetItemSet()/RunOnChildren consumer stays safe.
     std::shared_ptr<SHAPE> GetEffectiveShape( PCB_LAYER_ID aLayer = UNDEFINED_LAYER,

@@ -102,7 +102,7 @@ public:
      * Plugins that do not support project containers return an empty list.
      */
     virtual std::vector<std::pair<wxString, wxString>>
-    EnumerateProjectBoards( const wxString& aFileName ) const
+    EnumerateProjectBoards( const wxString& aFileName [[maybe_unused]] ) const
     {
         return {};
     }
@@ -111,7 +111,7 @@ public:
      * Return the KiCad projects a project container splits into, one per board entry and one per PCB or schematic
      * no entry names.  Plugins that do not support project containers return an empty list.
      */
-    virtual std::vector<IMPORT_PROJECT_DESC> EnumerateProjectEntries( const wxString& aFileName ) const
+    virtual std::vector<IMPORT_PROJECT_DESC> EnumerateProjectEntries( const wxString& aFileName [[maybe_unused]] ) const
     {
         return {};
     }
@@ -129,7 +129,7 @@ public:
      */
     virtual void SetQueryUserCallback( std::function<bool( wxString aTitle, int aIcon,
                                                            wxString aMessage,
-                                                           wxString aAction )> aCallback )
+                                                           wxString aAction )> aCallback [[maybe_unused]] )
     { }
 
     /**
@@ -354,7 +354,7 @@ public:
      *
      * @param aLibraryPath is the path of the library whose cache should be cleared.
      */
-    virtual void ClearCachedFootprints( const wxString& aLibraryPath ) {}
+    virtual void ClearCachedFootprints( const wxString& aLibraryPath [[maybe_unused]] ) {}
 
     /**
      * Append supported PLUGIN options to @a aListToAppenTo along with internationalized

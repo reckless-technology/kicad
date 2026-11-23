@@ -91,19 +91,19 @@ void SCH_SEARCH_PANE::onSchChanged( wxCommandEvent& event )
 }
 
 
-void SCH_SEARCH_PANE::OnSchItemsAdded( SCHEMATIC& aBoard, std::vector<SCH_ITEM*>& aBoardItems )
+void SCH_SEARCH_PANE::OnSchItemsAdded( SCHEMATIC& aBoard [[maybe_unused]], std::vector<SCH_ITEM*>& aBoardItems [[maybe_unused]] )
 {
     queueSearchRefresh();
 }
 
 
-void SCH_SEARCH_PANE::OnSchItemsRemoved( SCHEMATIC& aBoard, std::vector<SCH_ITEM*>& aBoardItems )
+void SCH_SEARCH_PANE::OnSchItemsRemoved( SCHEMATIC& aBoard [[maybe_unused]], std::vector<SCH_ITEM*>& aBoardItems [[maybe_unused]] )
 {
     queueSearchRefresh();
 }
 
 
-void SCH_SEARCH_PANE::OnSchItemsChanged( SCHEMATIC& aBoard, std::vector<SCH_ITEM*>& aBoardItems )
+void SCH_SEARCH_PANE::OnSchItemsChanged( SCHEMATIC& aBoard [[maybe_unused]], std::vector<SCH_ITEM*>& aBoardItems [[maybe_unused]] )
 {
     queueSearchRefresh();
 }

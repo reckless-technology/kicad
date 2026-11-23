@@ -273,7 +273,7 @@ public:
     virtual bool HasTarget( RENDER_TARGET aTarget ) override;
 
     /// @copydoc GAL::SetNegativeDrawMode()
-    void SetNegativeDrawMode( bool aSetting ) override {}
+    void SetNegativeDrawMode( bool aSetting [[maybe_unused]] ) override {}
 
     /// @copydoc GAL::StartDiffLayer()
     void StartDiffLayer() override;

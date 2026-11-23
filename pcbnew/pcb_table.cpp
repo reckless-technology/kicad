@@ -766,7 +766,7 @@ void PCB_TABLE::DrawBorders( const std::function<void( const VECTOR2I& aPt1, con
 }
 
 
-std::shared_ptr<SHAPE> PCB_TABLE::GetEffectiveShape( PCB_LAYER_ID aLayer, FLASHING, DRC_CONSTRAINT_T ) const
+std::shared_ptr<SHAPE> PCB_TABLE::GetEffectiveShape( PCB_LAYER_ID aLayer [[maybe_unused]], FLASHING, DRC_CONSTRAINT_T ) const
 {
     EDA_ANGLE             angle = GetCell( 0, 0 )->GetDrawRotation();
     std::vector<VECTOR2I> topLeft = GetCell( 0, 0 )->GetCornersInSequence( angle );
@@ -796,7 +796,7 @@ std::shared_ptr<SHAPE> PCB_TABLE::GetEffectiveShape( PCB_LAYER_ID aLayer, FLASHI
 
 
 void PCB_TABLE::TransformShapeToPolygon( SHAPE_POLY_SET& aBuffer, PCB_LAYER_ID aLayer, int aClearance, int aMaxError,
-                                         ERROR_LOC aErrorLoc, bool aIgnoreLineWidth ) const
+                                         ERROR_LOC aErrorLoc, bool aIgnoreLineWidth [[maybe_unused]] ) const
 {
     int gap = aClearance;
 
@@ -854,7 +854,7 @@ void PCB_TABLE::TransformGraphicItemsToPolySet( SHAPE_POLY_SET& aBuffer, int aMa
 }
 
 
-void PCB_TABLE::TransformShapeToPolySet( SHAPE_POLY_SET& aBuffer, PCB_LAYER_ID aLayer,
+void PCB_TABLE::TransformShapeToPolySet( SHAPE_POLY_SET& aBuffer, PCB_LAYER_ID aLayer [[maybe_unused]],
                                          int aClearance, int aMaxError, ERROR_LOC aErrorLoc,
                                          KIGFX::RENDER_SETTINGS* aRenderSettings ) const
 {
@@ -894,7 +894,7 @@ INSPECT_RESULT PCB_TABLE::Visit( INSPECTOR aInspector, void* aTestData, const st
 }
 
 
-wxString PCB_TABLE::GetItemDescription( UNITS_PROVIDER* aUnitsProvider, bool aFull ) const
+wxString PCB_TABLE::GetItemDescription( UNITS_PROVIDER* aUnitsProvider [[maybe_unused]], bool aFull [[maybe_unused]] ) const
 {
     return wxString::Format( _( "%d column table" ), m_colCount );
 }
@@ -935,7 +935,7 @@ bool PCB_TABLE::HitTest( const SHAPE_LINE_CHAIN& aPoly, bool aContained ) const
 }
 
 
-void PCB_TABLE::GetMsgPanelInfo( EDA_DRAW_FRAME* aFrame, std::vector<MSG_PANEL_ITEM>& aList )
+void PCB_TABLE::GetMsgPanelInfo( EDA_DRAW_FRAME* aFrame [[maybe_unused]], std::vector<MSG_PANEL_ITEM>& aList )
 {
     // Don't use GetShownText() here; we want to show the user the variable references
     aList.emplace_back( _( "Table" ), wxString::Format( _( "%d Columns" ), m_colCount ) );

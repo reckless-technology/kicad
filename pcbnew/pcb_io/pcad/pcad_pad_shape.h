@@ -39,7 +39,7 @@ public:
     virtual void Parse( XNODE* aNode, const wxString& aDefaultUnits,
                         const wxString& aActualConversion );
 
-    void AddToBoard( FOOTPRINT* aFootprint = nullptr ) override {}
+    void AddToBoard( FOOTPRINT* aFootprint [[maybe_unused]] = nullptr ) override {}
 
 public:
     wxString    m_Shape;

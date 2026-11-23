@@ -177,7 +177,7 @@ void FONT_LIST_MANAGER::UpdateFonts()
 
 
 FONT_CHOICE::FONT_CHOICE( wxWindow* aParent, int aId, wxPoint aPosition, wxSize aSize,
-                          int nChoices, wxString* aChoices, int aStyle ) :
+                          int nChoices, wxString* aChoices [[maybe_unused]], int aStyle ) :
         wxOwnerDrawnComboBox( aParent, aId, wxEmptyString, aPosition, aSize, 0, nullptr, aStyle )
 {
     m_systemFontCount = nChoices;
@@ -266,7 +266,7 @@ void FONT_CHOICE::RefreshFonts()
 }
 
 
-void FONT_CHOICE::SetFontSelection( KIFONT::FONT* aFont, bool aSilentMode )
+void FONT_CHOICE::SetFontSelection( KIFONT::FONT* aFont, bool aSilentMode [[maybe_unused]] )
 {
     if( !aFont )
     {

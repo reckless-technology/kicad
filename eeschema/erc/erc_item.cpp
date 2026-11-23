@@ -399,7 +399,7 @@ std::shared_ptr<ERC_ITEM> ERC_ITEM::Create( int aErrorCode )
  * targets.
  */
 void ERC_TREE_MODEL::GetValue( wxVariant& aVariant, wxDataViewItem const& aItem,
-                               unsigned int aCol ) const
+                               unsigned int aCol [[maybe_unused]] ) const
 {
     SCH_EDIT_FRAME*           schEditFrame = static_cast<SCH_EDIT_FRAME*>( m_editFrame );
     const RC_TREE_NODE*       node = ToNode( aItem );

@@ -192,7 +192,7 @@ public:
      *
      * @param aLayer is the VIEW layer id.
      */
-    virtual void BeginSceneLayer( int aLayer ) {}
+    virtual void BeginSceneLayer( int aLayer [[maybe_unused]] ) {}
 
     /**
      * Describe a cached layer to the retained scene. Layers draw in decreasing order value and a hidden
@@ -203,7 +203,7 @@ public:
      * @param aVisible is false to leave the layer out of the frame.
      * @param aHasNegatives is true if the layer has to contain its own knockouts.
      */
-    virtual void SetSceneLayerState( int aLayer, int aOrder, bool aVisible, bool aHasNegatives ) {}
+    virtual void SetSceneLayerState( int aLayer [[maybe_unused]], int aOrder [[maybe_unused]], bool aVisible [[maybe_unused]], bool aHasNegatives [[maybe_unused]] ) {}
 
     /**
      * Fade a cached layer towards a colour in the shader, so dimming it recolours none of its groups.
@@ -213,7 +213,7 @@ public:
      * @param aToward is the colour the layer fades towards, usually the background.
      * @param aKeep is the share of each colour that is kept, 1 to leave the layer as it is.
      */
-    virtual void SetSceneLayerDim( int aLayer, const COLOR4D& aToward, double aKeep ) {}
+    virtual void SetSceneLayerDim( int aLayer [[maybe_unused]], const COLOR4D& aToward [[maybe_unused]], double aKeep [[maybe_unused]] ) {}
 
     /**
      * Blend a cached layer the way the other canvases blend the overlay they draw it in. Colour c with
@@ -221,14 +221,14 @@ public:
      *
      * @param aLayer is the VIEW layer id.
      */
-    virtual void SetSceneLayerOverlayAlpha( int aLayer ) {}
+    virtual void SetSceneLayerOverlayAlpha( int aLayer [[maybe_unused]] ) {}
 
     /**
      * Tell the retained scene whether cached groups are placed in an order that matters. When they are,
      * a knockout erases only what was placed before it on its layer, as on a Gerber layer. Otherwise a
      * layer's knockouts apply to all of it.
      */
-    virtual void SetSceneDrawOrdered( bool aOrdered ) {}
+    virtual void SetSceneDrawOrdered( bool aOrdered [[maybe_unused]] ) {}
 
     /**
      * Declare where a cached group belongs in the retained scene.
@@ -238,11 +238,11 @@ public:
      * @param aLodScale is the view scale above which the group is drawn.
      * @param aShown is false to keep the group out of the scene regardless of scale.
      */
-    virtual void SetGroupPlacement( int aGroup, int aLayer, double aLodScale, bool aShown,
-                                    const RETAINED_GROUP_ORDER& aOrder ) {}
+    virtual void SetGroupPlacement( int aGroup [[maybe_unused]], int aLayer [[maybe_unused]], double aLodScale [[maybe_unused]], bool aShown [[maybe_unused]],
+                                    const RETAINED_GROUP_ORDER& aOrder [[maybe_unused]] ) {}
 
     /** Set the view scale that group placements are tested against. */
-    virtual void SetSceneScale( double aScale ) {}
+    virtual void SetSceneScale( double aScale [[maybe_unused]] ) {}
 
     /** Return true if the GAL is inside a BeginDrawing/EndDrawing pair. */
     virtual bool IsDrawingMode() const { return false; }
@@ -271,7 +271,7 @@ public:
      * @param aStartPoint   is the start point of the line.
      * @param aEndPoint     is the end point of the line.
      */
-    virtual void DrawLine( const VECTOR2D& aStartPoint, const VECTOR2D& aEndPoint ) {};
+    virtual void DrawLine( const VECTOR2D& aStartPoint [[maybe_unused]], const VECTOR2D& aEndPoint [[maybe_unused]] ) {};
 
     /**
      * Draw a rounded segment.
@@ -282,8 +282,8 @@ public:
      * @param aEndPoint     is the end point of the segment.
      * @param aWidth        is a width of the segment
      */
-    virtual void DrawSegment( const VECTOR2D& aStartPoint, const VECTOR2D& aEndPoint,
-                              double aWidth ){};
+    virtual void DrawSegment( const VECTOR2D& aStartPoint [[maybe_unused]], const VECTOR2D& aEndPoint [[maybe_unused]],
+                              double aWidth [[maybe_unused]] ){};
 
     /**
      * Draw a filled track capsule in \a aColor without touching the fill and stroke state. Backends may
@@ -297,9 +297,9 @@ public:
      *
      * @param aShapeType is 0 circle, 1 rect, 2 roundrect, 3 chamfered, 4 oval or 5 trapezoid.
      */
-    virtual void DrawPad( const VECTOR2D& aCenter, double aHalfWidth, double aHalfHeight,
-                          double aCornerRadius, float aShapeType, double aRotation,
-                          const COLOR4D& aColor ) {}
+    virtual void DrawPad( const VECTOR2D& aCenter [[maybe_unused]], double aHalfWidth [[maybe_unused]], double aHalfHeight [[maybe_unused]],
+                          double aCornerRadius [[maybe_unused]], float aShapeType [[maybe_unused]], double aRotation [[maybe_unused]],
+                          const COLOR4D& aColor [[maybe_unused]] ) {}
 
     /**
      * Draw a chain of rounded segments.
@@ -307,25 +307,25 @@ public:
      * @param aPointList is a list of 2D-Vectors containing the chain points.
      * @param aWidth     is a width of the segments
      */
-    virtual void DrawSegmentChain( const std::vector<VECTOR2D>& aPointList, double aWidth ){};
-    virtual void DrawSegmentChain( const SHAPE_LINE_CHAIN& aLineChain, double aWidth ){};
+    virtual void DrawSegmentChain( const std::vector<VECTOR2D>& aPointList [[maybe_unused]], double aWidth [[maybe_unused]] ){};
+    virtual void DrawSegmentChain( const SHAPE_LINE_CHAIN& aLineChain [[maybe_unused]], double aWidth [[maybe_unused]] ){};
 
     /**
      * Draw a polyline
      *
      * @param aPointList is a list of 2D-Vectors containing the polyline points.
      */
-    virtual void DrawPolyline( const std::deque<VECTOR2D>& aPointList ) {};
-    virtual void DrawPolyline( const std::vector<VECTOR2D>& aPointList ) {};
-    virtual void DrawPolyline( const VECTOR2D aPointList[], int aListSize ) {};
-    virtual void DrawPolyline( const SHAPE_LINE_CHAIN& aLineChain ) {};
+    virtual void DrawPolyline( const std::deque<VECTOR2D>& aPointList [[maybe_unused]] ) {};
+    virtual void DrawPolyline( const std::vector<VECTOR2D>& aPointList [[maybe_unused]] ) {};
+    virtual void DrawPolyline( const VECTOR2D aPointList[], int aListSize [[maybe_unused]] ) {};
+    virtual void DrawPolyline( const SHAPE_LINE_CHAIN& aLineChain [[maybe_unused]] ) {};
 
     /**
      * Draw multiple polylines
      *
      * @param aPointLists are lists of 2D-Vectors containing the polyline points.
      */
-    virtual void DrawPolylines( const std::vector<std::vector<VECTOR2D>>& aPointLists ){};
+    virtual void DrawPolylines( const std::vector<std::vector<VECTOR2D>>& aPointLists [[maybe_unused]] ){};
 
     /**
      * Draw a circle using world coordinates.
@@ -333,7 +333,7 @@ public:
      * @param aCenterPoint is the center point of the circle.
      * @param aRadius is the radius of the circle.
      */
-    virtual void DrawCircle( const VECTOR2D& aCenterPoint, double aRadius ) {};
+    virtual void DrawCircle( const VECTOR2D& aCenterPoint [[maybe_unused]], double aRadius [[maybe_unused]] ) {};
 
     /**
      * Draw a hole wall ring.
@@ -342,8 +342,8 @@ public:
      * @param aHoleRadius is the radius of the hole.
      * @param aWallWidth is the wall thickness.
      */
-    virtual void DrawHoleWall( const VECTOR2D& aCenterPoint, double aHoleRadius,
-                               double aWallWidth ) {};
+    virtual void DrawHoleWall( const VECTOR2D& aCenterPoint [[maybe_unused]], double aHoleRadius [[maybe_unused]],
+                               double aWallWidth [[maybe_unused]] ) {};
 
     /**
      * Draw an arc.
@@ -353,8 +353,8 @@ public:
      * @param aStartAngle   is the start angle of the arc.
      * @param aAngle        is the angle of the arc.
      */
-    virtual void DrawArc( const VECTOR2D& aCenterPoint, double aRadius,
-                          const EDA_ANGLE& aStartAngle, const EDA_ANGLE& aAngle ){};
+    virtual void DrawArc( const VECTOR2D& aCenterPoint [[maybe_unused]], double aRadius [[maybe_unused]],
+                          const EDA_ANGLE& aStartAngle [[maybe_unused]], const EDA_ANGLE& aAngle [[maybe_unused]] ){};
 
     /**
      * Draw an arc segment.
@@ -376,9 +376,9 @@ public:
      * @param aWidth        is the thickness of the arc (pen size).
      * @param aMaxError     is the max allowed error to create segments to approximate a circle.
      */
-    virtual void DrawArcSegment( const VECTOR2D& aCenterPoint, double aRadius,
-                                 const EDA_ANGLE& aStartAngle, const EDA_ANGLE& aAngle,
-                                 double aWidth, double aMaxError ){};
+    virtual void DrawArcSegment( const VECTOR2D& aCenterPoint [[maybe_unused]], double aRadius [[maybe_unused]],
+                                 const EDA_ANGLE& aStartAngle [[maybe_unused]], const EDA_ANGLE& aAngle [[maybe_unused]],
+                                 double aWidth [[maybe_unused]], double aMaxError [[maybe_unused]] ){};
 
     /**
      * Draw a closed ellipse.
@@ -410,7 +410,7 @@ public:
      * @param aStartPoint   is the start point of the rectangle.
      * @param aEndPoint     is the end point of the rectangle.
      */
-    virtual void DrawRectangle( const VECTOR2D& aStartPoint, const VECTOR2D& aEndPoint ) {};
+    virtual void DrawRectangle( const VECTOR2D& aStartPoint [[maybe_unused]], const VECTOR2D& aEndPoint [[maybe_unused]] ) {};
 
     void DrawRectangle( const BOX2I& aRect )
     {
@@ -420,7 +420,7 @@ public:
     /**
      * Draw a polygon representing a font glyph.
      */
-    virtual void DrawGlyph( const KIFONT::GLYPH& aGlyph, int aNth = 0, int aTotal = 1 ) {};
+    virtual void DrawGlyph( const KIFONT::GLYPH& aGlyph [[maybe_unused]], int aNth [[maybe_unused]] = 0, int aTotal [[maybe_unused]] = 1 ) {};
 
     /**
      * Draw polygons representing font glyphs.
@@ -454,11 +454,11 @@ public:
      *
      * @param aPointList is the list of the polygon points.
      */
-    virtual void DrawPolygon( const std::deque<VECTOR2D>& aPointList ) {};
-    virtual void DrawPolygon( const VECTOR2D aPointList[], int aListSize ) {};
-    virtual void DrawPolygon( const SHAPE_POLY_SET& aPolySet,
-                              bool aStrokeTriangulation = false ) {};
-    virtual void DrawPolygon( const SHAPE_LINE_CHAIN& aPolySet ) {};
+    virtual void DrawPolygon( const std::deque<VECTOR2D>& aPointList [[maybe_unused]] ) {};
+    virtual void DrawPolygon( const VECTOR2D aPointList[], int aListSize [[maybe_unused]] ) {};
+    virtual void DrawPolygon( const SHAPE_POLY_SET& aPolySet [[maybe_unused]],
+                              bool aStrokeTriangulation [[maybe_unused]] = false ) {};
+    virtual void DrawPolygon( const SHAPE_LINE_CHAIN& aPolySet [[maybe_unused]] ) {};
 
     /**
      * Draw a cubic bezier spline.
@@ -471,24 +471,24 @@ public:
      * the Bezier curve is not supported and needs a curve to polyline conversion.
      * aFilterValue = 0 means no filtering.
      */
-    virtual void DrawCurve( const VECTOR2D& startPoint,    const VECTOR2D& controlPointA,
-                            const VECTOR2D& controlPointB, const VECTOR2D& endPoint,
-                            double aFilterValue = 0.0 ) {};
+    virtual void DrawCurve( const VECTOR2D& startPoint [[maybe_unused]],    const VECTOR2D& controlPointA [[maybe_unused]],
+                            const VECTOR2D& controlPointB [[maybe_unused]], const VECTOR2D& endPoint [[maybe_unused]],
+                            double aFilterValue [[maybe_unused]] = 0.0 ) {};
 
     /**
      * Draw a bitmap image.
      */
-    virtual void DrawBitmap( const BITMAP_BASE& aBitmap, double alphaBlend = 1.0 ) {};
+    virtual void DrawBitmap( const BITMAP_BASE& aBitmap [[maybe_unused]], double alphaBlend [[maybe_unused]] = 1.0 ) {};
 
     // --------------
     // Screen methods
     // --------------
 
     /// Resize the canvas.
-    virtual void ResizeScreen( int aWidth, int aHeight ) {};
+    virtual void ResizeScreen( int aWidth [[maybe_unused]], int aHeight [[maybe_unused]] ) {};
 
     /// Show/hide the GAL canvas
-    virtual bool Show( bool aShow ) { return true; };
+    virtual bool Show( bool aShow [[maybe_unused]] ) { return true; };
 
     /// Return GAL canvas size in pixels
     const VECTOR2I& GetScreenPixelSize() const
@@ -747,28 +747,28 @@ public:
      *
      * @param aTransformation is the transformation matrix.
      */
-    virtual void Transform( const MATRIX3x3D& aTransformation ) {};
+    virtual void Transform( const MATRIX3x3D& aTransformation [[maybe_unused]] ) {};
 
     /**
      * Rotate the context.
      *
      * @param aAngle is the rotation angle in radians.
      */
-    virtual void Rotate( double aAngle ) {};
+    virtual void Rotate( double aAngle [[maybe_unused]] ) {};
 
     /**
      * Translate the context.
      *
      * @param aTranslation is the translation vector.
      */
-    virtual void Translate( const VECTOR2D& aTranslation ) {};
+    virtual void Translate( const VECTOR2D& aTranslation [[maybe_unused]] ) {};
 
     /**
      * Scale the context.
      *
      * @param aScale is the scale factor for the x- and y-axis.
      */
-    virtual void Scale( const VECTOR2D& aScale ) {};
+    virtual void Scale( const VECTOR2D& aScale [[maybe_unused]] ) {};
 
     /// Save the context.
     virtual void Save() {};
@@ -793,14 +793,14 @@ public:
     /// End the group.
     virtual void EndGroup() {};
 
-    virtual std::array<uint64_t, 2> GroupContentFingerprint( int aGroupNumber ) const { return {}; }
+    virtual std::array<uint64_t, 2> GroupContentFingerprint( int aGroupNumber [[maybe_unused]] ) const { return {}; }
 
     /**
      * Draw the stored group.
      *
      * @param aGroupNumber is the group number.
      */
-    virtual void DrawGroup( int aGroupNumber ) {};
+    virtual void DrawGroup( int aGroupNumber [[maybe_unused]] ) {};
 
     /**
      * Change the color used to draw the group.
@@ -808,7 +808,7 @@ public:
      * @param aGroupNumber is the group number.
      * @param aNewColor is the new color.
      */
-    virtual void ChangeGroupColor( int aGroupNumber, const COLOR4D& aNewColor ) {};
+    virtual void ChangeGroupColor( int aGroupNumber [[maybe_unused]], const COLOR4D& aNewColor [[maybe_unused]] ) {};
 
     /**
      * Change the depth (Z-axis position) of the group.
@@ -816,7 +816,7 @@ public:
      * @param aGroupNumber is the group number.
      * @param aDepth is the new depth.
      */
-    virtual void ChangeGroupDepth( int aGroupNumber, int aDepth ) {};
+    virtual void ChangeGroupDepth( int aGroupNumber [[maybe_unused]], int aDepth [[maybe_unused]] ) {};
 
     /**
      * Exempt the group from its layer's dim, see SetSceneLayerDim().
@@ -824,14 +824,14 @@ public:
      * @param aGroupNumber is the group number.
      * @param aUndimmed is true to keep the group's colour while its layer is dimmed.
      */
-    virtual void ChangeGroupUndimmed( int aGroupNumber, bool aUndimmed ) {};
+    virtual void ChangeGroupUndimmed( int aGroupNumber [[maybe_unused]], bool aUndimmed [[maybe_unused]] ) {};
 
     /**
      * Delete the group from the memory.
      *
      * @param aGroupNumber is the group number.
      */
-    virtual void DeleteGroup( int aGroupNumber ) {};
+    virtual void DeleteGroup( int aGroupNumber [[maybe_unused]] ) {};
 
     /**
      * Delete all data created during caching of graphic items.
@@ -1015,7 +1015,7 @@ public:
      *
      * @param aTarget is the new target for rendering.
      */
-    virtual void SetTarget( RENDER_TARGET aTarget ) {};
+    virtual void SetTarget( RENDER_TARGET aTarget [[maybe_unused]] ) {};
 
     /**
      * Get the currently used target for rendering.
@@ -1029,14 +1029,14 @@ public:
      *
      * @param aTarget is the target to be cleared.
      */
-    virtual void ClearTarget( RENDER_TARGET aTarget ) {};
+    virtual void ClearTarget( RENDER_TARGET aTarget [[maybe_unused]] ) {};
 
     /**
      * Return true if the target exists.
      *
      * @param aTarget is the target to be checked.
      */
-    virtual bool HasTarget( RENDER_TARGET aTarget )
+    virtual bool HasTarget( RENDER_TARGET aTarget [[maybe_unused]] )
     {
         return true;
     };
@@ -1052,13 +1052,13 @@ public:
      *
      * @param aSetting is true if negative mode should be enabled
      */
-    virtual void SetNegativeDrawMode( bool aSetting ) {};
+    virtual void SetNegativeDrawMode( bool aSetting [[maybe_unused]] ) {};
 
     /**
      * Store sizes of what is drawn next in pixels rather than world units, so it keeps its pixel size
      * through a zoom without being drawn again.
      */
-    virtual void SetScreenSpaceMode( bool aEnabled ) {}
+    virtual void SetScreenSpaceMode( bool aEnabled [[maybe_unused]] ) {}
 
     /** Tell whether strokes can carry part of their width in pixels, see SetStrokePixelPad(). */
     virtual bool SupportsStrokePixelPad() const { return false; }
@@ -1070,13 +1070,13 @@ public:
      * Extend every stroke drawn from now on by \a aPixels at each end. Pixels are resolved per frame so
      * the look survives a zoom without drawing again. Zero turns it off.
      */
-    virtual void SetStrokeLengthPad( double aPixels ) {}
+    virtual void SetStrokeLengthPad( double aPixels [[maybe_unused]] ) {}
 
     /**
      * Widen every stroke, circle and pad drawn from now on by \a aPixels. Pixels are resolved per frame so
      * the look survives a zoom without drawing again. Zero turns it off.
      */
-    virtual void SetStrokePixelPad( double aPixels ) {}
+    virtual void SetStrokePixelPad( double aPixels [[maybe_unused]] ) {}
 
     /** Tell whether strokes can carry a level of detail, see SetStrokeLevelOfDetail(). */
     virtual bool SupportsStrokeLevelOfDetail() const { return false; }
@@ -1085,7 +1085,7 @@ public:
      * Show every stroke drawn from now on only while the view scale is above \a aLod, as
      * VIEW::IsShownAtScale() decides. It is decided per frame so a zoom needs no redraw. Zero turns it off.
      */
-    virtual void SetStrokeLevelOfDetail( double aLod ) {}
+    virtual void SetStrokeLevelOfDetail( double aLod [[maybe_unused]] ) {}
 
     /**
      * Begins rendering of a differential layer. Used by gerbview's differential mode.
@@ -1361,9 +1361,9 @@ public:
      *
      * @param aCursorPosition is the cursor position in screen coordinates.
      */
-    virtual void DrawCursor( const VECTOR2D& aCursorPosition ) {};
+    virtual void DrawCursor( const VECTOR2D& aCursorPosition [[maybe_unused]] ) {};
 
-    virtual void EnableDepthTest( bool aEnabled = false ) {};
+    virtual void EnableDepthTest( bool aEnabled [[maybe_unused]] = false ) {};
 
     /**
      * Checks the state of the context lock
@@ -1409,9 +1409,9 @@ public:
 
 
     /// Use GAL_CONTEXT_LOCKER RAII object unless you know what you're doing.
-    virtual void LockContext( int aClientCookie ) {}
+    virtual void LockContext( int aClientCookie [[maybe_unused]] ) {}
 
-    virtual void UnlockContext( int aClientCookie ) {}
+    virtual void UnlockContext( int aClientCookie [[maybe_unused]] ) {}
 
     /// Start/end drawing functions, draw calls can be only made in between the calls
     /// to BeginDrawing()/EndDrawing(). Normally you should create a GAL_DRAWING_CONTEXT RAII

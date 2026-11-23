@@ -154,12 +154,12 @@ public:
         }
     }
 
-    bool IsEmptyCell( int row, int col ) override
+    bool IsEmptyCell( int row [[maybe_unused]], int col [[maybe_unused]] ) override
     {
         return false;   // don't allow adjacent cell overflow, even if we are actually empty
     }
 
-    bool CanSetValueAs( int aRow, int aCol, const wxString& aTypeName ) override
+    bool CanSetValueAs( int aRow [[maybe_unused]], int aCol [[maybe_unused]], const wxString& aTypeName [[maybe_unused]] ) override
     {
         // Don't accept random values; must use the popup to change to a known alternate
         return false;
@@ -671,7 +671,7 @@ bool DIALOG_SYMBOL_PROPERTIES::TransferDataToWindow()
 }
 
 
-void DIALOG_SYMBOL_PROPERTIES::OnEditSpiceModel( wxCommandEvent& event )
+void DIALOG_SYMBOL_PROPERTIES::OnEditSpiceModel( wxCommandEvent& event [[maybe_unused]] )
 {
     if( !m_fieldsGrid->CommitPendingChanges() )
         return;
@@ -741,7 +741,7 @@ void DIALOG_SYMBOL_PROPERTIES::OnEditSpiceModel( wxCommandEvent& event )
 }
 
 
-void DIALOG_SYMBOL_PROPERTIES::OnCancelButtonClick( wxCommandEvent& event )
+void DIALOG_SYMBOL_PROPERTIES::OnCancelButtonClick( wxCommandEvent& event [[maybe_unused]] )
 {
     // Running the Footprint Browser gums up the works and causes the automatic cancel
     // stuff to no longer work.  So we do it here ourselves.
@@ -1030,13 +1030,13 @@ void DIALOG_SYMBOL_PROPERTIES::OnGridEditorShown( wxGridEvent& aEvent )
 }
 
 
-void DIALOG_SYMBOL_PROPERTIES::OnGridEditorHidden( wxGridEvent& aEvent )
+void DIALOG_SYMBOL_PROPERTIES::OnGridEditorHidden( wxGridEvent& aEvent [[maybe_unused]] )
 {
     m_editorShown = false;
 }
 
 
-void DIALOG_SYMBOL_PROPERTIES::OnAddField( wxCommandEvent& event )
+void DIALOG_SYMBOL_PROPERTIES::OnAddField( wxCommandEvent& event [[maybe_unused]] )
 {
     m_fieldsGrid->OnAddRow(
             [&]() -> std::pair<int, int>
@@ -1058,7 +1058,7 @@ void DIALOG_SYMBOL_PROPERTIES::OnAddField( wxCommandEvent& event )
 }
 
 
-void DIALOG_SYMBOL_PROPERTIES::OnDeleteField( wxCommandEvent& event )
+void DIALOG_SYMBOL_PROPERTIES::OnDeleteField( wxCommandEvent& event [[maybe_unused]] )
 {
     m_fieldsGrid->OnDeleteRows(
             [&]( int row )
@@ -1086,7 +1086,7 @@ void DIALOG_SYMBOL_PROPERTIES::OnDeleteField( wxCommandEvent& event )
 }
 
 
-void DIALOG_SYMBOL_PROPERTIES::OnMoveUp( wxCommandEvent& event )
+void DIALOG_SYMBOL_PROPERTIES::OnMoveUp( wxCommandEvent& event [[maybe_unused]] )
 {
     m_fieldsGrid->OnMoveRowUp(
             [&]( int row )
@@ -1102,7 +1102,7 @@ void DIALOG_SYMBOL_PROPERTIES::OnMoveUp( wxCommandEvent& event )
 }
 
 
-void DIALOG_SYMBOL_PROPERTIES::OnMoveDown( wxCommandEvent& event )
+void DIALOG_SYMBOL_PROPERTIES::OnMoveDown( wxCommandEvent& event [[maybe_unused]] )
 {
     m_fieldsGrid->OnMoveRowDown(
             [&]( int row )
@@ -1214,7 +1214,7 @@ void DIALOG_SYMBOL_PROPERTIES::AdjustPinsGridColumns()
 }
 
 
-void DIALOG_SYMBOL_PROPERTIES::OnUpdateUI( wxUpdateUIEvent& event )
+void DIALOG_SYMBOL_PROPERTIES::OnUpdateUI( wxUpdateUIEvent& event [[maybe_unused]] )
 {
     if( m_composedRef->IsShown() )
     {
@@ -1310,13 +1310,13 @@ void DIALOG_SYMBOL_PROPERTIES::OnSizePinsGrid( wxSizeEvent& event )
 }
 
 
-void DIALOG_SYMBOL_PROPERTIES::OnCheckBox( wxCommandEvent& event )
+void DIALOG_SYMBOL_PROPERTIES::OnCheckBox( wxCommandEvent& event [[maybe_unused]] )
 {
     OnModify();
 }
 
 
-void DIALOG_SYMBOL_PROPERTIES::OnUnitChoice( wxCommandEvent& event )
+void DIALOG_SYMBOL_PROPERTIES::OnUnitChoice( wxCommandEvent& event [[maybe_unused]] )
 {
     if( m_dataModel )
     {

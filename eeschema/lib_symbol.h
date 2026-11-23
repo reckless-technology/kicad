@@ -467,13 +467,13 @@ public:
 
     wxString GetPrefix();
 
-    const wxString GetRef( const SCH_SHEET_PATH* aSheet, bool aIncludeUnit = false ) const override
+    const wxString GetRef( const SCH_SHEET_PATH* aSheet [[maybe_unused]], bool aIncludeUnit [[maybe_unused]] = false ) const override
     {
         return GetReferenceField().GetText();
     }
 
-    const wxString GetValue( const SCH_SHEET_PATH* aPath, RESOLUTION_CONTEXT aContext,
-                             const wxString& aVariantName = wxEmptyString ) const override
+    const wxString GetValue( const SCH_SHEET_PATH* aPath [[maybe_unused]], RESOLUTION_CONTEXT aContext [[maybe_unused]],
+                             const wxString& aVariantName [[maybe_unused]] = wxEmptyString ) const override
     {
         return GetValueField().GetText();
     }
@@ -602,7 +602,7 @@ public:
         return GetBodyStyleDescription( 1, false );
     }
 
-    void SetBodyStyleProp( const wxString& aBodyStyle ) override
+    void SetBodyStyleProp( const wxString& aBodyStyle [[maybe_unused]] ) override
     {
         // Body style setting is more complex for LIB_SYMBOL
         // For now, this is primarily for display purposes

@@ -127,7 +127,7 @@ SEARCH_PANE::SEARCH_PANE( EDA_DRAW_FRAME* aFrame ) :
 
     m_menuButton->SetBitmap( KiBitmapBundle( BITMAPS::config ) );
     m_menuButton->Bind( wxEVT_LEFT_DOWN,
-            [&]( wxMouseEvent& event )
+            [&]( wxMouseEvent& event [[maybe_unused]] )
             {
                 PopupMenu( m_menu );
             } );
@@ -194,7 +194,7 @@ void SEARCH_PANE::ClearAllResults()
 }
 
 
-void SEARCH_PANE::OnSearchTextEntry( wxCommandEvent& aEvent )
+void SEARCH_PANE::OnSearchTextEntry( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     m_lastQuery = m_searchCtrl1->GetValue();
 
@@ -208,7 +208,7 @@ void SEARCH_PANE::FocusSearch()
 }
 
 
-void SEARCH_PANE::OnNotebookPageChanged( wxBookCtrlEvent& aEvent )
+void SEARCH_PANE::OnNotebookPageChanged( wxBookCtrlEvent& aEvent [[maybe_unused]] )
 {
     SEARCH_PANE_TAB* tab = GetCurrentTab();
 

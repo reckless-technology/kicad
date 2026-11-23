@@ -74,7 +74,7 @@ public:
         for( size_t i = aFrom; i <= aTo; ++i )
         {
             m_boundCtrls[i].m_Ctrl->Bind( wxEVT_TEXT,
-                                          [aCb]( wxCommandEvent& aEvent )
+                                          [aCb]( wxCommandEvent& aEvent [[maybe_unused]] )
                                           {
                                               aCb();
                                           } );
@@ -87,7 +87,7 @@ public:
         updateAll();
     }
 
-    virtual bool Validate( wxArrayString& aErrs ) const { return true; }
+    virtual bool Validate( wxArrayString& aErrs [[maybe_unused]] ) const { return true; }
 
 protected:
     virtual void updateAll() = 0;
@@ -1391,20 +1391,20 @@ void PCB_BASE_EDIT_FRAME::ShowGraphicItemPropertiesDialog( PCB_SHAPE* aShape )
 }
 
 
-void DIALOG_SHAPE_PROPERTIES::onRoundedRectChanged( wxCommandEvent &event )
+void DIALOG_SHAPE_PROPERTIES::onRoundedRectChanged( wxCommandEvent &event [[maybe_unused]] )
 {
     if( !m_cbRoundRect->GetValue() )
         m_cornerRadius.ChangeValue( wxEmptyString );
 }
 
 
-void DIALOG_SHAPE_PROPERTIES::onCornerRadius( wxCommandEvent &event )
+void DIALOG_SHAPE_PROPERTIES::onCornerRadius( wxCommandEvent &event [[maybe_unused]] )
 {
     m_cbRoundRect->SetValue( true );
 }
 
 
-void DIALOG_SHAPE_PROPERTIES::onLayerSelection( wxCommandEvent& event )
+void DIALOG_SHAPE_PROPERTIES::onLayerSelection( wxCommandEvent& event [[maybe_unused]] )
 {
     if( m_LayerSelectionCtrl->GetLayerSelection() >= 0 )
         enableNetInfo();
@@ -1413,7 +1413,7 @@ void DIALOG_SHAPE_PROPERTIES::onLayerSelection( wxCommandEvent& event )
 }
 
 
-void DIALOG_SHAPE_PROPERTIES::onTechLayersChanged( wxCommandEvent& event )
+void DIALOG_SHAPE_PROPERTIES::onTechLayersChanged( wxCommandEvent& event [[maybe_unused]] )
 {
     enableTechLayers();
 }

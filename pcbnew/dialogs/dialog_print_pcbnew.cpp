@@ -291,13 +291,13 @@ void DIALOG_PRINT_PCBNEW::createLeftPanel()
 }
 
 
-void DIALOG_PRINT_PCBNEW::onUseThemeClicked( wxCommandEvent& event )
+void DIALOG_PRINT_PCBNEW::onUseThemeClicked( wxCommandEvent& event [[maybe_unused]] )
 {
     m_colorTheme->Enable( m_checkUseTheme->GetValue() );
 }
 
 
-void DIALOG_PRINT_PCBNEW::onPagePerLayerClicked( wxCommandEvent& event )
+void DIALOG_PRINT_PCBNEW::onPagePerLayerClicked( wxCommandEvent& event [[maybe_unused]] )
 {
     if( m_checkboxPagePerLayer->GetValue() )
     {
@@ -312,7 +312,7 @@ void DIALOG_PRINT_PCBNEW::onPagePerLayerClicked( wxCommandEvent& event )
 }
 
 
-void DIALOG_PRINT_PCBNEW::onColorModeClicked( wxCommandEvent& event )
+void DIALOG_PRINT_PCBNEW::onColorModeClicked( wxCommandEvent& event [[maybe_unused]] )
 {
     m_settings->m_blackWhite = m_outputMode->GetSelection();
 
@@ -455,7 +455,7 @@ void DIALOG_PRINT_PCBNEW::saveSettings()
 }
 
 
-int PCB_CONTROL::Print( const TOOL_EVENT& aEvent )
+int PCB_CONTROL::Print( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     // Selection affects the origin item visibility
     m_toolMgr->RunAction( ACTIONS::selectionClear );

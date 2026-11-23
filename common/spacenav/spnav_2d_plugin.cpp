@@ -134,7 +134,7 @@ void SPNAV_2D_PLUGIN::OnPan( double x, double y, double z )
 
 }
 
-void SPNAV_2D_PLUGIN::OnRotate( double rx, double ry, double rz )
+void SPNAV_2D_PLUGIN::OnRotate( double rx [[maybe_unused]], double ry [[maybe_unused]], double rz [[maybe_unused]] )
 {
     //Ignore the rotation
 }

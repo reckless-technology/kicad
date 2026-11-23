@@ -101,7 +101,7 @@ DIALOG_EXPORT_STEP::DIALOG_EXPORT_STEP( PCB_EDIT_FRAME* aEditFrame, const wxStri
 }
 
 
-DIALOG_EXPORT_STEP::DIALOG_EXPORT_STEP( PCB_EDIT_FRAME* aEditFrame, wxWindow* aParent,
+DIALOG_EXPORT_STEP::DIALOG_EXPORT_STEP( PCB_EDIT_FRAME* aEditFrame, wxWindow* aParent [[maybe_unused]],
                                         const wxString& aBoardPath, JOB_EXPORT_PCB_3D* aJob ) :
         DIALOG_EXPORT_STEP_BASE( aEditFrame ),
         m_editFrame( aEditFrame ),
@@ -326,7 +326,7 @@ wxString DIALOG_EXPORT_STEP::getComponentFilter() const
 }
 
 
-int BOARD_EDITOR_CONTROL::ExportSTEP( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::ExportSTEP( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     BOARD*     board = m_frame->GetBoard();
     wxFileName brdFile = board->GetFileName();
@@ -350,7 +350,7 @@ void DIALOG_EXPORT_STEP::onUpdateYPos( wxUpdateUIEvent& aEvent )
 }
 
 
-void DIALOG_EXPORT_STEP::onBrowseClicked( wxCommandEvent& aEvent )
+void DIALOG_EXPORT_STEP::onBrowseClicked( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     // clang-format off
     wxString filter = _( "STEP files" )
@@ -392,7 +392,7 @@ void DIALOG_EXPORT_STEP::onBrowseClicked( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_EXPORT_STEP::onFormatChoice( wxCommandEvent& event )
+void DIALOG_EXPORT_STEP::onFormatChoice( wxCommandEvent& event [[maybe_unused]] )
 {
     OnFmtChoiceOptionChanged();
 }
@@ -426,7 +426,7 @@ void DIALOG_EXPORT_STEP::OnFmtChoiceOptionChanged()
 }
 
 
-void DIALOG_EXPORT_STEP::onCbExportComponents( wxCommandEvent& event )
+void DIALOG_EXPORT_STEP::onCbExportComponents( wxCommandEvent& event [[maybe_unused]] )
 {
     bool enable = m_cbExportComponents->GetValue();
 
@@ -437,7 +437,7 @@ void DIALOG_EXPORT_STEP::onCbExportComponents( wxCommandEvent& event )
 }
 
 
-void DIALOG_EXPORT_STEP::OnComponentModeChange( wxCommandEvent& event )
+void DIALOG_EXPORT_STEP::OnComponentModeChange( wxCommandEvent& event [[maybe_unused]] )
 {
     m_txtComponentFilter->Enable( m_rbFilteredComponents->GetValue() );
 }
@@ -522,7 +522,7 @@ wxString DIALOG_EXPORT_STEP::StageBoardForExport( const wxString& aBoardPath, bo
 }
 
 
-void DIALOG_EXPORT_STEP::onExportButton( wxCommandEvent& aEvent )
+void DIALOG_EXPORT_STEP::onExportButton( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     wxString path = m_outputFileName->GetValue();
     double   tolerance;   // default value in mm

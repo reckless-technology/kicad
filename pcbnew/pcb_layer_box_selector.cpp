@@ -31,9 +31,9 @@
 #include <wx/wupdlock.h>
 
 
-PCB_LAYER_BOX_SELECTOR::PCB_LAYER_BOX_SELECTOR( wxWindow* parent, wxWindowID id, const wxString& value,
+PCB_LAYER_BOX_SELECTOR::PCB_LAYER_BOX_SELECTOR( wxWindow* parent, wxWindowID id, const wxString& value [[maybe_unused]],
                                                 const wxPoint& pos, const wxSize& size, int n,
-                                                const wxString choices[], int style ) :
+                                                const wxString choices[], int style [[maybe_unused]] ) :
         LAYER_BOX_SELECTOR( parent, id, pos, size, n, choices ),
         m_boardFrame( nullptr ),
         m_showNotEnabledBrdlayers( false ),

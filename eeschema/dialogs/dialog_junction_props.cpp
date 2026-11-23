@@ -86,7 +86,7 @@ bool DIALOG_JUNCTION_PROPS::TransferDataToWindow()
 }
 
 
-void DIALOG_JUNCTION_PROPS::resetDefaults( wxCommandEvent& event )
+void DIALOG_JUNCTION_PROPS::resetDefaults( wxCommandEvent& event [[maybe_unused]] )
 {
     m_diameter.SetValue( 0 );
     m_colorSwatch->SetSwatchColor( COLOR4D::UNSPECIFIED, false );

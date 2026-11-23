@@ -90,13 +90,13 @@ bool HTML_WINDOW::ScrollToAnchor( const wxString& aAnchor )
 }
 
 
-void HTML_WINDOW::onThemeChanged( wxSysColourChangedEvent &aEvent )
+void HTML_WINDOW::onThemeChanged( wxSysColourChangedEvent &aEvent [[maybe_unused]] )
 {
     ThemeChanged();
 }
 
 
-void HTML_WINDOW::onRightClick( wxMouseEvent& event )
+void HTML_WINDOW::onRightClick( wxMouseEvent& event [[maybe_unused]] )
 {
     wxMenu popup;
     popup.Append( ID_COPY_SELECTION, _( "Copy" ) );

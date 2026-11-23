@@ -502,7 +502,7 @@ PCB_EDIT_FRAME::PCB_EDIT_FRAME( KIWAY* aKiway, wxWindow* aParent ) :
     m_layerPairSettings = std::make_unique<LAYER_PAIR_SETTINGS>();
 
     m_layerPairSettings->Bind( PCB_LAYER_PAIR_PRESETS_CHANGED,
-            [&]( wxCommandEvent& aEvt )
+            [&]( wxCommandEvent& aEvt [[maybe_unused]] )
             {
                 // Update the project file list
                 std::span<const LAYER_PAIR_INFO> newPairInfos = m_layerPairSettings->GetLayerPairs();
@@ -511,7 +511,7 @@ PCB_EDIT_FRAME::PCB_EDIT_FRAME( KIWAY* aKiway, wxWindow* aParent ) :
             } );
 
     m_layerPairSettings->Bind( PCB_CURRENT_LAYER_PAIR_CHANGED,
-            [&]( wxCommandEvent& aEvt )
+            [&]( wxCommandEvent& aEvt [[maybe_unused]] )
             {
                 const LAYER_PAIR& layerPair = m_layerPairSettings->GetCurrentLayerPair();
                 PCB_SCREEN& screen = *GetScreen();
@@ -628,7 +628,7 @@ PCB_EDIT_FRAME::PCB_EDIT_FRAME( KIWAY* aKiway, wxWindow* aParent ) :
         m_eventCounterTimer = new wxTimer( this );
 
         Bind( wxEVT_TIMER,
-                [&]( wxTimerEvent& aEvent )
+                [&]( wxTimerEvent& aEvent [[maybe_unused]] )
                 {
                     GetCanvas()->m_PaintEventCounter->Show();
                     GetCanvas()->m_PaintEventCounter->Reset();
@@ -712,7 +712,7 @@ void PCB_EDIT_FRAME::StartCrossProbeFlash( const std::vector<BOARD_ITEM*>& aItem
 }
 
 
-void PCB_EDIT_FRAME::OnCrossProbeFlashTimer( wxTimerEvent& aEvent )
+void PCB_EDIT_FRAME::OnCrossProbeFlashTimer( wxTimerEvent& aEvent [[maybe_unused]] )
 {
     wxLogTrace( traceCrossProbeFlash, "Timer(PCB) fired: phase=%d running=%d items=%zu",
                 m_crossProbeFlashPhase, (int) m_crossProbeFlashing, m_crossProbeFlashItems.size() );
@@ -1169,7 +1169,7 @@ void PCB_EDIT_FRAME::setupUIConditions()
     PCB_EDITOR_CONDITIONS cond( this );
 
     auto undoCond =
-            [ this ] (const SELECTION& aSel )
+            [ this ] (const SELECTION& aSel [[maybe_unused]] )
             {
                 DRAWING_TOOL* drawingTool = m_toolManager->GetTool<DRAWING_TOOL>();
 
@@ -1325,7 +1325,7 @@ void PCB_EDIT_FRAME::setupUIConditions()
             };
 
     auto designBlockCond =
-            [ this ] (const SELECTION& aSel )
+            [ this ] (const SELECTION& aSel [[maybe_unused]] )
             {
                 return m_auimgr.GetPane( DesignBlocksPaneName() ).IsShown();
             };
@@ -2476,7 +2476,7 @@ void PCB_EDIT_FRAME::OnModify()
 }
 
 
-void PCB_EDIT_FRAME::OnBoardItemsChanged( BOARD& aBoard, std::vector<BOARD_ITEM*>& aItems )
+void PCB_EDIT_FRAME::OnBoardItemsChanged( BOARD& aBoard [[maybe_unused]], std::vector<BOARD_ITEM*>& aItems )
 {
     bool rebuilt = false;
 
@@ -2911,7 +2911,7 @@ void PCB_EDIT_FRAME::recompileDesignRules()
     {
         infobar->RemoveAllButtons();
         infobar->AddLink( _( "Edit design rules" ),
-                [&]( wxHyperlinkEvent& aEvent )
+                [&]( wxHyperlinkEvent& aEvent [[maybe_unused]] )
                 {
                     ShowBoardSetupDialog( _( "Custom Rules" ) );
                 } );
@@ -3197,7 +3197,7 @@ bool PCB_EDIT_FRAME::CloseFootprintFieldsTableDialog()
 }
 
 
-void PCB_EDIT_FRAME::onCloseFootprintFieldsTableDialog( wxCommandEvent& aEvent )
+void PCB_EDIT_FRAME::onCloseFootprintFieldsTableDialog( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( m_footprintFieldsTableDialog )
     {

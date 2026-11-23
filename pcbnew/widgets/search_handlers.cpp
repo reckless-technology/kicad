@@ -526,7 +526,7 @@ void NETS_SEARCH_HANDLER::SelectItems( std::vector<long>& aItemRows )
 }
 
 
-void NETS_SEARCH_HANDLER::ActivateItem( long aItemRow )
+void NETS_SEARCH_HANDLER::ActivateItem( long aItemRow [[maybe_unused]] )
 {
     m_frame->ShowBoardSetupDialog( _( "Net Classes" ) );
 }
@@ -617,7 +617,7 @@ void RATSNEST_SEARCH_HANDLER::SelectItems( std::vector<long>& aItemRows )
 }
 
 
-void RATSNEST_SEARCH_HANDLER::ActivateItem( long aItemRow )
+void RATSNEST_SEARCH_HANDLER::ActivateItem( long aItemRow [[maybe_unused]] )
 {
     m_frame->ShowBoardSetupDialog( _( "Net Classes" ) );
 }

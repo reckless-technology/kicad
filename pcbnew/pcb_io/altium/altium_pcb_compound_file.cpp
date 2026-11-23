@@ -88,7 +88,7 @@ void ALTIUM_PCB_COMPOUND_FILE::cacheLibFootprintNames()
         return;
 
     m_reader->EnumFiles( root, 1,
-        [this]( const CFB::COMPOUND_FILE_ENTRY* tentry, const CFB::utf16string& dir, int level ) -> int
+        [this]( const CFB::COMPOUND_FILE_ENTRY* tentry, const CFB::utf16string& dir [[maybe_unused]], int level [[maybe_unused]] ) -> int
         {
             if( m_reader->IsStream( tentry ) )
                 return 0;

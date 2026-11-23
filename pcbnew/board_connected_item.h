@@ -166,7 +166,7 @@ public:
      * @param aSource [out] optionally reports the source as a user-readable string.
      * @return the clearance in internal units.
      */
-    virtual std::optional<int> GetClearanceOverrides( wxString* aSource ) const
+    virtual std::optional<int> GetClearanceOverrides( wxString* aSource [[maybe_unused]] ) const
     {
         return std::optional<int>();
     }
@@ -187,7 +187,7 @@ public:
      * @param aSource [out] optionally reports the source as a user-readable string.
      * @return the clearance (if any is specified) in internal units.
      */
-    virtual std::optional<int> GetLocalClearance( wxString* aSource ) const
+    virtual std::optional<int> GetLocalClearance( wxString* aSource [[maybe_unused]] ) const
     {
         return std::optional<int>();
     }

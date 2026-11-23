@@ -49,7 +49,7 @@ BITMAP_BUTTON::BITMAP_BUTTON( wxWindow* aParent, wxWindowID aId, const wxPoint& 
 }
 
 
-BITMAP_BUTTON::BITMAP_BUTTON( wxWindow* aParent, wxWindowID aId, const wxBitmap& aDummyBitmap,
+BITMAP_BUTTON::BITMAP_BUTTON( wxWindow* aParent, wxWindowID aId, const wxBitmap& aDummyBitmap [[maybe_unused]],
                               const wxPoint& aPos, const wxSize& aSize, int aStyles ) :
         wxPanel( aParent, aId, aPos, aSize, aStyles ),
         m_isRadioButton( false ),
@@ -263,7 +263,7 @@ void BITMAP_BUTTON::OnDPIChanged( wxDPIChangedEvent& aEvent )
 }
 
 
-void BITMAP_BUTTON::OnPaint( wxPaintEvent& aEvent )
+void BITMAP_BUTTON::OnPaint( wxPaintEvent& aEvent [[maybe_unused]] )
 {
     bool    darkMode       = KIPLATFORM::UI::IsDarkTheme();
     wxColor highlightColor = wxSystemSettings::GetColour( wxSYS_COLOUR_HIGHLIGHT );

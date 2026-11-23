@@ -316,7 +316,7 @@ DIALOG_PAD_PROPERTIES::~DIALOG_PAD_PROPERTIES()
 bool DIALOG_PAD_PROPERTIES::m_sketchPreview = false;
 
 
-void DIALOG_PAD_PROPERTIES::OnInitDialog( wxInitDialogEvent& event )
+void DIALOG_PAD_PROPERTIES::OnInitDialog( wxInitDialogEvent& event [[maybe_unused]] )
 {
     m_selectedColor = COLOR4D( 1.0, 1.0, 1.0, 0.7 );
 
@@ -357,7 +357,7 @@ static void showCalculatorPage( KIWAY_PLAYER& aHolder, std::string& aPayload )
 }
 
 
-void DIALOG_PAD_PROPERTIES::OnHoleSizeCalculator( wxCommandEvent& aEvent )
+void DIALOG_PAD_PROPERTIES::OnHoleSizeCalculator( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     nlohmann::json payload;
     payload["page"] = "pth_size";
@@ -424,13 +424,13 @@ void DIALOG_PAD_PROPERTIES::prepareCanvas()
 }
 
 
-void DIALOG_PAD_PROPERTIES::OnElectricalTypeChaged( wxCommandEvent& event )
+void DIALOG_PAD_PROPERTIES::OnElectricalTypeChaged( wxCommandEvent& event [[maybe_unused]] )
 {
     transferDataToPad( m_previewPad );
 }
 
 
-void DIALOG_PAD_PROPERTIES::OnPadstackModeChanged( wxCommandEvent& aEvent )
+void DIALOG_PAD_PROPERTIES::OnPadstackModeChanged( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     transferDataToPad( m_previewPad );
     afterPadstackModeChanged();
@@ -438,7 +438,7 @@ void DIALOG_PAD_PROPERTIES::OnPadstackModeChanged( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_PAD_PROPERTIES::OnEditLayerChanged( wxCommandEvent& aEvent )
+void DIALOG_PAD_PROPERTIES::OnEditLayerChanged( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     // Save data from the previous layer
     transferDataToPad( m_previewPad );
@@ -498,7 +498,7 @@ void DIALOG_PAD_PROPERTIES::updateRoundRectCornerValues()
 }
 
 
-void DIALOG_PAD_PROPERTIES::onCornerRadiusChange( wxCommandEvent& event )
+void DIALOG_PAD_PROPERTIES::onCornerRadiusChange( wxCommandEvent& event [[maybe_unused]] )
 {
     if( m_previewPad->GetShape( m_editLayer ) != PAD_SHAPE::ROUNDRECT
             && m_previewPad->GetShape( m_editLayer ) != PAD_SHAPE::CHAMFERED_RECT )
@@ -1066,7 +1066,7 @@ void DIALOG_PAD_PROPERTIES::OnResize( wxSizeEvent& event )
 }
 
 
-void DIALOG_PAD_PROPERTIES::onChangePadDrawMode( wxCommandEvent& event )
+void DIALOG_PAD_PROPERTIES::onChangePadDrawMode( wxCommandEvent& event [[maybe_unused]] )
 {
     m_sketchPreview = m_cbShowPadOutline->GetValue();
 
@@ -1083,7 +1083,7 @@ void DIALOG_PAD_PROPERTIES::onChangePadDrawMode( wxCommandEvent& event )
 }
 
 
-void DIALOG_PAD_PROPERTIES::OnPadShapeSelection( wxCommandEvent& event )
+void DIALOG_PAD_PROPERTIES::OnPadShapeSelection( wxCommandEvent& event [[maybe_unused]] )
 {
     onPadShapeSelection( true );
 }
@@ -1215,7 +1215,7 @@ void DIALOG_PAD_PROPERTIES::onPadShapeSelection( bool aUpdateSpokeAngle )
 }
 
 
-void DIALOG_PAD_PROPERTIES::OnDrillShapeSelected( wxCommandEvent& event )
+void DIALOG_PAD_PROPERTIES::OnDrillShapeSelected( wxCommandEvent& event [[maybe_unused]] )
 {
     if( m_holeShapeCtrl->GetSelection() != CHOICE_SHAPE_CIRCLE )
     {
@@ -1243,7 +1243,7 @@ void DIALOG_PAD_PROPERTIES::OnDrillShapeSelected( wxCommandEvent& event )
 }
 
 
-void DIALOG_PAD_PROPERTIES::PadOrientEvent( wxCommandEvent& event )
+void DIALOG_PAD_PROPERTIES::PadOrientEvent( wxCommandEvent& event [[maybe_unused]] )
 {
     transferDataToPad( m_previewPad );
     redraw();
@@ -1300,7 +1300,7 @@ void DIALOG_PAD_PROPERTIES::UpdateLayersDropdown()
 }
 
 
-void DIALOG_PAD_PROPERTIES::PadTypeSelected( wxCommandEvent& event )
+void DIALOG_PAD_PROPERTIES::PadTypeSelected( wxCommandEvent& event [[maybe_unused]] )
 {
     bool hasHole = true;
     bool hasConnection = true;
@@ -1374,7 +1374,7 @@ void DIALOG_PAD_PROPERTIES::PadTypeSelected( wxCommandEvent& event )
 }
 
 
-void DIALOG_PAD_PROPERTIES::OnUpdateUI( wxUpdateUIEvent& event )
+void DIALOG_PAD_PROPERTIES::OnUpdateUI( wxUpdateUIEvent& event [[maybe_unused]] )
 {
     bool hasHole = true;
     bool hasConnection = true;
@@ -1470,7 +1470,7 @@ void DIALOG_PAD_PROPERTIES::onTeardropsUpdateUi( wxUpdateUIEvent& event )
 }
 
 
-void DIALOG_PAD_PROPERTIES::OnUpdateUINonCopperWarning( wxUpdateUIEvent& event )
+void DIALOG_PAD_PROPERTIES::OnUpdateUINonCopperWarning( wxUpdateUIEvent& event [[maybe_unused]] )
 {
     bool isOnCopperLayer = ( m_previewPad->GetLayerSet() & LSET::AllCuMask() ).any();
     m_nonCopperWarningBook->ChangeSelection( isOnCopperLayer ? 0 : 1 );
@@ -1618,7 +1618,7 @@ bool DIALOG_PAD_PROPERTIES::Show( bool aShow )
 }
 
 
-void DIALOG_PAD_PROPERTIES::OnSetCopperLayers( wxCommandEvent& event )
+void DIALOG_PAD_PROPERTIES::OnSetCopperLayers( wxCommandEvent& event [[maybe_unused]] )
 {
     transferDataToPad( m_previewPad );
     redraw();
@@ -1628,7 +1628,7 @@ void DIALOG_PAD_PROPERTIES::OnSetCopperLayers( wxCommandEvent& event )
 }
 
 
-void DIALOG_PAD_PROPERTIES::OnSetLayers( wxCommandEvent& event )
+void DIALOG_PAD_PROPERTIES::OnSetLayers( wxCommandEvent& event [[maybe_unused]] )
 {
     transferDataToPad( m_previewPad );
     redraw();
@@ -2510,7 +2510,7 @@ void DIALOG_PAD_PROPERTIES::syncBackdrillControls( bool aFromUserEvent )
 }
 
 
-void DIALOG_PAD_PROPERTIES::onTopPostMachining( wxCommandEvent& event )
+void DIALOG_PAD_PROPERTIES::onTopPostMachining( wxCommandEvent& event [[maybe_unused]] )
 {
     int selection = m_topPostMachining->GetSelection();
     // 0: None, 1: Countersink, 2: Counterbore
@@ -2539,7 +2539,7 @@ void DIALOG_PAD_PROPERTIES::onTopPostMachining( wxCommandEvent& event )
 }
 
 
-void DIALOG_PAD_PROPERTIES::onBottomPostMachining( wxCommandEvent& event )
+void DIALOG_PAD_PROPERTIES::onBottomPostMachining( wxCommandEvent& event [[maybe_unused]] )
 {
     int selection = m_bottomPostMachining->GetSelection();
     // 0: None, 1: Countersink, 2: Counterbore
@@ -2605,21 +2605,21 @@ void DIALOG_PAD_PROPERTIES::OnPadToDieDelayCheckbox( wxCommandEvent& event )
 }
 
 
-void DIALOG_PAD_PROPERTIES::onModify( wxSpinDoubleEvent& aEvent )
+void DIALOG_PAD_PROPERTIES::onModify( wxSpinDoubleEvent& aEvent [[maybe_unused]] )
 {
     if( m_initialized )
         OnModify();
 }
 
 
-void DIALOG_PAD_PROPERTIES::onModify( wxCommandEvent& aEvent )
+void DIALOG_PAD_PROPERTIES::onModify( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( m_initialized )
         OnModify();
 }
 
 
-void DIALOG_PAD_PROPERTIES::OnValuesChanged( wxCommandEvent& event )
+void DIALOG_PAD_PROPERTIES::OnValuesChanged( wxCommandEvent& event [[maybe_unused]] )
 {
     if( m_initialized )
     {

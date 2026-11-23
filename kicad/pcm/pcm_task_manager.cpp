@@ -112,7 +112,7 @@ PCM_TASK_MANAGER::STATUS PCM_TASK_MANAGER::DownloadAndInstall( const PCM_PACKAGE
 
 int PCM_TASK_MANAGER::downloadFile( const wxString& aFilePath, const wxString& url )
 {
-    TRANSFER_CALLBACK callback = [&]( size_t dltotal, size_t dlnow, size_t ultotal, size_t ulnow )
+    TRANSFER_CALLBACK callback = [&]( size_t dltotal, size_t dlnow, size_t ultotal [[maybe_unused]], size_t ulnow [[maybe_unused]] )
     {
         if( dltotal > 1024 )
             m_reporter->SetDownloadProgress( dlnow, dltotal );

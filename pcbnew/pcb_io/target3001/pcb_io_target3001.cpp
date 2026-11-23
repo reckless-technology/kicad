@@ -41,7 +41,7 @@ bool PCB_IO_TARGET3001::CanReadBoard( const wxString& aFileName ) const
 
 
 void PCB_IO_TARGET3001::loadBoard( const wxString& aFileName, BOARD& aBoard, bool aIsNewLoad,
-                                   const std::map<std::string, UTF8>* aProperties, PROJECT* aProject )
+                                   const std::map<std::string, UTF8>* aProperties, PROJECT* aProject [[maybe_unused]] )
 {
     // The import sets up the board's stack and origin, which would disturb a board it is appended to
     if( !aIsNewLoad )

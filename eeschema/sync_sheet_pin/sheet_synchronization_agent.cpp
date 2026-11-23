@@ -29,8 +29,8 @@
 SHEET_SYNCHRONIZATION_AGENT::SHEET_SYNCHRONIZATION_AGENT( DO_MODIFY_ITEM  aDoModify,
                                                           DO_DELETE_ITEM  aNotifyItemChange,
                                                           DO_PLACE_ITEM   aPlaceItem,
-                                                          TOOL_MANAGER*   aToolManager,
-                                                          SCH_EDIT_FRAME* a_frame ) :
+                                                          TOOL_MANAGER*   aToolManager [[maybe_unused]],
+                                                          SCH_EDIT_FRAME* a_frame [[maybe_unused]] ) :
         m_doModify( std::move( aDoModify ) ),
         m_doDelete( std::move( aNotifyItemChange ) ),
         m_doPlaceItem( std::move( aPlaceItem ) )

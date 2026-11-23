@@ -289,7 +289,7 @@ public:
      * EVT_CLOSE( SYMBOL_EDIT_FRAME::OnCloseWindow )
      * </p>
      */
-    void CloseWindow( wxCommandEvent& event )
+    void CloseWindow( wxCommandEvent& event [[maybe_unused]] )
     {
         // Generate a wxCloseEvent
         Close( false );

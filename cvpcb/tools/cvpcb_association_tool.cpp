@@ -47,7 +47,7 @@ CVPCB_ASSOCIATION_TOOL::CVPCB_ASSOCIATION_TOOL() :
 }
 
 
-int CVPCB_ASSOCIATION_TOOL::CopyAssoc( const TOOL_EVENT& aEvent )
+int CVPCB_ASSOCIATION_TOOL::CopyAssoc( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     LIB_ID fpid;
 
@@ -75,7 +75,7 @@ int CVPCB_ASSOCIATION_TOOL::CopyAssoc( const TOOL_EVENT& aEvent )
 }
 
 
-int CVPCB_ASSOCIATION_TOOL::CutAssoc( const TOOL_EVENT& aEvent )
+int CVPCB_ASSOCIATION_TOOL::CutAssoc( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     // If using the keyboard, only cut in the component frame
     if( m_frame->GetFocusedControl()
@@ -127,7 +127,7 @@ int CVPCB_ASSOCIATION_TOOL::CutAssoc( const TOOL_EVENT& aEvent )
 }
 
 
-int CVPCB_ASSOCIATION_TOOL::PasteAssoc( const TOOL_EVENT& aEvent )
+int CVPCB_ASSOCIATION_TOOL::PasteAssoc( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     // Get the selection
     std::vector<unsigned int> idx = m_frame->GetComponentIndices( CVPCB_MAINFRAME::SEL_COMPONENTS );
@@ -169,13 +169,13 @@ int CVPCB_ASSOCIATION_TOOL::PasteAssoc( const TOOL_EVENT& aEvent )
 }
 
 
-void CVPCB_ASSOCIATION_TOOL::Reset( RESET_REASON aReason )
+void CVPCB_ASSOCIATION_TOOL::Reset( RESET_REASON aReason [[maybe_unused]] )
 {
     m_frame = getEditFrame<CVPCB_MAINFRAME>();
 }
 
 
-int CVPCB_ASSOCIATION_TOOL::Undo( const TOOL_EVENT& aEvent )
+int CVPCB_ASSOCIATION_TOOL::Undo( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->UndoAssociation();
 
@@ -183,7 +183,7 @@ int CVPCB_ASSOCIATION_TOOL::Undo( const TOOL_EVENT& aEvent )
 }
 
 
-int CVPCB_ASSOCIATION_TOOL::Redo( const TOOL_EVENT& aEvent )
+int CVPCB_ASSOCIATION_TOOL::Redo( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->RedoAssociation();
 
@@ -191,7 +191,7 @@ int CVPCB_ASSOCIATION_TOOL::Redo( const TOOL_EVENT& aEvent )
 }
 
 
-int CVPCB_ASSOCIATION_TOOL::Associate( const TOOL_EVENT& aEvent )
+int CVPCB_ASSOCIATION_TOOL::Associate( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     // Get the currently selected footprint
     LIB_ID   fpid;
@@ -227,7 +227,7 @@ int CVPCB_ASSOCIATION_TOOL::Associate( const TOOL_EVENT& aEvent )
 }
 
 
-int CVPCB_ASSOCIATION_TOOL::AutoAssociate( const TOOL_EVENT& aEvent )
+int CVPCB_ASSOCIATION_TOOL::AutoAssociate( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->AutomaticFootprintMatching();
 
@@ -235,7 +235,7 @@ int CVPCB_ASSOCIATION_TOOL::AutoAssociate( const TOOL_EVENT& aEvent )
 }
 
 
-int CVPCB_ASSOCIATION_TOOL::DeleteAssoc( const TOOL_EVENT& aEvent )
+int CVPCB_ASSOCIATION_TOOL::DeleteAssoc( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     // Delete all the selected components' associations
     bool firstAssoc = true;
@@ -250,7 +250,7 @@ int CVPCB_ASSOCIATION_TOOL::DeleteAssoc( const TOOL_EVENT& aEvent )
 }
 
 
-int CVPCB_ASSOCIATION_TOOL::DeleteAll( const TOOL_EVENT& aEvent )
+int CVPCB_ASSOCIATION_TOOL::DeleteAll( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( IsOK( m_frame, _( "Delete all associations?" ) ) )
     {

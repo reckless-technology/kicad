@@ -716,7 +716,7 @@ void DIALOG_BOARD_SETUP::refreshRulePage( size_t aPage )
 }
 
 
-void DIALOG_BOARD_SETUP::onAuxiliaryAction( wxCommandEvent& aEvent )
+void DIALOG_BOARD_SETUP::onAuxiliaryAction( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     DIALOG_IMPORT_SETTINGS importDlg( this, m_frame );
 

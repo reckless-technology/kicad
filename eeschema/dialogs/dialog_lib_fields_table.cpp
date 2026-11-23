@@ -715,7 +715,7 @@ void DIALOG_LIB_FIELDS_TABLE::OnScope( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_LIB_FIELDS_TABLE::OnMenu( wxCommandEvent& aEvent )
+void DIALOG_LIB_FIELDS_TABLE::OnMenu( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     // Build a pop menu:
     wxMenu menu;
@@ -754,7 +754,7 @@ void DIALOG_LIB_FIELDS_TABLE::OnMenu( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_LIB_FIELDS_TABLE::OnSaveAndContinue( wxCommandEvent& aEvent )
+void DIALOG_LIB_FIELDS_TABLE::OnSaveAndContinue( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( TransferDataFromWindow() )
     {
@@ -764,7 +764,7 @@ void DIALOG_LIB_FIELDS_TABLE::OnSaveAndContinue( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_LIB_FIELDS_TABLE::OnCancel( wxCommandEvent& aEvent )
+void DIALOG_LIB_FIELDS_TABLE::OnCancel( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     m_grid->CommitPendingChanges( true );
 
@@ -784,7 +784,7 @@ void DIALOG_LIB_FIELDS_TABLE::OnCancel( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_LIB_FIELDS_TABLE::OnOk( wxCommandEvent& aEvent )
+void DIALOG_LIB_FIELDS_TABLE::OnOk( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( !TransferDataFromWindow() )
         return;

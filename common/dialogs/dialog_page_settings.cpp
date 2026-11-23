@@ -228,7 +228,7 @@ bool DIALOG_PAGES_SETTINGS::TransferDataFromWindow()
 }
 
 
-void DIALOG_PAGES_SETTINGS::OnPaperSizeChoice( wxCommandEvent& event )
+void DIALOG_PAGES_SETTINGS::OnPaperSizeChoice( wxCommandEvent& event [[maybe_unused]] )
 {
     int idx = m_paperSizeComboBox->GetSelection();
 
@@ -264,7 +264,7 @@ void DIALOG_PAGES_SETTINGS::OnPaperSizeChoice( wxCommandEvent& event )
 }
 
 
-void DIALOG_PAGES_SETTINGS::OnUserPageSizeXTextUpdated( wxCommandEvent& event )
+void DIALOG_PAGES_SETTINGS::OnUserPageSizeXTextUpdated( wxCommandEvent& event [[maybe_unused]] )
 {
     if( m_initialized )
     {
@@ -274,7 +274,7 @@ void DIALOG_PAGES_SETTINGS::OnUserPageSizeXTextUpdated( wxCommandEvent& event )
 }
 
 
-void DIALOG_PAGES_SETTINGS::OnUserPageSizeYTextUpdated( wxCommandEvent& event )
+void DIALOG_PAGES_SETTINGS::OnUserPageSizeYTextUpdated( wxCommandEvent& event [[maybe_unused]] )
 {
     if( m_initialized )
     {
@@ -284,7 +284,7 @@ void DIALOG_PAGES_SETTINGS::OnUserPageSizeYTextUpdated( wxCommandEvent& event )
 }
 
 
-void DIALOG_PAGES_SETTINGS::OnPageOrientationChoice( wxCommandEvent& event )
+void DIALOG_PAGES_SETTINGS::OnPageOrientationChoice( wxCommandEvent& event [[maybe_unused]] )
 {
     if( m_initialized )
     {
@@ -294,7 +294,7 @@ void DIALOG_PAGES_SETTINGS::OnPageOrientationChoice( wxCommandEvent& event )
 }
 
 
-void DIALOG_PAGES_SETTINGS::OnRevisionTextUpdated( wxCommandEvent& event )
+void DIALOG_PAGES_SETTINGS::OnRevisionTextUpdated( wxCommandEvent& event [[maybe_unused]] )
 {
     if( m_initialized && m_TextRevision->IsModified() )
     {
@@ -305,7 +305,7 @@ void DIALOG_PAGES_SETTINGS::OnRevisionTextUpdated( wxCommandEvent& event )
 }
 
 
-void DIALOG_PAGES_SETTINGS::OnDateTextUpdated( wxCommandEvent& event )
+void DIALOG_PAGES_SETTINGS::OnDateTextUpdated( wxCommandEvent& event [[maybe_unused]] )
 {
     if( m_initialized && m_TextDate->IsModified() )
     {
@@ -316,7 +316,7 @@ void DIALOG_PAGES_SETTINGS::OnDateTextUpdated( wxCommandEvent& event )
 }
 
 
-void DIALOG_PAGES_SETTINGS::OnTitleTextUpdated( wxCommandEvent& event )
+void DIALOG_PAGES_SETTINGS::OnTitleTextUpdated( wxCommandEvent& event [[maybe_unused]] )
 {
     if( m_initialized && m_TextTitle->IsModified() )
     {
@@ -327,7 +327,7 @@ void DIALOG_PAGES_SETTINGS::OnTitleTextUpdated( wxCommandEvent& event )
 }
 
 
-void DIALOG_PAGES_SETTINGS::OnCompanyTextUpdated( wxCommandEvent& event )
+void DIALOG_PAGES_SETTINGS::OnCompanyTextUpdated( wxCommandEvent& event [[maybe_unused]] )
 {
     if( m_initialized && m_TextCompany->IsModified() )
     {
@@ -338,7 +338,7 @@ void DIALOG_PAGES_SETTINGS::OnCompanyTextUpdated( wxCommandEvent& event )
 }
 
 
-void DIALOG_PAGES_SETTINGS::OnComment1TextUpdated( wxCommandEvent& event )
+void DIALOG_PAGES_SETTINGS::OnComment1TextUpdated( wxCommandEvent& event [[maybe_unused]] )
 {
     if( m_initialized && m_TextComment1->IsModified() )
     {
@@ -349,7 +349,7 @@ void DIALOG_PAGES_SETTINGS::OnComment1TextUpdated( wxCommandEvent& event )
 }
 
 
-void DIALOG_PAGES_SETTINGS::OnComment2TextUpdated( wxCommandEvent& event )
+void DIALOG_PAGES_SETTINGS::OnComment2TextUpdated( wxCommandEvent& event [[maybe_unused]] )
 {
     if( m_initialized && m_TextComment2->IsModified() )
     {
@@ -360,7 +360,7 @@ void DIALOG_PAGES_SETTINGS::OnComment2TextUpdated( wxCommandEvent& event )
 }
 
 
-void DIALOG_PAGES_SETTINGS::OnComment3TextUpdated( wxCommandEvent& event )
+void DIALOG_PAGES_SETTINGS::OnComment3TextUpdated( wxCommandEvent& event [[maybe_unused]] )
 {
     if( m_initialized && m_TextComment3->IsModified() )
     {
@@ -371,7 +371,7 @@ void DIALOG_PAGES_SETTINGS::OnComment3TextUpdated( wxCommandEvent& event )
 }
 
 
-void DIALOG_PAGES_SETTINGS::OnComment4TextUpdated( wxCommandEvent& event )
+void DIALOG_PAGES_SETTINGS::OnComment4TextUpdated( wxCommandEvent& event [[maybe_unused]] )
 {
     if( m_initialized && m_TextComment4->IsModified() )
     {
@@ -382,7 +382,7 @@ void DIALOG_PAGES_SETTINGS::OnComment4TextUpdated( wxCommandEvent& event )
 }
 
 
-void DIALOG_PAGES_SETTINGS::OnComment5TextUpdated( wxCommandEvent& event )
+void DIALOG_PAGES_SETTINGS::OnComment5TextUpdated( wxCommandEvent& event [[maybe_unused]] )
 {
     if( m_initialized && m_TextComment5->IsModified() )
     {
@@ -393,7 +393,7 @@ void DIALOG_PAGES_SETTINGS::OnComment5TextUpdated( wxCommandEvent& event )
 }
 
 
-void DIALOG_PAGES_SETTINGS::OnComment6TextUpdated( wxCommandEvent& event )
+void DIALOG_PAGES_SETTINGS::OnComment6TextUpdated( wxCommandEvent& event [[maybe_unused]] )
 {
     if( m_initialized && m_TextComment6->IsModified() )
     {
@@ -404,7 +404,7 @@ void DIALOG_PAGES_SETTINGS::OnComment6TextUpdated( wxCommandEvent& event )
 }
 
 
-void DIALOG_PAGES_SETTINGS::OnComment7TextUpdated( wxCommandEvent& event )
+void DIALOG_PAGES_SETTINGS::OnComment7TextUpdated( wxCommandEvent& event [[maybe_unused]] )
 {
     if( m_initialized && m_TextComment7->IsModified() )
     {
@@ -415,7 +415,7 @@ void DIALOG_PAGES_SETTINGS::OnComment7TextUpdated( wxCommandEvent& event )
 }
 
 
-void DIALOG_PAGES_SETTINGS::OnComment8TextUpdated( wxCommandEvent& event )
+void DIALOG_PAGES_SETTINGS::OnComment8TextUpdated( wxCommandEvent& event [[maybe_unused]] )
 {
     if( m_initialized && m_TextComment8->IsModified() )
     {
@@ -426,7 +426,7 @@ void DIALOG_PAGES_SETTINGS::OnComment8TextUpdated( wxCommandEvent& event )
 }
 
 
-void DIALOG_PAGES_SETTINGS::OnComment9TextUpdated( wxCommandEvent& event )
+void DIALOG_PAGES_SETTINGS::OnComment9TextUpdated( wxCommandEvent& event [[maybe_unused]] )
 {
     if( m_initialized && m_TextComment9->IsModified() )
     {
@@ -437,7 +437,7 @@ void DIALOG_PAGES_SETTINGS::OnComment9TextUpdated( wxCommandEvent& event )
 }
 
 
-void DIALOG_PAGES_SETTINGS::OnDateApplyClick( wxCommandEvent& event )
+void DIALOG_PAGES_SETTINGS::OnDateApplyClick( wxCommandEvent& event [[maybe_unused]] )
 {
     wxDateTime datetime = m_PickDate->GetValue();
 
@@ -704,7 +704,7 @@ void DIALOG_PAGES_SETTINGS::GetCustomSizeMilsFromDialog()
 }
 
 
-void DIALOG_PAGES_SETTINGS::OnWksFileSelection( wxCommandEvent& event )
+void DIALOG_PAGES_SETTINGS::OnWksFileSelection( wxCommandEvent& event [[maybe_unused]] )
 {
     wxFileName fn = GetWksFileName();
     wxString   name = fn.GetFullName();

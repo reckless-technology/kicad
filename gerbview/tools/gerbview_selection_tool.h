@@ -136,7 +136,7 @@ private:
      * @param aHighlightMode should be either SELECTED or BRIGHTENED
      * @param aGroup is the group to add the item to in the BRIGHTENED mode.
      */
-    void highlight( EDA_ITEM* aItem, int aHighlightMode, SELECTION* aGroup = nullptr ) override
+    void highlight( EDA_ITEM* aItem [[maybe_unused]], int aHighlightMode [[maybe_unused]], SELECTION* aGroup [[maybe_unused]] = nullptr ) override
     {
         // Currently not used in GerbView
     };
@@ -148,7 +148,7 @@ private:
      * @param aHighlightMode should be either SELECTED or BRIGHTENED
      * @param aGroup is the group to remove the item from.
      */
-    void unhighlight( EDA_ITEM* aItem, int aHighlightMode, SELECTION* aGroup = nullptr ) override
+    void unhighlight( EDA_ITEM* aItem [[maybe_unused]], int aHighlightMode [[maybe_unused]], SELECTION* aGroup [[maybe_unused]] = nullptr ) override
     {
         // Currently not used in GerbView
     };

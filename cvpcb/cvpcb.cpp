@@ -175,7 +175,7 @@ static struct IFACE : public KIFACE_BASE
     void OnKifaceEnd() override;
 
     wxWindow* CreateKiWindow( wxWindow* aParent, int aClassId, KIWAY* aKiway,
-                              int aCtlBits = 0 ) override
+                              int aCtlBits [[maybe_unused]] = 0 ) override
     {
         switch( aClassId )
         {
@@ -226,7 +226,7 @@ KIFACE_BASE& Kiface() { return kiface; }
 
 // KIFACE_GETTER's actual spelling is a substitution macro found in kiway.h.
 // KIFACE_GETTER will not have name mangling due to declaration in kiway.h.
-KIFACE_API KIFACE* KIFACE_GETTER(  int* aKIFACEversion, int aKIWAYversion, PGM_BASE* aProgram )
+KIFACE_API KIFACE* KIFACE_GETTER(  int* aKIFACEversion [[maybe_unused]], int aKIWAYversion [[maybe_unused]], PGM_BASE* aProgram [[maybe_unused]] )
 {
     return &kiface;
 }
@@ -237,7 +237,7 @@ KIFACE_API KIFACE* KIFACE_GETTER(  int* aKIFACEversion, int aKIWAYversion, PGM_B
 // A short lived implementation.  cvpcb will get combine into Pcbnew shortly, so
 // we skip setting KICAD7_FOOTPRINT_DIR here for now.  User should set the environment
 // variable.
-bool IFACE::OnKifaceStart( PGM_BASE* aProgram, int aCtlBits, KIWAY* aKiway )
+bool IFACE::OnKifaceStart( PGM_BASE* aProgram, int aCtlBits, KIWAY* aKiway [[maybe_unused]] )
 {
     // This is process level, not project level, initialization of the DSO.
 

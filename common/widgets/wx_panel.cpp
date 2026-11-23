@@ -40,7 +40,7 @@ WX_PANEL::~WX_PANEL()
 }
 
 
-void WX_PANEL::OnPaint( wxPaintEvent& event )
+void WX_PANEL::OnPaint( wxPaintEvent& event [[maybe_unused]] )
 {
     wxRect    rect( wxPoint( 0, 0 ), GetClientSize() );
     wxPaintDC dc( this );

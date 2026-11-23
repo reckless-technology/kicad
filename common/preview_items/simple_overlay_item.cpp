@@ -35,7 +35,7 @@ SIMPLE_OVERLAY_ITEM::SIMPLE_OVERLAY_ITEM():
 }
 
 
-void SIMPLE_OVERLAY_ITEM::ViewDraw( int aLayer, KIGFX::VIEW* aView ) const
+void SIMPLE_OVERLAY_ITEM::ViewDraw( int aLayer [[maybe_unused]], KIGFX::VIEW* aView ) const
 {
     KIGFX::GAL& gal = *aView->GetGAL();
 

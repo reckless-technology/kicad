@@ -444,7 +444,7 @@ SYMBOL_EDIT_FRAME::~SYMBOL_EDIT_FRAME()
 }
 
 
-void SYMBOL_EDIT_FRAME::LoadSettings( APP_SETTINGS_BASE* aCfg )
+void SYMBOL_EDIT_FRAME::LoadSettings( APP_SETTINGS_BASE* aCfg [[maybe_unused]] )
 {
     wxCHECK_RET( m_settings, "Call to SYMBOL_EDIT_FRAME::LoadSettings with null m_settings" );
 
@@ -458,7 +458,7 @@ void SYMBOL_EDIT_FRAME::LoadSettings( APP_SETTINGS_BASE* aCfg )
 }
 
 
-void SYMBOL_EDIT_FRAME::SaveSettings( APP_SETTINGS_BASE* aCfg )
+void SYMBOL_EDIT_FRAME::SaveSettings( APP_SETTINGS_BASE* aCfg [[maybe_unused]] )
 {
     wxCHECK_RET( m_settings, "Call to SYMBOL_EDIT_FRAME:SaveSettings with null m_settings" );
 
@@ -521,7 +521,7 @@ APP_SETTINGS_BASE* SYMBOL_EDIT_FRAME::config() const
 }
 
 
-COLOR_SETTINGS* SYMBOL_EDIT_FRAME::GetColorSettings( bool aForceRefresh ) const
+COLOR_SETTINGS* SYMBOL_EDIT_FRAME::GetColorSettings( bool aForceRefresh [[maybe_unused]] ) const
 {
     APP_SETTINGS_BASE* cfg = GetSettings();
 
@@ -608,7 +608,7 @@ void SYMBOL_EDIT_FRAME::setupUIConditions()
             };
 
     auto revertableCondition =
-            [this]( const SELECTION& sel )
+            [this]( const SELECTION& sel [[maybe_unused]] )
             {
                 if( !m_libMgr )
                     return false;
@@ -623,26 +623,26 @@ void SYMBOL_EDIT_FRAME::setupUIConditions()
             };
 
     auto libSelectedCondition =
-            [this]( const SELECTION& sel )
+            [this]( const SELECTION& sel [[maybe_unused]] )
             {
                 return !GetTargetLibId().GetLibNickname().empty();
             };
 
     auto canEditProperties =
-            [this]( const SELECTION& sel )
+            [this]( const SELECTION& sel [[maybe_unused]] )
             {
                 return m_symbol && ( !IsSymbolFromLegacyLibrary() || IsSymbolFromSchematic() );
             };
 
     auto symbolSelectedInTreeCondition =
-            [this]( const SELECTION& sel )
+            [this]( const SELECTION& sel [[maybe_unused]] )
             {
                 LIB_ID targetLibId = GetTargetLibId();
                 return !targetLibId.GetLibNickname().empty() && !targetLibId.GetLibItemName().empty();
             };
 
     auto saveSymbolAsCondition =
-            [this]( const SELECTION& aSel )
+            [this]( const SELECTION& aSel [[maybe_unused]] )
             {
                 return getTargetSymbol() != nullptr;
             };
@@ -1040,7 +1040,7 @@ void SYMBOL_EDIT_FRAME::ThawLibraryTree()
 }
 
 
-void SYMBOL_EDIT_FRAME::OnExitKiCad( wxCommandEvent& event )
+void SYMBOL_EDIT_FRAME::OnExitKiCad( wxCommandEvent& event [[maybe_unused]] )
 {
     Kiway().OnKiCadExit();
 }
@@ -1120,7 +1120,7 @@ void SYMBOL_EDIT_FRAME::updateInfoBar()
                                                       m_reference ) );
 
                     infobar.AddLink( wxString::Format( _( "Open symbol from library %s" ), UnescapeString( libName ) ),
-                            [this]( wxHyperlinkEvent& aEvent )
+                            [this]( wxHyperlinkEvent& aEvent [[maybe_unused]] )
                             {
                                 GetToolManager()->RunAction( SCH_ACTIONS::editLibSymbolWithLibEdit );
                             } );
@@ -1131,7 +1131,7 @@ void SYMBOL_EDIT_FRAME::updateInfoBar()
                                        "Libraries to migrate to current format." ) );
 
                     infobar.AddLink( _( "Manage symbol libraries" ),
-                            [this]( wxHyperlinkEvent& aEvent )
+                            [this]( wxHyperlinkEvent& aEvent [[maybe_unused]] )
                             {
                                 InvokeSchEditSymbolLibTable( &Kiway(), this );
                             } );
@@ -1150,7 +1150,7 @@ void SYMBOL_EDIT_FRAME::updateInfoBar()
                         wxString rootSymbolName = rootSymbol->GetName();
 
                         infobar.AddLink( wxString::Format( _( "Open %s" ), UnescapeString( rootSymbolName ) ),
-                                [this, libName, rootSymbolName, unit, bodyStyle]( wxHyperlinkEvent& aEvent )
+                                [this, libName, rootSymbolName, unit, bodyStyle]( wxHyperlinkEvent& aEvent [[maybe_unused]] )
                                 {
                                     LoadSymbolFromLib( libName, rootSymbolName, unit, bodyStyle );
                                 } );
@@ -1164,7 +1164,7 @@ void SYMBOL_EDIT_FRAME::updateInfoBar()
                     msgs.push_back( _( "Library is read-only.  Changes cannot be saved to this library." ) );
 
                     infobar.AddLink( _( "Create an editable copy" ),
-                            [this, libName]( wxHyperlinkEvent& aEvent )
+                            [this, libName]( wxHyperlinkEvent& aEvent [[maybe_unused]] )
                             {
                                 wxString msg = wxString::Format( _( "Create an editable copy of the symbol or "
                                                                     "the entire library (%s)?" ),
@@ -1592,7 +1592,7 @@ void SYMBOL_EDIT_FRAME::SyncLibraries( bool aShowProgress, bool aPreloadCancelle
         wxString  pendingLibName;
 
         m_libMgr->Sync( aForceRefresh,
-                [&]( int progress, int max, const wxString& libName )
+                [&]( int progress, int max [[maybe_unused]], const wxString& libName )
                 {
                     pendingProgress = progress;
                     pendingLibName = libName;
@@ -1607,7 +1607,7 @@ void SYMBOL_EDIT_FRAME::SyncLibraries( bool aShowProgress, bool aPreloadCancelle
     }
     else if( !aPreloadCancelled )
     {
-        m_libMgr->Sync( aForceRefresh, [&]( int progress, int max, const wxString& libName ) {} );
+        m_libMgr->Sync( aForceRefresh, [&]( int progress [[maybe_unused]], int max [[maybe_unused]], const wxString& libName [[maybe_unused]] ) {} );
     }
 
     if( m_treePane )
@@ -1927,7 +1927,7 @@ void SYMBOL_EDIT_FRAME::HardRedraw()
 }
 
 
-const BOX2I SYMBOL_EDIT_FRAME::GetDocumentExtents( bool aIncludeAllVisible ) const
+const BOX2I SYMBOL_EDIT_FRAME::GetDocumentExtents( bool aIncludeAllVisible [[maybe_unused]] ) const
 {
     if( !m_symbol )
     {

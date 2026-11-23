@@ -69,7 +69,7 @@ bool DIALOG_EXPORT_VRML::TransferDataFromWindow()
 }
 
 
-int BOARD_EDITOR_CONTROL::ExportVRML( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::ExportVRML( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     BOARD* board = m_frame->GetBoard();
 

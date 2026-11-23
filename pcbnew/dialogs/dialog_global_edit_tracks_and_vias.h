@@ -34,23 +34,23 @@ public:
 protected:
     void onActionButtonChange( wxCommandEvent& event ) override;
 
-    void OnNetclassFilterSelect( wxCommandEvent& event ) override
+    void OnNetclassFilterSelect( wxCommandEvent& event [[maybe_unused]] ) override
     {
         m_netclassFilterOpt->SetValue( true );
     }
-    void OnNetFilterSelect( wxCommandEvent& event )
+    void OnNetFilterSelect( wxCommandEvent& event [[maybe_unused]] )
     {
         m_netFilterOpt->SetValue( true );
     }
-    void OnLayerFilterSelect( wxCommandEvent& event ) override
+    void OnLayerFilterSelect( wxCommandEvent& event [[maybe_unused]] ) override
     {
         m_layerFilterOpt->SetValue( true );
     }
-    void OnTrackWidthText( wxCommandEvent& aEvent ) override
+    void OnTrackWidthText( wxCommandEvent& aEvent [[maybe_unused]] ) override
     {
         m_filterByTrackWidth->SetValue( true );
     }
-    void OnViaSizeText( wxCommandEvent& aEvent ) override
+    void OnViaSizeText( wxCommandEvent& aEvent [[maybe_unused]] ) override
     {
         m_filterByViaSize->SetValue( true );
     }

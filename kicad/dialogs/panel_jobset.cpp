@@ -122,7 +122,7 @@ public:
         finishDialogSettings();
     }
 
-    virtual void OnUpdateUI( wxUpdateUIEvent& event ) override
+    virtual void OnUpdateUI( wxUpdateUIEvent& event [[maybe_unused]] ) override
     {
         if( GetSize().GetWidth() != m_lastWidth )
         {
@@ -261,7 +261,7 @@ public:
         m_pathInfo->SetLabel( wxControl::Ellipsize( aMsg, dc, wxELLIPSIZE_MIDDLE, width ) );
     }
 
-    virtual void OnGenerate( wxCommandEvent& event ) override
+    virtual void OnGenerate( wxCommandEvent& event [[maybe_unused]] ) override
     {
         ClearStatus();
         Refresh();
@@ -291,7 +291,7 @@ public:
                 } );
     }
 
-    void OnOpenOutput( wxCommandEvent& aEvent ) override
+    void OnOpenOutput( wxCommandEvent& aEvent [[maybe_unused]] ) override
     {
         JOBSET_DESTINATION* destination = GetDestination();
         wxCHECK( destination, /*void*/ );
@@ -317,7 +317,7 @@ public:
             DisplayError( this, wxString::Format( _( "Failed to open '%s'." ), fullPath ) );
     }
 
-    void OnLastStatusClick( wxMouseEvent& aEvent ) override
+    void OnLastStatusClick( wxMouseEvent& aEvent [[maybe_unused]] ) override
     {
         JOBSET_DESTINATION* destination = GetDestination();
         wxCHECK( destination, /*void*/ );
@@ -326,7 +326,7 @@ public:
         dialog.ShowModal();
     }
 
-    void OnRightDown( wxMouseEvent& aEvent ) override
+    void OnRightDown( wxMouseEvent& aEvent [[maybe_unused]] ) override
     {
         JOBSET_DESTINATION* destination = GetDestination();
         wxCHECK( destination, /*void*/ );
@@ -345,7 +345,7 @@ public:
         PopupMenu( &menu );
     }
 
-    void OnProperties( wxCommandEvent& aEvent ) override
+    void OnProperties( wxCommandEvent& aEvent [[maybe_unused]] ) override
     {
         JOBSET_DESTINATION* destination = GetDestination();
         wxCHECK( destination, /*void*/ );
@@ -362,7 +362,7 @@ public:
         }
     }
 
-    virtual void OnDelete( wxCommandEvent& aEvent ) override
+    virtual void OnDelete( wxCommandEvent& aEvent [[maybe_unused]] ) override
     {
         m_panelParent->RemoveDestination( this );
     }
@@ -433,7 +433,7 @@ JOBS_GRID_TRICKS::JOBS_GRID_TRICKS( PANEL_JOBSET* aParent, WX_GRID* aGrid ) :
 }
 
 
-void JOBS_GRID_TRICKS::showPopupMenu( wxMenu& menu, wxGridEvent& aEvent )
+void JOBS_GRID_TRICKS::showPopupMenu( wxMenu& menu, wxGridEvent& aEvent [[maybe_unused]] )
 {
     // Snapshot the selection, PopupMenu() below can lose it before doPopupSelection() runs
     m_selectedRows = m_grid->GetSelectedRows();
@@ -732,7 +732,7 @@ void PANEL_JOBSET::OnGridCellChange( wxGridEvent& aEvent )
 }
 
 
-void PANEL_JOBSET::OnSaveButtonClick( wxCommandEvent& aEvent )
+void PANEL_JOBSET::OnSaveButtonClick( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( !m_jobsGrid->CommitPendingChanges() )
         return;
@@ -742,7 +742,7 @@ void PANEL_JOBSET::OnSaveButtonClick( wxCommandEvent& aEvent )
 }
 
 
-void PANEL_JOBSET::OnAddJobClick( wxCommandEvent& aEvent )
+void PANEL_JOBSET::OnAddJobClick( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( !m_jobsGrid->CommitPendingChanges() )
         return;
@@ -813,7 +813,7 @@ void PANEL_JOBSET::OnAddJobClick( wxCommandEvent& aEvent )
 }
 
 
-void PANEL_JOBSET::OnJobButtonDelete( wxCommandEvent& aEvent )
+void PANEL_JOBSET::OnJobButtonDelete( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     m_jobsGrid->OnDeleteRows(
             [&]( int row )
@@ -824,7 +824,7 @@ void PANEL_JOBSET::OnJobButtonDelete( wxCommandEvent& aEvent )
 }
 
 
-void PANEL_JOBSET::OnAddDestinationClick( wxCommandEvent& aEvent )
+void PANEL_JOBSET::OnAddDestinationClick( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     wxArrayString              headers;
     std::vector<wxArrayString> items;
@@ -950,7 +950,7 @@ wxString PANEL_JOBSET::GetFilePath() const
 }
 
 
-void PANEL_JOBSET::OnJobButtonUp( wxCommandEvent& aEvent )
+void PANEL_JOBSET::OnJobButtonUp( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( !m_jobsGrid->CommitPendingChanges() )
         return;
@@ -973,7 +973,7 @@ void PANEL_JOBSET::OnJobButtonUp( wxCommandEvent& aEvent )
 }
 
 
-void PANEL_JOBSET::OnJobButtonDown( wxCommandEvent& aEvent )
+void PANEL_JOBSET::OnJobButtonDown( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( !m_jobsGrid->CommitPendingChanges() )
         return;
@@ -996,7 +996,7 @@ void PANEL_JOBSET::OnJobButtonDown( wxCommandEvent& aEvent )
 }
 
 
-void PANEL_JOBSET::OnGenerateAllDestinationsClick( wxCommandEvent& event )
+void PANEL_JOBSET::OnGenerateAllDestinationsClick( wxCommandEvent& event [[maybe_unused]] )
 {
     if( !m_jobsGrid->CommitPendingChanges() )
         return;

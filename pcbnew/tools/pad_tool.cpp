@@ -449,7 +449,7 @@ bool PAD_TOOL::Init()
                 };
 
         auto recombineCondition =
-                [this]( const SELECTION& aSel )
+                [this]( const SELECTION& aSel [[maybe_unused]] )
                 {
                     return m_editPad != niluuid;
                 };
@@ -489,7 +489,7 @@ bool PAD_TOOL::Init()
 }
 
 
-int PAD_TOOL::pastePadProperties( const TOOL_EVENT& aEvent )
+int PAD_TOOL::pastePadProperties( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     PCB_SELECTION_TOOL*  selTool = m_toolMgr->GetTool<PCB_SELECTION_TOOL>();
     const PCB_SELECTION& selection = selTool->GetSelection();
@@ -515,7 +515,7 @@ int PAD_TOOL::pastePadProperties( const TOOL_EVENT& aEvent )
 }
 
 
-int PAD_TOOL::copyPadSettings( const TOOL_EVENT& aEvent )
+int PAD_TOOL::copyPadSettings( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     PCB_SELECTION_TOOL*  selTool = m_toolMgr->GetTool<PCB_SELECTION_TOOL>();
     const PCB_SELECTION& selection = selTool->GetSelection();
@@ -630,7 +630,7 @@ static void doPushPadProperties( BOARD& board, const PAD& aSrcPad, BOARD_COMMIT&
 }
 
 
-int PAD_TOOL::pushPadSettings( const TOOL_EVENT& aEvent )
+int PAD_TOOL::pushPadSettings( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     PCB_SELECTION_TOOL*  selTool = m_toolMgr->GetTool<PCB_SELECTION_TOOL>();
     const PCB_SELECTION& selection = selTool->GetSelection();
@@ -1093,7 +1093,7 @@ int PAD_TOOL::PlacePad( const TOOL_EVENT& aEvent )
 }
 
 
-int PAD_TOOL::EditPad( const TOOL_EVENT& aEvent )
+int PAD_TOOL::EditPad( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( !m_isFootprintEditor )
         return 0;
@@ -1144,7 +1144,7 @@ int PAD_TOOL::EditPad( const TOOL_EVENT& aEvent )
 }
 
 
-int PAD_TOOL::OnUndoRedo( const TOOL_EVENT& aEvent )
+int PAD_TOOL::OnUndoRedo( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     PAD* flaggedPad = nullptr;
     KIID flaggedPadId = niluuid;
@@ -1307,7 +1307,7 @@ std::vector<PCB_SHAPE*> PAD_TOOL::RecombinePad( PAD* aPad, bool aIsDryRun )
 }
 
 
-int PAD_TOOL::PadTable( const TOOL_EVENT& aEvent )
+int PAD_TOOL::PadTable( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( !m_isFootprintEditor || InPadEditMode() )
         return 0;

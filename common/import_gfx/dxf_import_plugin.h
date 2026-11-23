@@ -405,7 +405,7 @@ private:
     /**
      * Called for every double variable in the DXF file (e.g. "$DIMEXO").
      */
-    virtual void setVariableDouble( const std::string& key, double value, int code ) override {}
+    virtual void setVariableDouble( const std::string& key [[maybe_unused]], double value [[maybe_unused]], int code [[maybe_unused]] ) override {}
 
     virtual void addLayer( const DL_LayerData& aData ) override;
     virtual void addLine( const DL_LineData& aData ) override;

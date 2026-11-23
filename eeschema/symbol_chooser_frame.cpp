@@ -168,7 +168,7 @@ void SYMBOL_CHOOSER_FRAME::OnPaint( wxPaintEvent& aEvent )
 }
 
 
-void SYMBOL_CHOOSER_FRAME::OnOK( wxCommandEvent& aEvent )
+void SYMBOL_CHOOSER_FRAME::OnOK( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     LIB_ID libId = m_chooserPanel->GetSelectedLibId();
 
@@ -197,7 +197,7 @@ WINDOW_SETTINGS* SYMBOL_CHOOSER_FRAME::GetWindowSettings( APP_SETTINGS_BASE* aCf
 }
 
 
-void SYMBOL_CHOOSER_FRAME::CloseSymbolChooser( wxCommandEvent& event )
+void SYMBOL_CHOOSER_FRAME::CloseSymbolChooser( wxCommandEvent& event [[maybe_unused]] )
 {
     Close( false );
 }

@@ -742,7 +742,7 @@ void PGM_KICAD::OnPgmExit()
 }
 
 
-void PGM_KICAD::MacOpenFile( const wxString& aFileName )
+void PGM_KICAD::MacOpenFile( const wxString& aFileName [[maybe_unused]] )
 {
 #if defined( __WXMAC__ )
     wxFAIL_MSG( "kicad-cli should not call MacOpenFile" );
@@ -849,7 +849,7 @@ struct APP_KICAD_CLI : public wxAppConsole
         return ret;
     }
 
-    int FilterEvent( wxEvent& aEvent ) override { return Event_Skip; }
+    int FilterEvent( wxEvent& aEvent [[maybe_unused]] ) override { return Event_Skip; }
 
 #if defined( DEBUG )
     /**

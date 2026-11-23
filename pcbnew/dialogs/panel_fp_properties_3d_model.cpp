@@ -889,7 +889,7 @@ MODEL_VALIDATE_ERRORS PANEL_FP_PROPERTIES_3D_MODEL::validateModelExists( const w
 }
 
 
-void PANEL_FP_PROPERTIES_3D_MODEL::Cfg3DPath( wxCommandEvent& event )
+void PANEL_FP_PROPERTIES_3D_MODEL::Cfg3DPath( wxCommandEvent& event [[maybe_unused]] )
 {
     DIALOG_CONFIGURE_PATHS dlg( this );
 
@@ -901,7 +901,7 @@ void PANEL_FP_PROPERTIES_3D_MODEL::Cfg3DPath( wxCommandEvent& event )
 }
 
 
-void PANEL_FP_PROPERTIES_3D_MODEL::OnUpdateUI( wxUpdateUIEvent& event )
+void PANEL_FP_PROPERTIES_3D_MODEL::OnUpdateUI( wxUpdateUIEvent& event [[maybe_unused]] )
 {
     m_button3DShapeRemove->Enable( m_modelsGrid->GetNumberRows() > 0 );
 }
@@ -1001,7 +1001,7 @@ void PANEL_FP_PROPERTIES_3D_MODEL::postCustomPanelShownEventWithPredicate( bool 
 }
 
 
-void PANEL_FP_PROPERTIES_3D_MODEL::OnEnableExtrusion( wxCommandEvent& event )
+void PANEL_FP_PROPERTIES_3D_MODEL::OnEnableExtrusion( wxCommandEvent& event [[maybe_unused]] )
 {
     updateExtrusionControls();
     updateExtrusionPreview();
@@ -1116,7 +1116,7 @@ void PANEL_FP_PROPERTIES_3D_MODEL::onExtrusionMaterialChanged( wxCommandEvent& e
 }
 
 
-void PANEL_FP_PROPERTIES_3D_MODEL::OnExportExtrudedModel( wxCommandEvent& event )
+void PANEL_FP_PROPERTIES_3D_MODEL::OnExportExtrudedModel( wxCommandEvent& event [[maybe_unused]] )
 {
     double height;
     double standoff;

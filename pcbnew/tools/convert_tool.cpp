@@ -206,7 +206,7 @@ protected:
         return true;
     }
 
-    void onRadioButton( wxCommandEvent& aEvent )
+    void onRadioButton( wxCommandEvent& aEvent [[maybe_unused]] )
     {
         m_gap->Enable( m_rbBoundingHull->GetValue() );
         m_width->Enable( m_rbBoundingHull->GetValue() );
@@ -349,7 +349,7 @@ int CONVERT_TOOL::CreatePolys( const TOOL_EVENT& aEvent )
     FOOTPRINT*                  parentFootprint = nullptr;
 
     PCB_SELECTION& selection = m_selectionTool->RequestSelection(
-            []( const VECTOR2I& aPt, GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
+            []( const VECTOR2I& aPt [[maybe_unused]], GENERAL_COLLECTOR& aCollector [[maybe_unused]], PCB_SELECTION_TOOL* sTool [[maybe_unused]] )
             {
             } );
 
@@ -958,7 +958,7 @@ SHAPE_POLY_SET CONVERT_TOOL::makePolysFromClosedGraphics( const std::deque<EDA_I
 int CONVERT_TOOL::CreateLines( const TOOL_EVENT& aEvent )
 {
     auto& selection = m_selectionTool->RequestSelection(
-            []( const VECTOR2I& aPt, GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
+            []( const VECTOR2I& aPt [[maybe_unused]], GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool [[maybe_unused]] )
             {
                 for( int i = aCollector.GetCount() - 1; i >= 0; --i )
                 {
@@ -1269,10 +1269,10 @@ int CONVERT_TOOL::CreateLines( const TOOL_EVENT& aEvent )
 }
 
 
-int CONVERT_TOOL::SegmentToArc( const TOOL_EVENT& aEvent )
+int CONVERT_TOOL::SegmentToArc( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     auto& selection = m_selectionTool->RequestSelection(
-            []( const VECTOR2I& aPt, GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
+            []( const VECTOR2I& aPt [[maybe_unused]], GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool [[maybe_unused]] )
             {
                 for( int i = aCollector.GetCount() - 1; i >= 0; --i )
                 {
@@ -1409,11 +1409,11 @@ std::optional<SEG> CONVERT_TOOL::getStartEndPoints( EDA_ITEM* aItem )
 }
 
 
-int CONVERT_TOOL::OutsetItems( const TOOL_EVENT& aEvent )
+int CONVERT_TOOL::OutsetItems( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     PCB_BASE_EDIT_FRAME& frame = *getEditFrame<PCB_BASE_EDIT_FRAME>();
     PCB_SELECTION&       selection = m_selectionTool->RequestSelection(
-            []( const VECTOR2I& aPt, GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
+            []( const VECTOR2I& aPt [[maybe_unused]], GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
             {
                 // Iterate from the back so we don't have to worry about removals.
                 for( int i = aCollector.GetCount() - 1; i >= 0; --i )
@@ -1445,7 +1445,7 @@ int CONVERT_TOOL::OutsetItems( const TOOL_EVENT& aEvent )
     // How to deal with this depends on whether we're in the footprint editor or not
     // and whether the item was conjured up by decomposing a polygon or rectangle
     auto item_modification_handler =
-            [&]( BOARD_ITEM& aItem )
+            [&]( BOARD_ITEM& aItem [[maybe_unused]] )
             {
             };
 

@@ -428,7 +428,7 @@ void DIALOG_BOARD_STATISTICS::adjustDrillGridColumns()
 }
 
 
-void DIALOG_BOARD_STATISTICS::checkboxClicked( wxCommandEvent& aEvent )
+void DIALOG_BOARD_STATISTICS::checkboxClicked( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     s_savedDialogState.excludeNoPins = m_checkBoxExcludeComponentsNoPins->GetValue();
     s_savedDialogState.subtractHoles = m_checkBoxSubtractHoles->GetValue();
@@ -441,7 +441,7 @@ void DIALOG_BOARD_STATISTICS::checkboxClicked( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_BOARD_STATISTICS::saveReportClicked( wxCommandEvent& aEvent )
+void DIALOG_BOARD_STATISTICS::saveReportClicked( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     FILE*    outFile;
     wxString msg;

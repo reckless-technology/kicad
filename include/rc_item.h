@@ -236,7 +236,7 @@ public:
         return m_settingsKey;
     }
 
-    virtual wxString GetViolatingRuleDesc( bool aTranslate ) const
+    virtual wxString GetViolatingRuleDesc( bool aTranslate [[maybe_unused]] ) const
     {
         return wxEmptyString;
     }
@@ -358,7 +358,7 @@ public:
 
     unsigned int GetChildren( wxDataViewItem const& aItem, wxDataViewItemArray&  aChildren ) const override;
 
-    bool HasContainerColumns( wxDataViewItem const& aItem ) const override { return true; }
+    bool HasContainerColumns( wxDataViewItem const& aItem [[maybe_unused]] ) const override { return true; }
 
     bool HasValue( const wxDataViewItem& item, unsigned col ) const override
     {
@@ -376,7 +376,7 @@ public:
     /**
      * Called by the wxDataView to edit an item's content.
      */
-    bool SetValue( wxVariant const& aVariant, wxDataViewItem const& aItem, unsigned int aCol ) override
+    bool SetValue( wxVariant const& aVariant [[maybe_unused]], wxDataViewItem const& aItem [[maybe_unused]], unsigned int aCol [[maybe_unused]] ) override
     {
         // Editing not supported
         return false;

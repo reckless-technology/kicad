@@ -103,7 +103,7 @@ void DIALOG_UPDATE_FROM_PCB::OnOptionChanged( wxCommandEvent& event )
 }
 
 
-void DIALOG_UPDATE_FROM_PCB::OnUpdateClick( wxCommandEvent& event )
+void DIALOG_UPDATE_FROM_PCB::OnUpdateClick( wxCommandEvent& event [[maybe_unused]] )
 {
     std::string netlist;
     m_messagePanel->Clear();

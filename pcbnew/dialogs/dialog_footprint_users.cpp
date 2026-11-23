@@ -319,13 +319,13 @@ void DIALOG_FOOTPRINT_USERS::showLoadIndication( bool aShow, float aProgress )
 }
 
 
-void DIALOG_FOOTPRINT_USERS::onMatchTypeChanged( wxCommandEvent& aEvent )
+void DIALOG_FOOTPRINT_USERS::onMatchTypeChanged( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     updateUsers();
 }
 
 
-void DIALOG_FOOTPRINT_USERS::onLoadTimer( wxTimerEvent& aEvent )
+void DIALOG_FOOTPRINT_USERS::onLoadTimer( wxTimerEvent& aEvent [[maybe_unused]] )
 {
     if( !symbolLibrariesReady() )
         return;

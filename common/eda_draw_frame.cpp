@@ -407,7 +407,7 @@ void EDA_DRAW_FRAME::UpdateGridSelectBox()
 }
 
 
-void EDA_DRAW_FRAME::OnUpdateSelectGrid( wxUpdateUIEvent& aEvent )
+void EDA_DRAW_FRAME::OnUpdateSelectGrid( wxUpdateUIEvent& aEvent [[maybe_unused]] )
 {
     // No need to update the grid select box if it doesn't exist or the grid setting change
     // was made using the select box.
@@ -425,7 +425,7 @@ void EDA_DRAW_FRAME::OnUpdateSelectGrid( wxUpdateUIEvent& aEvent )
 
 
 
-void EDA_DRAW_FRAME::OnUpdateSelectZoom( wxUpdateUIEvent& aEvent )
+void EDA_DRAW_FRAME::OnUpdateSelectZoom( wxUpdateUIEvent& aEvent [[maybe_unused]] )
 {
     SyncZoomSelectBox();
 }
@@ -480,7 +480,7 @@ void EDA_DRAW_FRAME::SyncZoomSelectBox()
 }
 
 
-void EDA_DRAW_FRAME::OnSelectGrid( wxCommandEvent& event )
+void EDA_DRAW_FRAME::OnSelectGrid( wxCommandEvent& event [[maybe_unused]] )
 {
     wxCHECK_RET( m_gridSelectBox, wxS( "m_gridSelectBox uninitialized" ) );
 
@@ -613,7 +613,7 @@ void EDA_DRAW_FRAME::UpdateZoomSelectBox()
 }
 
 
-void EDA_DRAW_FRAME::OnSelectZoom( wxCommandEvent& event )
+void EDA_DRAW_FRAME::OnSelectZoom( wxCommandEvent& event [[maybe_unused]] )
 {
     wxCHECK_RET( m_zoomSelectBox, wxS( "m_zoomSelectBox uninitialized" ) );
 
@@ -789,7 +789,7 @@ void EDA_DRAW_FRAME::updateStatusBarWidths()
 }
 
 
-wxStatusBar* EDA_DRAW_FRAME::OnCreateStatusBar( int number, long style, wxWindowID id, const wxString& name )
+wxStatusBar* EDA_DRAW_FRAME::OnCreateStatusBar( int number, long style [[maybe_unused]], wxWindowID id, const wxString& name [[maybe_unused]] )
 {
     return new KISTATUSBAR( number, this, id, KISTATUSBAR::STYLE_FLAGS::WARNING_ICON );
 }
@@ -1052,7 +1052,7 @@ VECTOR2I EDA_DRAW_FRAME::GetNearestHalfGridPosition( const VECTOR2I& aPosition )
 }
 
 
-const BOX2I EDA_DRAW_FRAME::GetDocumentExtents( bool aIncludeAllVisible ) const
+const BOX2I EDA_DRAW_FRAME::GetDocumentExtents( bool aIncludeAllVisible [[maybe_unused]] ) const
 {
     return BOX2I();
 }
@@ -1064,7 +1064,7 @@ void EDA_DRAW_FRAME::HardRedraw()
 }
 
 
-void EDA_DRAW_FRAME::Zoom_Automatique( bool aWarpPointer )
+void EDA_DRAW_FRAME::Zoom_Automatique( bool aWarpPointer [[maybe_unused]] )
 {
     m_toolManager->RunAction( ACTIONS::zoomFitScreen );
 }
@@ -1469,7 +1469,7 @@ void EDA_DRAW_FRAME::resolveCanvasType()
 }
 
 
-void EDA_DRAW_FRAME::handleActivateEvent( wxActivateEvent& aEvent )
+void EDA_DRAW_FRAME::handleActivateEvent( wxActivateEvent& aEvent [[maybe_unused]] )
 {
     // Force a refresh of the message panel to ensure that the text is the right color
     // when the window activates

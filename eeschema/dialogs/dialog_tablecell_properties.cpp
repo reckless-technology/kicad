@@ -67,13 +67,13 @@ DIALOG_TABLECELL_PROPERTIES::DIALOG_TABLECELL_PROPERTIES( SCH_EDIT_FRAME* aFrame
     m_scintillaTricks = new SCINTILLA_TRICKS(
             m_cellText, wxT( "{}" ), false,
             // onAcceptFn
-            [this]( wxKeyEvent& aEvent )
+            [this]( wxKeyEvent& aEvent [[maybe_unused]] )
             {
                 wxPostEvent( this, wxCommandEvent( wxEVT_COMMAND_BUTTON_CLICKED, wxID_OK ) );
             },
 
             // onCharFn
-            [this]( wxStyledTextEvent& aEvent )
+            [this]( wxStyledTextEvent& aEvent [[maybe_unused]] )
             {
                 m_scintillaTricks->DoTextVarAutocomplete(
                         // getTokensFn
@@ -456,7 +456,7 @@ bool DIALOG_TABLECELL_PROPERTIES::TransferDataFromWindow()
 }
 
 
-void DIALOG_TABLECELL_PROPERTIES::onEditTable( wxCommandEvent& aEvent )
+void DIALOG_TABLECELL_PROPERTIES::onEditTable( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( TransferDataFromWindow() )
     {
@@ -474,7 +474,7 @@ void DIALOG_TABLECELL_PROPERTIES::onMultiLineTCLostFocus( wxFocusEvent& event )
 }
 
 
-void DIALOG_TABLECELL_PROPERTIES::OnFormattingHelp( wxHyperlinkEvent& aEvent )
+void DIALOG_TABLECELL_PROPERTIES::OnFormattingHelp( wxHyperlinkEvent& aEvent [[maybe_unused]] )
 {
     if( m_helpWindow )
     {

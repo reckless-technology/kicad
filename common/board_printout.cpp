@@ -86,7 +86,7 @@ void BOARD_PRINTOUT::GetPageInfo( int* minPage, int* maxPage, int* selPageFrom, 
 }
 
 
-void BOARD_PRINTOUT::DrawPage( const wxString& aLayerName, int aPageNum, int aPageCount )
+void BOARD_PRINTOUT::DrawPage( const wxString& aLayerName, int aPageNum [[maybe_unused]], int aPageCount [[maybe_unused]] )
 {
     wxDC* dc = GetDC();
     KIGFX::GAL_DISPLAY_OPTIONS options;
@@ -195,7 +195,7 @@ void BOARD_PRINTOUT::DrawPage( const wxString& aLayerName, int aPageNum, int aPa
 }
 
 
-void BOARD_PRINTOUT::setupViewLayers( KIGFX::VIEW& aView, const LSET& aLayerSet )
+void BOARD_PRINTOUT::setupViewLayers( KIGFX::VIEW& aView, const LSET& aLayerSet [[maybe_unused]] )
 {
     // Disable all layers by default, let specific implementations enable required layers
     for( int i = 0; i < KIGFX::VIEW::VIEW_MAX_LAYERS; ++i )

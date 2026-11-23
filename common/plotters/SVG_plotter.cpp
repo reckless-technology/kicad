@@ -335,7 +335,7 @@ void SVG_PLOTTER::setSVGPlotStyle( int aLineWidth, bool aIsGroup, const std::str
 }
 
 
-void SVG_PLOTTER::SetCurrentLineWidth( int aWidth, void* aData )
+void SVG_PLOTTER::SetCurrentLineWidth( int aWidth, void* aData [[maybe_unused]] )
 {
     if( aWidth == DO_NOT_SET_LINE_WIDTH )
         return;
@@ -353,7 +353,7 @@ void SVG_PLOTTER::SetCurrentLineWidth( int aWidth, void* aData )
 }
 
 
-void SVG_PLOTTER::StartBlock( void* aData )
+void SVG_PLOTTER::StartBlock( void* aData [[maybe_unused]] )
 {
     // We can't use <g></g> for blocks because we're already using it for graphics context, and
     // our graphics context handling is lazy (ie: it leaves the last group open until the context
@@ -361,7 +361,7 @@ void SVG_PLOTTER::StartBlock( void* aData )
 }
 
 
-void SVG_PLOTTER::EndBlock( void* aData )
+void SVG_PLOTTER::EndBlock( void* aData [[maybe_unused]] )
 {
 }
 
@@ -385,7 +385,7 @@ void SVG_PLOTTER::emitSetRGBColor( double r, double g, double b, double a )
 }
 
 
-void SVG_PLOTTER::SetDash( int aLineWidth, LINE_STYLE aLineStyle )
+void SVG_PLOTTER::SetDash( int aLineWidth [[maybe_unused]], LINE_STYLE aLineStyle )
 {
     if( m_dashed != aLineStyle )
     {
@@ -597,7 +597,7 @@ void SVG_PLOTTER::Arc( const VECTOR2D& aCenter, const EDA_ANGLE& aStartAngle,
 
 void SVG_PLOTTER::BezierCurve( const VECTOR2I& aStart, const VECTOR2I& aControl1,
                                const VECTOR2I& aControl2, const VECTOR2I& aEnd,
-                               int aTolerance, int aLineThickness )
+                               int aTolerance [[maybe_unused]], int aLineThickness )
 {
 #if 1
     setFillMode( FILL_T::NO_FILL );
@@ -629,7 +629,7 @@ void SVG_PLOTTER::BezierCurve( const VECTOR2I& aStart, const VECTOR2I& aControl1
 
 
 void SVG_PLOTTER::PlotPoly( const std::vector<VECTOR2I>& aCornerList, FILL_T aFill,
-                            int aWidth, void* aData )
+                            int aWidth, void* aData [[maybe_unused]] )
 {
     if( aCornerList.size() <= 1 )
         return;
@@ -789,7 +789,7 @@ void SVG_PLOTTER::PenTo( const VECTOR2I& pos, char plume )
 }
 
 
-bool SVG_PLOTTER::StartPlot( const wxString& aPageNumber )
+bool SVG_PLOTTER::StartPlot( const wxString& aPageNumber [[maybe_unused]] )
 {
     wxCHECK( m_outputFile, false );
 
@@ -893,7 +893,7 @@ void SVG_PLOTTER::Text( const VECTOR2I&        aPos,
                         bool                   aMultilineAllowed,
                         KIFONT::FONT*          aFont,
                         const KIFONT::METRICS& aFontMetrics,
-                        void*                  aData )
+                        void*                  aData [[maybe_unused]] )
 {
     setFillMode( FILL_T::NO_FILL );
     SetColor( aColor );

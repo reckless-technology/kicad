@@ -87,7 +87,7 @@ public:
 
     VALIDATION_ERROR_MSG( const wxString& aMessage ) : Message( aMessage ) {}
 
-    wxString Format( UNITS_PROVIDER* aUnits ) const override
+    wxString Format( UNITS_PROVIDER* aUnits [[maybe_unused]] ) const override
     {
         return Message;
     }
@@ -102,7 +102,7 @@ class PROPERTY_VALIDATORS
 public:
 
     template<int Min, int Max>
-    static VALIDATOR_RESULT RangeIntValidator( const wxAny&& aValue, EDA_ITEM* aItem )
+    static VALIDATOR_RESULT RangeIntValidator( const wxAny&& aValue, EDA_ITEM* aItem [[maybe_unused]] )
     {
         wxASSERT_MSG( aValue.CheckType<int>() || aValue.CheckType<std::optional<int>>(),
                       "Expecting int-containing value" );
@@ -129,7 +129,7 @@ public:
         return std::nullopt;
     }
 
-    static VALIDATOR_RESULT PositiveIntValidator( const wxAny&& aValue, EDA_ITEM* aItem )
+    static VALIDATOR_RESULT PositiveIntValidator( const wxAny&& aValue, EDA_ITEM* aItem [[maybe_unused]] )
     {
         wxASSERT_MSG( aValue.CheckType<int>() || aValue.CheckType<std::optional<int>>(),
                       "Expecting int-containing value" );
@@ -154,7 +154,7 @@ public:
         return std::nullopt;
     }
 
-    static VALIDATOR_RESULT PositiveRatioValidator( const wxAny&& aValue, EDA_ITEM* aItem )
+    static VALIDATOR_RESULT PositiveRatioValidator( const wxAny&& aValue, EDA_ITEM* aItem [[maybe_unused]] )
     {
         wxASSERT_MSG( aValue.CheckType<double>(), "Expecting double-containing value" );
 

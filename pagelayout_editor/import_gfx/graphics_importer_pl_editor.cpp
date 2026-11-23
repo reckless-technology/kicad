@@ -179,7 +179,7 @@ void GRAPHICS_IMPORTER_PL_EDITOR::AddArc( const VECTOR2D& aCenter, const VECTOR2
 
 
 void GRAPHICS_IMPORTER_PL_EDITOR::AddPolygon( const std::vector<VECTOR2D>& aVertices, const IMPORTED_STROKE& aStroke,
-                                              bool aFilled, const COLOR4D& aFillColor )
+                                              bool aFilled, const COLOR4D& aFillColor [[maybe_unused]] )
 {
     std::vector<VECTOR2D> points;
 
@@ -198,7 +198,7 @@ void GRAPHICS_IMPORTER_PL_EDITOR::AddPolygon( const std::vector<VECTOR2D>& aVert
 void GRAPHICS_IMPORTER_PL_EDITOR::AddText( const VECTOR2D& aOrigin, const wxString& aText, double aHeight,
                                            double aWidth, double aThickness, double aOrientation,
                                            GR_TEXT_H_ALIGN_T aHJustify, GR_TEXT_V_ALIGN_T aVJustify,
-                                           const COLOR4D& aColor )
+                                           const COLOR4D& aColor [[maybe_unused]] )
 {
     auto item = std::make_unique<DS_DATA_ITEM_TEXT>( aText );
 
@@ -237,7 +237,7 @@ void GRAPHICS_IMPORTER_PL_EDITOR::AddSpline( const VECTOR2D& aStart, const VECTO
 
 void GRAPHICS_IMPORTER_PL_EDITOR::AddEllipse( const VECTOR2D& aCenter, double aMajorRadius, double aMinorRadius,
                                               const EDA_ANGLE& aRotation, const IMPORTED_STROKE& aStroke, bool aFilled,
-                                              const COLOR4D& aFillColor )
+                                              const COLOR4D& aFillColor [[maybe_unused]] )
 {
     std::vector<VECTOR2D> points = flattenEllipseArc( aCenter, aMajorRadius, aMinorRadius, aRotation, 0.0, 2.0 * M_PI );
 

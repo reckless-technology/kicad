@@ -341,7 +341,7 @@ void SCH_EDIT_FRAME::SaveProjectLocalSettings()
 }
 
 
-void SCH_EDIT_FRAME::LoadSettings( APP_SETTINGS_BASE* aCfg )
+void SCH_EDIT_FRAME::LoadSettings( APP_SETTINGS_BASE* aCfg [[maybe_unused]] )
 {
     // For now, axes are forced off in Eeschema even if turned on in config
     EESCHEMA_SETTINGS* cfg = eeconfig();
@@ -371,7 +371,7 @@ void SCH_EDIT_FRAME::LoadSettings( APP_SETTINGS_BASE* aCfg )
 }
 
 
-void SCH_EDIT_FRAME::SaveSettings( APP_SETTINGS_BASE* aCfg )
+void SCH_EDIT_FRAME::SaveSettings( APP_SETTINGS_BASE* aCfg [[maybe_unused]] )
 {
     EESCHEMA_SETTINGS* cfg = eeconfig();
     SCH_BASE_FRAME::SaveSettings( cfg );

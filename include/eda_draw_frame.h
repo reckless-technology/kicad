@@ -312,7 +312,7 @@ public:
      * @param aItem is the item to focus on. nullptr clears the focus.
      * @param aAllowScroll is the flag to enable item scrolling.
      */
-    virtual void FocusOnItem( EDA_ITEM* aItem, bool aAllowScroll = true ) {}
+    virtual void FocusOnItem( EDA_ITEM* aItem [[maybe_unused]], bool aAllowScroll [[maybe_unused]] = true ) {}
 
     virtual void ClearFocus() { FocusOnItem( nullptr ); }
 
@@ -455,7 +455,7 @@ public:
     /**
      * Fetch an item by KIID.  Frame-type-specific implementation.
      */
-    virtual EDA_ITEM* ResolveItem( const KIID& aId, bool aAllowNullptrReturn = false ) const
+    virtual EDA_ITEM* ResolveItem( const KIID& aId [[maybe_unused]], bool aAllowNullptrReturn [[maybe_unused]] = false ) const
     {
         return nullptr;
     }
@@ -581,7 +581,7 @@ protected:
     void setupUIConditions() override;
 
     /// The action that starts the arc tool in @a aMode, or nullptr in a frame without an arc tool.
-    virtual const TOOL_ACTION* drawArcAction( ARC_DRAW_MODE aMode ) const { return nullptr; }
+    virtual const TOOL_ACTION* drawArcAction( ARC_DRAW_MODE aMode [[maybe_unused]] ) const { return nullptr; }
 
     /**
      * Check each arc mode's tool action while the arc tool runs in that mode.

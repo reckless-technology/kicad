@@ -40,12 +40,12 @@ public:
 protected:
     void onOkButtonClicked( wxCommandEvent& aEvent ) override;
 
-    void onSelectAll( wxCommandEvent& event ) override
+    void onSelectAll( wxCommandEvent& event [[maybe_unused]] ) override
     {
         checkAll( true );
     }
 
-    void onSelectNone( wxCommandEvent& event ) override
+    void onSelectNone( wxCommandEvent& event [[maybe_unused]] ) override
     {
         checkAll( false );
     }

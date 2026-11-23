@@ -192,7 +192,7 @@ bool DIALOG_ASSIGN_NETCLASS::TransferDataFromWindow()
 }
 
 
-void DIALOG_ASSIGN_NETCLASS::onPatternText( wxCommandEvent& aEvent )
+void DIALOG_ASSIGN_NETCLASS::onPatternText( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     wxString pattern = m_patternCtrl->GetValue();
 

@@ -59,7 +59,7 @@ public:
         return VALIDATION_RESULT();
     }
 
-    std::vector<wxString> GetConstraintClauses( const RULE_GENERATION_CONTEXT& aContext ) const override
+    std::vector<wxString> GetConstraintClauses( const RULE_GENERATION_CONTEXT& aContext [[maybe_unused]] ) const override
     {
         if( !m_boolInputValue )
             return {};

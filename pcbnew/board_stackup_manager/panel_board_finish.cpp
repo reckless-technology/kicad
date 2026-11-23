@@ -137,7 +137,7 @@ void PANEL_SETUP_BOARD_FINISH::updateViaPreview()
 }
 
 
-void PANEL_SETUP_BOARD_FINISH::onViaProtectionChanged( wxCommandEvent& aEvent )
+void PANEL_SETUP_BOARD_FINISH::onViaProtectionChanged( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     enableViaProtection();
 

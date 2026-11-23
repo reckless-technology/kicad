@@ -379,7 +379,7 @@ void COLOR_SETTINGS::initFromOther( const COLOR_SETTINGS& aOther )
 }
 
 
-bool COLOR_SETTINGS::MigrateFromLegacy( wxConfigBase* aCfg )
+bool COLOR_SETTINGS::MigrateFromLegacy( wxConfigBase* aCfg [[maybe_unused]] )
 {
     return false;
 }

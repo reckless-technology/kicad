@@ -385,7 +385,7 @@ SEVERITY SCH_MARKER::GetSeverity() const
 }
 
 
-bool SCH_MARKER::Matches( const EDA_SEARCH_DATA& aSearchData, void* aAuxData ) const
+bool SCH_MARKER::Matches( const EDA_SEARCH_DATA& aSearchData, void* aAuxData [[maybe_unused]] ) const
 {
     return SCH_ITEM::Matches( m_rcItem->GetErrorMessage( true ), aSearchData );
 }
@@ -447,19 +447,19 @@ BITMAPS SCH_MARKER::GetMenuImage() const
 }
 
 
-void SCH_MARKER::Rotate( const VECTOR2I& aCenter, bool aRotateCCW )
+void SCH_MARKER::Rotate( const VECTOR2I& aCenter [[maybe_unused]], bool aRotateCCW [[maybe_unused]] )
 {
     // Marker geometry isn't user-editable
 }
 
 
-void SCH_MARKER::MirrorVertically( int aCenter )
+void SCH_MARKER::MirrorVertically( int aCenter [[maybe_unused]] )
 {
     // Marker geometry isn't user-editable
 }
 
 
-void SCH_MARKER::MirrorHorizontally( int aCenter )
+void SCH_MARKER::MirrorHorizontally( int aCenter [[maybe_unused]] )
 {
     // Marker geometry isn't user-editable
 }

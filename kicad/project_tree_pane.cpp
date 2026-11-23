@@ -385,7 +385,7 @@ void PROJECT_TREE_PANE::shutdownFileWatcher()
 }
 
 
-void PROJECT_TREE_PANE::onSwitchToSelectedProject( wxCommandEvent& event )
+void PROJECT_TREE_PANE::onSwitchToSelectedProject( wxCommandEvent& event [[maybe_unused]] )
 {
     std::vector<PROJECT_TREE_ITEM*> tree_data = GetSelectedData();
 
@@ -398,7 +398,7 @@ void PROJECT_TREE_PANE::onSwitchToSelectedProject( wxCommandEvent& event )
 }
 
 
-void PROJECT_TREE_PANE::onOpenDirectory( wxCommandEvent& event )
+void PROJECT_TREE_PANE::onOpenDirectory( wxCommandEvent& event [[maybe_unused]] )
 {
     // Get the root directory name:
     std::vector<PROJECT_TREE_ITEM*> tree_data = GetSelectedData();
@@ -426,7 +426,7 @@ void PROJECT_TREE_PANE::onOpenDirectory( wxCommandEvent& event )
 }
 
 
-void PROJECT_TREE_PANE::onCreateNewDirectory( wxCommandEvent& event )
+void PROJECT_TREE_PANE::onCreateNewDirectory( wxCommandEvent& event [[maybe_unused]] )
 {
     // Get the root directory name:
     std::vector<PROJECT_TREE_ITEM*> tree_data = GetSelectedData();
@@ -1212,7 +1212,7 @@ void PROJECT_TREE_PANE::openInTextEditor( const std::vector<wxString>& aFileName
 }
 
 
-void PROJECT_TREE_PANE::onOpenSelectedFileWithTextEditor( wxCommandEvent& event )
+void PROJECT_TREE_PANE::onOpenSelectedFileWithTextEditor( wxCommandEvent& event [[maybe_unused]] )
 {
     std::vector<wxString> fileNames;
 
@@ -1223,7 +1223,7 @@ void PROJECT_TREE_PANE::onOpenSelectedFileWithTextEditor( wxCommandEvent& event 
 }
 
 
-void PROJECT_TREE_PANE::onDeleteFile( wxCommandEvent& event )
+void PROJECT_TREE_PANE::onDeleteFile( wxCommandEvent& event [[maybe_unused]] )
 {
     std::vector<PROJECT_TREE_ITEM*> tree_data = GetSelectedData();
 
@@ -1232,7 +1232,7 @@ void PROJECT_TREE_PANE::onDeleteFile( wxCommandEvent& event )
 }
 
 
-void PROJECT_TREE_PANE::onRenameFile( wxCommandEvent& event )
+void PROJECT_TREE_PANE::onRenameFile( wxCommandEvent& event [[maybe_unused]] )
 {
     wxTreeItemId                    curr_item = m_TreeProject->GetFocusedItem();
     std::vector<PROJECT_TREE_ITEM*> tree_data = GetSelectedData();
@@ -1261,7 +1261,7 @@ void PROJECT_TREE_PANE::onRenameFile( wxCommandEvent& event )
 }
 
 
-void PROJECT_TREE_PANE::onSelect( wxTreeEvent& Event )
+void PROJECT_TREE_PANE::onSelect( wxTreeEvent& Event [[maybe_unused]] )
 {
     std::vector<PROJECT_TREE_ITEM*> tree_data = GetSelectedData();
 
@@ -1275,7 +1275,7 @@ void PROJECT_TREE_PANE::onSelect( wxTreeEvent& Event )
 }
 
 
-void PROJECT_TREE_PANE::onIdle( wxIdleEvent& aEvent )
+void PROJECT_TREE_PANE::onIdle( wxIdleEvent& aEvent [[maybe_unused]] )
 {
     // Idle executes once all other events finished processing.  This makes it ideal to launch
     // a new window without starting Focus wars.
@@ -1637,7 +1637,7 @@ void PROJECT_TREE_PANE::FileWatcherReset()
             }
 
         protected:
-            void DoLogTextAtLevel( wxLogLevel level, const wxString& text ) override
+            void DoLogTextAtLevel( wxLogLevel level, const wxString& text [[maybe_unused]] ) override
             {
                 if( m_err && ( level == wxLOG_Error || level == wxLOG_FatalError ) )
                     *m_err = true;
@@ -1923,7 +1923,7 @@ void PROJECT_TREE_PANE::onThemeChanged( wxSysColourChangedEvent &aEvent )
 }
 
 
-void PROJECT_TREE_PANE::onPaint( wxPaintEvent& event )
+void PROJECT_TREE_PANE::onPaint( wxPaintEvent& event [[maybe_unused]] )
 {
     wxRect    rect( wxPoint( 0, 0 ), GetClientSize() );
     wxPaintDC dc( this );
@@ -1936,7 +1936,7 @@ void PROJECT_TREE_PANE::onPaint( wxPaintEvent& event )
 }
 
 
-void KICAD_MANAGER_FRAME::OnChangeWatchedPaths( wxCommandEvent& aEvent )
+void KICAD_MANAGER_FRAME::OnChangeWatchedPaths( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     m_projectTreePane->FileWatcherReset();
 }
@@ -1969,7 +1969,7 @@ static void saveAcceptedRemoteSettings( PROJECT& aProject, const RemoteConfig& a
 }
 
 
-void PROJECT_TREE_PANE::onGitInitializeProject( wxCommandEvent& aEvent )
+void PROJECT_TREE_PANE::onGitInitializeProject( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     PROJECT_TREE_ITEM* tree_data = GetItemIdData( m_TreeProject->GetRootItem() );
 
@@ -2083,13 +2083,13 @@ void PROJECT_TREE_PANE::onGitInitializeProject( wxCommandEvent& aEvent )
 }
 
 
-void PROJECT_TREE_PANE::onGitHistory( wxCommandEvent& aEvent )
+void PROJECT_TREE_PANE::onGitHistory( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     m_Parent->ShowGitHistory();
 }
 
 
-void PROJECT_TREE_PANE::onGitRemoteSettings( wxCommandEvent& aEvent )
+void PROJECT_TREE_PANE::onGitRemoteSettings( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     KIGIT_COMMON*   common = gitCommon().get();
     git_repository* repo = common ? common->GetRepo() : nullptr;
@@ -2411,13 +2411,13 @@ void PROJECT_TREE_PANE::onGitIgnore( wxCommandEvent& aEvent )
 }
 
 
-void PROJECT_TREE_PANE::onGitEditIgnoreFile( wxCommandEvent& aEvent )
+void PROJECT_TREE_PANE::onGitEditIgnoreFile( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     openInTextEditor( { KIGIT::ProjectIgnoreFile( Prj().GetProjectPath() ).GetFullPath() } );
 }
 
 
-void PROJECT_TREE_PANE::onGitRemoveVCS( wxCommandEvent& aEvent )
+void PROJECT_TREE_PANE::onGitRemoveVCS( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     PROJECT_LOCAL_SETTINGS& localSettings = Prj().GetLocalSettings();
 
@@ -2734,12 +2734,12 @@ void PROJECT_TREE_PANE::updateGitStatusIconMap( std::shared_ptr<KIGIT_COMMON> aG
 }
 
 
-void PROJECT_TREE_PANE::onRunSelectedJobsFile( wxCommandEvent& event )
+void PROJECT_TREE_PANE::onRunSelectedJobsFile( wxCommandEvent& event [[maybe_unused]] )
 {
 }
 
 
-void PROJECT_TREE_PANE::onGitSyncTimer( wxTimerEvent& aEvent )
+void PROJECT_TREE_PANE::onGitSyncTimer( wxTimerEvent& aEvent [[maybe_unused]] )
 {
     wxLogTrace( traceGit, "onGitSyncTimer" );
     COMMON_SETTINGS::GIT& gitSettings = Pgm().GetCommonSettings()->m_Git;
@@ -2868,7 +2868,7 @@ void PROJECT_TREE_PANE::gitStatusTimerHandler()
             } );
 }
 
-void PROJECT_TREE_PANE::onGitStatusTimer( wxTimerEvent& aEvent )
+void PROJECT_TREE_PANE::onGitStatusTimer( wxTimerEvent& aEvent [[maybe_unused]] )
 {
     wxLogTrace( traceGit, "onGitStatusTimer" );
 

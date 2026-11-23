@@ -68,7 +68,7 @@ const SELECTION& PCB_EDIT_TABLE_TOOL::getTableCellSelection()
     PCB_SELECTION_TOOL* selTool = m_toolMgr->GetTool<PCB_SELECTION_TOOL>();
 
     return selTool->RequestSelection(
-            []( const VECTOR2I& aPt, GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
+            []( const VECTOR2I& aPt [[maybe_unused]], GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool [[maybe_unused]] )
             {
                 // Iterate from the back so we don't have to worry about removals.
                 for( int i = aCollector.GetCount() - 1; i >= 0; --i )
@@ -86,7 +86,7 @@ void PCB_EDIT_TABLE_TOOL::clearSelection()
 };
 
 
-int PCB_EDIT_TABLE_TOOL::EditTable( const TOOL_EVENT& aEvent )
+int PCB_EDIT_TABLE_TOOL::EditTable( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     const SELECTION& selection = getTableCellSelection();
     bool             clearSelection = selection.IsHover();
@@ -121,7 +121,7 @@ int PCB_EDIT_TABLE_TOOL::EditTable( const TOOL_EVENT& aEvent )
 }
 
 
-int PCB_EDIT_TABLE_TOOL::ExportTableToCSV( const TOOL_EVENT& aEvent )
+int PCB_EDIT_TABLE_TOOL::ExportTableToCSV( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     const SELECTION& selection = getTableCellSelection();
     bool             clearSelection = selection.IsHover();

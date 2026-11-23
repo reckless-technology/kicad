@@ -960,7 +960,7 @@ void SCHEMATIC::GetContextualTextVars( wxArrayString* aVars ) const
 }
 
 
-bool SCHEMATIC::ResolveTextVar( const SCH_SHEET_PATH* aSheetPath, wxString* token, int aDepth ) const
+bool SCHEMATIC::ResolveTextVar( const SCH_SHEET_PATH* aSheetPath, wxString* token, int aDepth [[maybe_unused]] ) const
 {
     wxCHECK( aSheetPath, false );
 

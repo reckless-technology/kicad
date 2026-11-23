@@ -168,7 +168,7 @@ int PCB_CONTROL::AddLibrary( const TOOL_EVENT& aEvent )
 }
 
 
-int PCB_CONTROL::LoadFpFromBoard( const TOOL_EVENT& aEvent )
+int PCB_CONTROL::LoadFpFromBoard( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( m_frame->IsType( FRAME_FOOTPRINT_EDITOR ) )
         static_cast<FOOTPRINT_EDIT_FRAME*>( m_frame )->LoadFootprintFromBoard( nullptr );
@@ -177,7 +177,7 @@ int PCB_CONTROL::LoadFpFromBoard( const TOOL_EVENT& aEvent )
 }
 
 
-int PCB_CONTROL::SaveFpToBoard( const TOOL_EVENT& aEvent )
+int PCB_CONTROL::SaveFpToBoard( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( m_frame->IsType( FRAME_FOOTPRINT_EDITOR ) )
         static_cast<FOOTPRINT_EDIT_FRAME*>( m_frame )->SaveFootprintToBoard( true );
@@ -222,7 +222,7 @@ void Flip( T& aValue )
 }
 
 
-int PCB_CONTROL::TrackDisplayMode( const TOOL_EVENT& aEvent )
+int PCB_CONTROL::TrackDisplayMode( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     Flip( displayOptions().m_DisplayPcbTrackFill );
 
@@ -269,7 +269,7 @@ int PCB_CONTROL::ToggleRatsnest( const TOOL_EVENT& aEvent )
 }
 
 
-int PCB_CONTROL::ViaDisplayMode( const TOOL_EVENT& aEvent )
+int PCB_CONTROL::ViaDisplayMode( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     Flip( displayOptions().m_DisplayViaFill );
 
@@ -311,7 +311,7 @@ void PCB_CONTROL::unfilledZoneCheck()
 
         infobar->RemoveAllButtons();
         infobar->AddLink( _( "Don't show again" ),
-                [&]( wxHyperlinkEvent& aEvent )
+                [&]( wxHyperlinkEvent& aEvent [[maybe_unused]] )
                 {
                     Pgm().GetCommonSettings()->m_DoNotShowAgain.zone_fill_warning = true;
                     m_frame->GetInfoBar()->Dismiss();
@@ -372,7 +372,7 @@ int PCB_CONTROL::ZoneDisplayMode( const TOOL_EVENT& aEvent )
 }
 
 
-int PCB_CONTROL::HighContrastMode( const TOOL_EVENT& aEvent )
+int PCB_CONTROL::HighContrastMode( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     PCB_DISPLAY_OPTIONS opts = m_frame->GetDisplayOptions();
 
@@ -384,7 +384,7 @@ int PCB_CONTROL::HighContrastMode( const TOOL_EVENT& aEvent )
 }
 
 
-int PCB_CONTROL::HighContrastModeCycle( const TOOL_EVENT& aEvent )
+int PCB_CONTROL::HighContrastModeCycle( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     PCB_DISPLAY_OPTIONS opts = m_frame->GetDisplayOptions();
 
@@ -402,7 +402,7 @@ int PCB_CONTROL::HighContrastModeCycle( const TOOL_EVENT& aEvent )
 }
 
 
-int PCB_CONTROL::ContrastModeFeedback( const TOOL_EVENT& aEvent )
+int PCB_CONTROL::ContrastModeFeedback( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( !Pgm().GetCommonSettings()->m_Input.hotkey_feedback )
         return 0;
@@ -428,7 +428,7 @@ int PCB_CONTROL::ContrastModeFeedback( const TOOL_EVENT& aEvent )
 }
 
 
-int PCB_CONTROL::NetColorModeCycle( const TOOL_EVENT& aEvent )
+int PCB_CONTROL::NetColorModeCycle( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     PCB_DISPLAY_OPTIONS opts = m_frame->GetDisplayOptions();
 
@@ -444,7 +444,7 @@ int PCB_CONTROL::NetColorModeCycle( const TOOL_EVENT& aEvent )
 }
 
 
-int PCB_CONTROL::RatsnestModeCycle( const TOOL_EVENT& aEvent )
+int PCB_CONTROL::RatsnestModeCycle( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( PCB_EDIT_FRAME* editFrame = dynamic_cast<PCB_EDIT_FRAME*>( m_frame ) )
     {
@@ -482,7 +482,7 @@ int PCB_CONTROL::LayerSwitch( const TOOL_EVENT& aEvent )
 }
 
 
-int PCB_CONTROL::LayerNext( const TOOL_EVENT& aEvent )
+int PCB_CONTROL::LayerNext( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     BOARD*       brd        = board();
     PCB_LAYER_ID layer      = m_frame->GetActiveLayer();
@@ -541,7 +541,7 @@ int PCB_CONTROL::LayerNext( const TOOL_EVENT& aEvent )
 }
 
 
-int PCB_CONTROL::LayerPrev( const TOOL_EVENT& aEvent )
+int PCB_CONTROL::LayerPrev( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     BOARD*       brd        = board();
     PCB_LAYER_ID layer      = m_frame->GetActiveLayer();
@@ -600,7 +600,7 @@ int PCB_CONTROL::LayerPrev( const TOOL_EVENT& aEvent )
 }
 
 
-int PCB_CONTROL::LayerToggle( const TOOL_EVENT& aEvent )
+int PCB_CONTROL::LayerToggle( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     int         currentLayer = m_frame->GetActiveLayer();
     PCB_SCREEN* screen = m_frame->GetScreen();
@@ -621,7 +621,7 @@ int PCB_CONTROL::LayerToggle( const TOOL_EVENT& aEvent )
 #define ALPHA_STEP 0.05
 
 
-int PCB_CONTROL::LayerAlphaInc( const TOOL_EVENT& aEvent )
+int PCB_CONTROL::LayerAlphaInc( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     COLOR_SETTINGS* settings = m_frame->GetColorSettings();
     int             currentLayer = m_frame->GetActiveLayer();
@@ -651,7 +651,7 @@ int PCB_CONTROL::LayerAlphaInc( const TOOL_EVENT& aEvent )
 }
 
 
-int PCB_CONTROL::LayerAlphaDec( const TOOL_EVENT& aEvent )
+int PCB_CONTROL::LayerAlphaDec( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     COLOR_SETTINGS* settings = m_frame->GetColorSettings();
     int             currentLayer = m_frame->GetActiveLayer();
@@ -681,7 +681,7 @@ int PCB_CONTROL::LayerAlphaDec( const TOOL_EVENT& aEvent )
 }
 
 
-int PCB_CONTROL::CycleLayerPresets( const TOOL_EVENT& aEvent )
+int PCB_CONTROL::CycleLayerPresets( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( PCB_EDIT_FRAME* editFrame = dynamic_cast<PCB_EDIT_FRAME*>( m_frame ) )
     {
@@ -714,7 +714,7 @@ int PCB_CONTROL::CycleLayerPresets( const TOOL_EVENT& aEvent )
 }
 
 
-int PCB_CONTROL::LayerPresetFeedback( const TOOL_EVENT& aEvent )
+int PCB_CONTROL::LayerPresetFeedback( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( !Pgm().GetCommonSettings()->m_Input.hotkey_feedback )
         return 0;
@@ -810,7 +810,7 @@ int PCB_CONTROL::GridPlaceOrigin( const TOOL_EVENT& aEvent )
 }
 
 
-int PCB_CONTROL::GridResetOrigin( const TOOL_EVENT& aEvent )
+int PCB_CONTROL::GridResetOrigin( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->SaveCopyInUndoList( m_gridOrigin.get(), UNDO_REDO::GRIDORIGIN );
     DoSetGridOrigin( getView(), m_frame, m_gridOrigin.get(), VECTOR2D( 0, 0 ) );
@@ -843,7 +843,7 @@ int PCB_CONTROL::InteractiveDelete( const TOOL_EVENT& aEvent )
     picker->ClearHandlers();
 
     picker->SetClickHandler(
-            [this, editTool]( const VECTOR2D& aPosition ) -> bool
+            [this, editTool]( const VECTOR2D& aPosition [[maybe_unused]] ) -> bool
             {
                 if( m_pickerItem )
                 {
@@ -912,7 +912,7 @@ int PCB_CONTROL::InteractiveDelete( const TOOL_EVENT& aEvent )
             } );
 
     picker->SetFinalizeHandler(
-            [this]( const int& aFinalState )
+            [this]( const int& aFinalState [[maybe_unused]] )
             {
                 if( m_pickerItem )
                     m_toolMgr->GetTool<PCB_SELECTION_TOOL>()->UnbrightenItem( m_pickerItem );
@@ -1321,7 +1321,7 @@ int PCB_CONTROL::Paste( const TOOL_EVENT& aEvent )
             clipBoard->RemoveAll( { PCB_SHAPE_T, PCB_CONSTRAINT_T } );
 
             clipBoard->Visit(
-                    [&]( EDA_ITEM* item, void* testData )
+                    [&]( EDA_ITEM* item, void* testData [[maybe_unused]] )
                     {
                         if( item->IsBOARD_ITEM() )
                         {
@@ -1414,7 +1414,7 @@ int PCB_CONTROL::Paste( const TOOL_EVENT& aEvent )
 }
 
 
-int PCB_CONTROL::AppendBoardFromFile( const TOOL_EVENT& aEvent )
+int PCB_CONTROL::AppendBoardFromFile( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     wxString fileName;
 
@@ -1437,7 +1437,7 @@ int PCB_CONTROL::AppendBoardFromFile( const TOOL_EVENT& aEvent )
 }
 
 
-int PCB_CONTROL::AppendDesignBlock( const TOOL_EVENT& aEvent )
+int PCB_CONTROL::AppendDesignBlock( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     PCB_EDIT_FRAME* editFrame = dynamic_cast<PCB_EDIT_FRAME*>( m_frame );
 
@@ -1932,7 +1932,7 @@ int PCB_CONTROL::PlaceLinkedDesignBlock( const TOOL_EVENT& aEvent )
 }
 
 
-int PCB_CONTROL::SaveToLinkedDesignBlock( const TOOL_EVENT& aEvent )
+int PCB_CONTROL::SaveToLinkedDesignBlock( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     PCB_EDIT_FRAME* editFrame = dynamic_cast<PCB_EDIT_FRAME*>( m_frame );
 
@@ -2444,7 +2444,7 @@ int PCB_CONTROL::AppendBoard( PCB_IO& pi, const wxString& fileName, DESIGN_BLOCK
 }
 
 
-int PCB_CONTROL::Undo( const TOOL_EVENT& aEvent )
+int PCB_CONTROL::Undo( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     PCB_BASE_EDIT_FRAME* editFrame = dynamic_cast<PCB_BASE_EDIT_FRAME*>( m_frame );
     wxCommandEvent       dummy;
@@ -2456,7 +2456,7 @@ int PCB_CONTROL::Undo( const TOOL_EVENT& aEvent )
 }
 
 
-int PCB_CONTROL::Redo( const TOOL_EVENT& aEvent )
+int PCB_CONTROL::Redo( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     PCB_BASE_EDIT_FRAME* editFrame = dynamic_cast<PCB_BASE_EDIT_FRAME*>( m_frame );
     wxCommandEvent       dummy;
@@ -2487,7 +2487,7 @@ int PCB_CONTROL::SnapMode( const TOOL_EVENT& aEvent )
 }
 
 
-int PCB_CONTROL::SnapModeFeedback( const TOOL_EVENT& aEvent )
+int PCB_CONTROL::SnapModeFeedback( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( !Pgm().GetCommonSettings()->m_Input.hotkey_feedback )
         return 0;
@@ -2511,7 +2511,7 @@ int PCB_CONTROL::SnapModeFeedback( const TOOL_EVENT& aEvent )
 }
 
 
-int PCB_CONTROL::UpdateMessagePanel( const TOOL_EVENT& aEvent )
+int PCB_CONTROL::UpdateMessagePanel( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     PCB_SELECTION_TOOL*         selTool = m_toolMgr->GetTool<PCB_SELECTION_TOOL>();
     ROUTER_TOOL*                routerTool = m_toolMgr->GetTool<ROUTER_TOOL>();
@@ -3044,7 +3044,7 @@ int PCB_CONTROL::DdAppendBoard( const TOOL_EVENT& aEvent )
 }
 
 
-int PCB_CONTROL::PlaceCharacteristics( const TOOL_EVENT& aEvent )
+int PCB_CONTROL::PlaceCharacteristics( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     BOARD_COMMIT commit( this );
     EDA_UNITS    displayUnit = m_frame->GetUserUnits();
@@ -3064,7 +3064,7 @@ int PCB_CONTROL::PlaceCharacteristics( const TOOL_EVENT& aEvent )
 }
 
 
-int PCB_CONTROL::PlaceStackup( const TOOL_EVENT& aEvent )
+int PCB_CONTROL::PlaceStackup( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     auto table = std::make_unique<PCB_STACKUP_TABLE>( m_frame->GetBoard() );
 
@@ -3077,7 +3077,7 @@ int PCB_CONTROL::PlaceStackup( const TOOL_EVENT& aEvent )
 }
 
 
-int PCB_CONTROL::PlaceDrillChart( const TOOL_EVENT& aEvent )
+int PCB_CONTROL::PlaceDrillChart( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     return placeGeneratedTable( std::make_unique<PCB_DRILL_CHART>( m_frame->GetBoard() ),
                                 _( "No documentation layer is enabled to hold a drill chart." ),
@@ -3186,7 +3186,7 @@ int PCB_CONTROL::placeGeneratedTable( std::unique_ptr<PCB_GENERATED_TABLE> aTabl
 }
 
 
-int PCB_CONTROL::PlaceDrillMap( const TOOL_EVENT& aEvent )
+int PCB_CONTROL::PlaceDrillMap( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     BOARD* board = m_frame->GetBoard();
 
@@ -3230,7 +3230,7 @@ int PCB_CONTROL::PlaceDrillMap( const TOOL_EVENT& aEvent )
 }
 
 
-int PCB_CONTROL::ShowDrillGroups( const TOOL_EVENT& aEvent )
+int PCB_CONTROL::ShowDrillGroups( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
 
     PCB_EDIT_FRAME* frame = dynamic_cast<PCB_EDIT_FRAME*>( m_frame );
@@ -3252,7 +3252,7 @@ int PCB_CONTROL::ShowDrillGroups( const TOOL_EVENT& aEvent )
 }
 
 
-int PCB_CONTROL::FlipPcbView( const TOOL_EVENT& aEvent )
+int PCB_CONTROL::FlipPcbView( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     PCB_DISPLAY_OPTIONS opts = m_frame->GetDisplayOptions();
     opts.m_FlipBoardView = !opts.m_FlipBoardView;
@@ -3280,7 +3280,7 @@ void PCB_CONTROL::rehatchBoardItem( KIGFX::VIEW* aView, BOARD_ITEM* aItem )
 }
 
 
-int PCB_CONTROL::RehatchShapes( const TOOL_EVENT& aEvent )
+int PCB_CONTROL::RehatchShapes( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     KIGFX::VIEW* view = this->view();
 
@@ -3294,7 +3294,7 @@ int PCB_CONTROL::RehatchShapes( const TOOL_EVENT& aEvent )
 }
 
 
-int PCB_CONTROL::CollectAndEmbed3DModels( const TOOL_EVENT& aEvent )
+int PCB_CONTROL::CollectAndEmbed3DModels( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     BOARD* brd = board();
 

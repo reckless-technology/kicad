@@ -88,7 +88,7 @@ void PCAD_TEXT::Parse( XNODE* aNode, int aLayer, const wxString& aDefaultUnits,
 }
 
 
-void PCAD_TEXT::AddToBoard( FOOTPRINT* aFootprint )
+void PCAD_TEXT::AddToBoard( FOOTPRINT* aFootprint [[maybe_unused]] )
 {
     m_Name.textPositionX = m_PositionX;
     m_Name.textPositionY = m_PositionY;

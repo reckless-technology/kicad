@@ -83,15 +83,15 @@ class SCHEMATIC_LISTENER
 {
 public:
     virtual ~SCHEMATIC_LISTENER() {}
-    virtual void OnSchItemsAdded( SCHEMATIC& aSch, std::vector<SCH_ITEM*>& aSchItem ) {}
-    virtual void OnSchItemsRemoved( SCHEMATIC& aSch, std::vector<SCH_ITEM*>& aSchItem ) {}
-    virtual void OnSchItemsChanged( SCHEMATIC& aSch, std::vector<SCH_ITEM*>& aSchItem ) {}
+    virtual void OnSchItemsAdded( SCHEMATIC& aSch [[maybe_unused]], std::vector<SCH_ITEM*>& aSchItem [[maybe_unused]] ) {}
+    virtual void OnSchItemsRemoved( SCHEMATIC& aSch [[maybe_unused]], std::vector<SCH_ITEM*>& aSchItem [[maybe_unused]] ) {}
+    virtual void OnSchItemsChanged( SCHEMATIC& aSch [[maybe_unused]], std::vector<SCH_ITEM*>& aSchItem [[maybe_unused]] ) {}
 
     // This is called when the user changes to a new sheet, not when a sheet is altered.
     // Sheet alteration events will call OnSchItems*
-    virtual void OnSchSheetChanged( SCHEMATIC& aSch ) {}
+    virtual void OnSchSheetChanged( SCHEMATIC& aSch [[maybe_unused]] ) {}
 
-    virtual void OnSchSelectionChanged( SCHEMATIC& aSch ) {}
+    virtual void OnSchSelectionChanged( SCHEMATIC& aSch [[maybe_unused]] ) {}
 };
 
 enum SCH_CLEANUP_FLAGS

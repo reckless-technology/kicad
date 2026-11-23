@@ -1207,8 +1207,8 @@ protected:
         return aAsc ? id1 - id2 : id2 - id1;
     }
 
-    bool SetValue( const wxVariant& aInValue, const wxDataViewItem& aItem,
-                   unsigned int aCol ) override
+    bool SetValue( const wxVariant& aInValue [[maybe_unused]], const wxDataViewItem& aItem [[maybe_unused]],
+                   unsigned int aCol [[maybe_unused]] ) override
     {
         return false;
     }

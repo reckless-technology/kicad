@@ -545,7 +545,7 @@ void PANEL_SETUP_TUNING_PROFILE_INFO::onChangeProfileType( TUNING_PROFILE::PROFI
 }
 
 
-void PANEL_SETUP_TUNING_PROFILE_INFO::OnAddTrackRow( wxCommandEvent& event )
+void PANEL_SETUP_TUNING_PROFILE_INFO::OnAddTrackRow( wxCommandEvent& event [[maybe_unused]] )
 {
     const int numRows = m_trackPropagationGrid->GetNumberRows();
     m_trackPropagationGrid->InsertRows( m_trackPropagationGrid->GetNumberRows() );
@@ -612,7 +612,7 @@ void PANEL_SETUP_TUNING_PROFILE_INFO::OnAddTrackRow( wxCommandEvent& event )
 }
 
 
-void PANEL_SETUP_TUNING_PROFILE_INFO::OnRemoveTrackRow( wxCommandEvent& event )
+void PANEL_SETUP_TUNING_PROFILE_INFO::OnRemoveTrackRow( wxCommandEvent& event [[maybe_unused]] )
 {
     wxArrayInt selRows = m_trackPropagationGrid->GetSelectedRows();
 
@@ -621,7 +621,7 @@ void PANEL_SETUP_TUNING_PROFILE_INFO::OnRemoveTrackRow( wxCommandEvent& event )
 }
 
 
-void PANEL_SETUP_TUNING_PROFILE_INFO::OnAddViaOverride( wxCommandEvent& event )
+void PANEL_SETUP_TUNING_PROFILE_INFO::OnAddViaOverride( wxCommandEvent& event [[maybe_unused]] )
 {
     const int numRows = m_viaOverrides->GetNumberRows();
     m_viaOverrides->InsertRows( numRows );
@@ -634,7 +634,7 @@ void PANEL_SETUP_TUNING_PROFILE_INFO::OnAddViaOverride( wxCommandEvent& event )
 }
 
 
-void PANEL_SETUP_TUNING_PROFILE_INFO::OnRemoveViaOverride( wxCommandEvent& event )
+void PANEL_SETUP_TUNING_PROFILE_INFO::OnRemoveViaOverride( wxCommandEvent& event [[maybe_unused]] )
 {
     wxArrayInt selRows = m_viaOverrides->GetSelectedRows();
 

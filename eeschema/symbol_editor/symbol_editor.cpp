@@ -188,7 +188,7 @@ bool SYMBOL_EDIT_FRAME::LoadSymbol( const LIB_ID& aLibId, int aUnit, int aBodySt
 }
 
 
-void SYMBOL_EDIT_FRAME::centerItemIdleHandler( wxIdleEvent& aEvent )
+void SYMBOL_EDIT_FRAME::centerItemIdleHandler( wxIdleEvent& aEvent [[maybe_unused]] )
 {
     m_treePane->GetLibTree()->CenterLibId( m_centerItemOnIdle );
     Unbind( wxEVT_IDLE, &SYMBOL_EDIT_FRAME::centerItemIdleHandler, this );

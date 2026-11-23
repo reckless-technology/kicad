@@ -58,7 +58,7 @@ DRC_RE_BITMAP_OVERLAY_PANEL::~DRC_RE_BITMAP_OVERLAY_PANEL()
 }
 
 
-void DRC_RE_BITMAP_OVERLAY_PANEL::OnPaint( wxPaintEvent& aEvent )
+void DRC_RE_BITMAP_OVERLAY_PANEL::OnPaint( wxPaintEvent& aEvent [[maybe_unused]] )
 {
     wxAutoBufferedPaintDC dc( this );
 

@@ -2520,7 +2520,7 @@ std::unique_ptr<PCB_SHAPE> BOARD_BUILDER::buildPolygon( const BLK_0x28_SHAPE& aP
 
 
 std::vector<std::unique_ptr<PCB_SHAPE>> BOARD_BUILDER::buildPolygonShapes( const BLK_0x28_SHAPE& aShapeData,
-                                                                           BOARD_ITEM_CONTAINER& aParent )
+                                                                           BOARD_ITEM_CONTAINER& aParent [[maybe_unused]] )
 {
     std::vector<std::unique_ptr<PCB_SHAPE>> shapes;
 

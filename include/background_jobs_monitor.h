@@ -47,7 +47,7 @@ public:
     BACKGROUND_JOB_REPORTER( BACKGROUND_JOBS_MONITOR*               aMonitor,
                              const std::shared_ptr<BACKGROUND_JOB>& aJob );
 
-    void SetTitle( const wxString& aTitle ) override
+    void SetTitle( const wxString& aTitle [[maybe_unused]] ) override
     {
     }
 

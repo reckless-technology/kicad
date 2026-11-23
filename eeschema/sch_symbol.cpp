@@ -306,9 +306,9 @@ public:
     size_t BaseHash() const override { return TYPE_HASH( SCH_SYMBOL ); }
     size_t TypeHash() const override { return TYPE_HASH( wxString ); }
 
-    bool Writeable( INSPECTABLE* aObject ) const override { return false; }
+    bool Writeable( INSPECTABLE* aObject [[maybe_unused]] ) const override { return false; }
 
-    void setter( void* obj, wxAny& v ) override {}
+    void setter( void* obj [[maybe_unused]], wxAny& v [[maybe_unused]] ) override {}
 
     wxAny ValueForInstance( const SCH_SYMBOL* symbol, const SCH_SHEET_PATH* sheetPath,
                             const wxString& variantName ) const override
@@ -529,9 +529,9 @@ public:
     size_t BaseHash() const override { return TYPE_HASH( SCH_SYMBOL ); }
     size_t TypeHash() const override { return TYPE_HASH( wxString ); }
 
-    bool Writeable( INSPECTABLE* aObject ) const override { return false; }
+    bool Writeable( INSPECTABLE* aObject [[maybe_unused]] ) const override { return false; }
 
-    void setter( void* obj, wxAny& v ) override {}
+    void setter( void* obj [[maybe_unused]], wxAny& v [[maybe_unused]] ) override {}
 
     wxAny ValueForInstance( const SCH_SYMBOL* symbol, const SCH_SHEET_PATH* sheetPath,
                             const wxString& variantName ) const override
@@ -2782,7 +2782,7 @@ void SCH_SYMBOL::SyncOtherUnits( const SCH_SHEET_PATH& aSourceSheet, SCH_COMMIT&
 }
 
 
-void SCH_SYMBOL::RunOnChildren( const std::function<void( SCH_ITEM* )>& aFunction, RECURSE_MODE aMode )
+void SCH_SYMBOL::RunOnChildren( const std::function<void( SCH_ITEM* )>& aFunction, RECURSE_MODE aMode [[maybe_unused]] )
 {
     for( const std::unique_ptr<SCH_PIN>& pin : m_pins )
         aFunction( pin.get() );
@@ -4237,8 +4237,8 @@ void SCH_SYMBOL::GetEndPoints( std::vector<DANGLING_END_ITEM>& aItemList )
 }
 
 
-bool SCH_SYMBOL::UpdateDanglingState( std::vector<DANGLING_END_ITEM>& aItemListByType,
-                                      std::vector<DANGLING_END_ITEM>& aItemListByPos, const SCH_SHEET_PATH* aPath )
+bool SCH_SYMBOL::UpdateDanglingState( std::vector<DANGLING_END_ITEM>& aItemListByType [[maybe_unused]],
+                                      std::vector<DANGLING_END_ITEM>& aItemListByPos, const SCH_SHEET_PATH* aPath [[maybe_unused]] )
 {
     bool changed = false;
 
@@ -4396,7 +4396,7 @@ SCH_ITEM* SCH_SYMBOL::GetDrawItem( const VECTOR2I& aPosition, KICAD_T aType )
 }
 
 
-wxString SCH_SYMBOL::GetItemDescription( UNITS_PROVIDER* aUnitsProvider, bool aFull ) const
+wxString SCH_SYMBOL::GetItemDescription( UNITS_PROVIDER* aUnitsProvider [[maybe_unused]], bool aFull [[maybe_unused]] ) const
 {
     return wxString::Format( _( "Symbol %s [%s]" ),
                              KIUI::EllipsizeMenuText( GetCurrentSheetRef() ),
@@ -4690,8 +4690,8 @@ bool SCH_SYMBOL::DoNetList() const
 }
 
 
-void SCH_SYMBOL::Plot( PLOTTER* aPlotter, bool aBackground, const SCH_PLOT_OPTS& aPlotOpts, int aUnit, int aBodyStyle,
-                       const VECTOR2I& aOffset, bool aDimmed )
+void SCH_SYMBOL::Plot( PLOTTER* aPlotter, bool aBackground, const SCH_PLOT_OPTS& aPlotOpts, int aUnit [[maybe_unused]], int aBodyStyle [[maybe_unused]],
+                       const VECTOR2I& aOffset [[maybe_unused]], bool aDimmed [[maybe_unused]] )
 {
     if( aBackground )
         return;

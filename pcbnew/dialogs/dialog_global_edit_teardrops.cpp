@@ -75,17 +75,17 @@ protected:
     }
 
     // These just improve usability so that you don't have to click twice to enable a filter.
-    void OnNetclassFilterSelect( wxCommandEvent& event ) override
+    void OnNetclassFilterSelect( wxCommandEvent& event [[maybe_unused]] ) override
     {
         m_netclassFilterOpt->SetValue( true );
     }
 
-    void OnLayerFilterSelect( wxCommandEvent& event ) override
+    void OnLayerFilterSelect( wxCommandEvent& event [[maybe_unused]] ) override
     {
         m_layerFilterOpt->SetValue( true );
     }
 
-    void OnNetFilterSelect( wxCommandEvent& event )
+    void OnNetFilterSelect( wxCommandEvent& event [[maybe_unused]] )
     {
         m_netFilterOpt->SetValue( true );
     }
@@ -109,7 +109,7 @@ protected:
     void visitItem( BOARD_COMMIT* aCommit, BOARD_CONNECTED_ITEM* aItem,bool aSelectAlways );
     void processItem( BOARD_COMMIT* aCommit, BOARD_CONNECTED_ITEM* aItem );
 
-    void onShowBoardSetup( wxHyperlinkEvent& event ) override
+    void onShowBoardSetup( wxHyperlinkEvent& event [[maybe_unused]] ) override
     {
         m_parent->ShowBoardSetupDialog( _( "Teardrops" ) );
     }
@@ -481,7 +481,7 @@ bool DIALOG_GLOBAL_EDIT_TEARDROPS::TransferDataFromWindow()
 }
 
 
-int GLOBAL_EDIT_TOOL::EditTeardrops( const TOOL_EVENT& aEvent )
+int GLOBAL_EDIT_TOOL::EditTeardrops( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     PCB_EDIT_FRAME* editFrame = getEditFrame<PCB_EDIT_FRAME>();
     DIALOG_GLOBAL_EDIT_TEARDROPS dlg( editFrame );

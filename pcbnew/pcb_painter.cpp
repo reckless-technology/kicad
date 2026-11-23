@@ -3251,7 +3251,7 @@ void PCB_PAINTER::strokeText( const wxString& aText, const VECTOR2I& aPosition,
 }
 
 
-void PCB_PAINTER::draw( const PCB_REFERENCE_IMAGE* aBitmap, int aLayer )
+void PCB_PAINTER::draw( const PCB_REFERENCE_IMAGE* aBitmap, int aLayer [[maybe_unused]] )
 {
     m_gal->Save();
 

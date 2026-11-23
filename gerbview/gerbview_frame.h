@@ -348,8 +348,8 @@ public:
     /*
      * Do nothing in GerbView.
      */
-    void SaveCopyInUndoList( GERBER_DRAW_ITEM* aItemToCopy,
-                             UNDO_REDO aTypeCommand = UNDO_REDO::UNSPECIFIED ) { }
+    void SaveCopyInUndoList( GERBER_DRAW_ITEM* aItemToCopy [[maybe_unused]],
+                             UNDO_REDO aTypeCommand [[maybe_unused]] = UNDO_REDO::UNSPECIFIED ) { }
 
     /**
      * Create a new entry in undo list of commands and add a list of pickers to handle a list
@@ -358,8 +358,8 @@ public:
      * @param aItemsList = the list of items modified by the command to undo
      * @param aTypeCommand = command type (see enum UNDO_REDO)
      */
-    void SaveCopyInUndoList( const PICKED_ITEMS_LIST& aItemsList,
-                             UNDO_REDO aTypeCommand )
+    void SaveCopyInUndoList( const PICKED_ITEMS_LIST& aItemsList [[maybe_unused]],
+                             UNDO_REDO aTypeCommand [[maybe_unused]] )
     {
         // currently: do nothing in GerbView.
     }
@@ -441,7 +441,7 @@ public:
     /// @copydoc EDA_DRAW_FRAME::SetGridColor()
     virtual void SetGridColor( const COLOR4D& aColor ) override;
 
-    const BOX2I GetDocumentExtents( bool aIncludeAllVisible = true ) const override
+    const BOX2I GetDocumentExtents( bool aIncludeAllVisible [[maybe_unused]] = true ) const override
     {
         wxASSERT( m_gerberLayout );
         return m_gerberLayout->ViewBBox();

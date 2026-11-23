@@ -561,7 +561,7 @@ void GBR_TO_PCB_EXPORTER::writePcbFilledCircle( const VECTOR2I& aCenterPosition,
 }
 
 
-void GBR_TO_PCB_EXPORTER::writePcbHeader( const int* aLayerLookUpTable )
+void GBR_TO_PCB_EXPORTER::writePcbHeader( const int* aLayerLookUpTable [[maybe_unused]] )
 {
     // Note: the .kicad_pcb version used here is after layers_id changes
     fprintf( m_fp, "(kicad_pcb (version 20240928)\n" );

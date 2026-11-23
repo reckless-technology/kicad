@@ -231,7 +231,7 @@ bool PANEL_ZONE_PROPERTIES::TransferZoneSettingsToWindow()
 }
 
 
-void PANEL_ZONE_PROPERTIES::OnRemoveIslandsSelection( wxCommandEvent& aEvent )
+void PANEL_ZONE_PROPERTIES::OnRemoveIslandsSelection( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     m_islandThreshold.Show( m_cbRemoveIslands->GetSelection() == 2 );
 
@@ -240,7 +240,7 @@ void PANEL_ZONE_PROPERTIES::OnRemoveIslandsSelection( wxCommandEvent& aEvent )
 }
 
 
-void PANEL_ZONE_PROPERTIES::OnCornerSmoothingSelection( wxCommandEvent& event )
+void PANEL_ZONE_PROPERTIES::OnCornerSmoothingSelection( wxCommandEvent& event [[maybe_unused]] )
 {
     ZONE_SETTINGS::CORNER_SMOOTHING selection =
             magic_enum::enum_cast<ZONE_SETTINGS::CORNER_SMOOTHING>( m_cornerSmoothingChoice->GetSelection() )
@@ -261,7 +261,7 @@ void PANEL_ZONE_PROPERTIES::OnCornerSmoothingSelection( wxCommandEvent& event )
 }
 
 
-void PANEL_ZONE_PROPERTIES::OnZoneNameChanged( wxCommandEvent& aEvent )
+void PANEL_ZONE_PROPERTIES::OnZoneNameChanged( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( !m_settings )
         return;
@@ -280,7 +280,7 @@ void PANEL_ZONE_PROPERTIES::OnZoneNameChanged( wxCommandEvent& aEvent )
 }
 
 
-void PANEL_ZONE_PROPERTIES::onNetSelector( wxCommandEvent& aEvent )
+void PANEL_ZONE_PROPERTIES::onNetSelector( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     // There is nothing to do if there is no zone selected which can happen when there are no zones on the board.
     if( !m_netSelector || !m_netSelector->IsShown() )
@@ -455,7 +455,7 @@ bool PANEL_ZONE_PROPERTIES::AcceptOptions( bool aUseExportableSetupOnly )
 }
 
 
-void PANEL_ZONE_PROPERTIES::onHatched( wxCommandEvent& event )
+void PANEL_ZONE_PROPERTIES::onHatched( wxCommandEvent& event [[maybe_unused]] )
 {
     bool enable = m_cbHatched->GetValue();
     m_gridStyleThickness.Enable( enable );
@@ -472,7 +472,7 @@ void PANEL_ZONE_PROPERTIES::onHatched( wxCommandEvent& event )
 }
 
 
-void PANEL_ZONE_PROPERTIES::OnAddLayerItem( wxCommandEvent& event )
+void PANEL_ZONE_PROPERTIES::OnAddLayerItem( wxCommandEvent& event [[maybe_unused]] )
 {
     m_layerSpecificOverrides->OnAddRow(
             [&]() -> std::pair<int, int>
@@ -488,7 +488,7 @@ void PANEL_ZONE_PROPERTIES::OnAddLayerItem( wxCommandEvent& event )
 }
 
 
-void PANEL_ZONE_PROPERTIES::OnDeleteLayerItem( wxCommandEvent& event )
+void PANEL_ZONE_PROPERTIES::OnDeleteLayerItem( wxCommandEvent& event [[maybe_unused]] )
 {
     m_layerSpecificOverrides->OnDeleteRows(
             [&]( int row )

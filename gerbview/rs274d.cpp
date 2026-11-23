@@ -548,7 +548,7 @@ bool GERBER_FILE_IMAGE::Execute_G_Command( char*& text, int G_command )
 }
 
 
-bool GERBER_FILE_IMAGE::Execute_DCODE_Command( char*& text, int D_commande )
+bool GERBER_FILE_IMAGE::Execute_DCODE_Command( char*& text [[maybe_unused]], int D_commande )
 {
     VECTOR2I          size( 15, 15 );
 

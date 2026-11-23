@@ -230,7 +230,7 @@ protected:
      *
      * @return false when it cannot be shown, which leaves the step where it is.
      */
-    virtual bool showHistoryControl( wxWindow* aCtrl ) { return true; }
+    virtual bool showHistoryControl( wxWindow* aCtrl [[maybe_unused]] ) { return true; }
 
     /**
      * In all dialogs, we must call the same functions to fix minimal dlg size, the default

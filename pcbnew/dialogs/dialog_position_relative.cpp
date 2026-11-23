@@ -99,7 +99,7 @@ bool DIALOG_POSITION_RELATIVE::getTranslationInIU( VECTOR2I& val, bool polar )
 }
 
 
-void DIALOG_POSITION_RELATIVE::OnPolarChanged( wxCommandEvent& event )
+void DIALOG_POSITION_RELATIVE::OnPolarChanged( wxCommandEvent& event [[maybe_unused]] )
 {
     bool newPolar = m_polarCoords->IsChecked();
     double xOffset = m_xOffset.GetDoubleValue();
@@ -287,14 +287,14 @@ VECTOR2I DIALOG_POSITION_RELATIVE::getAnchorPos()
 }
 
 
-void DIALOG_POSITION_RELATIVE::OnUseGridOriginClick( wxCommandEvent& event )
+void DIALOG_POSITION_RELATIVE::OnUseGridOriginClick( wxCommandEvent& event [[maybe_unused]] )
 {
     s_anchorType = ANCHOR_GRID_ORIGIN;
     updateAnchorInfo( nullptr );
 }
 
 
-void DIALOG_POSITION_RELATIVE::OnUseUserOriginClick( wxCommandEvent& event )
+void DIALOG_POSITION_RELATIVE::OnUseUserOriginClick( wxCommandEvent& event [[maybe_unused]] )
 {
     s_anchorType = ANCHOR_USER_ORIGIN;
     updateAnchorInfo( nullptr );

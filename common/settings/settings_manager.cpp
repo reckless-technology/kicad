@@ -369,7 +369,7 @@ public:
         return wxDIR_CONTINUE;
     }
 
-    wxDirTraverseResult OnDir( const wxString& dirPath ) override
+    wxDirTraverseResult OnDir( const wxString& dirPath [[maybe_unused]] ) override
     {
         return wxDIR_CONTINUE;
     }
@@ -1677,7 +1677,7 @@ public:
         return wxDIR_CONTINUE;
     }
 
-    wxDirTraverseResult OnDir( const wxString& aDirName ) override
+    wxDirTraverseResult OnDir( const wxString& aDirName [[maybe_unused]] ) override
     {
         return wxDIR_CONTINUE;
     }

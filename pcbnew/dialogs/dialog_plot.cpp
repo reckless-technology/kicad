@@ -825,7 +825,7 @@ void DIALOG_PLOT::arrangeAllLayersList( const LSEQ& aSeq )
 
 
 // A helper function to show a popup menu, when the dialog is right clicked.
-void DIALOG_PLOT::OnRightClickLayers( wxMouseEvent& event )
+void DIALOG_PLOT::OnRightClickLayers( wxMouseEvent& event [[maybe_unused]] )
 {
     // Build a list of layers for usual fabrication: copper layers + tech layers without courtyard
     LSET fab_layer_set = ( LSET::AllCuMask() | LSET::AllTechMask() ) & ~LSET( { B_CrtYd, F_CrtYd } );
@@ -954,7 +954,7 @@ void DIALOG_PLOT::onAllCopperLayers( wxCommandEvent& event )
 }
 
 
-void DIALOG_PLOT::OnRightClickAllLayers( wxMouseEvent& event )
+void DIALOG_PLOT::OnRightClickAllLayers( wxMouseEvent& event [[maybe_unused]] )
 {
     wxMenu menu;
     menu.Append( new wxMenuItem( &menu, ID_SELECT_ALL_LAYERS, _( "Select All Layers" ) ) );
@@ -997,7 +997,7 @@ void DIALOG_PLOT::OnRightClickAllLayers( wxMouseEvent& event )
 }
 
 
-void DIALOG_PLOT::CreateDrillFile( wxCommandEvent& event )
+void DIALOG_PLOT::CreateDrillFile( wxCommandEvent& event [[maybe_unused]] )
 {
     // Be sure drill file use the same settings (axis option, plot directory) as plot files:
     applyPlotSettings();
@@ -1011,7 +1011,7 @@ void DIALOG_PLOT::CreateDrillFile( wxCommandEvent& event )
 }
 
 
-void DIALOG_PLOT::OnChangeDXFPlotMode( wxCommandEvent& event )
+void DIALOG_PLOT::OnChangeDXFPlotMode( wxCommandEvent& event [[maybe_unused]] )
 {
     // m_DXF_plotTextStrokeFontOpt is disabled if m_DXF_plotModeOpt is checked (plot in DXF
     // polygon mode)
@@ -1024,7 +1024,7 @@ void DIALOG_PLOT::OnChangeDXFPlotMode( wxCommandEvent& event )
 }
 
 
-void DIALOG_PLOT::onOutputDirectoryBrowseClicked( wxCommandEvent& event )
+void DIALOG_PLOT::onOutputDirectoryBrowseClicked( wxCommandEvent& event [[maybe_unused]] )
 {
     // Build the absolute path of current output directory to preselect it in the file browser.
     std::function<bool( wxString* )> textResolver =
@@ -1429,13 +1429,13 @@ void DIALOG_PLOT::applyPlotSettings()
 }
 
 
-void DIALOG_PLOT::OnGerberX2Checked( wxCommandEvent& event )
+void DIALOG_PLOT::OnGerberX2Checked( wxCommandEvent& event [[maybe_unused]] )
 {
     // Currently: do nothing
 }
 
 
-void DIALOG_PLOT::Plot( wxCommandEvent& event )
+void DIALOG_PLOT::Plot( wxCommandEvent& event [[maybe_unused]] )
 {
     if( m_job )
     {
@@ -1563,7 +1563,7 @@ void DIALOG_PLOT::Plot( wxCommandEvent& event )
 
 
 
-void DIALOG_PLOT::onRunDRC( wxCommandEvent& event )
+void DIALOG_PLOT::onRunDRC( wxCommandEvent& event [[maybe_unused]] )
 {
     PCB_EDIT_FRAME* parent = dynamic_cast<PCB_EDIT_FRAME*>( GetParent() );
 
@@ -1584,7 +1584,7 @@ void DIALOG_PLOT::onRunDRC( wxCommandEvent& event )
 }
 
 
-void DIALOG_PLOT::onOpenOutputDirectory( wxCommandEvent& event )
+void DIALOG_PLOT::onOpenOutputDirectory( wxCommandEvent& event [[maybe_unused]] )
 {
     std::function<bool( wxString* )> textResolver =
             [&]( wxString* token ) -> bool
@@ -1604,7 +1604,7 @@ void DIALOG_PLOT::onOpenOutputDirectory( wxCommandEvent& event )
 }
 
 
-void DIALOG_PLOT::onBoardSetup( wxHyperlinkEvent& aEvent )
+void DIALOG_PLOT::onBoardSetup( wxHyperlinkEvent& aEvent [[maybe_unused]] )
 {
     PCB_EDIT_FRAME* parent = dynamic_cast<PCB_EDIT_FRAME*>( GetParent() );
 
@@ -1618,14 +1618,14 @@ void DIALOG_PLOT::onBoardSetup( wxHyperlinkEvent& aEvent )
 }
 
 
-void DIALOG_PLOT::onPlotAllListMoveUp( wxCommandEvent& aEvent )
+void DIALOG_PLOT::onPlotAllListMoveUp( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( m_plotAllLayersList->CanMoveCurrentUp() )
         m_plotAllLayersList->MoveCurrentUp();
 }
 
 
-void DIALOG_PLOT::onPlotAllListMoveDown( wxCommandEvent& aEvent )
+void DIALOG_PLOT::onPlotAllListMoveDown( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( m_plotAllLayersList->CanMoveCurrentDown() )
         m_plotAllLayersList->MoveCurrentDown();
@@ -1662,13 +1662,13 @@ void DIALOG_PLOT::updatePdfColorOptions()
 }
 
 
-void DIALOG_PLOT::onSVGColorChoice( wxCommandEvent& aEvent )
+void DIALOG_PLOT::onSVGColorChoice( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     updateColorThemeControl();
 }
 
 
-void DIALOG_PLOT::onPDFColorChoice( wxCommandEvent& aEvent )
+void DIALOG_PLOT::onPDFColorChoice( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     updatePdfColorOptions();
 }

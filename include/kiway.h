@@ -231,12 +231,12 @@ struct KIFACE
      * the project doesn't know the internal format of the various files (which may have
      * paths in them that need updating).
      */
-    virtual void SaveFileAs( const wxString& srcProjectBasePath,
-                             const wxString& srcProjectName,
-                             const wxString& newProjectBasePath,
-                             const wxString& newProjectName,
-                             const wxString& srcFilePath,
-                             wxString& aErrors )
+    virtual void SaveFileAs( const wxString& srcProjectBasePath [[maybe_unused]],
+                             const wxString& srcProjectName [[maybe_unused]],
+                             const wxString& newProjectBasePath [[maybe_unused]],
+                             const wxString& newProjectName [[maybe_unused]],
+                             const wxString& srcFilePath [[maybe_unused]],
+                             wxString& aErrors [[maybe_unused]] )
     {
         // If a KIFACE owns files then it needs to implement this....
     }
@@ -259,18 +259,18 @@ struct KIFACE
      */
     virtual void GetActions( std::vector<TOOL_ACTION*>& aActions ) const = 0;
 
-    virtual int HandleJob( JOB* aJob, REPORTER* aReporter, PROGRESS_REPORTER* aProgressReporter )
+    virtual int HandleJob( JOB* aJob [[maybe_unused]], REPORTER* aReporter [[maybe_unused]], PROGRESS_REPORTER* aProgressReporter [[maybe_unused]] )
     {
         return 0;
     }
 
-    virtual bool HandleJobConfig( JOB* aJob, wxWindow* aParent )
+    virtual bool HandleJobConfig( JOB* aJob [[maybe_unused]], wxWindow* aParent [[maybe_unused]] )
     {
         return 0;
     }
 
-    virtual bool HandleApiOpenDocument( const DOCUMENT_SPEC& aSpec,
-                                        KICAD_API_SERVER* aServer,
+    virtual bool HandleApiOpenDocument( const DOCUMENT_SPEC& aSpec [[maybe_unused]],
+                                        KICAD_API_SERVER* aServer [[maybe_unused]],
                                         wxString* aError )
     {
         if( aError )
@@ -287,7 +287,7 @@ struct KIFACE
      * symbol). For LIBID_KIND the spec's libId must match the open library item;
      * for the file kinds, an empty path means "whatever document is open".
      */
-    virtual bool HandleApiCloseDocument( const DOCUMENT_SPEC& aSpec, KICAD_API_SERVER* aServer, wxString* aError )
+    virtual bool HandleApiCloseDocument( const DOCUMENT_SPEC& aSpec [[maybe_unused]], KICAD_API_SERVER* aServer [[maybe_unused]], wxString* aError )
     {
         if( aError )
             *aError = wxS( "CloseDocument is not implemented for this face" );
@@ -295,9 +295,9 @@ struct KIFACE
         return false;
     }
 
-    virtual void PreloadLibraries( KIWAY* aKiway ) {}
+    virtual void PreloadLibraries( KIWAY* aKiway [[maybe_unused]] ) {}
 
-    virtual void CancelPreload( bool aBlock = true ) {}
+    virtual void CancelPreload( bool aBlock [[maybe_unused]] = true ) {}
 
     virtual void ProjectChanged() {}
 
@@ -306,7 +306,7 @@ struct KIFACE
      * server's library command handler after loading the kiface, so that library commands
      * are available before any document is opened.  The kiface retains ownership.
      */
-    virtual void RegisterLibraryHandlers( KICAD_API_SERVER* aServer ) {}
+    virtual void RegisterLibraryHandlers( KICAD_API_SERVER* aServer [[maybe_unused]] ) {}
 
     /**
      * Starts a background load of all libraries of the type owned by this face.  Called by

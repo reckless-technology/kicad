@@ -91,8 +91,8 @@ void GERBVIEW_DRAW_PANEL_GAL::SetHighContrastLayer( int aLayer )
 }
 
 
-void GERBVIEW_DRAW_PANEL_GAL::GetMsgPanelInfo( EDA_DRAW_FRAME* aFrame,
-                                               std::vector<MSG_PANEL_ITEM>& aList )
+void GERBVIEW_DRAW_PANEL_GAL::GetMsgPanelInfo( EDA_DRAW_FRAME* aFrame [[maybe_unused]],
+                                               std::vector<MSG_PANEL_ITEM>& aList [[maybe_unused]] )
 {
 }
 

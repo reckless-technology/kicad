@@ -79,7 +79,7 @@ DIALOG_TABLE_PROPERTIES::DIALOG_TABLE_PROPERTIES( SCH_EDIT_FRAME* aFrame, SCH_TA
                 attr->SetRenderer( new wxGridCellAutoWrapStringRenderer );
                 attr->SetEditor( new GRID_CELL_STC_EDITOR( true, false,
                         // onCharFn
-                        [this]( wxStyledTextEvent& aEvent, SCINTILLA_TRICKS* aScintillaTricks )
+                        [this]( wxStyledTextEvent& aEvent [[maybe_unused]], SCINTILLA_TRICKS* aScintillaTricks )
                         {
                             aScintillaTricks->DoTextVarAutocomplete(
                                     // getTokensFn
@@ -274,7 +274,7 @@ void DIALOG_TABLE_PROPERTIES::getContextualTextVars( const wxString& aCrossRef, 
 }
 
 
-void DIALOG_TABLE_PROPERTIES::onBorderChecked( wxCommandEvent& aEvent )
+void DIALOG_TABLE_PROPERTIES::onBorderChecked( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     bool border = m_borderCheckbox->GetValue();
     bool headerSeparator = m_headerBorder->GetValue();

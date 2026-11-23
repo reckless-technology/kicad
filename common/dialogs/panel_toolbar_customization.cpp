@@ -670,7 +670,7 @@ void PANEL_TOOLBAR_CUSTOMIZATION::applyActionFilter()
 }
 
 
-void PANEL_TOOLBAR_CUSTOMIZATION::onGroupPress( wxCommandEvent& aEvent )
+void PANEL_TOOLBAR_CUSTOMIZATION::onGroupPress( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     TOOLBAR_TREE_ITEM_DATA* treeItem = new TOOLBAR_TREE_ITEM_DATA( TOOLBAR_ITEM_TYPE::TB_GROUP, _( "Group" ) );
 
@@ -709,7 +709,7 @@ void PANEL_TOOLBAR_CUSTOMIZATION::onGroupPress( wxCommandEvent& aEvent )
 }
 
 
-void PANEL_TOOLBAR_CUSTOMIZATION::onSpacerPress( wxCommandEvent& aEvent )
+void PANEL_TOOLBAR_CUSTOMIZATION::onSpacerPress( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     TOOLBAR_TREE_ITEM_DATA* treeItem = new TOOLBAR_TREE_ITEM_DATA( TOOLBAR_ITEM_TYPE::SPACER, 5 );
 
@@ -750,7 +750,7 @@ void PANEL_TOOLBAR_CUSTOMIZATION::onSpacerPress( wxCommandEvent& aEvent )
 }
 
 
-void PANEL_TOOLBAR_CUSTOMIZATION::onSeparatorPress( wxCommandEvent& aEvent )
+void PANEL_TOOLBAR_CUSTOMIZATION::onSeparatorPress( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     TOOLBAR_TREE_ITEM_DATA* treeItem = new TOOLBAR_TREE_ITEM_DATA( TOOLBAR_ITEM_TYPE::SEPARATOR );
 
@@ -816,7 +816,7 @@ void PANEL_TOOLBAR_CUSTOMIZATION::enableToolbarControls( bool enable )
 }
 
 
-void PANEL_TOOLBAR_CUSTOMIZATION::onToolDelete( wxCommandEvent& event )
+void PANEL_TOOLBAR_CUSTOMIZATION::onToolDelete( wxCommandEvent& event [[maybe_unused]] )
 {
     wxTreeItemId item = m_toolbarTree->GetSelection();
 
@@ -840,19 +840,19 @@ void PANEL_TOOLBAR_CUSTOMIZATION::onToolDelete( wxCommandEvent& event )
 }
 
 
-void PANEL_TOOLBAR_CUSTOMIZATION::onToolMoveUp( wxCommandEvent& event )
+void PANEL_TOOLBAR_CUSTOMIZATION::onToolMoveUp( wxCommandEvent& event [[maybe_unused]] )
 {
     m_toolbarTree->MoveItemUp( m_toolbarTree->GetSelection() );
 }
 
 
-void PANEL_TOOLBAR_CUSTOMIZATION::onToolMoveDown( wxCommandEvent& event )
+void PANEL_TOOLBAR_CUSTOMIZATION::onToolMoveDown( wxCommandEvent& event [[maybe_unused]] )
 {
     m_toolbarTree->MoveItemDown( m_toolbarTree->GetSelection() );
 }
 
 
-void PANEL_TOOLBAR_CUSTOMIZATION::onBtnAddAction( wxCommandEvent& event )
+void PANEL_TOOLBAR_CUSTOMIZATION::onBtnAddAction( wxCommandEvent& event [[maybe_unused]] )
 {
     // Get the selected item
     long actionIdx = m_actionsList->GetNextItem( -1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED );
@@ -1068,7 +1068,7 @@ void PANEL_TOOLBAR_CUSTOMIZATION::onTbChoiceSelect( wxCommandEvent& event )
 }
 
 
-void PANEL_TOOLBAR_CUSTOMIZATION::onListItemActivated( wxListEvent& event )
+void PANEL_TOOLBAR_CUSTOMIZATION::onListItemActivated( wxListEvent& event [[maybe_unused]] )
 {
     wxCommandEvent dummy;
     onBtnAddAction( dummy );

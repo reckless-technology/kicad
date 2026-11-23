@@ -92,7 +92,7 @@ public:
     virtual void ToggleClockwise() {}
 
     /// Enable or disable angle snapping (circular arcs only; no-op for others).
-    virtual void SetAngleSnap( bool aSnap ) {}
+    virtual void SetAngleSnap( bool aSnap [[maybe_unused]] ) {}
 
     /**
      * Select the construction sequence (circular arcs only; no-op for others).
@@ -100,7 +100,7 @@ public:
      * Switching mid-draw keeps the first locked point when it is an arc start in both modes, which is
      * every mode except CENTER_START_END; otherwise construction restarts.
      */
-    virtual void SetArcDrawMode( ARC_DRAW_MODE aMode ) {}
+    virtual void SetArcDrawMode( ARC_DRAW_MODE aMode [[maybe_unused]] ) {}
 
     /**
      * Preload the start point and departure direction for ARC_DRAW_MODE::TANGENT.
@@ -113,8 +113,8 @@ public:
      *                         which case the sign giving the smaller sweep to the cursor is used and
      *                         ToggleClockwise() flips it.
      */
-    virtual void SetTangentSeed( const VECTOR2I& aStart, const VECTOR2D& aDirection,
-                                 bool aDirectionIsAxis = false ) {}
+    virtual void SetTangentSeed( const VECTOR2I& aStart [[maybe_unused]], const VECTOR2D& aDirection [[maybe_unused]],
+                                 bool aDirectionIsAxis [[maybe_unused]] = false ) {}
 
     /**
      * Called when the user invokes the properties action mid-draw.
@@ -122,7 +122,7 @@ public:
      * @return true if the behavior handled the request (the event loop
      *         should continue); false if the event should be passed on.
      */
-    virtual bool OnProperties( EDA_SHAPE& aShape ) { return false; }
+    virtual bool OnProperties( EDA_SHAPE& aShape [[maybe_unused]] ) { return false; }
 
     //
     // Geometry access

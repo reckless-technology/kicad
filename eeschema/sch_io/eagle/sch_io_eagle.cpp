@@ -235,7 +235,7 @@ static SYMBOL_ORIENTATION_T kiCadComponentRotation( float eagleDegrees )
 
 // Calculate text alignment based on the given Eagle text alignment parameters.
 static void eagleToKicadAlignment( EDA_TEXT* aText, int aEagleAlignment, int aRelDegress,
-                                   bool aMirror, bool aSpin, int aAbsDegress )
+                                   bool aMirror, bool aSpin [[maybe_unused]], int aAbsDegress )
 {
     int align = aEagleAlignment;
 
@@ -359,7 +359,7 @@ int SCH_IO_EAGLE::GetModifyHash() const
 
 SCH_SHEET* SCH_IO_EAGLE::LoadSchematicFile( const wxString& aFileName, SCHEMATIC* aSchematic,
                                             SCH_SHEET*             aAppendToMe,
-                                            const std::map<std::string, UTF8>* aProperties )
+                                            const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     wxASSERT( !aFileName || aSchematic != nullptr );
 
@@ -498,7 +498,7 @@ SCH_SHEET* SCH_IO_EAGLE::LoadSchematicFile( const wxString& aFileName, SCHEMATIC
 
 void SCH_IO_EAGLE::EnumerateSymbolLib( wxArrayString&         aSymbolNameList,
                                        const wxString&        aLibraryPath,
-                                       const std::map<std::string, UTF8>* aProperties )
+                                       const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     m_filename = aLibraryPath;
     m_libName = m_filename.GetName();
@@ -517,7 +517,7 @@ void SCH_IO_EAGLE::EnumerateSymbolLib( wxArrayString&         aSymbolNameList,
 
 void SCH_IO_EAGLE::EnumerateSymbolLib( std::vector<LIB_SYMBOL*>& aSymbolList,
                                        const wxString&           aLibraryPath,
-                                       const std::map<std::string, UTF8>*    aProperties )
+                                       const std::map<std::string, UTF8>*    aProperties [[maybe_unused]] )
 {
     m_filename = aLibraryPath;
     m_libName = m_filename.GetName();
@@ -535,7 +535,7 @@ void SCH_IO_EAGLE::EnumerateSymbolLib( std::vector<LIB_SYMBOL*>& aSymbolList,
 
 
 LIB_SYMBOL* SCH_IO_EAGLE::LoadSymbol( const wxString& aLibraryPath, const wxString& aAliasName,
-                                      const std::map<std::string, UTF8>* aProperties )
+                                      const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     m_filename = aLibraryPath;
     m_libName = m_filename.GetName();
@@ -606,7 +606,7 @@ void SCH_IO_EAGLE::ensureLoadedLibrary( const wxString& aLibraryPath )
 }
 
 
-wxXmlDocument SCH_IO_EAGLE::loadXmlDocument( const wxString& aFileName )
+wxXmlDocument SCH_IO_EAGLE::loadXmlDocument( const wxString& aFileName [[maybe_unused]] )
 {
     wxXmlDocument      xmlDocument;
     wxFFileInputStream stream( m_filename.GetFullPath() );
@@ -1550,7 +1550,7 @@ SCH_IO_EAGLE::SHEET_WIRING SCH_IO_EAGLE::collectSheetWiring( const std::unique_p
 
 
 void SCH_IO_EAGLE::loadSegments( const std::vector<std::unique_ptr<ESEGMENT>>& aSegments,
-                                 const wxString& netName, const wxString& aNetClass,
+                                 const wxString& netName, const wxString& aNetClass [[maybe_unused]],
                                  SHEET_WIRING& aWiring, bool aIsBus )
 {
     // Loop through all segments

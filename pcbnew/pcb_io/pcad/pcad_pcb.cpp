@@ -203,7 +203,7 @@ XNODE* PCAD_PCB::FindCompDefName( XNODE* aNode, const wxString& aName ) const
 }
 
 
-void PCAD_PCB::SetTextProperty( XNODE* aNode, TTEXTVALUE* aTextValue, const wxString& aPatGraphRefName,
+void PCAD_PCB::SetTextProperty( XNODE* aNode, TTEXTVALUE* aTextValue, const wxString& aPatGraphRefName [[maybe_unused]],
                            const wxString& aXmlName, const wxString& aActualConversion )
 {
     XNODE*      tNode, * t1Node;

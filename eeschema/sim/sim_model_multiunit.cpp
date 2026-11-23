@@ -427,13 +427,13 @@ const SIM_MODEL_MULTIUNIT& SPICE_GENERATOR_MULTIUNIT::multiunit() const
 }
 
 
-std::string SPICE_GENERATOR_MULTIUNIT::ModelName( const SPICE_ITEM& aItem ) const
+std::string SPICE_GENERATOR_MULTIUNIT::ModelName( const SPICE_ITEM& aItem [[maybe_unused]] ) const
 {
     return multiunit().m_signature.ToStdString();
 }
 
 
-std::string SPICE_GENERATOR_MULTIUNIT::ModelLine( const SPICE_ITEM& aItem ) const
+std::string SPICE_GENERATOR_MULTIUNIT::ModelLine( const SPICE_ITEM& aItem [[maybe_unused]] ) const
 {
     const SIM_MODEL_MULTIUNIT& model = multiunit();
 

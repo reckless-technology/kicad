@@ -133,8 +133,8 @@ bool PCB_IO_EASYEDA::CanReadLibrary( const wxString& aFileName ) const
 }
 
 
-void PCB_IO_EASYEDA::loadBoard( const wxString& aFileName, BOARD& aBoard, bool aIsNewLoad,
-                                const std::map<std::string, UTF8>* aProperties, PROJECT* aProject )
+void PCB_IO_EASYEDA::loadBoard( const wxString& aFileName, BOARD& aBoard, bool aIsNewLoad [[maybe_unused]],
+                                const std::map<std::string, UTF8>* aProperties, PROJECT* aProject [[maybe_unused]] )
 {
     m_loadedFootprints.clear();
 
@@ -270,15 +270,15 @@ void PCB_IO_EASYEDA::loadBoard( const wxString& aFileName, BOARD& aBoard, bool a
 }
 
 
-long long PCB_IO_EASYEDA::GetLibraryTimestamp( const wxString& aLibraryPath ) const
+long long PCB_IO_EASYEDA::GetLibraryTimestamp( const wxString& aLibraryPath [[maybe_unused]] ) const
 {
     return 0;
 }
 
 
 void PCB_IO_EASYEDA::FootprintEnumerate( wxArrayString&  aFootprintNames,
-                                         const wxString& aLibraryPath, bool aBestEfforts,
-                                         const std::map<std::string, UTF8>* aProperties )
+                                         const wxString& aLibraryPath, bool aBestEfforts [[maybe_unused]],
+                                         const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     try
     {
@@ -366,8 +366,8 @@ void PCB_IO_EASYEDA::FootprintEnumerate( wxArrayString&  aFootprintNames,
 
 
 std::unique_ptr<FOOTPRINT> PCB_IO_EASYEDA::FootprintLoad( const wxString& aLibraryPath, const wxString& aFootprintName,
-                                                          bool                               aKeepUUID,
-                                                          const std::map<std::string, UTF8>* aProperties )
+                                                          bool                               aKeepUUID [[maybe_unused]],
+                                                          const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     // Suppress font substitution warnings (RAII - automatically restored on scope exit)
     FONTCONFIG_REPORTER_SCOPE fontconfigScope( nullptr );

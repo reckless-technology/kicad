@@ -218,7 +218,7 @@ void PDF_PLOTTER::SetViewport( const VECTOR2I& aOffset, double aIusPerDecimil, d
 }
 
 
-void PDF_PLOTTER::SetCurrentLineWidth( int aWidth, void* aData )
+void PDF_PLOTTER::SetCurrentLineWidth( int aWidth, void* aData [[maybe_unused]] )
 {
     wxCHECK2( m_workFile, return );
 
@@ -525,7 +525,7 @@ void PDF_PLOTTER::Arc( const VECTOR2D& aCenter, const EDA_ANGLE& aStartAngle,
 
 
 void PDF_PLOTTER::PlotPoly( const std::vector<VECTOR2I>& aCornerList, FILL_T aFill, int aWidth,
-                            void* aData )
+                            void* aData [[maybe_unused]] )
 {
     wxCHECK2( m_workFile, return );
 
@@ -556,7 +556,7 @@ void PDF_PLOTTER::PlotPoly( const std::vector<VECTOR2I>& aCornerList, FILL_T aFi
 }
 
 
-void PDF_PLOTTER::PlotPoly( const SHAPE_LINE_CHAIN& aLineChain, FILL_T aFill, int aWidth, void* aData )
+void PDF_PLOTTER::PlotPoly( const SHAPE_LINE_CHAIN& aLineChain, FILL_T aFill, int aWidth, void* aData [[maybe_unused]] )
 {
     if( aFill == FILL_T::NO_FILL && aWidth == 0 )
         return;

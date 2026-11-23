@@ -68,12 +68,12 @@ public:
     /**
      * The default condition function (always returns true).
      */
-    static bool ShowAlways( const SELECTION& aSelection ) { return true; }
+    static bool ShowAlways( const SELECTION& aSelection [[maybe_unused]] ) { return true; }
 
     /**
      * Always returns false.
      */
-    static bool ShowNever( const SELECTION& aSelection ) { return false; }
+    static bool ShowNever( const SELECTION& aSelection [[maybe_unused]] ) { return false; }
 
     /**
      * Test if there are any items selected.

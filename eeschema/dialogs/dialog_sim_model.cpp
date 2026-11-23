@@ -1334,7 +1334,7 @@ int DIALOG_SIM_MODEL<T>::getModelPinIndex( const wxString& aModelPinString ) con
 
 
 template <typename T>
-void DIALOG_SIM_MODEL<T>::onRadioButton( wxCommandEvent& aEvent )
+void DIALOG_SIM_MODEL<T>::onRadioButton( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     m_prevModel = nullptr;  // Ensure the Model panel will be rebuild after updating other params.
     updateWidgets();
@@ -1342,14 +1342,14 @@ void DIALOG_SIM_MODEL<T>::onRadioButton( wxCommandEvent& aEvent )
 
 
 template <typename T>
-void DIALOG_SIM_MODEL<T>::onLibraryPathText( wxCommandEvent& aEvent )
+void DIALOG_SIM_MODEL<T>::onLibraryPathText( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     m_rbLibraryModel->SetValue( true );
 }
 
 
 template <typename T>
-void DIALOG_SIM_MODEL<T>::onLibraryPathTextEnter( wxCommandEvent& aEvent )
+void DIALOG_SIM_MODEL<T>::onLibraryPathTextEnter( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     m_rbLibraryModel->SetValue( true );
 
@@ -1384,7 +1384,7 @@ void DIALOG_SIM_MODEL<T>::onLibraryPathTextKillFocus( wxFocusEvent& aEvent )
 
 
 template <typename T>
-void DIALOG_SIM_MODEL<T>::onBrowseButtonClick( wxCommandEvent& aEvent )
+void DIALOG_SIM_MODEL<T>::onBrowseButtonClick( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     static wxString s_mruPath;
 
@@ -1473,7 +1473,7 @@ void DIALOG_SIM_MODEL<T>::onFilterCharHook( wxKeyEvent& aKeyStroke )
 
 
 template <typename T>
-void DIALOG_SIM_MODEL<T>::onModelFilter( wxCommandEvent& aEvent )
+void DIALOG_SIM_MODEL<T>::onModelFilter( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( library() == nullptr )  // No library loaded
         return;
@@ -1508,7 +1508,7 @@ void DIALOG_SIM_MODEL<T>::onModelFilter( wxCommandEvent& aEvent )
 
 
 template <typename T>
-void DIALOG_SIM_MODEL<T>::onModelNameChoice( wxCommandEvent& aEvent )
+void DIALOG_SIM_MODEL<T>::onModelNameChoice( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( isIbisLoaded() )
     {
@@ -1560,7 +1560,7 @@ void DIALOG_SIM_MODEL<T>::onModelNameChoice( wxCommandEvent& aEvent )
 
 
 template <typename T>
-void DIALOG_SIM_MODEL<T>::onPinCombobox( wxCommandEvent& aEvent )
+void DIALOG_SIM_MODEL<T>::onPinCombobox( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     wxArrayString modelLabels;
 
@@ -1599,7 +1599,7 @@ void DIALOG_SIM_MODEL<T>::onPinComboboxTextEnter( wxCommandEvent& aEvent )
 
 
 template <typename T>
-void DIALOG_SIM_MODEL<T>::onPinModelCombobox( wxCommandEvent& aEvent )
+void DIALOG_SIM_MODEL<T>::onPinModelCombobox( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( SIM_MODEL_IBIS* ibismodel = dynamic_cast<SIM_MODEL_IBIS*>( &curModel() ) )
     {
@@ -1624,14 +1624,14 @@ void DIALOG_SIM_MODEL<T>::onPinModelCombobox( wxCommandEvent& aEvent )
 
 
 template <typename T>
-void DIALOG_SIM_MODEL<T>::onPinModelComboboxTextEnter( wxCommandEvent& aEvent )
+void DIALOG_SIM_MODEL<T>::onPinModelComboboxTextEnter( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     m_pinModelCombobox->SetSelection( m_pinModelCombobox->FindString( m_pinModelCombobox->GetValue() ) );
 }
 
 
 template <typename T>
-void DIALOG_SIM_MODEL<T>::onDifferentialCheckbox( wxCommandEvent& aEvent )
+void DIALOG_SIM_MODEL<T>::onDifferentialCheckbox( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( SIM_MODEL_IBIS* modelibis = dynamic_cast<SIM_MODEL_IBIS*>( &curModel() ) )
     {
@@ -1644,7 +1644,7 @@ void DIALOG_SIM_MODEL<T>::onDifferentialCheckbox( wxCommandEvent& aEvent )
 
 
 template <typename T>
-void DIALOG_SIM_MODEL<T>::onDeviceTypeChoice( wxCommandEvent& aEvent )
+void DIALOG_SIM_MODEL<T>::onDeviceTypeChoice( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     m_rbBuiltinModel->SetValue( true );
 
@@ -1662,7 +1662,7 @@ void DIALOG_SIM_MODEL<T>::onDeviceTypeChoice( wxCommandEvent& aEvent )
 
 
 template <typename T>
-void DIALOG_SIM_MODEL<T>::onWaveformChoice( wxCommandEvent& aEvent )
+void DIALOG_SIM_MODEL<T>::onWaveformChoice( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     SIM_MODEL::DEVICE_T deviceType = curModel().GetDeviceType();
     wxString            typeDescription = m_waveformChoice->GetStringSelection();
@@ -1706,7 +1706,7 @@ void DIALOG_SIM_MODEL<T>::onWaveformChoice( wxCommandEvent& aEvent )
 
 
 template <typename T>
-void DIALOG_SIM_MODEL<T>::onTypeChoice( wxCommandEvent& aEvent )
+void DIALOG_SIM_MODEL<T>::onTypeChoice( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     SIM_MODEL::DEVICE_T deviceType = curModel().GetDeviceType();
     wxString            typeDescription = m_deviceSubtypeChoice->GetStringSelection();
@@ -1727,7 +1727,7 @@ void DIALOG_SIM_MODEL<T>::onTypeChoice( wxCommandEvent& aEvent )
 
 
 template <typename T>
-void DIALOG_SIM_MODEL<T>::onPageChanging( wxBookCtrlEvent& event )
+void DIALOG_SIM_MODEL<T>::onPageChanging( wxBookCtrlEvent& event [[maybe_unused]] )
 {
     updateModelCodeTab( &curModel() );
 }
@@ -1797,7 +1797,7 @@ void DIALOG_SIM_MODEL<T>::onParamGridSetFocus( wxFocusEvent& aEvent )
 
 
 template <typename T>
-void DIALOG_SIM_MODEL<T>::onParamGridSelectionChange( wxPropertyGridEvent& aEvent )
+void DIALOG_SIM_MODEL<T>::onParamGridSelectionChange( wxPropertyGridEvent& aEvent [[maybe_unused]] )
 {
     wxPropertyGrid* grid = m_paramGrid->GetGrid();
 
@@ -1860,7 +1860,7 @@ void DIALOG_SIM_MODEL<T>::onParamGridSelectionChange( wxPropertyGridEvent& aEven
 
 
 template <typename T>
-void DIALOG_SIM_MODEL<T>::onUpdateUI( wxUpdateUIEvent& aEvent )
+void DIALOG_SIM_MODEL<T>::onUpdateUI( wxUpdateUIEvent& aEvent [[maybe_unused]] )
 {
     // This is currently patched in wxPropertyGrid::ScrollWindow() in the Mac wxWidgets fork.
     // However, we may need this version if it turns out to be an issue on other platforms and

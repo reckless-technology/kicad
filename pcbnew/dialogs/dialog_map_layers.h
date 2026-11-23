@@ -84,11 +84,11 @@ private:
     //Event Handlers
     void OnAutoMatchLayersClicked( wxCommandEvent& event ) override;
 
-    void OnUnMatchedDoubleClick( wxListEvent& event ) override  { AddMappings(); }
-    void OnAddClicked( wxCommandEvent& event ) override         { AddMappings(); }
-    void OnMatchedDoubleClick( wxListEvent& event ) override    { RemoveMappings( selected ); }
-    void OnRemoveClicked( wxCommandEvent& event ) override      { RemoveMappings( selected ); }
-    void OnRemoveAllClicked( wxCommandEvent& event ) override   { RemoveMappings( allitems ); }
+    void OnUnMatchedDoubleClick( wxListEvent& event [[maybe_unused]] ) override  { AddMappings(); }
+    void OnAddClicked( wxCommandEvent& event [[maybe_unused]] ) override         { AddMappings(); }
+    void OnMatchedDoubleClick( wxListEvent& event [[maybe_unused]] ) override    { RemoveMappings( selected ); }
+    void OnRemoveClicked( wxCommandEvent& event [[maybe_unused]] ) override      { RemoveMappings( selected ); }
+    void OnRemoveAllClicked( wxCommandEvent& event [[maybe_unused]] ) override   { RemoveMappings( allitems ); }
 
     const int selected = wxLIST_STATE_SELECTED;
     const int allitems = wxLIST_STATE_DONTCARE;

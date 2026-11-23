@@ -101,7 +101,7 @@ public:
      *
      * @param aItem a pointer to the BOARD_ITEM to edit.
      */
-    virtual void OnEditItemRequest( BOARD_ITEM* aItem ) {};
+    virtual void OnEditItemRequest( BOARD_ITEM* aItem [[maybe_unused]] ) {};
 
     /**
      * Create a new entry in undo list of commands.

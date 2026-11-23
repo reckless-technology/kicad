@@ -177,7 +177,7 @@ bool PANEL_SYNC_SHEET_PINS::HasUndefinedSheetPing() const
 }
 
 
-void PANEL_SYNC_SHEET_PINS::OnBtnAddLabelsClicked( wxCommandEvent& aEvent )
+void PANEL_SYNC_SHEET_PINS::OnBtnAddLabelsClicked( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     WXUNUSED( aEvent )
 
@@ -199,7 +199,7 @@ void PANEL_SYNC_SHEET_PINS::OnBtnAddLabelsClicked( wxCommandEvent& aEvent )
 }
 
 
-void PANEL_SYNC_SHEET_PINS::OnBtnAddSheetPinsClicked( wxCommandEvent& aEvent )
+void PANEL_SYNC_SHEET_PINS::OnBtnAddSheetPinsClicked( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     WXUNUSED( aEvent )
     wxDataViewItemArray selected_items;
@@ -294,21 +294,21 @@ void PANEL_SYNC_SHEET_PINS::UpdatePageImage() const
 }
 
 
-void PANEL_SYNC_SHEET_PINS::OnBtnUsePinAsTemplateClicked( wxCommandEvent& aEvent )
+void PANEL_SYNC_SHEET_PINS::OnBtnUsePinAsTemplateClicked( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     WXUNUSED( aEvent )
     return GenericSync( SYNC_DIRECTION::USE_PIN_AS_TEMPLATE );
 }
 
 
-void PANEL_SYNC_SHEET_PINS::OnBtnUseLabelAsTemplateClicked( wxCommandEvent& aEvent )
+void PANEL_SYNC_SHEET_PINS::OnBtnUseLabelAsTemplateClicked( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     WXUNUSED( aEvent )
     return GenericSync( SYNC_DIRECTION::USE_LABEL_AS_TEMPLATE );
 }
 
 
-void PANEL_SYNC_SHEET_PINS::OnBtnRmPinsClicked( wxCommandEvent& aEvent )
+void PANEL_SYNC_SHEET_PINS::OnBtnRmPinsClicked( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     WXUNUSED( aEvent )
     wxDataViewItemArray array;
@@ -319,7 +319,7 @@ void PANEL_SYNC_SHEET_PINS::OnBtnRmPinsClicked( wxCommandEvent& aEvent )
 }
 
 
-void PANEL_SYNC_SHEET_PINS::OnBtnRmLabelsClicked( wxCommandEvent& aEvent )
+void PANEL_SYNC_SHEET_PINS::OnBtnRmLabelsClicked( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     WXUNUSED( aEvent )
     wxDataViewItemArray array;
@@ -330,7 +330,7 @@ void PANEL_SYNC_SHEET_PINS::OnBtnRmLabelsClicked( wxCommandEvent& aEvent )
 }
 
 
-void PANEL_SYNC_SHEET_PINS::OnBtnUndoClicked( wxCommandEvent& aEvent )
+void PANEL_SYNC_SHEET_PINS::OnBtnUndoClicked( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     WXUNUSED( aEvent )
     wxDataViewItemArray indexes;

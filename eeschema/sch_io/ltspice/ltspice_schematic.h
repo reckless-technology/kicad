@@ -276,8 +276,8 @@ public:
         BOX2I                  BoundingBox;
     };
 
-    explicit LTSPICE_SCHEMATIC( const wxString& aFilename, const wxFileName& aLTspiceDataDir,
-                                REPORTER* aReporter, PROGRESS_REPORTER* aProgressReporter ) :
+    explicit LTSPICE_SCHEMATIC( const wxString& aFilename [[maybe_unused]], const wxFileName& aLTspiceDataDir,
+                                REPORTER* aReporter, PROGRESS_REPORTER* aProgressReporter [[maybe_unused]] ) :
             m_reporter( aReporter ),
             m_ltspiceDataDir( aLTspiceDataDir )
     {}

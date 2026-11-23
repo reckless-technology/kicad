@@ -46,13 +46,13 @@ CVPCB_CONTROL::CVPCB_CONTROL() :
 }
 
 
-void CVPCB_CONTROL::Reset( RESET_REASON aReason )
+void CVPCB_CONTROL::Reset( RESET_REASON aReason [[maybe_unused]] )
 {
     m_frame = getEditFrame<CVPCB_MAINFRAME>();
 }
 
 
-int CVPCB_CONTROL::Main( const TOOL_EVENT& aEvent )
+int CVPCB_CONTROL::Main( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     // Main loop: keep receiving events
     while( TOOL_EVENT* evt = Wait() )
@@ -153,7 +153,7 @@ int CVPCB_CONTROL::ChangeFocus( const TOOL_EVENT& aEvent )
 }
 
 
-int CVPCB_CONTROL::ShowFootprintViewer( const TOOL_EVENT& aEvent )
+int CVPCB_CONTROL::ShowFootprintViewer( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
 
     DISPLAY_FOOTPRINTS_FRAME* fpframe = m_frame->GetFootprintViewerFrame();
@@ -212,7 +212,7 @@ int CVPCB_CONTROL::ToggleFootprintFilter( const TOOL_EVENT& aEvent )
 }
 
 
-int CVPCB_CONTROL::ShowEquFileTable( const TOOL_EVENT& aEvent )
+int CVPCB_CONTROL::ShowEquFileTable( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     DIALOG_CONFIG_EQUFILES dlg( m_frame );
     dlg.ShowModal();
@@ -221,14 +221,14 @@ int CVPCB_CONTROL::ShowEquFileTable( const TOOL_EVENT& aEvent )
 }
 
 
-int CVPCB_CONTROL::SaveAssociationsToFile( const TOOL_EVENT& aEvent )
+int CVPCB_CONTROL::SaveAssociationsToFile( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->SaveFootprintAssociation( true );
     return 0;
 }
 
 
-int CVPCB_CONTROL::SaveAssociationsToSchematic( const TOOL_EVENT& aEvent )
+int CVPCB_CONTROL::SaveAssociationsToSchematic( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->SaveFootprintAssociation( false );
     return 0;

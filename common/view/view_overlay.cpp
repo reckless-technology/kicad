@@ -301,7 +301,7 @@ const BOX2I VIEW_OVERLAY::ViewBBox() const
 }
 
 
-void VIEW_OVERLAY::ViewDraw( int aLayer, VIEW* aView ) const
+void VIEW_OVERLAY::ViewDraw( int aLayer [[maybe_unused]], VIEW* aView ) const
 {
     GAL& gal = *aView->GetGAL();
 

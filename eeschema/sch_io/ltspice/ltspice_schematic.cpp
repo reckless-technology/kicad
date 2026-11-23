@@ -663,7 +663,7 @@ void LTSPICE_SCHEMATIC::removeCarriageReturn( wxString& elementFromLine )
 
 
 LTSPICE_SCHEMATIC::LT_SYMBOL LTSPICE_SCHEMATIC::ParseSymbol( const wxString& aSymbolName,
-                                                             const wxString& aAsyFileContent, LT_ASC& aAscFile )
+                                                             const wxString& aAsyFileContent, LT_ASC& aAscFile [[maybe_unused]] )
 {
     LT_SYMBOL lt_symbol;
     int       lineNumber = 1;

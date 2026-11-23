@@ -230,21 +230,21 @@ bool WRL1TRANSFORM::Read( WRLPROC& proc, WRL1BASE* aTopNode )
 }
 
 
-bool WRL1TRANSFORM::AddRefNode( WRL1NODE* aNode )
+bool WRL1TRANSFORM::AddRefNode( WRL1NODE* aNode [[maybe_unused]] )
 {
     // this node may not own or reference any other node
     wxCHECK_MSG( false, false, wxT( "AddRefNode is not applicable" ) );
 }
 
 
-bool WRL1TRANSFORM::AddChildNode( WRL1NODE* aNode )
+bool WRL1TRANSFORM::AddChildNode( WRL1NODE* aNode [[maybe_unused]] )
 {
     // this node may not own or reference any other node
     wxCHECK_MSG( false, false, wxT( "AddChildNode is not applicable." ) );
 }
 
 
-SGNODE* WRL1TRANSFORM::TranslateToSG( SGNODE* aParent, WRL1STATUS* sp )
+SGNODE* WRL1TRANSFORM::TranslateToSG( SGNODE* aParent [[maybe_unused]], WRL1STATUS* sp )
 {
     if( nullptr == m_Parent )
         return nullptr;

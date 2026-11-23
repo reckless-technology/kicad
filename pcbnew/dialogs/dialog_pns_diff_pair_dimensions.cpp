@@ -93,7 +93,7 @@ void DIALOG_PNS_DIFF_PAIR_DIMENSIONS::updateCheckbox()
 }
 
 
-void DIALOG_PNS_DIFF_PAIR_DIMENSIONS::OnViaTraceGapEqualCheck( wxCommandEvent& event )
+void DIALOG_PNS_DIFF_PAIR_DIMENSIONS::OnViaTraceGapEqualCheck( wxCommandEvent& event [[maybe_unused]] )
 {
     updateCheckbox();
 }

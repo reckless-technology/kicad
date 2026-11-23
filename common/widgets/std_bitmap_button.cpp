@@ -31,7 +31,7 @@
 
 
 STD_BITMAP_BUTTON::STD_BITMAP_BUTTON( wxWindow* aParent, wxWindowID aId,
-                                      const wxBitmap& aDummyBitmap, const wxPoint& aPos,
+                                      const wxBitmap& aDummyBitmap [[maybe_unused]], const wxPoint& aPos,
                                       const wxSize& aSize, int aStyle ) :
         wxPanel( aParent, aId, aPos, aSize, aStyle, wxS( "StdBitmapButton" ) )
 {
@@ -72,7 +72,7 @@ STD_BITMAP_BUTTON::~STD_BITMAP_BUTTON()
 }
 
 
-void STD_BITMAP_BUTTON::onThemeChanged( wxSysColourChangedEvent &aEvent )
+void STD_BITMAP_BUTTON::onThemeChanged( wxSysColourChangedEvent &aEvent [[maybe_unused]] )
 {
     Refresh();
 }

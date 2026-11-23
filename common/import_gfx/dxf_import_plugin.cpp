@@ -273,7 +273,7 @@ void DXF_IMPORT_PLUGIN::addLayer( const DL_LayerData& aData )
 }
 
 
-void DXF_IMPORT_PLUGIN::addLinetype( const DL_LinetypeData& data )
+void DXF_IMPORT_PLUGIN::addLinetype( const DL_LinetypeData& data [[maybe_unused]] )
 {
 #if 0
     wxString name = From_UTF8( data.name.c_str() );
@@ -1065,7 +1065,7 @@ DXF_IMPORT_UNITS DxfImportUnitFromChoice( int aSelection )
 }
 
 
-void DXF_IMPORT_PLUGIN::setVariableInt( const std::string& key, int value, int code )
+void DXF_IMPORT_PLUGIN::setVariableInt( const std::string& key, int value, int code [[maybe_unused]] )
 {
     // Called for every int variable in the DXF file (e.g. "$INSUNITS").
 
@@ -1125,8 +1125,8 @@ void DXF_IMPORT_PLUGIN::setVariableInt( const std::string& key, int value, int c
 }
 
 
-void DXF_IMPORT_PLUGIN::setVariableString( const std::string& key, const std::string& value,
-                                           int code )
+void DXF_IMPORT_PLUGIN::setVariableString( const std::string& key [[maybe_unused]], const std::string& value [[maybe_unused]],
+                                           int code [[maybe_unused]] )
 {
     // Called for every string variable in the DXF file (e.g. "$ACADVER").
 }

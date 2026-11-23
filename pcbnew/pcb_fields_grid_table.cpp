@@ -165,7 +165,7 @@ wxString PCB_FIELDS_GRID_TABLE::GetColLabelValue( int aCol )
 }
 
 
-bool PCB_FIELDS_GRID_TABLE::CanGetValueAs( int aRow, int aCol, const wxString& aTypeName )
+bool PCB_FIELDS_GRID_TABLE::CanGetValueAs( int aRow [[maybe_unused]], int aCol, const wxString& aTypeName )
 {
     switch( aCol )
     {

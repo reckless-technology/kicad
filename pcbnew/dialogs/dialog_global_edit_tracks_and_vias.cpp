@@ -150,7 +150,7 @@ void DIALOG_GLOBAL_EDIT_TRACKS_AND_VIAS::updateViasCheckbox()
 }
 
 
-void DIALOG_GLOBAL_EDIT_TRACKS_AND_VIAS::onViaType( wxCommandEvent& aEvent )
+void DIALOG_GLOBAL_EDIT_TRACKS_AND_VIAS::onViaType( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     CallAfter(
             [this]()
@@ -228,7 +228,7 @@ bool DIALOG_GLOBAL_EDIT_TRACKS_AND_VIAS::TransferDataToWindow()
 }
 
 
-void DIALOG_GLOBAL_EDIT_TRACKS_AND_VIAS::onActionButtonChange( wxCommandEvent& event )
+void DIALOG_GLOBAL_EDIT_TRACKS_AND_VIAS::onActionButtonChange( wxCommandEvent& event [[maybe_unused]] )
 {
     // Enable the items in the use specified values section
     bool enable = m_setToSpecifiedValues->GetValue();

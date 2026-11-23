@@ -80,7 +80,7 @@ void SIM_BOOL_PROPERTY::OnSetValue()
 SIM_STRING_PROPERTY::SIM_STRING_PROPERTY( const wxString& aLabel, const wxString& aName,
                                           SIM_MODEL& aModel, int aParamIndex,
                                           SIM_VALUE::TYPE aValueType,
-                                          SIM_VALUE_GRAMMAR::NOTATION aNotation ) :
+                                          SIM_VALUE_GRAMMAR::NOTATION aNotation [[maybe_unused]] ) :
         wxStringProperty( aLabel, aName ),
         SIM_PROPERTY( aModel, aParamIndex ),
         m_valueType( aValueType )
@@ -89,7 +89,7 @@ SIM_STRING_PROPERTY::SIM_STRING_PROPERTY( const wxString& aLabel, const wxString
 }
 
 
-bool SIM_STRING_PROPERTY::OnEvent( wxPropertyGrid* propgrid, wxWindow* wnd_primary, wxEvent& event )
+bool SIM_STRING_PROPERTY::OnEvent( wxPropertyGrid* propgrid [[maybe_unused]], wxWindow* wnd_primary, wxEvent& event )
 {
     if( event.GetEventType() == wxEVT_SET_FOCUS && allowEval() )
     {
@@ -183,7 +183,7 @@ bool SIM_STRING_PROPERTY::allowEval() const
 bool SIM_STRING_PROPERTY::StringToValue( wxVariant& aVariant, const wxString& aText,
                                          wxPGPropValFormatFlags aArgFlags ) const
 #else
-bool SIM_STRING_PROPERTY::StringToValue( wxVariant& aVariant, const wxString& aText, int aArgFlags ) const
+bool SIM_STRING_PROPERTY::StringToValue( wxVariant& aVariant, const wxString& aText, int aArgFlags [[maybe_unused]] ) const
 #endif
 {
     if( m_disabled )

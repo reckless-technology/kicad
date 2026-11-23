@@ -81,7 +81,7 @@ public:
     /**
      * Enable/disable a via at the end of currently routed trace.
      */
-    virtual bool ToggleVia( bool aEnabled )
+    virtual bool ToggleVia( bool aEnabled [[maybe_unused]] )
     {
         return false;
     }
@@ -97,7 +97,7 @@ public:
     /**
      * Set the current routing layer.
      */
-    virtual bool SetLayer( int aLayer )
+    virtual bool SetLayer( int aLayer [[maybe_unused]] )
     {
         return false;
     }
@@ -145,7 +145,7 @@ public:
      * a settings class. Used to dynamically change these parameters as
      * the track is routed.
      */
-    virtual void UpdateSizes( const SIZES_SETTINGS& aSizes )
+    virtual void UpdateSizes( const SIZES_SETTINGS& aSizes [[maybe_unused]] )
     {
     }
 
@@ -154,14 +154,14 @@ public:
      * as near to the cursor as possible) instead of a standard 135 degree
      * two-segment bend.
      */
-    virtual void SetOrthoMode ( bool aOrthoMode )
+    virtual void SetOrthoMode ( bool aOrthoMode [[maybe_unused]] )
     {
     }
 
     /**
      * Return the nets of all currently routed trace(s)
      */
-    virtual void GetModifiedNets( std::vector<NET_HANDLE> &aNets ) const
+    virtual void GetModifiedNets( std::vector<NET_HANDLE> &aNets [[maybe_unused]] ) const
     {
     }
 

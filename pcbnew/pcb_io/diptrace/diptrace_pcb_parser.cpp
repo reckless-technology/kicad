@@ -2041,7 +2041,7 @@ bool PCB_PARSER::ClassifyStandaloneVia( const DT_COMPONENT& aComp )
 }
 
 
-bool PCB_PARSER::ParseSingleComponent( size_t aBoundaryOffset, size_t aUpperBound,
+bool PCB_PARSER::ParseSingleComponent( size_t aBoundaryOffset, size_t aUpperBound [[maybe_unused]],
                                         DT_COMPONENT& aComp )
 {
     bool fatalHeaderError = false;

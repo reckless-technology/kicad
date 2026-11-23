@@ -492,7 +492,7 @@ std::vector<wxString> SIM_MODEL::PinNumbers( std::span<const SCH_PIN* const> aPi
 }
 
 
-std::unique_ptr<SIM_MODEL> SIM_MODEL::Create( TYPE aType, std::span<const wxString> aPins, REPORTER& aReporter )
+std::unique_ptr<SIM_MODEL> SIM_MODEL::Create( TYPE aType, std::span<const wxString> aPins, REPORTER& aReporter [[maybe_unused]] )
 {
     std::unique_ptr<SIM_MODEL> model = Create( aType );
 
@@ -511,7 +511,7 @@ std::unique_ptr<SIM_MODEL> SIM_MODEL::Create( TYPE aType, std::span<const wxStri
 
 
 std::unique_ptr<SIM_MODEL> SIM_MODEL::Create( const SIM_MODEL* aBaseModel, std::span<const wxString> aPins,
-                                              REPORTER& aReporter )
+                                              REPORTER& aReporter [[maybe_unused]] )
 {
     std::unique_ptr<SIM_MODEL> model;
 

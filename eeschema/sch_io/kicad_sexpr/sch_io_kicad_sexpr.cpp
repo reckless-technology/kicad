@@ -2117,7 +2117,7 @@ void SCH_IO_KICAD_SEXPR::DeleteSymbol( const wxString& aLibraryPath, const wxStr
 
 
 void SCH_IO_KICAD_SEXPR::CreateLibrary( const wxString& aLibraryPath,
-                                        const std::map<std::string, UTF8>* aProperties )
+                                        const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     wxFileName fn( aLibraryPath );
 
@@ -2142,7 +2142,7 @@ void SCH_IO_KICAD_SEXPR::CreateLibrary( const wxString& aLibraryPath,
 
 
 bool SCH_IO_KICAD_SEXPR::DeleteLibrary( const wxString& aLibraryPath,
-                                        const std::map<std::string, UTF8>* aProperties )
+                                        const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     wxFileName fn = aLibraryPath;
 
@@ -2179,7 +2179,7 @@ bool SCH_IO_KICAD_SEXPR::DeleteLibrary( const wxString& aLibraryPath,
 }
 
 
-void SCH_IO_KICAD_SEXPR::SaveLibrary( const wxString& aLibraryPath, const std::map<std::string, UTF8>* aProperties )
+void SCH_IO_KICAD_SEXPR::SaveLibrary( const wxString& aLibraryPath, const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     if( !m_cache )
         m_cache = new SCH_IO_KICAD_SEXPR_LIB_CACHE( aLibraryPath );

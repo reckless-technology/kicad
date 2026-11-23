@@ -164,12 +164,12 @@ public:
     virtual void                SetHostKeyFailure( const HOST_KEY_FAILURE& aFailure ) = 0;
     virtual void                SetHostKeyRefusal( const wxString& aReason ) = 0;
 
-    virtual void UpdateProgress( int aCurrent, int aTotal, const wxString& aMessage ) {}
+    virtual void UpdateProgress( int aCurrent [[maybe_unused]], int aTotal [[maybe_unused]], const wxString& aMessage [[maybe_unused]] ) {}
 
     /// Transfer progress as counts, for a caller without a progress bar. aTotal is 0 while unknown
-    virtual void UpdateStep( TRANSFER_STEP aStep, size_t aDone, size_t aTotal ) {}
-    virtual void ReceiveSideband( const char* aData, size_t aLength ) {}
-    virtual void SetPushRefusal( const wxString& aStatus ) {}
+    virtual void UpdateStep( TRANSFER_STEP aStep [[maybe_unused]], size_t aDone [[maybe_unused]], size_t aTotal [[maybe_unused]] ) {}
+    virtual void ReceiveSideband( const char* aData [[maybe_unused]], size_t aLength [[maybe_unused]] ) {}
+    virtual void SetPushRefusal( const wxString& aStatus [[maybe_unused]] ) {}
 
     /// Called once a call has connected, so the key that worked is offered first next time and a waiting save
     /// keeps the password that worked

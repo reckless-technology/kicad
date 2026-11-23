@@ -45,7 +45,7 @@ bool SCH_EDIT_TABLE_TOOL::Init()
 }
 
 
-int SCH_EDIT_TABLE_TOOL::EditTable( const TOOL_EVENT& aEvent )
+int SCH_EDIT_TABLE_TOOL::EditTable( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SCH_SELECTION& selection = m_selectionTool->RequestSelection( SCH_COLLECTOR::EditableItems );
     bool           clearSelection = selection.IsHover();
@@ -84,7 +84,7 @@ int SCH_EDIT_TABLE_TOOL::EditTable( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDIT_TABLE_TOOL::ExportTableToCSV( const TOOL_EVENT& aEvent )
+int SCH_EDIT_TABLE_TOOL::ExportTableToCSV( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SCH_SELECTION& selection = m_selectionTool->RequestSelection( SCH_COLLECTOR::EditableItems );
     bool           clearSelection = selection.IsHover();

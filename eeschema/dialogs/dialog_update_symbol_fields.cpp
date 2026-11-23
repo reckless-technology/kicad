@@ -118,7 +118,7 @@ void DIALOG_UPDATE_SYMBOL_FIELDS::checkAll( bool aCheck )
 }
 
 
-void DIALOG_UPDATE_SYMBOL_FIELDS::onOkButtonClicked( wxCommandEvent& aEvent )
+void DIALOG_UPDATE_SYMBOL_FIELDS::onOkButtonClicked( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     wxBusyCursor dummy;
     SCH_COMMIT   commit( m_editFrame );

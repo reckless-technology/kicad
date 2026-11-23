@@ -95,7 +95,7 @@ LIB_TREE::LIB_TREE( wxWindow* aParent, const wxString& aRecentSearchesKey,
                                          wxDefaultSize, wxBU_AUTODRAW|0 );
         m_sort_ctrl->SetBitmap( KiBitmapBundle( BITMAPS::config ) );
         m_sort_ctrl->Bind( wxEVT_LEFT_DOWN,
-                [&]( wxMouseEvent& aEvent )
+                [&]( wxMouseEvent& aEvent [[maybe_unused]] )
                 {
                     // Build a pop menu:
                     wxMenu menu;
@@ -772,7 +772,7 @@ void LIB_TREE::onQueryCharHook( wxKeyEvent& aKeyStroke )
 }
 
 
-void LIB_TREE::onQueryMouseMoved( wxMouseEvent& aEvent )
+void LIB_TREE::onQueryMouseMoved( wxMouseEvent& aEvent [[maybe_unused]] )
 {
 #if defined( __WXOSX__ ) // Doesn't work properly on other ports
     wxPoint pos = aEvent.GetPosition();
@@ -825,7 +825,7 @@ void LIB_TREE::hidePreview()
 }
 
 
-void LIB_TREE::onIdle( wxIdleEvent& aEvent )
+void LIB_TREE::onIdle( wxIdleEvent& aEvent [[maybe_unused]] )
 {
     // The wxDataViewCtrl won't give us its mouseMoved events so we're forced to use idle
     // events to track the hover state
@@ -981,7 +981,7 @@ void LIB_TREE::onTreeCharHook( wxKeyEvent& aKeyStroke )
 }
 
 
-void LIB_TREE::onTreeSelect( wxDataViewEvent& aEvent )
+void LIB_TREE::onTreeSelect( wxDataViewEvent& aEvent [[maybe_unused]] )
 {
     if( m_tree_ctrl->IsFrozen() )
         return;
@@ -993,7 +993,7 @@ void LIB_TREE::onTreeSelect( wxDataViewEvent& aEvent )
 }
 
 
-void LIB_TREE::onTreeActivate( wxDataViewEvent& aEvent )
+void LIB_TREE::onTreeActivate( wxDataViewEvent& aEvent [[maybe_unused]] )
 {
     hidePreview();
 
@@ -1102,7 +1102,7 @@ void LIB_TREE::onItemContextMenu( wxDataViewEvent& aEvent )
 }
 
 
-void LIB_TREE::onHeaderContextMenu( wxDataViewEvent& aEvent )
+void LIB_TREE::onHeaderContextMenu( wxDataViewEvent& aEvent [[maybe_unused]] )
 {
     hidePreview();
     m_previewDisabled = true;

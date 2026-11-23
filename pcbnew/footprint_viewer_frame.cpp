@@ -659,7 +659,7 @@ void FOOTPRINT_VIEWER_FRAME::selectNext( WX_LISTBOX* aListBox )
 }
 
 
-void FOOTPRINT_VIEWER_FRAME::ClickOnLibList( wxCommandEvent& aEvent )
+void FOOTPRINT_VIEWER_FRAME::ClickOnLibList( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     int ii = m_libList->GetSelection();
 
@@ -690,7 +690,7 @@ void FOOTPRINT_VIEWER_FRAME::ClickOnLibList( wxCommandEvent& aEvent )
 }
 
 
-void FOOTPRINT_VIEWER_FRAME::ClickOnFootprintList( wxCommandEvent& aEvent )
+void FOOTPRINT_VIEWER_FRAME::ClickOnFootprintList( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( m_fpList->GetCount() == 0 )
         return;
@@ -728,7 +728,7 @@ void FOOTPRINT_VIEWER_FRAME::displayFootprint( FOOTPRINT* aFootprint )
 }
 
 
-void FOOTPRINT_VIEWER_FRAME::DClickOnFootprintList( wxMouseEvent& aEvent )
+void FOOTPRINT_VIEWER_FRAME::DClickOnFootprintList( wxMouseEvent& aEvent [[maybe_unused]] )
 {
     AddFootprintToPCB();
 }
@@ -862,7 +862,7 @@ WINDOW_SETTINGS* FOOTPRINT_VIEWER_FRAME::GetWindowSettings( APP_SETTINGS_BASE* a
 }
 
 
-COLOR_SETTINGS* FOOTPRINT_VIEWER_FRAME::GetColorSettings( bool aForceRefresh ) const
+COLOR_SETTINGS* FOOTPRINT_VIEWER_FRAME::GetColorSettings( bool aForceRefresh [[maybe_unused]] ) const
 {
     FOOTPRINT_EDITOR_SETTINGS* cfg = GetAppSettings<FOOTPRINT_EDITOR_SETTINGS>( "fpedit" );
     return ::GetColorSettings( cfg ? cfg->m_ColorTheme : DEFAULT_THEME );
@@ -968,7 +968,7 @@ void FOOTPRINT_VIEWER_FRAME::KiwayMailIn( KIWAY_MAIL_EVENT& mail )
 }
 
 
-void FOOTPRINT_VIEWER_FRAME::Update3DView( bool aMarkDirty, bool aRefresh, const wxString* aTitle )
+void FOOTPRINT_VIEWER_FRAME::Update3DView( bool aMarkDirty, bool aRefresh, const wxString* aTitle [[maybe_unused]] )
 {
     wxString title = _( "3D Viewer" ) + wxT( " \u2014 " ) + getCurFootprintName();
     PCB_BASE_FRAME::Update3DView( aMarkDirty, aRefresh, &title );
@@ -1076,13 +1076,13 @@ void FOOTPRINT_VIEWER_FRAME::updateView()
 }
 
 
-void FOOTPRINT_VIEWER_FRAME::OnExitKiCad( wxCommandEvent& event )
+void FOOTPRINT_VIEWER_FRAME::OnExitKiCad( wxCommandEvent& event [[maybe_unused]] )
 {
     Kiway().OnKiCadExit();
 }
 
 
-void FOOTPRINT_VIEWER_FRAME::CloseFootprintViewer( wxCommandEvent& event )
+void FOOTPRINT_VIEWER_FRAME::CloseFootprintViewer( wxCommandEvent& event [[maybe_unused]] )
 {
     Close( false );
 }

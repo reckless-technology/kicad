@@ -73,7 +73,7 @@ SYMBOL_DIFF_WIDGET::SYMBOL_DIFF_WIDGET( wxWindow* aParent,
     Bind( wxEVT_CHAR_HOOK, &SYMBOL_DIFF_WIDGET::onCharHook, this );
 
     m_toggleButton->Bind( wxEVT_BUTTON,
-            [this]( wxCommandEvent& aEvent )
+            [this]( wxCommandEvent& aEvent [[maybe_unused]] )
             {
                 ToggleAB();
             } );

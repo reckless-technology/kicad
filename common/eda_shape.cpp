@@ -4887,7 +4887,7 @@ static struct EDA_SHAPE_DESC
                             return false;
                         } )
                 .SetValidator(
-                        []( const wxAny&& aValue, EDA_ITEM* aItem ) -> VALIDATOR_RESULT
+                        []( const wxAny&& aValue, EDA_ITEM* aItem [[maybe_unused]] ) -> VALIDATOR_RESULT
                         {
                             double degrees = 0.0;
 

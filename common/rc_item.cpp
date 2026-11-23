@@ -477,7 +477,7 @@ unsigned int RC_TREE_MODEL::GetChildren( wxDataViewItem const& aItem,
 
 
 void RC_TREE_MODEL::GetValue( wxVariant& aVariant, wxDataViewItem const& aItem,
-                              unsigned int aCol ) const
+                              unsigned int aCol [[maybe_unused]] ) const
 {
     if( !aItem.IsOk() || m_view->IsFrozen() || m_tree.empty() )
         return;
@@ -555,7 +555,7 @@ void RC_TREE_MODEL::GetValue( wxVariant& aVariant, wxDataViewItem const& aItem,
 
 
 bool RC_TREE_MODEL::GetAttr( wxDataViewItem const&   aItem,
-                             unsigned int            aCol,
+                             unsigned int            aCol [[maybe_unused]],
                              wxDataViewItemAttr&     aAttr ) const
 {
     if( !aItem.IsOk() || m_view->IsFrozen() || m_tree.empty() )

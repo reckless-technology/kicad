@@ -281,7 +281,7 @@ public:
     /**
      * Get the default tools to show on the specified canvas toolbar.
      */
-    virtual std::optional<TOOLBAR_CONFIGURATION> DefaultToolbarConfig( TOOLBAR_LOC aToolbar )
+    virtual std::optional<TOOLBAR_CONFIGURATION> DefaultToolbarConfig( TOOLBAR_LOC aToolbar [[maybe_unused]] )
     {
         return std::nullopt;
     }

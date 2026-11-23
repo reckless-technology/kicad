@@ -35,7 +35,7 @@ wxObject* VALIDATOR_NUMERIC_CTRL::Clone() const
 }
 
 
-bool VALIDATOR_NUMERIC_CTRL::Validate( wxWindow* aParent )
+bool VALIDATOR_NUMERIC_CTRL::Validate( wxWindow* aParent [[maybe_unused]] )
 {
     wxTextCtrl* textCtrl = wxDynamicCast( GetWindow(), wxTextCtrl );
 

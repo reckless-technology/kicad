@@ -734,7 +734,7 @@ int PCB_SHAPE::GetWidth() const
 }
 
 
-void PCB_SHAPE::StyleFromSettings( const BOARD_DESIGN_SETTINGS& aSettings, bool aCheckSide )
+void PCB_SHAPE::StyleFromSettings( const BOARD_DESIGN_SETTINGS& aSettings, bool aCheckSide [[maybe_unused]] )
 {
     m_stroke.SetWidth( aSettings.GetLineThickness( GetLayer() ) );
 }
@@ -1037,8 +1037,8 @@ void PCB_SHAPE::SetCornerRadius( int aCornerRadius )
 }
 
 
-void PCB_SHAPE::OnFootprintRescaled( double aRatioX, double aRatioY, double aLinearFactor, const VECTOR2I& aAnchor,
-                                     const EDA_ANGLE& aParentRotate )
+void PCB_SHAPE::OnFootprintRescaled( double aRatioX [[maybe_unused]], double aRatioY [[maybe_unused]], double aLinearFactor [[maybe_unused]], const VECTOR2I& aAnchor [[maybe_unused]],
+                                     const EDA_ANGLE& aParentRotate [[maybe_unused]] )
 {
     RebakeFromLib();
 }
@@ -1741,7 +1741,7 @@ void PCB_SHAPE::GetMsgPanelInfo( EDA_DRAW_FRAME* aFrame, std::vector<MSG_PANEL_I
 }
 
 
-wxString PCB_SHAPE::GetItemDescription( UNITS_PROVIDER* aUnitsProvider, bool aFull ) const
+wxString PCB_SHAPE::GetItemDescription( UNITS_PROVIDER* aUnitsProvider [[maybe_unused]], bool aFull [[maybe_unused]] ) const
 {
     FOOTPRINT* parentFP = GetParentFootprint();
 
@@ -1928,7 +1928,7 @@ double PCB_SHAPE::GetCoverageArea( int aTextMargin ) const
 }
 
 
-void PCB_SHAPE::TransformShapeToPolygon( SHAPE_POLY_SET& aBuffer, PCB_LAYER_ID aLayer,
+void PCB_SHAPE::TransformShapeToPolygon( SHAPE_POLY_SET& aBuffer, PCB_LAYER_ID aLayer [[maybe_unused]],
                                          int aClearance, int aError, ERROR_LOC aErrorLoc,
                                          bool ignoreLineWidth ) const
 {
@@ -1937,9 +1937,9 @@ void PCB_SHAPE::TransformShapeToPolygon( SHAPE_POLY_SET& aBuffer, PCB_LAYER_ID a
 }
 
 
-void PCB_SHAPE::TransformShapeToPolySet( SHAPE_POLY_SET& aBuffer, PCB_LAYER_ID aLayer,
+void PCB_SHAPE::TransformShapeToPolySet( SHAPE_POLY_SET& aBuffer, PCB_LAYER_ID aLayer [[maybe_unused]],
                                          int aClearance, int aError, ERROR_LOC aErrorLoc,
-                                         KIGFX::RENDER_SETTINGS* aRenderSettings ) const
+                                         KIGFX::RENDER_SETTINGS* aRenderSettings [[maybe_unused]] ) const
 {
     EDA_SHAPE::TransformShapeToPolygon( aBuffer, aClearance, aError, aErrorLoc, false, true );
 }

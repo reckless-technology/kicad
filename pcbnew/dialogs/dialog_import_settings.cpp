@@ -71,7 +71,7 @@ bool DIALOG_IMPORT_SETTINGS::anyOptionSelected() const
 }
 
 
-void DIALOG_IMPORT_SETTINGS::OnCheckboxClicked( wxCommandEvent& event )
+void DIALOG_IMPORT_SETTINGS::OnCheckboxClicked( wxCommandEvent& event [[maybe_unused]] )
 {
     updateImportSettingsButton();
     updateSelectAllButton();
@@ -113,7 +113,7 @@ bool DIALOG_IMPORT_SETTINGS::TransferDataToWindow()
 }
 
 
-void DIALOG_IMPORT_SETTINGS::OnBrowseClicked( wxCommandEvent& event )
+void DIALOG_IMPORT_SETTINGS::OnBrowseClicked( wxCommandEvent& event [[maybe_unused]] )
 {
     // Honor a path the user has already entered; fall back to the board's location
     // when the field is empty or its directory no longer exists.
@@ -147,7 +147,7 @@ bool DIALOG_IMPORT_SETTINGS::TransferDataFromWindow()
 }
 
 
-void DIALOG_IMPORT_SETTINGS::OnSelectAll( wxCommandEvent& event )
+void DIALOG_IMPORT_SETTINGS::OnSelectAll( wxCommandEvent& event [[maybe_unused]] )
 {
     bool select = !anyOptionSelected();
 

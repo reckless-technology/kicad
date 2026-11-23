@@ -138,7 +138,7 @@ bool PANEL_EESCHEMA_COLOR_SETTINGS::TransferDataToWindow()
 }
 
 
-bool PANEL_EESCHEMA_COLOR_SETTINGS::validateSave( bool aQuiet )
+bool PANEL_EESCHEMA_COLOR_SETTINGS::validateSave( bool aQuiet [[maybe_unused]] )
 {
     COLOR4D bgcolor = m_currentSettings->GetColor( LAYER_SCHEMATIC_BACKGROUND );
 
@@ -559,7 +559,7 @@ void PANEL_EESCHEMA_COLOR_SETTINGS::updateAllowedSwatches()
 }
 
 
-void PANEL_EESCHEMA_COLOR_SETTINGS::OnOverrideItemColorsClicked( wxCommandEvent& aEvent )
+void PANEL_EESCHEMA_COLOR_SETTINGS::OnOverrideItemColorsClicked( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     m_currentSettings->SetOverrideSchItemColors( m_optOverrideColors->GetValue() );
     updateAllowedSwatches();

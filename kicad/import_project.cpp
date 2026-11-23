@@ -173,7 +173,7 @@ void KICAD_MANAGER_FRAME::ImportNonKiCadProject( const wxString& aWindowTitle,
 }
 
 
-void KICAD_MANAGER_FRAME::OnImportAltiumProjectFiles( wxCommandEvent& event )
+void KICAD_MANAGER_FRAME::OnImportAltiumProjectFiles( wxCommandEvent& event [[maybe_unused]] )
 {
     ImportNonKiCadProject( _( "Import Altium Project Files" ),
                            FILEEXT::AltiumProjectFilesWildcard(), { "SchDoc" },
@@ -182,7 +182,7 @@ void KICAD_MANAGER_FRAME::OnImportAltiumProjectFiles( wxCommandEvent& event )
 }
 
 
-void KICAD_MANAGER_FRAME::OnImportCadstarArchiveFiles( wxCommandEvent& event )
+void KICAD_MANAGER_FRAME::OnImportCadstarArchiveFiles( wxCommandEvent& event [[maybe_unused]] )
 {
     ImportNonKiCadProject( _( "Import CADSTAR Archive Project Files" ),
                            FILEEXT::CadstarArchiveFilesWildcard(), { "csa" }, { "cpa" },
@@ -190,7 +190,7 @@ void KICAD_MANAGER_FRAME::OnImportCadstarArchiveFiles( wxCommandEvent& event )
 }
 
 
-void KICAD_MANAGER_FRAME::OnImportPcadProjectFiles( wxCommandEvent& event )
+void KICAD_MANAGER_FRAME::OnImportPcadProjectFiles( wxCommandEvent& event [[maybe_unused]] )
 {
     ImportNonKiCadProject( _( "Import P-CAD Project Files" ), FILEEXT::PcadFilesWildcard(),
                            { "sch", "SCH" }, { "pcb", "PCB" }, SCH_IO_MGR::SCH_PCAD,
@@ -198,21 +198,21 @@ void KICAD_MANAGER_FRAME::OnImportPcadProjectFiles( wxCommandEvent& event )
 }
 
 
-void KICAD_MANAGER_FRAME::OnImportEagleFiles( wxCommandEvent& event )
+void KICAD_MANAGER_FRAME::OnImportEagleFiles( wxCommandEvent& event [[maybe_unused]] )
 {
     ImportNonKiCadProject( _( "Import Eagle Project Files" ), FILEEXT::EagleFilesWildcard(), { "sch" },
                            { "brd" }, SCH_IO_MGR::SCH_EAGLE, PCB_IO_MGR::EAGLE );
 }
 
 
-void KICAD_MANAGER_FRAME::OnImportEasyEdaFiles( wxCommandEvent& event )
+void KICAD_MANAGER_FRAME::OnImportEasyEdaFiles( wxCommandEvent& event [[maybe_unused]] )
 {
     ImportNonKiCadProject( _( "Import EasyEDA Std Backup" ), FILEEXT::EasyEdaArchiveWildcard(), { "INPUT" },
                            { "INPUT" }, SCH_IO_MGR::SCH_EASYEDA, PCB_IO_MGR::EASYEDA );
 }
 
 
-void KICAD_MANAGER_FRAME::OnImportEasyEdaProFiles( wxCommandEvent& event )
+void KICAD_MANAGER_FRAME::OnImportEasyEdaProFiles( wxCommandEvent& event [[maybe_unused]] )
 {
     // Keep a single menu entry and route to v2 or v3 after file selection.
     ImportNonKiCadProject( _( "Import EasyEDA Pro Project" ), FILEEXT::EasyEdaProFileWildcard(), { "INPUT" },
@@ -220,7 +220,7 @@ void KICAD_MANAGER_FRAME::OnImportEasyEdaProFiles( wxCommandEvent& event )
 }
 
 
-void KICAD_MANAGER_FRAME::OnImportPadsProjectFiles( wxCommandEvent& event )
+void KICAD_MANAGER_FRAME::OnImportPadsProjectFiles( wxCommandEvent& event [[maybe_unused]] )
 {
     ImportNonKiCadProject( _( "Import PADS Project Files" ), FILEEXT::PADSProjectFilesWildcard(),
                            { "asc", "txt" }, { "asc", "txt" }, SCH_IO_MGR::SCH_PADS,
@@ -228,7 +228,7 @@ void KICAD_MANAGER_FRAME::OnImportPadsProjectFiles( wxCommandEvent& event )
 }
 
 
-void KICAD_MANAGER_FRAME::OnImportGedaFiles( wxCommandEvent& event )
+void KICAD_MANAGER_FRAME::OnImportGedaFiles( wxCommandEvent& event [[maybe_unused]] )
 {
     ImportNonKiCadProject( _( "Import gEDA / Lepton EDA Project Files" ),
                            FILEEXT::GedaProjectFilesWildcard(), { "prj", "sch" }, { "pcb" },
@@ -236,7 +236,7 @@ void KICAD_MANAGER_FRAME::OnImportGedaFiles( wxCommandEvent& event )
 }
 
 
-void KICAD_MANAGER_FRAME::OnImportDipTraceFiles( wxCommandEvent& event )
+void KICAD_MANAGER_FRAME::OnImportDipTraceFiles( wxCommandEvent& event [[maybe_unused]] )
 {
     ImportNonKiCadProject( _( "Import DipTrace Project Files" ),
                            FILEEXT::DipTraceFilesWildcard(), { "dch" }, { "dip" },
@@ -244,7 +244,7 @@ void KICAD_MANAGER_FRAME::OnImportDipTraceFiles( wxCommandEvent& event )
 }
 
 
-void KICAD_MANAGER_FRAME::OnImportEasyPcFiles( wxCommandEvent& event )
+void KICAD_MANAGER_FRAME::OnImportEasyPcFiles( wxCommandEvent& event [[maybe_unused]] )
 {
     ImportNonKiCadProject( _( "Import Easy-PC / DesignSpark PCB Project Files" ),
                            FILEEXT::EasyPcFilesWildcard(), { "prj", "sch" }, { "pcb" },
@@ -252,7 +252,7 @@ void KICAD_MANAGER_FRAME::OnImportEasyPcFiles( wxCommandEvent& event )
 }
 
 
-void KICAD_MANAGER_FRAME::OnImportTarget3001Files( wxCommandEvent& event )
+void KICAD_MANAGER_FRAME::OnImportTarget3001Files( wxCommandEvent& event [[maybe_unused]] )
 {
     // One project file carries both the schematic and the board
     ImportNonKiCadProject( _( "Import TARGET 3001! Project" ), FILEEXT::Target3001FilesWildcard(), { "INPUT" },
@@ -260,7 +260,7 @@ void KICAD_MANAGER_FRAME::OnImportTarget3001Files( wxCommandEvent& event )
 }
 
 
-void KICAD_MANAGER_FRAME::OnImportOrcadFiles( wxCommandEvent& event )
+void KICAD_MANAGER_FRAME::OnImportOrcadFiles( wxCommandEvent& event [[maybe_unused]] )
 {
     // OrCAD handler imports .dsn schematic then offers associated Allegro board, so no
     // PCB extension registered here

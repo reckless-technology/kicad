@@ -27,7 +27,7 @@
 using namespace KIGFX;
 
 
-void CALLBACK_GAL::DrawGlyph( const KIFONT::GLYPH& aGlyph, int aNth, int aTotal )
+void CALLBACK_GAL::DrawGlyph( const KIFONT::GLYPH& aGlyph, int aNth [[maybe_unused]], int aTotal [[maybe_unused]] )
 {
     if( aGlyph.IsStroke() )
     {

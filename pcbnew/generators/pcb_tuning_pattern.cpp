@@ -489,8 +489,8 @@ bool PCB_TUNING_PATTERN::baselineValid()
 }
 
 
-PCB_TUNING_PATTERN* PCB_TUNING_PATTERN::CreateNew( GENERATOR_TOOL* aTool,
-                                                   PCB_BASE_EDIT_FRAME* aFrame,
+PCB_TUNING_PATTERN* PCB_TUNING_PATTERN::CreateNew( GENERATOR_TOOL* aTool [[maybe_unused]],
+                                                   PCB_BASE_EDIT_FRAME* aFrame [[maybe_unused]],
                                                    BOARD_CONNECTED_ITEM* aStartItem,
                                                    LENGTH_TUNING_MODE aMode )
 {
@@ -1034,7 +1034,7 @@ bool PCB_TUNING_PATTERN::removeToBaseline( PNS::ROUTER* aRouter, int aPNSLayer, 
 }
 
 
-void PCB_TUNING_PATTERN::Remove( GENERATOR_TOOL* aTool, BOARD* aBoard, BOARD_COMMIT* aCommit )
+void PCB_TUNING_PATTERN::Remove( GENERATOR_TOOL* aTool, BOARD* aBoard [[maybe_unused]], BOARD_COMMIT* aCommit )
 {
     aTool->SetRouterCommit( aCommit );
 
@@ -1280,7 +1280,7 @@ bool PCB_TUNING_PATTERN::resetToBaseline( GENERATOR_TOOL* aTool, int aPNSLayer, 
 }
 
 
-bool PCB_TUNING_PATTERN::Update( GENERATOR_TOOL* aTool, BOARD* aBoard, BOARD_COMMIT* aCommit )
+bool PCB_TUNING_PATTERN::Update( GENERATOR_TOOL* aTool, BOARD* aBoard, BOARD_COMMIT* aCommit [[maybe_unused]] )
 {
     if( !( GetFlags() & IN_EDIT ) )
         return false;
@@ -1537,7 +1537,7 @@ void PCB_TUNING_PATTERN::EditFinish( GENERATOR_TOOL* aTool, BOARD* aBoard, BOARD
 }
 
 
-void PCB_TUNING_PATTERN::EditCancel( GENERATOR_TOOL* aTool, BOARD* aBoard, BOARD_COMMIT* aCommit )
+void PCB_TUNING_PATTERN::EditCancel( GENERATOR_TOOL* aTool, BOARD* aBoard [[maybe_unused]], BOARD_COMMIT* aCommit [[maybe_unused]] )
 {
     if( !( GetFlags() & IN_EDIT ) )
     {
@@ -1893,7 +1893,7 @@ bool PCB_TUNING_PATTERN::HasMeanders() const
 }
 
 
-void PCB_TUNING_PATTERN::ViewDraw( int aLayer, KIGFX::VIEW* aView ) const
+void PCB_TUNING_PATTERN::ViewDraw( int aLayer [[maybe_unused]], KIGFX::VIEW* aView ) const
 {
     if( !IsSelected() && !IsNew() )
         return;

@@ -35,7 +35,7 @@ std::string SPICE_GENERATOR_IBIS::ModelName( const SPICE_ITEM& aItem ) const
 }
 
 
-std::string SPICE_GENERATOR_IBIS::ModelLine( const SPICE_ITEM& aItem ) const
+std::string SPICE_GENERATOR_IBIS::ModelLine( const SPICE_ITEM& aItem [[maybe_unused]] ) const
 {
     return "";
 }

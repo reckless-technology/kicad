@@ -213,7 +213,7 @@ wxString PCB_TEXT::GetShownText( RESOLUTION_CONTEXT aContext, int aDepth ) const
 }
 
 
-bool PCB_TEXT::Matches( const EDA_SEARCH_DATA& aSearchData, void* aAuxData ) const
+bool PCB_TEXT::Matches( const EDA_SEARCH_DATA& aSearchData, void* aAuxData [[maybe_unused]] ) const
 {
     return BOARD_ITEM::Matches( UnescapeString( GetText() ), aSearchData );
 }
@@ -669,7 +669,7 @@ wxString PCB_TEXT::GetTextTypeDescription() const
 }
 
 
-wxString PCB_TEXT::GetItemDescription( UNITS_PROVIDER* aUnitsProvider, bool aFull ) const
+wxString PCB_TEXT::GetItemDescription( UNITS_PROVIDER* aUnitsProvider [[maybe_unused]], bool aFull ) const
 {
     wxString content = aFull ? GetShownText( FOR_GUI ) : KIUI::EllipsizeMenuText( GetText() );
 
@@ -703,7 +703,7 @@ void PCB_TEXT::swapData( BOARD_ITEM* aImage )
 }
 
 
-std::shared_ptr<SHAPE> PCB_TEXT::GetEffectiveShape( PCB_LAYER_ID aLayer, FLASHING, DRC_CONSTRAINT_T ) const
+std::shared_ptr<SHAPE> PCB_TEXT::GetEffectiveShape( PCB_LAYER_ID aLayer [[maybe_unused]], FLASHING, DRC_CONSTRAINT_T ) const
 {
     if( IsKnockout() )
     {
@@ -718,7 +718,7 @@ std::shared_ptr<SHAPE> PCB_TEXT::GetEffectiveShape( PCB_LAYER_ID aLayer, FLASHIN
 }
 
 
-const SHAPE_POLY_SET& PCB_TEXT::GetKnockoutCache( const KIFONT::FONT* aFont, const wxString& forResolvedText,
+const SHAPE_POLY_SET& PCB_TEXT::GetKnockoutCache( const KIFONT::FONT* aFont [[maybe_unused]], const wxString& forResolvedText,
                                                   int aMaxError ) const
 {
     TEXT_ATTRIBUTES attrs = GetAttributes();
@@ -854,8 +854,8 @@ double PCB_TEXT::GetCoverageArea( int aTextMargin ) const
 }
 
 
-void PCB_TEXT::TransformShapeToPolygon( SHAPE_POLY_SET& aBuffer, PCB_LAYER_ID aLayer, int aClearance, int aMaxError,
-                                        ERROR_LOC aErrorLoc, bool aIgnoreLineWidth ) const
+void PCB_TEXT::TransformShapeToPolygon( SHAPE_POLY_SET& aBuffer, PCB_LAYER_ID aLayer [[maybe_unused]], int aClearance, int aMaxError,
+                                        ERROR_LOC aErrorLoc, bool aIgnoreLineWidth [[maybe_unused]] ) const
 {
     SHAPE_POLY_SET poly;
 

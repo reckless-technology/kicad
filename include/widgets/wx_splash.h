@@ -37,7 +37,7 @@ public:
 
     /// Nullify the virtual in the parent which attempts to close the splash
     /// on any input
-    virtual int FilterEvent( wxEvent& event ) override { return -1; }
+    virtual int FilterEvent( wxEvent& event [[maybe_unused]] ) override { return -1; }
 };
 
 #endif

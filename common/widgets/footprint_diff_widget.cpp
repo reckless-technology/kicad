@@ -74,7 +74,7 @@ FOOTPRINT_DIFF_WIDGET::FOOTPRINT_DIFF_WIDGET( wxWindow* aParent, KIWAY& aKiway )
     Bind( wxEVT_CHAR_HOOK, &FOOTPRINT_DIFF_WIDGET::onCharHook, this );
 
     m_toggleButton->Bind( wxEVT_BUTTON,
-            [&]( wxCommandEvent& aEvent )
+            [&]( wxCommandEvent& aEvent [[maybe_unused]] )
             {
                 ToggleAB();
             } );

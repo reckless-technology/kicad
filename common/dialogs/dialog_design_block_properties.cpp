@@ -112,7 +112,7 @@ bool DIALOG_DESIGN_BLOCK_PROPERTIES::TransferDataFromWindow()
 }
 
 
-void DIALOG_DESIGN_BLOCK_PROPERTIES::OnAddField( wxCommandEvent& event )
+void DIALOG_DESIGN_BLOCK_PROPERTIES::OnAddField( wxCommandEvent& event [[maybe_unused]] )
 {
     m_fieldsGrid->OnAddRow(
             [&]() -> std::pair<int, int>
@@ -132,7 +132,7 @@ void DIALOG_DESIGN_BLOCK_PROPERTIES::OnAddField( wxCommandEvent& event )
 }
 
 
-void DIALOG_DESIGN_BLOCK_PROPERTIES::OnDeleteField( wxCommandEvent& event )
+void DIALOG_DESIGN_BLOCK_PROPERTIES::OnDeleteField( wxCommandEvent& event [[maybe_unused]] )
 {
     m_fieldsGrid->OnDeleteRows(
             [&]( int row )
@@ -142,7 +142,7 @@ void DIALOG_DESIGN_BLOCK_PROPERTIES::OnDeleteField( wxCommandEvent& event )
 }
 
 
-void DIALOG_DESIGN_BLOCK_PROPERTIES::OnMoveFieldUp( wxCommandEvent& event )
+void DIALOG_DESIGN_BLOCK_PROPERTIES::OnMoveFieldUp( wxCommandEvent& event [[maybe_unused]] )
 {
     m_fieldsGrid->OnMoveRowUp(
             [&]( int row )
@@ -152,7 +152,7 @@ void DIALOG_DESIGN_BLOCK_PROPERTIES::OnMoveFieldUp( wxCommandEvent& event )
 }
 
 
-void DIALOG_DESIGN_BLOCK_PROPERTIES::OnMoveFieldDown( wxCommandEvent& event )
+void DIALOG_DESIGN_BLOCK_PROPERTIES::OnMoveFieldDown( wxCommandEvent& event [[maybe_unused]] )
 {
     m_fieldsGrid->OnMoveRowDown(
             [&]( int row )

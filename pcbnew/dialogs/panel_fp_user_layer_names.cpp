@@ -52,7 +52,7 @@ public:
         }
     }
 
-    bool CanGetValueAs( int aRow, int aCol, const wxString& aTypeName ) override
+    bool CanGetValueAs( int aRow [[maybe_unused]], int aCol, const wxString& aTypeName ) override
     {
         switch( aCol )
         {
@@ -67,14 +67,14 @@ public:
         return CanGetValueAs( aRow, aCol, aTypeName );
     }
 
-    wxString GetValue( int row, int col ) override { return m_items[row].m_Text; }
+    wxString GetValue( int row, int col [[maybe_unused]] ) override { return m_items[row].m_Text; }
     void     SetValue( int row, int col, const wxString& value ) override
     {
         if( col == 1 )
             m_items[row].m_Text = value;
     }
 
-    long GetValueAsLong( int row, int col ) override { return m_items[row].m_Layer; }
+    long GetValueAsLong( int row, int col [[maybe_unused]] ) override { return m_items[row].m_Layer; }
     void SetValueAsLong( int row, int col, long value ) override
     {
         if( col == 0 )
@@ -255,7 +255,7 @@ bool PANEL_FP_USER_LAYER_NAMES::TransferDataFromWindow()
 }
 
 
-void PANEL_FP_USER_LAYER_NAMES::onUserLayerCountChange( wxCommandEvent& event )
+void PANEL_FP_USER_LAYER_NAMES::onUserLayerCountChange( wxCommandEvent& event [[maybe_unused]] )
 {
     // Nothing to do here - just update the selection. The value is saved in TransferDataFromWindow.
 }
@@ -310,7 +310,7 @@ int PANEL_FP_USER_LAYER_NAMES::getNextAvailableLayer() const
 }
 
 
-void PANEL_FP_USER_LAYER_NAMES::OnAddLayerItem( wxCommandEvent& event )
+void PANEL_FP_USER_LAYER_NAMES::OnAddLayerItem( wxCommandEvent& event [[maybe_unused]] )
 {
     m_layerNamesGrid->OnAddRow(
             [&]() -> std::pair<int, int>
@@ -321,7 +321,7 @@ void PANEL_FP_USER_LAYER_NAMES::OnAddLayerItem( wxCommandEvent& event )
 }
 
 
-void PANEL_FP_USER_LAYER_NAMES::OnDeleteLayerItem( wxCommandEvent& event )
+void PANEL_FP_USER_LAYER_NAMES::OnDeleteLayerItem( wxCommandEvent& event [[maybe_unused]] )
 {
     m_layerNamesGrid->OnDeleteRows(
             [&]( int row )

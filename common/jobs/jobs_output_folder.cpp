@@ -33,7 +33,7 @@ JOBS_OUTPUT_FOLDER::JOBS_OUTPUT_FOLDER() :
 bool JOBS_OUTPUT_FOLDER::HandleOutputs( const wxString&                baseTempPath,
                                         PROJECT*                       aProject,
                                         const std::vector<wxString>&   aPathsWithOverwriteDisallowed,
-                                        const std::vector<JOB_OUTPUT>& aOutputsToHandle,
+                                        const std::vector<JOB_OUTPUT>& aOutputsToHandle [[maybe_unused]],
                                         std::optional<wxString>&       aResolvedOutputPath )
 {
     aResolvedOutputPath.reset();

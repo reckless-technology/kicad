@@ -106,7 +106,7 @@ public:
     bool m_enableDiff;
 
 private:
-    bool requiresSpiceModelLine( const SPICE_ITEM& aItem ) const override { return true; }
+    bool requiresSpiceModelLine( const SPICE_ITEM& aItem [[maybe_unused]] ) const override { return true; }
 
     void addSwitchStateParam();
     void removeSwitchStateParam();

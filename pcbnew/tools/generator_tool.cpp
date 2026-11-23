@@ -62,7 +62,7 @@ GENERATOR_TOOL::GENERATOR_TOOL() :
 
     m_generatorListener = PROPERTY_MANAGER::Instance().RegisterListener(
             TYPE_HASH( PCB_GENERATOR ),
-            [&]( INSPECTABLE* aItem, PROPERTY_BASE* aProperty, COMMIT* aCommit )
+            [&]( INSPECTABLE* aItem, PROPERTY_BASE* aProperty [[maybe_unused]], COMMIT* aCommit )
             {
                 // Special case: regenerate generators when their properties change
 
@@ -150,7 +150,7 @@ void GENERATOR_TOOL::DestroyManagerDialog()
 }
 
 
-int GENERATOR_TOOL::ShowGeneratorsManager( const TOOL_EVENT& aEvent )
+int GENERATOR_TOOL::ShowGeneratorsManager( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     PCB_EDIT_FRAME* pcbFrame = static_cast<PCB_EDIT_FRAME*>( frame() );
 
@@ -203,7 +203,7 @@ int GENERATOR_TOOL::RegenerateAllOfType( const TOOL_EVENT& aEvent )
 }
 
 
-int GENERATOR_TOOL::MakeViaStackFromSelection( const TOOL_EVENT& aEvent )
+int GENERATOR_TOOL::MakeViaStackFromSelection( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     PCB_SELECTION_TOOL* selTool = m_toolMgr->GetTool<PCB_SELECTION_TOOL>();
 
@@ -269,7 +269,7 @@ int GENERATOR_TOOL::MakeViaStackFromSelection( const TOOL_EVENT& aEvent )
 }
 
 
-int GENERATOR_TOOL::RegenerateSelected( const TOOL_EVENT& aEvent )
+int GENERATOR_TOOL::RegenerateSelected( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     BOARD_COMMIT commit( this );
     int          commitFlags = 0;
@@ -277,7 +277,7 @@ int GENERATOR_TOOL::RegenerateSelected( const TOOL_EVENT& aEvent )
     PCB_SELECTION_TOOL* selTool = m_toolMgr->GetTool<PCB_SELECTION_TOOL>();
 
     PCB_SELECTION sel = selTool->RequestSelection(
-            []( const VECTOR2I& aPt, GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
+            []( const VECTOR2I& aPt [[maybe_unused]], GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool [[maybe_unused]] )
             {
                 // Iterate from the back so we don't have to worry about removals.
                 for( int i = aCollector.GetCount() - 1; i >= 0; --i )
@@ -370,7 +370,7 @@ int GENERATOR_TOOL::GenEditAction( const TOOL_EVENT& aEvent )
 }
 
 
-int GENERATOR_TOOL::RemoveDeselectedEmptyPatterns( const TOOL_EVENT& aEvent )
+int GENERATOR_TOOL::RemoveDeselectedEmptyPatterns( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     std::set<KIID> selected;
 

@@ -65,7 +65,7 @@ DIALOG_FIND_BY_PROPERTIES::DIALOG_FIND_BY_PROPERTIES( PCB_EDIT_FRAME* aParent ) 
 
     m_scintillaTricks = new SCINTILLA_TRICKS(
             m_queryEditor, wxT( "()" ), true,
-            [this]( wxKeyEvent& aEvent )
+            [this]( wxKeyEvent& aEvent [[maybe_unused]] )
             {
                 wxCommandEvent dummy;
                 onSelectMatchingClick( dummy );
@@ -799,7 +799,7 @@ void DIALOG_FIND_BY_PROPERTIES::updateMatchModeCell( int aRow )
 }
 
 
-void DIALOG_FIND_BY_PROPERTIES::onSelectMatchingClick( wxCommandEvent& event )
+void DIALOG_FIND_BY_PROPERTIES::onSelectMatchingClick( wxCommandEvent& event [[maybe_unused]] )
 {
     if( m_notebook->GetSelection() == 0 )
         selectMatchingFromProperties();
@@ -960,7 +960,7 @@ void DIALOG_FIND_BY_PROPERTIES::selectMatchingFromQuery()
     wxString errors;
 
     compiler.SetErrorCallback(
-            [&]( const wxString& aMessage, int aOffset )
+            [&]( const wxString& aMessage, int aOffset [[maybe_unused]] )
             {
                 errors += aMessage + wxT( "\n" );
             } );
@@ -1114,7 +1114,7 @@ wxString DIALOG_FIND_BY_PROPERTIES::generateExpressionFromProperties( wxArrayStr
 }
 
 
-void DIALOG_FIND_BY_PROPERTIES::onCreateQueryClick( wxCommandEvent& event )
+void DIALOG_FIND_BY_PROPERTIES::onCreateQueryClick( wxCommandEvent& event [[maybe_unused]] )
 {
     wxArrayString skipped;
     wxString      expr = generateExpressionFromProperties( &skipped );
@@ -1134,7 +1134,7 @@ void DIALOG_FIND_BY_PROPERTIES::onCreateQueryClick( wxCommandEvent& event )
 }
 
 
-void DIALOG_FIND_BY_PROPERTIES::onCheckSyntaxClick( wxCommandEvent& event )
+void DIALOG_FIND_BY_PROPERTIES::onCheckSyntaxClick( wxCommandEvent& event [[maybe_unused]] )
 {
     wxString expression = m_queryEditor->GetText().Trim().Trim( false );
 
@@ -1158,7 +1158,7 @@ void DIALOG_FIND_BY_PROPERTIES::onCheckSyntaxClick( wxCommandEvent& event )
     wxString         errors;
 
     compiler.SetErrorCallback(
-            [&]( const wxString& aMessage, int aOffset )
+            [&]( const wxString& aMessage, int aOffset [[maybe_unused]] )
             {
                 errors += aMessage + wxT( "\n" );
             } );
@@ -1172,7 +1172,7 @@ void DIALOG_FIND_BY_PROPERTIES::onCheckSyntaxClick( wxCommandEvent& event )
 }
 
 
-void DIALOG_FIND_BY_PROPERTIES::onRecentQuerySelected( wxCommandEvent& event )
+void DIALOG_FIND_BY_PROPERTIES::onRecentQuerySelected( wxCommandEvent& event [[maybe_unused]] )
 {
     int sel = m_recentQueries->GetSelection();
 
@@ -1215,7 +1215,7 @@ void DIALOG_FIND_BY_PROPERTIES::saveRecentQuery( const wxString& aQuery )
 }
 
 
-void DIALOG_FIND_BY_PROPERTIES::OnCloseButtonClick( wxCommandEvent& event )
+void DIALOG_FIND_BY_PROPERTIES::OnCloseButtonClick( wxCommandEvent& event [[maybe_unused]] )
 {
     Show( false );
 }
@@ -1230,7 +1230,7 @@ void DIALOG_FIND_BY_PROPERTIES::onNotebookPageChanged( wxNotebookEvent& event )
 }
 
 
-void DIALOG_FIND_BY_PROPERTIES::onScintillaCharAdded( wxStyledTextEvent& aEvent )
+void DIALOG_FIND_BY_PROPERTIES::onScintillaCharAdded( wxStyledTextEvent& aEvent [[maybe_unused]] )
 {
     int pos = m_queryEditor->GetCurrentPos();
 

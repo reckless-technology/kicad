@@ -60,21 +60,21 @@ bool WRL2NORMS::isDangling( void )
 }
 
 
-bool WRL2NORMS::AddRefNode( WRL2NODE* aNode )
+bool WRL2NORMS::AddRefNode( WRL2NODE* aNode [[maybe_unused]] )
 {
     // this node may not own or reference any other node
     wxCHECK_MSG( false, false, wxT( "AddRefNode is not applicable." ) );
 }
 
 
-bool WRL2NORMS::AddChildNode( WRL2NODE* aNode )
+bool WRL2NORMS::AddChildNode( WRL2NODE* aNode [[maybe_unused]] )
 {
     // this node may not own or reference any other node
     wxCHECK_MSG( false, false, wxT( "AddChildNode is not applicable." ) );
 }
 
 
-bool WRL2NORMS::Read( WRLPROC& proc, WRL2BASE* aTopNode )
+bool WRL2NORMS::Read( WRLPROC& proc, WRL2BASE* aTopNode [[maybe_unused]] )
 {
     char tok = proc.Peek();
 
@@ -155,7 +155,7 @@ bool WRL2NORMS::Read( WRLPROC& proc, WRL2BASE* aTopNode )
 }
 
 
-SGNODE* WRL2NORMS::TranslateToSG( SGNODE* aParent )
+SGNODE* WRL2NORMS::TranslateToSG( SGNODE* aParent [[maybe_unused]] )
 {
     // any data manipulation must be performed by the parent node
     return nullptr;

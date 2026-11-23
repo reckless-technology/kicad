@@ -188,7 +188,7 @@ bool PANEL_SETUP_BUSES::TransferDataFromWindow()
 }
 
 
-void PANEL_SETUP_BUSES::OnAddAlias( wxCommandEvent& aEvent )
+void PANEL_SETUP_BUSES::OnAddAlias( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( !m_aliasesGrid->CommitPendingChanges() || !m_membersGrid->CommitPendingChanges() )
         return;
@@ -215,7 +215,7 @@ void PANEL_SETUP_BUSES::OnAddAlias( wxCommandEvent& aEvent )
 }
 
 
-void PANEL_SETUP_BUSES::OnDeleteAlias( wxCommandEvent& aEvent )
+void PANEL_SETUP_BUSES::OnDeleteAlias( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( !m_aliasesGrid->CommitPendingChanges() || !m_membersGrid->CommitPendingChanges() )
         return;
@@ -235,7 +235,7 @@ void PANEL_SETUP_BUSES::OnDeleteAlias( wxCommandEvent& aEvent )
 }
 
 
-void PANEL_SETUP_BUSES::OnAddMember( wxCommandEvent& aEvent )
+void PANEL_SETUP_BUSES::OnAddMember( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     m_membersGrid->OnAddRow(
             [&]() -> std::pair<int, int>
@@ -272,7 +272,7 @@ void PANEL_SETUP_BUSES::OnAddMember( wxCommandEvent& aEvent )
 }
 
 
-void PANEL_SETUP_BUSES::OnRemoveMember( wxCommandEvent& aEvent )
+void PANEL_SETUP_BUSES::OnRemoveMember( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     m_membersGrid->OnDeleteRows(
             [&]( int row )
@@ -378,7 +378,7 @@ void PANEL_SETUP_BUSES::doReloadMembersGrid()
 }
 
 
-void PANEL_SETUP_BUSES::reloadMembersGridOnIdle( wxIdleEvent& aEvent )
+void PANEL_SETUP_BUSES::reloadMembersGridOnIdle( wxIdleEvent& aEvent [[maybe_unused]] )
 {
     if( m_membersGridDirty )
         doReloadMembersGrid();
@@ -407,7 +407,7 @@ void PANEL_SETUP_BUSES::OnSizeGrid( wxSizeEvent& event )
 }
 
 
-void PANEL_SETUP_BUSES::OnUpdateUI( wxUpdateUIEvent& event )
+void PANEL_SETUP_BUSES::OnUpdateUI( wxUpdateUIEvent& event [[maybe_unused]] )
 {
     // Handle a grid error.  This is delayed to OnUpdateUI so that we can change focus
     // even when the original validation was triggered from a killFocus event.

@@ -105,7 +105,7 @@ void NUMERIC_EVALUATOR::LocaleChanged()
 
 
 // NOT UNUSED.  Called by LEMON grammar.
-void NUMERIC_EVALUATOR::parseError( const char* s )
+void NUMERIC_EVALUATOR::parseError( const char* s [[maybe_unused]] )
 {
     m_parseError = true;
 }

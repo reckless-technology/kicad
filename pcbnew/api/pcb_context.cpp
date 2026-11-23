@@ -81,7 +81,7 @@ public:
         return m_frame->SaveBoard();
     }
 
-    bool SaveBoardAs( const wxString& aFileName ) override
+    bool SaveBoardAs( const wxString& aFileName [[maybe_unused]] ) override
     {
         return false;
     }

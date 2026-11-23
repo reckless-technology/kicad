@@ -1457,7 +1457,7 @@ bool LIBGIT_BACKEND::SetConfigString( git_repository* aRepo, const wxString& aKe
 }
 
 
-bool LIBGIT_BACKEND::IsRepository( GIT_INIT_HANDLER* aHandler, const wxString& aPath )
+bool LIBGIT_BACKEND::IsRepository( GIT_INIT_HANDLER* aHandler [[maybe_unused]], const wxString& aPath )
 {
     git_repository* repo = nullptr;
     int             error = git_repository_open( &repo, aPath.utf8_string().c_str() );
@@ -2542,8 +2542,8 @@ PullResult LIBGIT_BACKEND::handleFastForward( GIT_PULL_HANDLER* aHandler )
     git_checkout_options checkoutOptions;
     git_checkout_init_options( &checkoutOptions, GIT_CHECKOUT_OPTIONS_VERSION );
     auto notify_cb =
-            []( git_checkout_notify_t why, const char* path, const git_diff_file* baseline,
-                const git_diff_file* target, const git_diff_file* workdir, void* payload ) -> int
+            []( git_checkout_notify_t why, const char* path, const git_diff_file* baseline [[maybe_unused]],
+                const git_diff_file* target [[maybe_unused]], const git_diff_file* workdir [[maybe_unused]], void* payload [[maybe_unused]] ) -> int
             {
                 switch( why )
                 {
@@ -2891,7 +2891,7 @@ static PullResult rebaseOnto( GIT_PULL_HANDLER* aHandler, git_repository* aRepo,
 
 
 PullResult LIBGIT_BACKEND::handleRebase( GIT_PULL_HANDLER* aHandler, const git_annotated_commit** aMergeHeads,
-                                         size_t aMergeHeadsCount )
+                                         size_t aMergeHeadsCount [[maybe_unused]] )
 {
     if( std::optional<PullResult> refused = refuseUncommittedChanges( aHandler, false ) )
         return *refused;

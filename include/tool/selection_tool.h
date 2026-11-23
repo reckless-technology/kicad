@@ -90,7 +90,7 @@ public:
     void StopDisambiguation() { m_disambiguateTimer.Stop(); }
 
     virtual void EnterGroup() {}
-    virtual void ExitGroup( bool aSelectGroup = false ) {}
+    virtual void ExitGroup( bool aSelectGroup [[maybe_unused]] = false ) {}
 
 protected:
     /**

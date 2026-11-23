@@ -932,7 +932,7 @@ void SPECCTRA_DB::doKEEPOUT( KEEPOUT* growth )
 }
 
 
-void SPECCTRA_DB::doCONNECT( CONNECT* growth )
+void SPECCTRA_DB::doCONNECT( CONNECT* growth [[maybe_unused]] )
 {
     /*  from page 143 of specctra spec:
 

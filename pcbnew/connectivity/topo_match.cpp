@@ -1388,7 +1388,7 @@ bool COMPONENT::MatchesWith( COMPONENT* b, TOPOLOGY_MISMATCH_REASON& aReason )
 }
 
 
-void CONNECTION_GRAPH::AddFootprint( FOOTPRINT* aFp, const VECTOR2I& aOffset )
+void CONNECTION_GRAPH::AddFootprint( FOOTPRINT* aFp, const VECTOR2I& aOffset [[maybe_unused]] )
 {
     auto cmp = new COMPONENT( aFp->GetReference(), aFp );
 

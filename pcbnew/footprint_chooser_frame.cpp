@@ -389,7 +389,7 @@ void FOOTPRINT_CHOOSER_FRAME::Show3DViewerFrame()
 }
 
 
-void FOOTPRINT_CHOOSER_FRAME::Update3DView( bool aMarkDirty, bool aRefresh, const wxString* aTitle )
+void FOOTPRINT_CHOOSER_FRAME::Update3DView( bool aMarkDirty, bool aRefresh, const wxString* aTitle [[maybe_unused]] )
 {
     LIB_ID fpID = m_chooserPanel->GetSelectedLibId();
     wxString footprintName;
@@ -502,7 +502,7 @@ WINDOW_SETTINGS* FOOTPRINT_CHOOSER_FRAME::GetWindowSettings( APP_SETTINGS_BASE* 
 }
 
 
-COLOR_SETTINGS* FOOTPRINT_CHOOSER_FRAME::GetColorSettings( bool aForceRefresh ) const
+COLOR_SETTINGS* FOOTPRINT_CHOOSER_FRAME::GetColorSettings( bool aForceRefresh [[maybe_unused]] ) const
 {
     FOOTPRINT_EDITOR_SETTINGS* cfg = GetAppSettings<FOOTPRINT_EDITOR_SETTINGS>( "fpedit" );
     return ::GetColorSettings( cfg ? cfg->m_ColorTheme : DEFAULT_THEME );
@@ -578,7 +578,7 @@ void FOOTPRINT_CHOOSER_FRAME::KiwayMailIn( KIWAY_MAIL_EVENT& mail )
                 m_filterByFPFilters = new wxCheckBox( filtersWindow, wxID_ANY, msg );
 
                 m_filterByFPFilters->Bind( wxEVT_CHECKBOX,
-                        [&]( wxCommandEvent& evt )
+                        [&]( wxCommandEvent& evt [[maybe_unused]] )
                         {
                             m_chooserPanel->Regenerate();
                         } );
@@ -610,7 +610,7 @@ void FOOTPRINT_CHOOSER_FRAME::KiwayMailIn( KIWAY_MAIL_EVENT& mail )
                 m_filterByPinCount = new wxCheckBox( filtersWindow, wxID_ANY, msg );
 
                 m_filterByPinCount->Bind( wxEVT_CHECKBOX,
-                        [&]( wxCommandEvent& evt )
+                        [&]( wxCommandEvent& evt [[maybe_unused]] )
                         {
                             m_chooserPanel->Regenerate();
                         } );
@@ -738,7 +738,7 @@ void FOOTPRINT_CHOOSER_FRAME::OnPaint( wxPaintEvent& aEvent )
 }
 
 
-void FOOTPRINT_CHOOSER_FRAME::OnOK( wxCommandEvent& aEvent )
+void FOOTPRINT_CHOOSER_FRAME::OnOK( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     // A queued accept event can still fire during the post-loop wxSafeYield()
     // after Escape/Cancel already dismissed the frame; don't bash that result.
@@ -765,13 +765,13 @@ void FOOTPRINT_CHOOSER_FRAME::OnOK( wxCommandEvent& aEvent )
 }
 
 
-void FOOTPRINT_CHOOSER_FRAME::closeFootprintChooser( wxCommandEvent& aEvent )
+void FOOTPRINT_CHOOSER_FRAME::closeFootprintChooser( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     Close( false );
 }
 
 
-void FOOTPRINT_CHOOSER_FRAME::onFpChanged( wxCommandEvent& event )
+void FOOTPRINT_CHOOSER_FRAME::onFpChanged( wxCommandEvent& event [[maybe_unused]] )
 {
     updateViews();
 
@@ -807,7 +807,7 @@ void FOOTPRINT_CHOOSER_FRAME::build3DCanvas()
 }
 
 
-void FOOTPRINT_CHOOSER_FRAME::toggleBottomSplit( wxCommandEvent& event )
+void FOOTPRINT_CHOOSER_FRAME::toggleBottomSplit( wxCommandEvent& event [[maybe_unused]] )
 {
     m_showDescription = !m_showDescription;
 
@@ -842,7 +842,7 @@ void FOOTPRINT_CHOOSER_FRAME::toggleBottomSplit( wxCommandEvent& event )
 }
 
 
-void FOOTPRINT_CHOOSER_FRAME::on3DviewReq( wxCommandEvent& event )
+void FOOTPRINT_CHOOSER_FRAME::on3DviewReq( wxCommandEvent& event [[maybe_unused]] )
 {
     if( m_show3DMode == true )
     {
@@ -872,7 +872,7 @@ void FOOTPRINT_CHOOSER_FRAME::on3DviewReq( wxCommandEvent& event )
 }
 
 
-void FOOTPRINT_CHOOSER_FRAME::onFpViewReq( wxCommandEvent& event )
+void FOOTPRINT_CHOOSER_FRAME::onFpViewReq( wxCommandEvent& event [[maybe_unused]] )
 {
     if( m_showFpMode == true )
     {

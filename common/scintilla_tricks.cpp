@@ -199,7 +199,7 @@ void SCINTILLA_TRICKS::onChar( wxStyledTextEvent& aEvent )
 }
 
 
-void SCINTILLA_TRICKS::onModified( wxStyledTextEvent& aEvent )
+void SCINTILLA_TRICKS::onModified( wxStyledTextEvent& aEvent [[maybe_unused]] )
 {
     if( m_singleLine )
     {
@@ -584,7 +584,7 @@ int SCINTILLA_TRICKS::firstNonWhitespace( int aLine, int* aWhitespaceCharCount )
 }
 
 
-void SCINTILLA_TRICKS::onScintillaUpdateUI( wxStyledTextEvent& aEvent )
+void SCINTILLA_TRICKS::onScintillaUpdateUI( wxStyledTextEvent& aEvent [[maybe_unused]] )
 {
     auto isBrace =
             [this]( int c ) -> bool

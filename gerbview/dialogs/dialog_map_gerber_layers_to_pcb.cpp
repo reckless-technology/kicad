@@ -271,7 +271,7 @@ void DIALOG_MAP_GERBER_LAYERS_TO_PCB::OnBrdLayersCountSelection( wxCommandEvent&
 }
 
 
-void DIALOG_MAP_GERBER_LAYERS_TO_PCB::OnResetClick( wxCommandEvent& event )
+void DIALOG_MAP_GERBER_LAYERS_TO_PCB::OnResetClick( wxCommandEvent& event [[maybe_unused]] )
 {
     for( int ii = 0; ii < m_gerberActiveLayersCount; ++ii )
     {
@@ -287,7 +287,7 @@ void DIALOG_MAP_GERBER_LAYERS_TO_PCB::OnResetClick( wxCommandEvent& event )
 }
 
 
-void DIALOG_MAP_GERBER_LAYERS_TO_PCB::OnStoreSetup( wxCommandEvent& event )
+void DIALOG_MAP_GERBER_LAYERS_TO_PCB::OnStoreSetup( wxCommandEvent& event [[maybe_unused]] )
 {
     GERBVIEW_SETTINGS* config = static_cast<GERBVIEW_SETTINGS*>( Kiface().KifaceSettings() );
     config->m_BoardLayersCount = m_exportBoardCopperLayersCount;
@@ -303,7 +303,7 @@ void DIALOG_MAP_GERBER_LAYERS_TO_PCB::OnStoreSetup( wxCommandEvent& event )
 }
 
 
-void DIALOG_MAP_GERBER_LAYERS_TO_PCB::OnGetSetup( wxCommandEvent& event )
+void DIALOG_MAP_GERBER_LAYERS_TO_PCB::OnGetSetup( wxCommandEvent& event [[maybe_unused]] )
 {
     GERBVIEW_SETTINGS* config = static_cast<GERBVIEW_SETTINGS*>( Kiface().KifaceSettings() );
 

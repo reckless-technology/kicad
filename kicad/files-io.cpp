@@ -42,7 +42,7 @@ void KICAD_MANAGER_FRAME::OnFileHistory( wxCommandEvent& event )
 }
 
 
-void KICAD_MANAGER_FRAME::OnClearFileHistory( wxCommandEvent& aEvent )
+void KICAD_MANAGER_FRAME::OnClearFileHistory( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     ClearFileHistory();
 }

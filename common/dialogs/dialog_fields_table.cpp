@@ -587,7 +587,7 @@ void DIALOG_FIELDS_TABLE::DisableSelectionEvents()
 }
 
 
-void DIALOG_FIELDS_TABLE::OnTableRangeSelectionChanged( wxGridRangeSelectEvent& aEvent )
+void DIALOG_FIELDS_TABLE::OnTableRangeSelectionChanged( wxGridRangeSelectEvent& aEvent [[maybe_unused]] )
 {
     OnTableSelectionChanged( GetSelectedGridRows() );
 }
@@ -904,7 +904,7 @@ void DIALOG_FIELDS_TABLE::setSideBarButtonLook( bool aIsLeftPanelCollapsed )
 }
 
 
-void DIALOG_FIELDS_TABLE::OnSidebarToggle( wxCommandEvent& event )
+void DIALOG_FIELDS_TABLE::OnSidebarToggle( wxCommandEvent& event [[maybe_unused]] )
 {
     if( m_cfgDialogSettings.sidebar_collapsed )
     {
@@ -923,7 +923,7 @@ void DIALOG_FIELDS_TABLE::OnSidebarToggle( wxCommandEvent& event )
 }
 
 
-void DIALOG_FIELDS_TABLE::OnTableValueChanged( wxGridEvent& aEvent )
+void DIALOG_FIELDS_TABLE::OnTableValueChanged( wxGridEvent& aEvent [[maybe_unused]] )
 {
     m_grid->ForceRefresh();
 }
@@ -971,7 +971,7 @@ void DIALOG_FIELDS_TABLE::OnTableLabelClick( wxGridEvent& aEvent )
 }
 
 
-void DIALOG_FIELDS_TABLE::OnFilterMouseMoved( wxMouseEvent& aEvent )
+void DIALOG_FIELDS_TABLE::OnFilterMouseMoved( wxMouseEvent& aEvent [[maybe_unused]] )
 {
 #if defined( __WXOSX__ ) // Doesn't work properly on other ports
     wxPoint pos = aEvent.GetPosition();
@@ -1105,7 +1105,7 @@ void DIALOG_FIELDS_TABLE::OnViewControlsCellChanged( wxGridEvent& aEvent )
 }
 
 
-void DIALOG_FIELDS_TABLE::OnAddField( wxCommandEvent& aEvent )
+void DIALOG_FIELDS_TABLE::OnAddField( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     wxTextEntryDialog dlg( this, _( "New field name:" ), _( "Add Field" ) );
 
@@ -1138,7 +1138,7 @@ void DIALOG_FIELDS_TABLE::OnAddField( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_FIELDS_TABLE::OnRemoveField( wxCommandEvent& aEvent )
+void DIALOG_FIELDS_TABLE::OnRemoveField( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     m_viewControlsGrid->OnDeleteRows(
             [&]( int row )
@@ -1190,7 +1190,7 @@ void DIALOG_FIELDS_TABLE::OnRemoveField( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_FIELDS_TABLE::OnRenameField( wxCommandEvent& aEvent )
+void DIALOG_FIELDS_TABLE::OnRenameField( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     wxArrayInt selectedRows = m_viewControlsGrid->GetSelectedRows();
 
@@ -1275,7 +1275,7 @@ void DIALOG_FIELDS_TABLE::OnRenameField( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_FIELDS_TABLE::OnFilterText( wxCommandEvent& aEvent )
+void DIALOG_FIELDS_TABLE::OnFilterText( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     getDataModel()->SetFilter( m_filter->GetValue() );
     getDataModel()->RebuildRows();
@@ -1285,7 +1285,7 @@ void DIALOG_FIELDS_TABLE::OnFilterText( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_FIELDS_TABLE::OnFilterScope( wxCommandEvent& aEvent )
+void DIALOG_FIELDS_TABLE::OnFilterScope( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     getDataModel()->SetFilterScope( static_cast<BOM_FILTER_SCOPE>( m_filterScope->GetSelection() ) );
     getDataModel()->RebuildRows();
@@ -1295,7 +1295,7 @@ void DIALOG_FIELDS_TABLE::OnFilterScope( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_FIELDS_TABLE::OnGroupSymbolsToggled( wxCommandEvent& aEvent )
+void DIALOG_FIELDS_TABLE::OnGroupSymbolsToggled( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     getDataModel()->SetGroupingEnabled( m_groupSymbolsBox->GetValue() );
     updateExpanderColumn();
@@ -1306,7 +1306,7 @@ void DIALOG_FIELDS_TABLE::OnGroupSymbolsToggled( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_FIELDS_TABLE::OnRegroupSymbols( wxCommandEvent& aEvent )
+void DIALOG_FIELDS_TABLE::OnRegroupSymbols( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     getDataModel()->RebuildRows();
     m_grid->ForceRefresh();
@@ -1427,21 +1427,21 @@ void DIALOG_FIELDS_TABLE::OnGridMouseWheel( wxMouseEvent& aEvent )
 }
 
 
-void DIALOG_FIELDS_TABLE::OnPageChanged( wxNotebookEvent& aEvent )
+void DIALOG_FIELDS_TABLE::OnPageChanged( wxNotebookEvent& aEvent [[maybe_unused]] )
 {
     if( getDataModel()->GetColsCount() )
         PreviewRefresh();
 }
 
 
-void DIALOG_FIELDS_TABLE::OnPreviewRefresh( wxCommandEvent& aEvent )
+void DIALOG_FIELDS_TABLE::OnPreviewRefresh( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     PreviewRefresh();
     syncBomFmtPresetSelection();
 }
 
 
-void DIALOG_FIELDS_TABLE::OnOutputFileBrowseClicked( wxCommandEvent& aEvent )
+void DIALOG_FIELDS_TABLE::OnOutputFileBrowseClicked( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     // Build the absolute path of current output directory to preselect it in the file browser.
     wxString path = ResolveProjectPath( m_outputFileName->GetValue(), &Prj() );
@@ -1474,7 +1474,7 @@ void DIALOG_FIELDS_TABLE::OnOutputFileBrowseClicked( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_FIELDS_TABLE::OnExport( wxCommandEvent& aEvent )
+void DIALOG_FIELDS_TABLE::OnExport( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( getDataModel()->IsEdited() )
     {
@@ -1906,7 +1906,7 @@ void DIALOG_FIELDS_TABLE::updateBomPresetSelection( const wxString& aName )
 }
 
 
-void DIALOG_FIELDS_TABLE::onBomPresetChanged( wxCommandEvent& aEvent )
+void DIALOG_FIELDS_TABLE::onBomPresetChanged( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     int count = m_cbBomPresets->GetCount();
     int index = m_cbBomPresets->GetSelection();
@@ -2269,7 +2269,7 @@ void DIALOG_FIELDS_TABLE::updateBomFmtPresetSelection( const wxString& aName )
 }
 
 
-void DIALOG_FIELDS_TABLE::onBomFmtPresetChanged( wxCommandEvent& aEvent )
+void DIALOG_FIELDS_TABLE::onBomFmtPresetChanged( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     int count = m_cbBomFmtPresets->GetCount();
     int index = m_cbBomFmtPresets->GetSelection();

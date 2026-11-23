@@ -376,35 +376,35 @@ wxImage renderSelectionToImageForClipboard( SCH_EDIT_FRAME* aFrame, const SCH_SE
 } // namespace
 
 
-int SCH_EDITOR_CONTROL::New( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::New( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->NewProject();
     return 0;
 }
 
 
-int SCH_EDITOR_CONTROL::Open( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::Open( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->LoadProject();
     return 0;
 }
 
 
-int SCH_EDITOR_CONTROL::Save( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::Save( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->SaveProject();
     return 0;
 }
 
 
-int SCH_EDITOR_CONTROL::SaveAs( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::SaveAs( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->SaveProject( true );
     return 0;
 }
 
 
-int SCH_EDITOR_CONTROL::SaveCurrSheetCopyAs( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::SaveCurrSheetCopyAs( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SCH_SHEET*   curr_sheet = m_frame->GetCurrentSheet().Last();
     wxFileName   curr_fn = curr_sheet->GetFileName();
@@ -423,7 +423,7 @@ int SCH_EDITOR_CONTROL::SaveCurrSheetCopyAs( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDITOR_CONTROL::Revert( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::Revert( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     wxString msg;
     msg.Printf( _( "Revert '%s' (and all sub-sheets) to last version saved?" ), m_frame->Schematic().GetFileName() );
@@ -437,14 +437,14 @@ int SCH_EDITOR_CONTROL::Revert( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDITOR_CONTROL::ShowSchematicSetup( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::ShowSchematicSetup( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->ShowSchematicSetupDialog();
     return 0;
 }
 
 
-int SCH_EDITOR_CONTROL::PageSetup( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::PageSetup( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     PICKED_ITEMS_LIST   undoCmd;
     DS_PROXY_UNDO_ITEM* undoItem = new DS_PROXY_UNDO_ITEM( m_frame );
@@ -476,7 +476,7 @@ int SCH_EDITOR_CONTROL::PageSetup( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDITOR_CONTROL::RescueSymbols( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::RescueSymbols( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SCH_SCREENS schematic( m_frame->Schematic().Root() );
 
@@ -537,7 +537,7 @@ bool SCH_EDITOR_CONTROL::rescueProject( RESCUER& aRescuer, bool aRunningOnDemand
 }
 
 
-int SCH_EDITOR_CONTROL::RemapSymbols( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::RemapSymbols( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     DIALOG_SYMBOL_REMAP dlgRemap( m_frame );
 
@@ -549,7 +549,7 @@ int SCH_EDITOR_CONTROL::RemapSymbols( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDITOR_CONTROL::Print( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::Print( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     DIALOG_PRINT dlg( m_frame );
 
@@ -559,7 +559,7 @@ int SCH_EDITOR_CONTROL::Print( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDITOR_CONTROL::Plot( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::Plot( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     DIALOG_PLOT_SCHEMATIC dlg( m_frame );
 
@@ -584,7 +584,7 @@ int SCH_EDITOR_CONTROL::ExplicitCrossProbeToPcb( const TOOL_EVENT& aEvent )
 }
 
 
-void SCH_EDITOR_CONTROL::doCrossProbeSchToPcb( const TOOL_EVENT& aEvent, bool aForce )
+void SCH_EDITOR_CONTROL::doCrossProbeSchToPcb( const TOOL_EVENT& aEvent [[maybe_unused]], bool aForce )
 {
     // Don't get in an infinite loop SCH -> PCB -> SCH -> PCB -> SCH -> ...
     if( m_probingPcbToSch || m_frame->IsSyncingSelection() )
@@ -597,7 +597,7 @@ void SCH_EDITOR_CONTROL::doCrossProbeSchToPcb( const TOOL_EVENT& aEvent, bool aF
 }
 
 
-int SCH_EDITOR_CONTROL::ExportForOlderVersion( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::ExportForOlderVersion( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     const wxString title = _( "Export for Older KiCad Version" );
 
@@ -645,7 +645,7 @@ int SCH_EDITOR_CONTROL::ExportForOlderVersion( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDITOR_CONTROL::ExportSymbolsToLibrary( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::ExportSymbolsToLibrary( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     bool                   savePowerSymbols = false;
     bool                   map = false;
@@ -935,7 +935,7 @@ int SCH_EDITOR_CONTROL::SimProbe( const TOOL_EVENT& aEvent )
             } );
 
     picker->SetFinalizeHandler(
-            [this]( const int& aFinalState )
+            [this]( const int& aFinalState [[maybe_unused]] )
             {
                 if( m_pickerItem )
                     m_toolMgr->GetTool<SCH_SELECTION_TOOL>()->UnbrightenItem( m_pickerItem );
@@ -1037,7 +1037,7 @@ int SCH_EDITOR_CONTROL::SimTune( const TOOL_EVENT& aEvent )
             } );
 
     picker->SetFinalizeHandler(
-            [this]( const int& aFinalState )
+            [this]( const int& aFinalState [[maybe_unused]] )
             {
                 if( m_pickerItem )
                     m_toolMgr->GetTool<SCH_SELECTION_TOOL>()->UnbrightenItem( m_pickerItem );
@@ -1275,7 +1275,7 @@ int SCH_EDITOR_CONTROL::RemoveFromNetChain( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDITOR_CONTROL::ClearHighlight( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::ClearHighlight( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     highlightNet( m_toolMgr, m_frame->GetCurrentSheet(), CLEAR );
 
@@ -1287,7 +1287,7 @@ int SCH_EDITOR_CONTROL::ClearHighlight( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDITOR_CONTROL::AssignNetclass( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::AssignNetclass( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SCH_SELECTION_TOOL* selectionTool = m_toolMgr->GetTool<SCH_SELECTION_TOOL>();
     SCHEMATIC&          schematic = m_frame->Schematic();
@@ -1447,7 +1447,7 @@ int SCH_EDITOR_CONTROL::AssignNetclass( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDITOR_CONTROL::FindNetInInspector( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::FindNetInInspector( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SCH_SELECTION_TOOL* selectionTool = m_toolMgr->GetTool<SCH_SELECTION_TOOL>();
 
@@ -1499,7 +1499,7 @@ int SCH_EDITOR_CONTROL::FindNetInInspector( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDITOR_CONTROL::UpdateNetHighlighting( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::UpdateNetHighlighting( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     wxCHECK( m_frame, 0 );
 
@@ -1615,7 +1615,7 @@ int SCH_EDITOR_CONTROL::ReplaceTerminalPin( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDITOR_CONTROL::NameNetChain( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::NameNetChain( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SCH_SELECTION_TOOL* selTool = m_toolMgr->GetTool<SCH_SELECTION_TOOL>();
     SCH_ITEM* item = static_cast<SCH_ITEM*>( selTool->GetSelection().Front() );
@@ -1662,7 +1662,7 @@ int SCH_EDITOR_CONTROL::NameNetChain( const TOOL_EVENT& aEvent )
     return 0;
 }
 
-int SCH_EDITOR_CONTROL::CreateNetChainBetweenPins( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::CreateNetChainBetweenPins( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SCH_SELECTION_TOOL* selTool = m_toolMgr->GetTool<SCH_SELECTION_TOOL>();
     auto& selection = selTool->GetSelection();
@@ -1791,7 +1791,7 @@ int SCH_EDITOR_CONTROL::CreateNetChainBetweenPins( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDITOR_CONTROL::ShowCreateNetChain( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::ShowCreateNetChain( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SCH_EDIT_FRAME* editFrame = static_cast<SCH_EDIT_FRAME*>( m_toolMgr->GetToolHolder() );
 
@@ -1837,7 +1837,7 @@ int SCH_EDITOR_CONTROL::ShowCreateNetChain( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDITOR_CONTROL::Undo( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::Undo( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     wxCHECK( m_frame, 0 );
 
@@ -1867,7 +1867,7 @@ int SCH_EDITOR_CONTROL::Undo( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDITOR_CONTROL::Redo( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::Redo( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     wxCHECK( m_frame, 0 );
 
@@ -2045,7 +2045,7 @@ int SCH_EDITOR_CONTROL::Duplicate( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDITOR_CONTROL::Cut( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::Cut( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     wxTextEntry* textEntry = dynamic_cast<wxTextEntry*>( wxWindow::FindFocus() );
 
@@ -2062,7 +2062,7 @@ int SCH_EDITOR_CONTROL::Cut( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDITOR_CONTROL::Copy( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::Copy( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     wxTextEntry* textEntry = dynamic_cast<wxTextEntry*>( wxWindow::FindFocus() );
 
@@ -2078,7 +2078,7 @@ int SCH_EDITOR_CONTROL::Copy( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDITOR_CONTROL::CopyAsText( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::CopyAsText( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SCH_SELECTION_TOOL* selTool = m_toolMgr->GetTool<SCH_SELECTION_TOOL>();
     SCH_SELECTION&      selection = selTool->RequestSelection();
@@ -3280,14 +3280,14 @@ int SCH_EDITOR_CONTROL::EditWithSymbolEditor( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDITOR_CONTROL::Annotate( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::Annotate( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->OnAnnotate();
     return 0;
 }
 
 
-int SCH_EDITOR_CONTROL::IncrementAnnotations( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::IncrementAnnotations( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     DIALOG_INCREMENT_ANNOTATIONS_BASE dlg( m_frame );
     dlg.m_FirstRefDes->SetValidator( wxTextValidator( wxFILTER_EMPTY ) );
@@ -3345,21 +3345,21 @@ int SCH_EDITOR_CONTROL::IncrementAnnotations( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDITOR_CONTROL::ShowCvpcb( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::ShowCvpcb( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->OnOpenCvpcb();
     return 0;
 }
 
 
-int SCH_EDITOR_CONTROL::ImportNonKicadSchematic( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::ImportNonKicadSchematic( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->OnImportProject();
     return 0;
 }
 
 
-int SCH_EDITOR_CONTROL::EditSymbolFields( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::EditSymbolFields( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     DIALOG_SYMBOL_FIELDS_TABLE* dlg = m_frame->GetSymbolFieldsTableDialog();
 
@@ -3378,7 +3378,7 @@ int SCH_EDITOR_CONTROL::EditSymbolFields( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDITOR_CONTROL::EditSymbolLibraryLinks( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::EditSymbolLibraryLinks( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( !m_frame->Schematic().GetCurrentVariant().IsEmpty() )
     {
@@ -3395,21 +3395,21 @@ int SCH_EDITOR_CONTROL::EditSymbolLibraryLinks( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDITOR_CONTROL::ShowPcbNew( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::ShowPcbNew( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->OnOpenPcbnew();
     return 0;
 }
 
 
-int SCH_EDITOR_CONTROL::UpdatePCB( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::UpdatePCB( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->OnUpdatePCB();
     return 0;
 }
 
 
-int SCH_EDITOR_CONTROL::UpdateFromPCB( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::UpdateFromPCB( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     DIALOG_UPDATE_FROM_PCB dlg( m_frame );
     dlg.ShowModal();
@@ -3417,7 +3417,7 @@ int SCH_EDITOR_CONTROL::UpdateFromPCB( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDITOR_CONTROL::ExportNetlist( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::ExportNetlist( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     int result = NET_PLUGIN_CHANGE;
 
@@ -3429,7 +3429,7 @@ int SCH_EDITOR_CONTROL::ExportNetlist( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDITOR_CONTROL::GenerateBOM( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::GenerateBOM( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     DIALOG_SYMBOL_FIELDS_TABLE* dlg = m_frame->GetSymbolFieldsTableDialog();
 
@@ -3448,14 +3448,14 @@ int SCH_EDITOR_CONTROL::GenerateBOM( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDITOR_CONTROL::GenerateBOMLegacy( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::GenerateBOMLegacy( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     InvokeDialogCreateBOM( m_frame );
     return 0;
 }
 
 
-int SCH_EDITOR_CONTROL::DrawSheetOnClipboard( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::DrawSheetOnClipboard( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->RecalculateConnections( nullptr, LOCAL_CLEANUP );
 
@@ -3498,56 +3498,56 @@ int SCH_EDITOR_CONTROL::DrawSheetOnClipboard( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDITOR_CONTROL::ShowSearch( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::ShowSearch( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     getEditFrame<SCH_EDIT_FRAME>()->ToggleSearch();
     return 0;
 }
 
 
-int SCH_EDITOR_CONTROL::ShowHierarchy( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::ShowHierarchy( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     getEditFrame<SCH_EDIT_FRAME>()->ToggleSchematicHierarchy();
     return 0;
 }
 
 
-int SCH_EDITOR_CONTROL::ShowNetNavigator( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::ShowNetNavigator( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     getEditFrame<SCH_EDIT_FRAME>()->ToggleNetNavigator();
     return 0;
 }
 
 
-int SCH_EDITOR_CONTROL::ToggleProperties( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::ToggleProperties( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     getEditFrame<SCH_EDIT_FRAME>()->ToggleProperties();
     return 0;
 }
 
 
-int SCH_EDITOR_CONTROL::ToggleGitCommitPane( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::ToggleGitCommitPane( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     getEditFrame<SCH_EDIT_FRAME>()->ToggleGitCommitPane();
     return 0;
 }
 
 
-int SCH_EDITOR_CONTROL::ToggleLibraryTree( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::ToggleLibraryTree( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     getEditFrame<SCH_EDIT_FRAME>()->ToggleLibraryTree();
     return 0;
 }
 
 
-int SCH_EDITOR_CONTROL::ToggleRemoteSymbolPanel( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::ToggleRemoteSymbolPanel( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     getEditFrame<SCH_EDIT_FRAME>()->ToggleRemoteSymbolPanel();
     return 0;
 }
 
 
-int SCH_EDITOR_CONTROL::ToggleHiddenPins( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::ToggleHiddenPins( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     EESCHEMA_SETTINGS* cfg = m_frame->eeconfig();
     cfg->m_Appearance.show_hidden_pins = !cfg->m_Appearance.show_hidden_pins;
@@ -3559,7 +3559,7 @@ int SCH_EDITOR_CONTROL::ToggleHiddenPins( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDITOR_CONTROL::ToggleHiddenFields( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::ToggleHiddenFields( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     EESCHEMA_SETTINGS* cfg = m_frame->eeconfig();
     cfg->m_Appearance.show_hidden_fields = !cfg->m_Appearance.show_hidden_fields;
@@ -3573,7 +3573,7 @@ int SCH_EDITOR_CONTROL::ToggleHiddenFields( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDITOR_CONTROL::ToggleDirectiveLabels( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::ToggleDirectiveLabels( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     EESCHEMA_SETTINGS* cfg = m_frame->eeconfig();
     cfg->m_Appearance.show_directive_labels = !cfg->m_Appearance.show_directive_labels;
@@ -3585,7 +3585,7 @@ int SCH_EDITOR_CONTROL::ToggleDirectiveLabels( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDITOR_CONTROL::ToggleERCWarnings( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::ToggleERCWarnings( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     EESCHEMA_SETTINGS* cfg = m_frame->eeconfig();
     cfg->m_Appearance.show_erc_warnings = !cfg->m_Appearance.show_erc_warnings;
@@ -3597,7 +3597,7 @@ int SCH_EDITOR_CONTROL::ToggleERCWarnings( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDITOR_CONTROL::ToggleERCErrors( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::ToggleERCErrors( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     EESCHEMA_SETTINGS* cfg = m_frame->eeconfig();
     cfg->m_Appearance.show_erc_errors = !cfg->m_Appearance.show_erc_errors;
@@ -3609,7 +3609,7 @@ int SCH_EDITOR_CONTROL::ToggleERCErrors( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDITOR_CONTROL::ToggleERCExclusions( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::ToggleERCExclusions( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     EESCHEMA_SETTINGS* cfg = m_frame->eeconfig();
     cfg->m_Appearance.show_erc_exclusions = !cfg->m_Appearance.show_erc_exclusions;
@@ -3620,7 +3620,7 @@ int SCH_EDITOR_CONTROL::ToggleERCExclusions( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDITOR_CONTROL::MarkSimExclusions( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::MarkSimExclusions( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SCH_SHEET_PATH*    sheetPath = &m_frame->GetCurrentSheet();
     wxString           variant = m_frame->Schematic().GetCurrentVariant();
@@ -3669,7 +3669,7 @@ int SCH_EDITOR_CONTROL::MarkSimExclusions( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDITOR_CONTROL::ToggleOPVoltages( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::ToggleOPVoltages( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     EESCHEMA_SETTINGS* cfg = m_frame->eeconfig();
     cfg->m_Appearance.show_op_voltages = !cfg->m_Appearance.show_op_voltages;
@@ -3682,7 +3682,7 @@ int SCH_EDITOR_CONTROL::ToggleOPVoltages( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDITOR_CONTROL::ToggleOPCurrents( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::ToggleOPCurrents( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     EESCHEMA_SETTINGS* cfg = m_frame->eeconfig();
     cfg->m_Appearance.show_op_currents = !cfg->m_Appearance.show_op_currents;
@@ -3695,7 +3695,7 @@ int SCH_EDITOR_CONTROL::ToggleOPCurrents( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDITOR_CONTROL::TogglePinAltIcons( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::TogglePinAltIcons( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     EESCHEMA_SETTINGS* cfg = m_frame->eeconfig();
     cfg->m_Appearance.show_pin_alt_icons = !cfg->m_Appearance.show_pin_alt_icons;
@@ -3719,7 +3719,7 @@ int SCH_EDITOR_CONTROL::ChangeLineMode( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDITOR_CONTROL::NextLineMode( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::NextLineMode( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->eeconfig()->m_Drawing.line_mode++;
     m_frame->eeconfig()->m_Drawing.line_mode %= LINE_MODE::LINE_MODE_COUNT;
@@ -3730,7 +3730,7 @@ int SCH_EDITOR_CONTROL::NextLineMode( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDITOR_CONTROL::ToggleAnnotateAuto( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::ToggleAnnotateAuto( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     EESCHEMA_SETTINGS* cfg = m_frame->eeconfig();
     cfg->m_AnnotatePanel.automatic = !cfg->m_AnnotatePanel.automatic;
@@ -3738,7 +3738,7 @@ int SCH_EDITOR_CONTROL::ToggleAnnotateAuto( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDITOR_CONTROL::OnAngleSnapModeChanged( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::OnAngleSnapModeChanged( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     // Update the left toolbar Line modes group icon to match current mode
     switch( static_cast<LINE_MODE>( m_frame->eeconfig()->m_Drawing.line_mode ) )
@@ -3753,7 +3753,7 @@ int SCH_EDITOR_CONTROL::OnAngleSnapModeChanged( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDITOR_CONTROL::GridFeedback( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::GridFeedback( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( !Pgm().GetCommonSettings()->m_Input.hotkey_feedback )
         return 0;
@@ -3778,7 +3778,7 @@ int SCH_EDITOR_CONTROL::GridFeedback( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDITOR_CONTROL::PlaceLinkedDesignBlock( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::PlaceLinkedDesignBlock( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SCH_EDIT_FRAME* editFrame = dynamic_cast<SCH_EDIT_FRAME*>( m_frame );
 
@@ -3820,7 +3820,7 @@ int SCH_EDITOR_CONTROL::PlaceLinkedDesignBlock( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDITOR_CONTROL::SaveToLinkedDesignBlock( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::SaveToLinkedDesignBlock( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SCH_EDIT_FRAME* editFrame = dynamic_cast<SCH_EDIT_FRAME*>( m_frame );
 
@@ -3853,7 +3853,7 @@ int SCH_EDITOR_CONTROL::SaveToLinkedDesignBlock( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDITOR_CONTROL::AddVariant( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::AddVariant( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SCH_EDIT_FRAME* editFrame = dynamic_cast<SCH_EDIT_FRAME*>( m_frame );
 
@@ -3866,7 +3866,7 @@ int SCH_EDITOR_CONTROL::AddVariant( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDITOR_CONTROL::RemoveVariant( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::RemoveVariant( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SCH_EDIT_FRAME* editFrame = dynamic_cast<SCH_EDIT_FRAME*>( m_frame );
 
@@ -3878,7 +3878,7 @@ int SCH_EDITOR_CONTROL::RemoveVariant( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDITOR_CONTROL::EditVariantDescription( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::EditVariantDescription( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SCH_EDIT_FRAME* editFrame = dynamic_cast<SCH_EDIT_FRAME*>( m_frame );
 
@@ -3890,7 +3890,7 @@ int SCH_EDITOR_CONTROL::EditVariantDescription( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDITOR_CONTROL::RenameVariant( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::RenameVariant( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SCH_EDIT_FRAME* editFrame = dynamic_cast<SCH_EDIT_FRAME*>( m_frame );
 
@@ -3902,7 +3902,7 @@ int SCH_EDITOR_CONTROL::RenameVariant( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDITOR_CONTROL::CopyVariant( const TOOL_EVENT& aEvent )
+int SCH_EDITOR_CONTROL::CopyVariant( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SCH_EDIT_FRAME* editFrame = dynamic_cast<SCH_EDIT_FRAME*>( m_frame );
 

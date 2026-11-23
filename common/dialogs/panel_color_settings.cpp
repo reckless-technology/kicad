@@ -64,7 +64,7 @@ PANEL_COLOR_SETTINGS::PANEL_COLOR_SETTINGS( wxWindow* aParent ) :
 }
 
 
-void PANEL_COLOR_SETTINGS::OnBtnOpenThemeFolderClicked( wxCommandEvent& event )
+void PANEL_COLOR_SETTINGS::OnBtnOpenThemeFolderClicked( wxCommandEvent& event [[maybe_unused]] )
 {
     wxString dir( SETTINGS_MANAGER::GetColorSettingsPath() );
     LaunchExternal( dir );
@@ -121,7 +121,7 @@ void PANEL_COLOR_SETTINGS::OnLeftDownTheme( wxMouseEvent& event )
 }
 
 
-void PANEL_COLOR_SETTINGS::OnThemeChanged( wxCommandEvent& event )
+void PANEL_COLOR_SETTINGS::OnThemeChanged( wxCommandEvent& event [[maybe_unused]] )
 {
     int idx = m_cbTheme->GetSelection();
 
@@ -305,7 +305,7 @@ void PANEL_COLOR_SETTINGS::createSwatch( int aLayer, const wxString& aName )
 }
 
 
-void PANEL_COLOR_SETTINGS::ShowColorContextMenu( wxMouseEvent& aEvent, int aLayer )
+void PANEL_COLOR_SETTINGS::ShowColorContextMenu( wxMouseEvent& aEvent [[maybe_unused]], int aLayer )
 {
     int themeSel = m_cbTheme->GetSelection();
 

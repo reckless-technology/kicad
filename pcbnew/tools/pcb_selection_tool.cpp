@@ -283,14 +283,14 @@ bool PCB_SELECTION_TOOL::Init()
     auto& menu = m_menu->GetMenu();
 
     auto activeToolCondition =
-            [this] ( const SELECTION& aSel )
+            [this] ( const SELECTION& aSel [[maybe_unused]] )
             {
                 PCB_BASE_FRAME* pcbFrame = getEditFrame<PCB_BASE_FRAME>();
                 return pcbFrame && !pcbFrame->ToolStackIsEmpty();
             };
 
     auto haveHighlight =
-            [this]( const SELECTION& sel )
+            [this]( const SELECTION& sel [[maybe_unused]] )
             {
                 KIGFX::RENDER_SETTINGS* cfg = m_toolMgr->GetView()->GetPainter()->GetSettings();
 
@@ -398,7 +398,7 @@ void PCB_SELECTION_TOOL::Reset( RESET_REASON aReason )
 }
 
 
-void PCB_SELECTION_TOOL::OnIdle( wxIdleEvent& aEvent )
+void PCB_SELECTION_TOOL::OnIdle( wxIdleEvent& aEvent [[maybe_unused]] )
 {
     if( m_frame->IsActive() && m_frame->IsEnabled() && m_frame->ToolStackIsEmpty() && !m_inSelectMultiple )
     {
@@ -679,7 +679,7 @@ int PCB_SELECTION_TOOL::Main( const TOOL_EVENT& aEvent )
             {
                 // Don't allow starting a drag from a zone filled area that isn't already selected
                 auto zoneFilledAreaFilter =
-                        []( const VECTOR2I& aWhere, GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* aTool )
+                        []( const VECTOR2I& aWhere, GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* aTool [[maybe_unused]] )
                         {
                             int accuracy = aCollector.GetGuide()->Accuracy();
                             std::set<EDA_ITEM*> remove;
@@ -1449,7 +1449,7 @@ bool PCB_SELECTION_TOOL::selectTableCells( PCB_TABLE* aTable )
 }
 
 
-int PCB_SELECTION_TOOL::SelectRectArea( const TOOL_EVENT& aEvent )
+int PCB_SELECTION_TOOL::SelectRectArea( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     return DragSelectionArea( *this );
 }
@@ -1549,7 +1549,7 @@ bool PCB_SELECTION_TOOL::DragSelectionArea( TOOL_INTERACTIVE& aTool, AREA_PREVIE
 }
 
 
-int PCB_SELECTION_TOOL::SetSelectPoly( const TOOL_EVENT& aEvent )
+int PCB_SELECTION_TOOL::SetSelectPoly( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_selectionMode = SELECTION_MODE::INSIDE_LASSO;
     m_frame->GetCanvas()->SetCurrentCursor( KICURSOR::SELECT_LASSO );
@@ -1564,7 +1564,7 @@ int PCB_SELECTION_TOOL::SetSelectPoly( const TOOL_EVENT& aEvent )
 }
 
 
-int PCB_SELECTION_TOOL::SetSelectRect( const TOOL_EVENT& aEvent )
+int PCB_SELECTION_TOOL::SetSelectRect( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_selectionMode = SELECTION_MODE::INSIDE_RECTANGLE;
     m_frame->GetCanvas()->SetCurrentCursor( KICURSOR::ARROW );
@@ -1576,7 +1576,7 @@ int PCB_SELECTION_TOOL::SetSelectRect( const TOOL_EVENT& aEvent )
 }
 
 
-int PCB_SELECTION_TOOL::SelectPolyArea( const TOOL_EVENT& aEvent )
+int PCB_SELECTION_TOOL::SelectPolyArea( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     bool cancelled = false;    // Was the tool canceled while it was running?
 
@@ -1897,7 +1897,7 @@ void PCB_SELECTION_TOOL::SelectMultiple( KIGFX::PREVIEW::SELECTION_AREA& aArea, 
 }
 
 
-int PCB_SELECTION_TOOL::disambiguateCursor( const TOOL_EVENT& aEvent )
+int PCB_SELECTION_TOOL::disambiguateCursor( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     wxMouseState keyboardState = wxGetMouseState();
 
@@ -1922,7 +1922,7 @@ int PCB_SELECTION_TOOL::CursorSelection( const TOOL_EVENT& aEvent )
 }
 
 
-int PCB_SELECTION_TOOL::ClearSelection( const TOOL_EVENT& aEvent )
+int PCB_SELECTION_TOOL::ClearSelection( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     ClearSelection();
 
@@ -1930,7 +1930,7 @@ int PCB_SELECTION_TOOL::ClearSelection( const TOOL_EVENT& aEvent )
 }
 
 
-int PCB_SELECTION_TOOL::SelectAll( const TOOL_EVENT& aEvent )
+int PCB_SELECTION_TOOL::SelectAll( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     GENERAL_COLLECTOR collection;
     BOX2I             selectionBox;
@@ -1964,7 +1964,7 @@ int PCB_SELECTION_TOOL::SelectAll( const TOOL_EVENT& aEvent )
 }
 
 
-int PCB_SELECTION_TOOL::UnselectAll( const TOOL_EVENT& aEvent )
+int PCB_SELECTION_TOOL::UnselectAll( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     BOX2I selectionBox;
 
@@ -1992,7 +1992,7 @@ int PCB_SELECTION_TOOL::UnselectAll( const TOOL_EVENT& aEvent )
 }
 
 
-void connectedItemFilter( const VECTOR2I&, GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
+void connectedItemFilter( const VECTOR2I&, GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool [[maybe_unused]] )
 {
     // Narrow the collection down to a single BOARD_CONNECTED_ITEM for each represented net.
     // All other items types are removed.
@@ -2012,7 +2012,7 @@ void connectedItemFilter( const VECTOR2I&, GENERAL_COLLECTOR& aCollector, PCB_SE
 }
 
 
-int PCB_SELECTION_TOOL::unrouteSelected( const TOOL_EVENT& aEvent )
+int PCB_SELECTION_TOOL::unrouteSelected( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     std::deque<EDA_ITEM*> selectedItems = m_selection.GetItems();
 
@@ -2214,7 +2214,7 @@ int PCB_SELECTION_TOOL::unrouteSelected( const TOOL_EVENT& aEvent )
 }
 
 
-int PCB_SELECTION_TOOL::unrouteSegment( const TOOL_EVENT& aEvent )
+int PCB_SELECTION_TOOL::unrouteSegment( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     std::deque<EDA_ITEM*> selectedItems = m_selection.GetItems();
 
@@ -2326,7 +2326,7 @@ int PCB_SELECTION_TOOL::unrouteSegment( const TOOL_EVENT& aEvent )
 }
 
 
-int PCB_SELECTION_TOOL::expandConnection( const TOOL_EVENT& aEvent )
+int PCB_SELECTION_TOOL::expandConnection( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     // expandConnection will get called no matter whether the user selected a connected item or a
     // non-connected shape (graphic on a non-copper layer). The algorithm for expanding to connected
@@ -2908,7 +2908,7 @@ void PCB_SELECTION_TOOL::selectAllConnectedShapes( const std::vector<PCB_SHAPE*>
 }
 
 
-int PCB_SELECTION_TOOL::selectUnconnected( const TOOL_EVENT& aEvent )
+int PCB_SELECTION_TOOL::selectUnconnected( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     // Get all pads
     std::vector<PAD*> pads;
@@ -2956,7 +2956,7 @@ int PCB_SELECTION_TOOL::selectUnconnected( const TOOL_EVENT& aEvent )
 }
 
 
-int PCB_SELECTION_TOOL::grabUnconnected( const TOOL_EVENT& aEvent )
+int PCB_SELECTION_TOOL::grabUnconnected( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     // Get all connected items that can represent the source side of the ratsnest.
     std::vector<BOARD_CONNECTED_ITEM*> sourceItems;
@@ -3122,7 +3122,7 @@ int PCB_SELECTION_TOOL::selectNet( const TOOL_EVENT& aEvent )
 }
 
 
-int PCB_SELECTION_TOOL::selectNetChain( const TOOL_EVENT& aEvent )
+int PCB_SELECTION_TOOL::selectNetChain( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( !selectCursor() )
         return 0;
@@ -3366,7 +3366,7 @@ int PCB_SELECTION_TOOL::selectSheetContents( const TOOL_EVENT& aEvent )
 }
 
 
-int PCB_SELECTION_TOOL::selectSameSheet( const TOOL_EVENT& aEvent )
+int PCB_SELECTION_TOOL::selectSameSheet( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     // this function currently only supports footprints since they are only on one sheet.
     EDA_ITEM* item = m_selection.Front();
@@ -3642,7 +3642,7 @@ void PCB_SELECTION_TOOL::FindItem( BOARD_ITEM* aItem )
  *
  * @return true if aItem should be selected by this filter (i..e not filtered out)
  */
-static bool itemIsIncludedByFilter( const BOARD_ITEM& aItem, const BOARD& aBoard,
+static bool itemIsIncludedByFilter( const BOARD_ITEM& aItem, const BOARD& aBoard [[maybe_unused]],
                                     const DIALOG_FILTER_SELECTION::OPTIONS& aFilterOptions )
 {
     switch( aItem.Type() )
@@ -3698,7 +3698,7 @@ static bool itemIsIncludedByFilter( const BOARD_ITEM& aItem, const BOARD& aBoard
 }
 
 
-int PCB_SELECTION_TOOL::filterSelection( const TOOL_EVENT& aEvent )
+int PCB_SELECTION_TOOL::filterSelection( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     const BOARD&                      board = *getModel<BOARD>();
     DIALOG_FILTER_SELECTION::OPTIONS& opts = m_priv->m_filterOpts;
@@ -4046,7 +4046,7 @@ void PCB_SELECTION_TOOL::RebuildSelection()
     bool enteredGroupFound = false;
 
     INSPECTOR_FUNC inspector =
-            [&]( EDA_ITEM* item, void* testData )
+            [&]( EDA_ITEM* item, void* testData [[maybe_unused]] )
             {
                 if( item->IsSelected() )
                 {
@@ -5563,7 +5563,7 @@ void PCB_SELECTION_TOOL::FilterCollectorForFootprints( GENERAL_COLLECTOR& aColle
 }
 
 
-int PCB_SELECTION_TOOL::updateSelection( const TOOL_EVENT& aEvent )
+int PCB_SELECTION_TOOL::updateSelection( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     getView()->Update( &m_selection );
     getView()->Update( &m_enteredGroupOverlay );
@@ -5572,7 +5572,7 @@ int PCB_SELECTION_TOOL::updateSelection( const TOOL_EVENT& aEvent )
 }
 
 
-int PCB_SELECTION_TOOL::SelectColumns( const TOOL_EVENT& aEvent )
+int PCB_SELECTION_TOOL::SelectColumns( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     std::set<std::pair<PCB_TABLE*, int>> columns;
     bool                                 added = false;
@@ -5607,7 +5607,7 @@ int PCB_SELECTION_TOOL::SelectColumns( const TOOL_EVENT& aEvent )
 }
 
 
-int PCB_SELECTION_TOOL::SelectRows( const TOOL_EVENT& aEvent )
+int PCB_SELECTION_TOOL::SelectRows( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     std::set<std::pair<PCB_TABLE*, int>> rows;
     bool                                 added = false;
@@ -5642,7 +5642,7 @@ int PCB_SELECTION_TOOL::SelectRows( const TOOL_EVENT& aEvent )
 }
 
 
-int PCB_SELECTION_TOOL::SelectTable( const TOOL_EVENT& aEvent )
+int PCB_SELECTION_TOOL::SelectTable( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     std::set<PCB_TABLE*> tables;
     bool                 added = false;

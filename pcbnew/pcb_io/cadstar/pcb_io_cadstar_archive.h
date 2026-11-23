@@ -79,7 +79,7 @@ public:
      * CADSTAR Plugin is read-only
      * @return Always false
      */
-    bool IsLibraryWritable( const wxString& aLibraryPath ) override { return false; }
+    bool IsLibraryWritable( const wxString& aLibraryPath [[maybe_unused]] ) override { return false; }
 
     PCB_IO_CADSTAR_ARCHIVE();
     ~PCB_IO_CADSTAR_ARCHIVE();

@@ -120,7 +120,7 @@ DIALOG_OUTSET_ITEMS::~DIALOG_OUTSET_ITEMS()
 }
 
 
-void DIALOG_OUTSET_ITEMS::OnLayerDefaultClick( wxCommandEvent& event )
+void DIALOG_OUTSET_ITEMS::OnLayerDefaultClick( wxCommandEvent& event [[maybe_unused]] )
 {
     const BOARD_DESIGN_SETTINGS& settings = m_parent.GetBoard()->GetDesignSettings();
 
@@ -128,13 +128,13 @@ void DIALOG_OUTSET_ITEMS::OnLayerDefaultClick( wxCommandEvent& event )
 }
 
 
-void DIALOG_OUTSET_ITEMS::OnCopyLayersChecked( wxCommandEvent& event )
+void DIALOG_OUTSET_ITEMS::OnCopyLayersChecked( wxCommandEvent& event [[maybe_unused]] )
 {
     m_LayerSelectionCtrl->Enable( !m_copyLayers->GetValue() );
 }
 
 
-void DIALOG_OUTSET_ITEMS::OnRoundToGridChecked( wxCommandEvent& event )
+void DIALOG_OUTSET_ITEMS::OnRoundToGridChecked( wxCommandEvent& event [[maybe_unused]] )
 {
     m_gridRoundingEntry->Enable( m_roundToGrid->IsChecked() );
 }

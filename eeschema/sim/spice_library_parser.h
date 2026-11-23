@@ -29,7 +29,7 @@ class REPORTER;
 class SPICE_LIBRARY_PARSER
 {
 public:
-    SPICE_LIBRARY_PARSER( SIM_LIBRARY_SPICE &aLibrary, bool aForceFullParse ) :
+    SPICE_LIBRARY_PARSER( SIM_LIBRARY_SPICE &aLibrary, bool aForceFullParse [[maybe_unused]] ) :
             m_library( aLibrary )
     {};
 

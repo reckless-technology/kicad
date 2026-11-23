@@ -111,28 +111,28 @@ void DIALOG_AUTOSAVE_RECOVERY::updateActionButtons()
 }
 
 
-void DIALOG_AUTOSAVE_RECOVERY::OnRestore( wxCommandEvent& aEvent )
+void DIALOG_AUTOSAVE_RECOVERY::OnRestore( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     m_choice = AUTOSAVE_RECOVERY_CHOICE::RESTORE;
     EndModal( wxID_OK );
 }
 
 
-void DIALOG_AUTOSAVE_RECOVERY::OnKeepCurrent( wxCommandEvent& aEvent )
+void DIALOG_AUTOSAVE_RECOVERY::OnKeepCurrent( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     m_choice = AUTOSAVE_RECOVERY_CHOICE::KEEP_CURRENT;
     EndModal( wxID_OK );
 }
 
 
-void DIALOG_AUTOSAVE_RECOVERY::OnKeepBoth( wxCommandEvent& aEvent )
+void DIALOG_AUTOSAVE_RECOVERY::OnKeepBoth( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     m_choice = AUTOSAVE_RECOVERY_CHOICE::KEEP_BOTH;
     EndModal( wxID_OK );
 }
 
 
-void DIALOG_AUTOSAVE_RECOVERY::OnCancel( wxCommandEvent& aEvent )
+void DIALOG_AUTOSAVE_RECOVERY::OnCancel( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     m_choice = AUTOSAVE_RECOVERY_CHOICE::CANCEL;
     EndModal( wxID_CANCEL );

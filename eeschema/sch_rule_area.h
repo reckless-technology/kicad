@@ -138,14 +138,14 @@ public:
     /**
      * Set or clear exclude from board netlist flag.
      */
-    void SetExcludedFromBoard( bool aExclude, const SCH_SHEET_PATH* aInstance = nullptr,
-                               const wxString& aVariantName = wxEmptyString ) override
+    void SetExcludedFromBoard( bool aExclude, const SCH_SHEET_PATH* aInstance [[maybe_unused]] = nullptr,
+                               const wxString& aVariantName [[maybe_unused]] = wxEmptyString ) override
     {
         m_excludedFromBoard = aExclude;
     }
 
-    bool GetExcludedFromBoard( const SCH_SHEET_PATH* aInstance = nullptr,
-                               const wxString& aVariantName = wxEmptyString ) const override
+    bool GetExcludedFromBoard( const SCH_SHEET_PATH* aInstance [[maybe_unused]] = nullptr,
+                               const wxString& aVariantName [[maybe_unused]] = wxEmptyString ) const override
     {
         return m_excludedFromBoard;
     }

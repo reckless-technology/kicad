@@ -108,7 +108,7 @@ void CONSTRAINT_EDIT_TOOL::Reset( RESET_REASON aReason )
 }
 
 
-int CONSTRAINT_EDIT_TOOL::onSelectionChanged( const TOOL_EVENT& aEvent )
+int CONSTRAINT_EDIT_TOOL::onSelectionChanged( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     // A real board selection supersedes a badge selection (and keeps Delete unambiguous).  This
     // does not fire for SelectConstraintAt's own ClearSelection, which leaves the board empty.
@@ -336,7 +336,7 @@ const std::vector<KIID>& CONSTRAINT_EDIT_TOOL::hoverCandidates()
 }
 
 
-int CONSTRAINT_EDIT_TOOL::onHoverMotion( const TOOL_EVENT& aEvent )
+int CONSTRAINT_EDIT_TOOL::onHoverMotion( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     // Cheapest guards first: only HOVER mode with constraints on the board does any work.  Waiting
     // tools (selection, router, move) already saw this motion before the transition loop reached us,
@@ -1534,7 +1534,7 @@ int CONSTRAINT_EDIT_TOOL::AddPointConstraint( const TOOL_EVENT& aEvent )
     bool done = false;
 
     picker->SetFinalizeHandler(
-            [&]( const int& aFinalState )
+            [&]( const int& aFinalState [[maybe_unused]] )
             {
                 done = true;
             } );
@@ -1559,7 +1559,7 @@ int CONSTRAINT_EDIT_TOOL::AddPointConstraint( const TOOL_EVENT& aEvent )
 }
 
 
-int CONSTRAINT_EDIT_TOOL::RemoveConstraints( const TOOL_EVENT& aEvent )
+int CONSTRAINT_EDIT_TOOL::RemoveConstraints( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     PCB_SELECTION& selection = m_selectionTool->GetSelection();
     std::set<KIID> selectedIds;

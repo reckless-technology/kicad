@@ -119,7 +119,7 @@ bool DIFF_PAIR_PLACER::rhMarkObstacles( const VECTOR2I& aP )
 
 
     COLLISION_SEARCH_OPTIONS ctxOpts;
-    ctxOpts.m_filter = [&]( const PNS::ITEM* aTestItem, const PNS::ITEM* aRefItem ) -> bool
+    ctxOpts.m_filter = [&]( const PNS::ITEM* aTestItem, const PNS::ITEM* aRefItem [[maybe_unused]] ) -> bool
     {
         if( aTestItem->Net() == m_currentTrace.NetP() || aTestItem->Net() == m_currentTrace.NetN() )
         {
@@ -176,7 +176,7 @@ bool DIFF_PAIR_PLACER::propagateDpHeadForces ( const VECTOR2I& aP, VECTOR2I& aNe
     std::set<const ITEM*> handled;
 
     COLLISION_SEARCH_OPTIONS ctxOpts;
-    ctxOpts.m_filter = [&]( const PNS::ITEM* aTestItem, const PNS::ITEM* aRefItem ) -> bool
+    ctxOpts.m_filter = [&]( const PNS::ITEM* aTestItem, const PNS::ITEM* aRefItem [[maybe_unused]] ) -> bool
     {
         if( aTestItem->Net() == m_currentTrace.NetP() || aTestItem->Net() == m_currentTrace.NetN() )
         {
@@ -228,12 +228,12 @@ bool DIFF_PAIR_PLACER::propagateDpHeadForces ( const VECTOR2I& aP, VECTOR2I& aNe
 
 
 bool DIFF_PAIR_PLACER::attemptWalk( NODE* aNode, DIFF_PAIR* aCurrent, DIFF_PAIR& aWalk,
-                                    bool aPFirst, bool aWindCw, bool aSolidsOnly )
+                                    bool aPFirst, bool aWindCw [[maybe_unused]], bool aSolidsOnly )
 {
     WALKAROUND walkaround( aNode, Router() );
     COLLISION_SEARCH_OPTIONS opts;
 
-    auto excludeHeadDp = [aCurrent]( const ITEM* aTestItem, const ITEM* aRefItem ) -> bool
+    auto excludeHeadDp = [aCurrent]( const ITEM* aTestItem, const ITEM* aRefItem [[maybe_unused]] ) -> bool
     {
         if( aTestItem->Net() == aCurrent->NetN() || aTestItem->Net() == aCurrent->NetP() )
         {
@@ -326,7 +326,7 @@ bool DIFF_PAIR_PLACER::attemptWalk( NODE* aNode, DIFF_PAIR* aCurrent, DIFF_PAIR&
 }
 
 
-bool DIFF_PAIR_PLACER::tryWalkDp( NODE* aNode, DIFF_PAIR &aPair, bool aSolidsOnly )
+bool DIFF_PAIR_PLACER::tryWalkDp( NODE* aNode [[maybe_unused]], DIFF_PAIR &aPair, bool aSolidsOnly )
 {
     DIFF_PAIR best;
     double bestScore = 100000000000000.0;
@@ -421,7 +421,7 @@ bool DIFF_PAIR_PLACER::rhShoveOnly( const VECTOR2I& aP )
     m_shove->AddHeads( pLine );
     m_shove->AddHeads( nLine );
 
-    auto collisionFilter = [&]( const PNS::ITEM* aTestItem, const PNS::ITEM* aRefItem ) -> bool
+    auto collisionFilter = [&]( const PNS::ITEM* aTestItem, const PNS::ITEM* aRefItem [[maybe_unused]] ) -> bool
     {
         if( aTestItem->Net() == m_currentTrace.NetP() || aTestItem->Net() == m_currentTrace.NetN() )
         {
@@ -656,7 +656,7 @@ bool DIFF_PAIR_PLACER::findDpEndingPrimitives( NODE* aWorld, const VECTOR2I& aP,
 
 
 bool DIFF_PAIR_PLACER::findDpMidtraceIntersection( NODE* aWorld, const VECTOR2I& aP, ITEM* aStartItem,
-                                                   DP_PRIMITIVE_PAIR& aPair, wxString* aErrorMsg )
+                                                   DP_PRIMITIVE_PAIR& aPair, wxString* aErrorMsg [[maybe_unused]] )
 {
     PNS::TOPOLOGY  topo( aWorld );
     PNS::DIFF_PAIR originPair;
@@ -1173,8 +1173,8 @@ bool DIFF_PAIR_PLACER::Move( const VECTOR2I& aP, ITEM* aEndItem )
 }
 
 
-static void drawGateways( PNS::DEBUG_DECORATOR* dbg, const wxString& groupName, PNS::DP_PRIMITIVE_PAIR& prims,
-                          PNS::DP_GATEWAYS& gws, VECTOR2D offset, VECTOR2D step )
+static void drawGateways( PNS::DEBUG_DECORATOR* dbg, const wxString& groupName, PNS::DP_PRIMITIVE_PAIR& prims [[maybe_unused]],
+                          PNS::DP_GATEWAYS& gws, VECTOR2D offset [[maybe_unused]], VECTOR2D step [[maybe_unused]] )
 {
     PNS_DBG( dbg, BeginGroup, groupName, 0 );
     for( auto gw : gws.Gateways() )
@@ -1248,7 +1248,7 @@ void DIFF_PAIR_PLACER::UpdateSizes( const SIZES_SETTINGS& aSizes )
 }
 
 
-bool DIFF_PAIR_PLACER::FixRoute( const VECTOR2I& aP, ITEM* aEndItem, bool aForceFinish )
+bool DIFF_PAIR_PLACER::FixRoute( const VECTOR2I& aP [[maybe_unused]], ITEM* aEndItem [[maybe_unused]], bool aForceFinish )
 {
     if( !m_fitOk && !Settings().AllowDRCViolations() )
         return false;

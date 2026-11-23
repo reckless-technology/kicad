@@ -597,7 +597,7 @@ void DIALOG_COLOR_PICKER::drawAll()
 }
 
 
-void DIALOG_COLOR_PICKER::colorDClick( wxMouseEvent& event )
+void DIALOG_COLOR_PICKER::colorDClick( wxMouseEvent& event [[maybe_unused]] )
 {
     wxPostEvent( this, wxCommandEvent( wxEVT_COMMAND_BUTTON_CLICKED, wxID_OK ) );
 }
@@ -750,7 +750,7 @@ void DIALOG_COLOR_PICKER::onSize( wxSizeEvent& event )
 }
 
 
-void DIALOG_COLOR_PICKER::OnColorValueText( wxCommandEvent& event )
+void DIALOG_COLOR_PICKER::OnColorValueText( wxCommandEvent& event [[maybe_unused]] )
 {
     if( m_newColor4D.SetFromHexString( m_colorValue->GetValue() ) )
         m_newColor4D.ToHSV( m_hue, m_sat, m_val, true );
@@ -879,7 +879,7 @@ void DIALOG_COLOR_PICKER::OnChangeBrightness( wxScrollEvent& event )
 }
 
 
-void DIALOG_COLOR_PICKER::OnResetButton( wxCommandEvent& aEvent )
+void DIALOG_COLOR_PICKER::OnResetButton( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     m_newColor4D.r = m_defaultColor.r;
     m_newColor4D.g = m_defaultColor.g;

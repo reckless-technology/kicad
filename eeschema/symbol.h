@@ -177,14 +177,14 @@ public:
     /**
      * Set or clear the exclude from simulation flag.
      */
-    virtual void SetExcludedFromSim( bool aExcludeFromSim, const SCH_SHEET_PATH* aInstance = nullptr,
-                                     const wxString& aVariantName = wxEmptyString ) override
+    virtual void SetExcludedFromSim( bool aExcludeFromSim, const SCH_SHEET_PATH* aInstance [[maybe_unused]] = nullptr,
+                                     const wxString& aVariantName [[maybe_unused]] = wxEmptyString ) override
     {
         m_excludedFromSim = aExcludeFromSim;
     }
 
-    virtual bool GetExcludedFromSim( const SCH_SHEET_PATH* aInstance = nullptr,
-                                     const wxString& aVariantName = wxEmptyString ) const override
+    virtual bool GetExcludedFromSim( const SCH_SHEET_PATH* aInstance [[maybe_unused]] = nullptr,
+                                     const wxString& aVariantName [[maybe_unused]] = wxEmptyString ) const override
     {
         return m_excludedFromSim;
     }
@@ -192,14 +192,14 @@ public:
     /**
      * Set or clear the exclude from schematic bill of materials flag.
      */
-    virtual void SetExcludedFromBOM( bool aExcludeFromBOM, const SCH_SHEET_PATH* aInstance = nullptr,
-                                     const wxString& aVariantName = wxEmptyString ) override
+    virtual void SetExcludedFromBOM( bool aExcludeFromBOM, const SCH_SHEET_PATH* aInstance [[maybe_unused]] = nullptr,
+                                     const wxString& aVariantName [[maybe_unused]] = wxEmptyString ) override
     {
         m_excludedFromBOM = aExcludeFromBOM;
     }
 
-    virtual bool GetExcludedFromBOM( const SCH_SHEET_PATH* aInstance = nullptr,
-                                     const wxString& aVariantName = wxEmptyString ) const override
+    virtual bool GetExcludedFromBOM( const SCH_SHEET_PATH* aInstance [[maybe_unused]] = nullptr,
+                                     const wxString& aVariantName [[maybe_unused]] = wxEmptyString ) const override
     {
         return m_excludedFromBOM;
     }
@@ -207,14 +207,14 @@ public:
     /**
      * Set or clear exclude from board netlist flag.
      */
-    void SetExcludedFromBoard( bool aExclude, const SCH_SHEET_PATH* aInstance = nullptr,
-                               const wxString& aVariantName = wxEmptyString ) override
+    void SetExcludedFromBoard( bool aExclude, const SCH_SHEET_PATH* aInstance [[maybe_unused]] = nullptr,
+                               const wxString& aVariantName [[maybe_unused]] = wxEmptyString ) override
     {
         m_excludedFromBoard = aExclude;
     }
 
-    bool GetExcludedFromBoard( const SCH_SHEET_PATH* aInstance = nullptr,
-                               const wxString& aVariantName = wxEmptyString ) const override
+    bool GetExcludedFromBoard( const SCH_SHEET_PATH* aInstance [[maybe_unused]] = nullptr,
+                               const wxString& aVariantName [[maybe_unused]] = wxEmptyString ) const override
     {
         return m_excludedFromBoard;
     }
@@ -222,14 +222,14 @@ public:
     /**
      * Set or clear exclude from position files flag.
      */
-    void SetExcludedFromPosFiles( bool aExclude, const SCH_SHEET_PATH* aInstance = nullptr,
-                                  const wxString& aVariantName = wxEmptyString ) override
+    void SetExcludedFromPosFiles( bool aExclude, const SCH_SHEET_PATH* aInstance [[maybe_unused]] = nullptr,
+                                  const wxString& aVariantName [[maybe_unused]] = wxEmptyString ) override
     {
         m_excludedFromPosFiles = aExclude;
     }
 
-    bool GetExcludedFromPosFiles( const SCH_SHEET_PATH* aInstance = nullptr,
-                                  const wxString& aVariantName = wxEmptyString ) const override
+    bool GetExcludedFromPosFiles( const SCH_SHEET_PATH* aInstance [[maybe_unused]] = nullptr,
+                                  const wxString& aVariantName [[maybe_unused]] = wxEmptyString ) const override
     {
         return m_excludedFromPosFiles;
     }
@@ -237,10 +237,10 @@ public:
     /**
      * Set or clear the 'Do Not Populate' flag.
      */
-    virtual bool GetDNP( const SCH_SHEET_PATH* aInstance = nullptr,
-                         const wxString& aVariantName = wxEmptyString ) const override { return m_DNP; }
-    virtual void SetDNP( bool aDNP, const SCH_SHEET_PATH* aInstance = nullptr,
-                         const wxString& aVariantName = wxEmptyString ) override { m_DNP = aDNP; }
+    virtual bool GetDNP( const SCH_SHEET_PATH* aInstance [[maybe_unused]] = nullptr,
+                         const wxString& aVariantName [[maybe_unused]] = wxEmptyString ) const override { return m_DNP; }
+    virtual void SetDNP( bool aDNP, const SCH_SHEET_PATH* aInstance [[maybe_unused]] = nullptr,
+                         const wxString& aVariantName [[maybe_unused]] = wxEmptyString ) override { m_DNP = aDNP; }
 
     virtual int GetOrientation() const { return SYM_NORMAL; }
 

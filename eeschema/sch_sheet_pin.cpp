@@ -378,7 +378,7 @@ void SCH_SHEET_PIN::GetEndPoints( std::vector<DANGLING_END_ITEM>& aItemList )
 }
 
 
-wxString SCH_SHEET_PIN::GetItemDescription( UNITS_PROVIDER* aUnitsProvider, bool aFull ) const
+wxString SCH_SHEET_PIN::GetItemDescription( UNITS_PROVIDER* aUnitsProvider [[maybe_unused]], bool aFull ) const
 {
     return wxString::Format( _( "Hierarchical Sheet Pin '%s'" ), aFull ? GetShownText( FOR_GUI )
                                                                        : KIUI::EllipsizeMenuText( GetText() ) );
@@ -439,7 +439,7 @@ double SCH_SHEET_PIN::Similarity( const SCH_ITEM& aOther ) const
 }
 
 
-bool SCH_SHEET_PIN::HasConnectivityChanges( const SCH_ITEM* aItem, const SCH_SHEET_PATH* aInstance ) const
+bool SCH_SHEET_PIN::HasConnectivityChanges( const SCH_ITEM* aItem, const SCH_SHEET_PATH* aInstance [[maybe_unused]] ) const
 {
     // Do not compare to ourself.
     if( aItem == this )

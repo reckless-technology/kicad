@@ -316,7 +316,7 @@ void SYMBOL_VIEWER_FRAME::setupUIConditions()
     mgr->SetConditions( ACTIONS::toggleGrid, CHECK( cond.GridVisible() ) );
 
     auto electricalTypesShownCondition =
-            [this]( const SELECTION& aSel )
+            [this]( const SELECTION& aSel [[maybe_unused]] )
             {
                 return GetRenderSettings() && GetRenderSettings()->m_ShowPinsElectricalType;
             };
@@ -695,7 +695,7 @@ void SYMBOL_VIEWER_FRAME::ReCreateSymbolList()
 }
 
 
-void SYMBOL_VIEWER_FRAME::ClickOnLibList( wxCommandEvent& event )
+void SYMBOL_VIEWER_FRAME::ClickOnLibList( wxCommandEvent& event [[maybe_unused]] )
 {
     int ii = m_libList->GetSelection();
 
@@ -750,7 +750,7 @@ void SYMBOL_VIEWER_FRAME::SetSelectedLibrary( const wxString& aLibraryName, cons
 }
 
 
-void SYMBOL_VIEWER_FRAME::ClickOnSymbolList( wxCommandEvent& event )
+void SYMBOL_VIEWER_FRAME::ClickOnSymbolList( wxCommandEvent& event [[maybe_unused]] )
 {
     int ii = m_symbolList->GetSelection();
 
@@ -793,13 +793,13 @@ void SYMBOL_VIEWER_FRAME::SetSelectedSymbol( const wxString& aSymbolName )
 }
 
 
-void SYMBOL_VIEWER_FRAME::DClickOnSymbolList( wxCommandEvent& event )
+void SYMBOL_VIEWER_FRAME::DClickOnSymbolList( wxCommandEvent& event [[maybe_unused]] )
 {
     m_toolManager->RunAction( SCH_ACTIONS::addSymbolToSchematic );
 }
 
 
-void SYMBOL_VIEWER_FRAME::LoadSettings( APP_SETTINGS_BASE* aCfg )
+void SYMBOL_VIEWER_FRAME::LoadSettings( APP_SETTINGS_BASE* aCfg [[maybe_unused]] )
 {
     SCH_BASE_FRAME::LoadSettings( GetAppSettings<EESCHEMA_SETTINGS>( "eeschema" ) );
 
@@ -828,7 +828,7 @@ void SYMBOL_VIEWER_FRAME::LoadSettings( APP_SETTINGS_BASE* aCfg )
 }
 
 
-void SYMBOL_VIEWER_FRAME::SaveSettings( APP_SETTINGS_BASE* aCfg)
+void SYMBOL_VIEWER_FRAME::SaveSettings( APP_SETTINGS_BASE* aCfg [[maybe_unused]])
 {
     SCH_BASE_FRAME::SaveSettings( GetAppSettings<EESCHEMA_SETTINGS>( "eeschema" ) );
 
@@ -886,13 +886,13 @@ void SYMBOL_VIEWER_FRAME::OnActivate( wxActivateEvent& event )
 }
 
 
-void SYMBOL_VIEWER_FRAME::CloseLibraryViewer( wxCommandEvent& event )
+void SYMBOL_VIEWER_FRAME::CloseLibraryViewer( wxCommandEvent& event [[maybe_unused]] )
 {
     Close();
 }
 
 
-const BOX2I SYMBOL_VIEWER_FRAME::GetDocumentExtents( bool aIncludeAllVisible ) const
+const BOX2I SYMBOL_VIEWER_FRAME::GetDocumentExtents( bool aIncludeAllVisible [[maybe_unused]] ) const
 {
     if( LIB_SYMBOL* symbol = GetSelectedSymbol() )
         return symbol->GetUnitBoundingBox( m_unit, m_bodyStyle );
@@ -1018,7 +1018,7 @@ void SYMBOL_VIEWER_FRAME::SelectPreviousSymbol()
 }
 
 
-void SYMBOL_VIEWER_FRAME::onSelectSymbolUnit( wxCommandEvent& aEvent )
+void SYMBOL_VIEWER_FRAME::onSelectSymbolUnit( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     int ii = m_unitChoice->GetSelection();
 
@@ -1031,7 +1031,7 @@ void SYMBOL_VIEWER_FRAME::onSelectSymbolUnit( wxCommandEvent& aEvent )
 }
 
 
-void SYMBOL_VIEWER_FRAME::onSelectSymbolBodyStyle( wxCommandEvent& aEvent )
+void SYMBOL_VIEWER_FRAME::onSelectSymbolBodyStyle( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     int ii = m_bodyStyleChoice->GetSelection();
 

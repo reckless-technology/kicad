@@ -145,7 +145,7 @@ public:
      */
     virtual bool ReadAllRows( const DB_TABLE_INFO& aTable, const std::vector<std::string>& aColumns,
                               std::vector<std::string>& aLabels, const DB_ROW_SINK& aSink,
-                              const DB_RESTART_SINK& aRestart )
+                              const DB_RESTART_SINK& aRestart [[maybe_unused]] )
     {
         return ReadTable( aTable, aColumns, ALL_ROWS, aLabels, aSink );
     }
@@ -158,7 +158,7 @@ public:
      *
      * @param aStopped may be empty; a backend that retries a read gives up when it returns true
      */
-    virtual void BeginLoadCycle( const DB_STOP_CHECK& aStopped ) {}
+    virtual void BeginLoadCycle( const DB_STOP_CHECK& aStopped [[maybe_unused]] ) {}
 
     virtual void EndLoadCycle() {}
 
@@ -167,9 +167,9 @@ public:
      *
      * @return nullopt if the backend has no indexed lookup, otherwise true when aRow was filled
      */
-    virtual std::optional<bool> ReadRow( const DB_TABLE_INFO& aTable, const std::vector<std::string>& aColumns,
-                                         const std::string& aKeyColumn, const std::string& aKey,
-                                         std::vector<std::string>& aLabels, std::vector<DB_VALUE>& aRow )
+    virtual std::optional<bool> ReadRow( const DB_TABLE_INFO& aTable [[maybe_unused]], const std::vector<std::string>& aColumns [[maybe_unused]],
+                                         const std::string& aKeyColumn [[maybe_unused]], const std::string& aKey [[maybe_unused]],
+                                         std::vector<std::string>& aLabels [[maybe_unused]], std::vector<DB_VALUE>& aRow [[maybe_unused]] )
     {
         return std::nullopt;
     }

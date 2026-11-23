@@ -112,7 +112,7 @@ DIALOG_EXPORT_2581::DIALOG_EXPORT_2581( JOB_EXPORT_PCB_IPC2581* aJob, PCB_EDIT_F
 }
 
 
-void DIALOG_EXPORT_2581::onBrowseClicked( wxCommandEvent& event )
+void DIALOG_EXPORT_2581::onBrowseClicked( wxCommandEvent& event [[maybe_unused]] )
 {
     // Build the absolute path of current output directory to preselect it in the file browser.
     wxFileName   fn( ResolveProjectPath( m_outputFileName->GetValue(), &Prj() ) );
@@ -132,7 +132,7 @@ void DIALOG_EXPORT_2581::onBrowseClicked( wxCommandEvent& event )
 
 }
 
-void DIALOG_EXPORT_2581::onCompressCheck( wxCommandEvent& event )
+void DIALOG_EXPORT_2581::onCompressCheck( wxCommandEvent& event [[maybe_unused]] )
 {
     if( m_cbCompress->GetValue() )
     {
@@ -151,7 +151,7 @@ void DIALOG_EXPORT_2581::onCompressCheck( wxCommandEvent& event )
 }
 
 
-void DIALOG_EXPORT_2581::onOKClick( wxCommandEvent& event )
+void DIALOG_EXPORT_2581::onOKClick( wxCommandEvent& event [[maybe_unused]] )
 {
     if( m_job )
     {

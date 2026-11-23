@@ -52,7 +52,7 @@ public:
     ODB_ENTITY_BASE() : m_board( nullptr ), m_plugin( nullptr ) {}
 
     virtual ~ODB_ENTITY_BASE() = default;
-    virtual void        GenerateFiles( ODB_TREE_WRITER& writer ) {}
+    virtual void        GenerateFiles( ODB_TREE_WRITER& writer [[maybe_unused]] ) {}
     virtual bool        CreateDirectoryTree( ODB_TREE_WRITER& writer );
     virtual std::string GetEntityName() = 0;
     virtual void        InitEntityData() {}

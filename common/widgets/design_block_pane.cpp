@@ -38,8 +38,8 @@
 #include <wildcards_and_files_ext.h>
 #include <tool/tool_manager.h>
 
-DESIGN_BLOCK_PANE::DESIGN_BLOCK_PANE( EDA_DRAW_FRAME* aParent, const LIB_ID* aPreselect,
-                                      std::vector<LIB_ID>& aHistoryList ) :
+DESIGN_BLOCK_PANE::DESIGN_BLOCK_PANE( EDA_DRAW_FRAME* aParent, const LIB_ID* aPreselect [[maybe_unused]],
+                                      std::vector<LIB_ID>& aHistoryList [[maybe_unused]] ) :
         WX_PANEL( aParent ),
         m_frame( aParent )
 {
@@ -102,7 +102,7 @@ void DESIGN_BLOCK_PANE::RefreshLibs()
 }
 
 
-DESIGN_BLOCK* DESIGN_BLOCK_PANE::GetDesignBlock( const LIB_ID& aLibId, bool aUseCacheLib, bool aShowErrorMsg,
+DESIGN_BLOCK* DESIGN_BLOCK_PANE::GetDesignBlock( const LIB_ID& aLibId, bool aUseCacheLib [[maybe_unused]], bool aShowErrorMsg,
                                                  wxString* aErrorMsg )
 {
     DESIGN_BLOCK_LIBRARY_ADAPTER* prjLibs = m_frame->Prj().DesignBlockLibs();

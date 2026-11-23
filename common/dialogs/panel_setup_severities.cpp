@@ -151,7 +151,7 @@ PANEL_SETUP_SEVERITIES::PANEL_SETUP_SEVERITIES( wxWindow* aParentWindow,
     panelSizer->Add( scrollWin, 1, wxEXPAND, 0 );
 
     Bind( wxEVT_IDLE,
-          [this]( wxIdleEvent& aEvent )
+          [this]( wxIdleEvent& aEvent [[maybe_unused]] )
           {
               if( m_lastLoaded != m_severities )
               {

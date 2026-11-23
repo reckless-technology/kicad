@@ -60,7 +60,7 @@ void DIALOG_RC_JOB::setSelectedFormat( JOB_RC::OUTPUT_FORMAT format )
 }
 
 
-void DIALOG_RC_JOB::OnFormatChoice( wxCommandEvent& event )
+void DIALOG_RC_JOB::OnFormatChoice( wxCommandEvent& event [[maybe_unused]] )
 {
     JOB_RC::OUTPUT_FORMAT selectedFormat = getSelectedFormat();
 

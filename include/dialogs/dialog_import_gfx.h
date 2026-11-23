@@ -102,9 +102,9 @@ private:
     void scaleFromSize( bool aFromWidth );
     void originOptionOnUpdateUI( wxUpdateUIEvent& event ) override;
 
-    void onInteractivePlacement( wxCommandEvent& event ) override { m_placementInteractive = true; }
+    void onInteractivePlacement( wxCommandEvent& event [[maybe_unused]] ) override { m_placementInteractive = true; }
 
-    void onAbsolutePlacement( wxCommandEvent& event ) override { m_placementInteractive = false; }
+    void onAbsolutePlacement( wxCommandEvent& event [[maybe_unused]] ) override { m_placementInteractive = false; }
 
 private:
     EDA_DRAW_FRAME*                      m_parent;

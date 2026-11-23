@@ -199,7 +199,7 @@ bool PANEL_ASSIGN_COMPONENT_CLASSES::Validate()
 }
 
 
-void PANEL_ASSIGN_COMPONENT_CLASSES::OnAddAssignmentClick( wxCommandEvent& event )
+void PANEL_ASSIGN_COMPONENT_CLASSES::OnAddAssignmentClick( wxCommandEvent& event [[maybe_unused]] )
 {
     PANEL_COMPONENT_CLASS_ASSIGNMENT* assignment = addAssignment();
     scrollToAssignment( assignment );
@@ -356,7 +356,7 @@ COMPONENT_CLASS_ASSIGNMENT_DATA PANEL_COMPONENT_CLASS_ASSIGNMENT::GenerateAssign
 }
 
 
-void PANEL_COMPONENT_CLASS_ASSIGNMENT::OnAddConditionClick( wxCommandEvent& event )
+void PANEL_COMPONENT_CLASS_ASSIGNMENT::OnAddConditionClick( wxCommandEvent& event [[maybe_unused]] )
 {
     wxMenu menu;
     menu.Append( ID_REFERENCE, _( "Add Reference Condition" ) );
@@ -370,7 +370,7 @@ void PANEL_COMPONENT_CLASS_ASSIGNMENT::OnAddConditionClick( wxCommandEvent& even
 }
 
 
-void PANEL_COMPONENT_CLASS_ASSIGNMENT::OnDeleteAssignmentClick( wxCommandEvent& event )
+void PANEL_COMPONENT_CLASS_ASSIGNMENT::OnDeleteAssignmentClick( wxCommandEvent& event [[maybe_unused]] )
 {
     m_parentPanel->RemoveAssignment( this );
 }
@@ -521,7 +521,7 @@ PANEL_COMPONENT_CLASS_ASSIGNMENT::GetConditionsOperator() const
 }
 
 
-void PANEL_COMPONENT_CLASS_ASSIGNMENT::OnHighlightItemsClick( wxCommandEvent& event )
+void PANEL_COMPONENT_CLASS_ASSIGNMENT::OnHighlightItemsClick( wxCommandEvent& event [[maybe_unused]] )
 {
     PCB_EDIT_FRAME*     frame = m_parentPanel->GetFrame();
     BOARD*              board = dynamic_cast<BOARD*>( frame->GetModel() );
@@ -567,7 +567,7 @@ PANEL_COMPONENT_CLASS_CONDITION_REFERENCE::PANEL_COMPONENT_CLASS_CONDITION_REFER
 }
 
 
-void PANEL_COMPONENT_CLASS_CONDITION_REFERENCE::OnDeleteConditionClick( wxCommandEvent& event )
+void PANEL_COMPONENT_CLASS_CONDITION_REFERENCE::OnDeleteConditionClick( wxCommandEvent& event [[maybe_unused]] )
 {
     Disconnect( wxEVT_MENU, wxCommandEventHandler( PANEL_COMPONENT_CLASS_CONDITION_REFERENCE::onMenu ), nullptr,
                 this );
@@ -575,7 +575,7 @@ void PANEL_COMPONENT_CLASS_CONDITION_REFERENCE::OnDeleteConditionClick( wxComman
 }
 
 
-void PANEL_COMPONENT_CLASS_CONDITION_REFERENCE::OnImportRefsClick( wxCommandEvent& event )
+void PANEL_COMPONENT_CLASS_CONDITION_REFERENCE::OnImportRefsClick( wxCommandEvent& event [[maybe_unused]] )
 {
     wxMenu menu;
     menu.Append( ID_IMPORT_REFS, _( "Import references from selection" ) );
@@ -618,13 +618,13 @@ PANEL_COMPONENT_CLASS_CONDITION_FOOTPRINT::PANEL_COMPONENT_CLASS_CONDITION_FOOTP
 }
 
 
-void PANEL_COMPONENT_CLASS_CONDITION_FOOTPRINT::OnDeleteConditionClick( wxCommandEvent& event )
+void PANEL_COMPONENT_CLASS_CONDITION_FOOTPRINT::OnDeleteConditionClick( wxCommandEvent& event [[maybe_unused]] )
 {
     m_panelParent->RemoveCondition( this );
 }
 
 
-void PANEL_COMPONENT_CLASS_CONDITION_FOOTPRINT::OnShowLibraryClick( wxCommandEvent& event )
+void PANEL_COMPONENT_CLASS_CONDITION_FOOTPRINT::OnShowLibraryClick( wxCommandEvent& event [[maybe_unused]] )
 {
     wxString fpId = m_footprint->GetValue();
 
@@ -655,7 +655,7 @@ PANEL_COMPONENT_CLASS_CONDITION_SIDE::PANEL_COMPONENT_CLASS_CONDITION_SIDE( wxWi
 }
 
 
-void PANEL_COMPONENT_CLASS_CONDITION_SIDE::OnDeleteConditionClick( wxCommandEvent& event )
+void PANEL_COMPONENT_CLASS_CONDITION_SIDE::OnDeleteConditionClick( wxCommandEvent& event [[maybe_unused]] )
 {
     m_panelParent->RemoveCondition( this );
 }
@@ -679,7 +679,7 @@ PANEL_COMPONENT_CLASS_CONDITION_ROTATION::PANEL_COMPONENT_CLASS_CONDITION_ROTATI
 }
 
 
-void PANEL_COMPONENT_CLASS_CONDITION_ROTATION::OnDeleteConditionClick( wxCommandEvent& event )
+void PANEL_COMPONENT_CLASS_CONDITION_ROTATION::OnDeleteConditionClick( wxCommandEvent& event [[maybe_unused]] )
 {
     m_panelParent->RemoveCondition( this );
 }
@@ -696,7 +696,7 @@ PANEL_COMPONENT_CLASS_CONDITION_FIELD::PANEL_COMPONENT_CLASS_CONDITION_FIELD( wx
 }
 
 
-void PANEL_COMPONENT_CLASS_CONDITION_FIELD::OnDeleteConditionClick( wxCommandEvent& event )
+void PANEL_COMPONENT_CLASS_CONDITION_FIELD::OnDeleteConditionClick( wxCommandEvent& event [[maybe_unused]] )
 {
     m_panelParent->RemoveCondition( this );
 }
@@ -719,7 +719,7 @@ PANEL_COMPONENT_CLASS_CONDITION_CUSTOM::PANEL_COMPONENT_CLASS_CONDITION_CUSTOM( 
 }
 
 
-void PANEL_COMPONENT_CLASS_CONDITION_CUSTOM::OnDeleteConditionClick( wxCommandEvent& event )
+void PANEL_COMPONENT_CLASS_CONDITION_CUSTOM::OnDeleteConditionClick( wxCommandEvent& event [[maybe_unused]] )
 {
     m_panelParent->RemoveCondition( this );
 }
@@ -736,7 +736,7 @@ PANEL_COMPONENT_CLASS_CONDITION_SHEET::PANEL_COMPONENT_CLASS_CONDITION_SHEET( wx
 }
 
 
-void PANEL_COMPONENT_CLASS_CONDITION_SHEET::OnDeleteConditionClick( wxCommandEvent& event )
+void PANEL_COMPONENT_CLASS_CONDITION_SHEET::OnDeleteConditionClick( wxCommandEvent& event [[maybe_unused]] )
 {
     m_panelParent->RemoveCondition( this );
 }

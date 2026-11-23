@@ -162,7 +162,7 @@ void GERBVIEW_SELECTION_TOOL::Reset( RESET_REASON aReason )
 }
 
 
-int GERBVIEW_SELECTION_TOOL::Main( const TOOL_EVENT& aEvent )
+int GERBVIEW_SELECTION_TOOL::Main( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     // Main loop: keep receiving events
     while( TOOL_EVENT* evt = Wait() )
@@ -276,7 +276,7 @@ void GERBVIEW_SELECTION_TOOL::setTransitions()
 }
 
 
-int GERBVIEW_SELECTION_TOOL::ClearSelection( const TOOL_EVENT& aEvent )
+int GERBVIEW_SELECTION_TOOL::ClearSelection( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     clearSelection();
 

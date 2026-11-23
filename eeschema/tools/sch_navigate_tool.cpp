@@ -117,7 +117,7 @@ int SCH_NAVIGATE_TOOL::Up( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_NAVIGATE_TOOL::Forward( const TOOL_EVENT& aEvent )
+int SCH_NAVIGATE_TOOL::Forward( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( CanGoForward() )
     {
@@ -138,7 +138,7 @@ int SCH_NAVIGATE_TOOL::Forward( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_NAVIGATE_TOOL::Back( const TOOL_EVENT& aEvent )
+int SCH_NAVIGATE_TOOL::Back( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( CanGoBack() )
     {
@@ -159,7 +159,7 @@ int SCH_NAVIGATE_TOOL::Back( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_NAVIGATE_TOOL::Previous( const TOOL_EVENT& aEvent )
+int SCH_NAVIGATE_TOOL::Previous( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( CanGoPrevious() )
     {
@@ -175,7 +175,7 @@ int SCH_NAVIGATE_TOOL::Previous( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_NAVIGATE_TOOL::Next( const TOOL_EVENT& aEvent )
+int SCH_NAVIGATE_TOOL::Next( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( CanGoNext() )
     {
@@ -244,7 +244,7 @@ int SCH_NAVIGATE_TOOL::ChangeSheet( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_NAVIGATE_TOOL::EnterSheet( const TOOL_EVENT& aEvent )
+int SCH_NAVIGATE_TOOL::EnterSheet( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SCH_SELECTION_TOOL*  selTool = m_toolMgr->GetTool<SCH_SELECTION_TOOL>();
     const SCH_SELECTION& selection = selTool->RequestSelection( { SCH_SHEET_T } );
@@ -261,7 +261,7 @@ int SCH_NAVIGATE_TOOL::EnterSheet( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_NAVIGATE_TOOL::LeaveSheet( const TOOL_EVENT& aEvent )
+int SCH_NAVIGATE_TOOL::LeaveSheet( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( CanGoUp() )
     {

@@ -679,7 +679,7 @@ void DIALOG_SYMBOL_FIELDS_TABLE::OnScope( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_SYMBOL_FIELDS_TABLE::OnMenu( wxCommandEvent& aEvent )
+void DIALOG_SYMBOL_FIELDS_TABLE::OnMenu( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     // Build a pop menu:
     wxMenu menu;
@@ -800,7 +800,7 @@ void DIALOG_SYMBOL_FIELDS_TABLE::OnTableSelectionChanged( const std::set<int>& a
 }
 
 
-void DIALOG_SYMBOL_FIELDS_TABLE::OnSaveAndContinue( wxCommandEvent& aEvent )
+void DIALOG_SYMBOL_FIELDS_TABLE::OnSaveAndContinue( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( TransferDataFromWindow() )
     {
@@ -811,7 +811,7 @@ void DIALOG_SYMBOL_FIELDS_TABLE::OnSaveAndContinue( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_SYMBOL_FIELDS_TABLE::OnCancel( wxCommandEvent& aEvent )
+void DIALOG_SYMBOL_FIELDS_TABLE::OnCancel( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( m_job )
     {
@@ -826,7 +826,7 @@ void DIALOG_SYMBOL_FIELDS_TABLE::OnCancel( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_SYMBOL_FIELDS_TABLE::OnOk( wxCommandEvent& aEvent )
+void DIALOG_SYMBOL_FIELDS_TABLE::OnOk( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( !TransferDataFromWindow() )
         return;
@@ -886,7 +886,7 @@ void DIALOG_SYMBOL_FIELDS_TABLE::OnClose( wxCloseEvent& aEvent )
 }
 
 
-void DIALOG_SYMBOL_FIELDS_TABLE::OnSchItemsAdded( SCHEMATIC& aSch, std::vector<SCH_ITEM*>& aSchItem )
+void DIALOG_SYMBOL_FIELDS_TABLE::OnSchItemsAdded( SCHEMATIC& aSch [[maybe_unused]], std::vector<SCH_ITEM*>& aSchItem )
 {
     std::set<KIID_PATH> savedSelection = SaveGridSelection();
 
@@ -938,7 +938,7 @@ void DIALOG_SYMBOL_FIELDS_TABLE::OnSchItemsAdded( SCHEMATIC& aSch, std::vector<S
 }
 
 
-void DIALOG_SYMBOL_FIELDS_TABLE::OnSchItemsRemoved( SCHEMATIC& aSch, std::vector<SCH_ITEM*>& aSchItem )
+void DIALOG_SYMBOL_FIELDS_TABLE::OnSchItemsRemoved( SCHEMATIC& aSch [[maybe_unused]], std::vector<SCH_ITEM*>& aSchItem )
 {
     std::set<KIID_PATH> savedSelection = SaveGridSelection();
 
@@ -954,7 +954,7 @@ void DIALOG_SYMBOL_FIELDS_TABLE::OnSchItemsRemoved( SCHEMATIC& aSch, std::vector
 }
 
 
-void DIALOG_SYMBOL_FIELDS_TABLE::OnSchItemsChanged( SCHEMATIC& aSch, std::vector<SCH_ITEM*>& aSchItem )
+void DIALOG_SYMBOL_FIELDS_TABLE::OnSchItemsChanged( SCHEMATIC& aSch [[maybe_unused]], std::vector<SCH_ITEM*>& aSchItem )
 {
     std::set<KIID_PATH> savedSelection = SaveGridSelection();
 
@@ -1015,7 +1015,7 @@ void DIALOG_SYMBOL_FIELDS_TABLE::OnSchSheetChanged( SCHEMATIC& aSch )
 }
 
 
-void DIALOG_SYMBOL_FIELDS_TABLE::OnSchSelectionChanged( SCHEMATIC& aSch )
+void DIALOG_SYMBOL_FIELDS_TABLE::OnSchSelectionChanged( SCHEMATIC& aSch [[maybe_unused]] )
 {
     if( m_dataModel->GetScope() == SCOPE::SCOPE_SELECTION )
         rebuildRowsPreservingSelection();
@@ -1117,7 +1117,7 @@ void DIALOG_SYMBOL_FIELDS_TABLE::onAddVariant( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_SYMBOL_FIELDS_TABLE::onDeleteVariant( wxCommandEvent& aEvent )
+void DIALOG_SYMBOL_FIELDS_TABLE::onDeleteVariant( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( !m_grid->CommitPendingChanges() )
         return;
@@ -1177,7 +1177,7 @@ void DIALOG_SYMBOL_FIELDS_TABLE::onDeleteVariant( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_SYMBOL_FIELDS_TABLE::onRenameVariant( wxCommandEvent& aEvent )
+void DIALOG_SYMBOL_FIELDS_TABLE::onRenameVariant( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     int selection = m_variantListBox->GetSelection();
 
@@ -1305,7 +1305,7 @@ void DIALOG_SYMBOL_FIELDS_TABLE::onCopyVariant( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_SYMBOL_FIELDS_TABLE::onEditVariantDescription( wxCommandEvent& aEvent )
+void DIALOG_SYMBOL_FIELDS_TABLE::onEditVariantDescription( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     int selection = m_variantListBox->GetSelection();
 
@@ -1353,7 +1353,7 @@ void DIALOG_SYMBOL_FIELDS_TABLE::onEditVariantDescription( wxCommandEvent& aEven
 }
 
 
-void DIALOG_SYMBOL_FIELDS_TABLE::onVariantSelectionChange( wxCommandEvent& aEvent )
+void DIALOG_SYMBOL_FIELDS_TABLE::onVariantSelectionChange( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( !m_grid->CommitPendingChanges() )
         return;

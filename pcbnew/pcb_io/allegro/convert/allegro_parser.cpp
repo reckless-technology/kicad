@@ -1001,7 +1001,7 @@ static std::unique_ptr<BLOCK_BASE> ParseBlock_0x15_16_17_SEGMENT( FILE_STREAM& a
 }
 
 
-static std::unique_ptr<BLOCK_BASE> ParseBlock_0x1A( FILE_STREAM& aStream, FMT_VER aVer )
+static std::unique_ptr<BLOCK_BASE> ParseBlock_0x1A( FILE_STREAM& aStream, FMT_VER aVer [[maybe_unused]] )
 {
     auto block = std::make_unique<BLOCK<BLK_0x1A_UNKNOWN>>( aStream.Position() );
 
@@ -1364,7 +1364,7 @@ static std::unique_ptr<BLOCK_BASE> ParseBlock_0x20( FILE_STREAM& aStream, FMT_VE
 }
 
 
-static std::unique_ptr<BLOCK_BASE> ParseBlock_0x21( FILE_STREAM& aStream, FMT_VER aVer )
+static std::unique_ptr<BLOCK_BASE> ParseBlock_0x21( FILE_STREAM& aStream, FMT_VER aVer [[maybe_unused]] )
 {
     auto block = std::make_unique<BLOCK<BLK_0x21_BLOB>>( aStream.Position() );
 
@@ -1505,7 +1505,7 @@ static std::unique_ptr<BLOCK_BASE> ParseBlock_0x26( FILE_STREAM& aStream, FMT_VE
  * @param aEndOff one past the last byte of the block, or zero when the file records no end
  *                for it. In that case the block occupies the rest of the file.
  */
-static std::unique_ptr<BLOCK_BASE> ParseBlock_0x27( FILE_STREAM& aStream, FMT_VER aVer, size_t aEndOff )
+static std::unique_ptr<BLOCK_BASE> ParseBlock_0x27( FILE_STREAM& aStream, FMT_VER aVer [[maybe_unused]], size_t aEndOff )
 {
     auto block = std::make_unique<BLOCK<BLK_0x27_CSTRMGR_XREF>>( aStream.Position() );
 
@@ -1602,7 +1602,7 @@ static std::unique_ptr<BLOCK_BASE> ParseBlock_0x28_SHAPE( FILE_STREAM& aStream, 
 }
 
 
-static std::unique_ptr<BLOCK_BASE> ParseBlock_0x29_PIN( FILE_STREAM& aStream, FMT_VER aVer )
+static std::unique_ptr<BLOCK_BASE> ParseBlock_0x29_PIN( FILE_STREAM& aStream, FMT_VER aVer [[maybe_unused]] )
 {
     auto block = std::make_unique<BLOCK<BLK_0x29_PIN>>( aStream.Position() );
 
@@ -1814,7 +1814,7 @@ static std::unique_ptr<BLOCK_BASE> ParseBlock_0x2E( FILE_STREAM& aStream, FMT_VE
 }
 
 
-static std::unique_ptr<BLOCK_BASE> ParseBlock_0x2F( FILE_STREAM& aStream, FMT_VER aVer )
+static std::unique_ptr<BLOCK_BASE> ParseBlock_0x2F( FILE_STREAM& aStream, FMT_VER aVer [[maybe_unused]] )
 {
     auto block = std::make_unique<BLOCK<BLK_0x2F_UNKNOWN>>( aStream.Position() );
 
@@ -2063,7 +2063,7 @@ static std::unique_ptr<BLOCK_BASE> ParseBlock_0x34_KEEPOUT( FILE_STREAM& aStream
 }
 
 
-static std::unique_ptr<BLOCK_BASE> ParseBlock_0x35( FILE_STREAM& aStream, FMT_VER aVer )
+static std::unique_ptr<BLOCK_BASE> ParseBlock_0x35( FILE_STREAM& aStream, FMT_VER aVer [[maybe_unused]] )
 {
     auto block = std::make_unique<BLOCK<BLK_0x35_FILE_REF>>( aStream.Position() );
 
@@ -2366,7 +2366,7 @@ static std::unique_ptr<BLOCK_BASE> ParseBlock_0x38_FILM( FILE_STREAM& aStream, F
 }
 
 
-static std::unique_ptr<BLOCK_BASE> ParseBlock_0x39_FILM_LAYER_LIST( FILE_STREAM& aStream, FMT_VER aVer )
+static std::unique_ptr<BLOCK_BASE> ParseBlock_0x39_FILM_LAYER_LIST( FILE_STREAM& aStream, FMT_VER aVer [[maybe_unused]] )
 {
     auto block = std::make_unique<BLOCK<BLK_0x39_FILM_LAYER_LIST>>( aStream.Position() );
 
@@ -2433,7 +2433,7 @@ static std::unique_ptr<BLOCK_BASE> ParseBlock_0x3B( FILE_STREAM& aStream, FMT_VE
 }
 
 
-static std::unique_ptr<BLOCK_BASE> ParseBlock_0x3E( FILE_STREAM& aStream, FMT_VER aVer )
+static std::unique_ptr<BLOCK_BASE> ParseBlock_0x3E( FILE_STREAM& aStream, FMT_VER aVer [[maybe_unused]] )
 {
     auto block = std::make_unique<BLOCK<BLK_0x3E>>( aStream.Position() );
 

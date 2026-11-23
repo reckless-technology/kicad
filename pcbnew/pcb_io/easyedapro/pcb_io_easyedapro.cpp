@@ -131,8 +131,8 @@ std::vector<IMPORT_PROJECT_DESC> PCB_IO_EASYEDAPRO::EnumerateProjectEntries( con
 }
 
 
-void PCB_IO_EASYEDAPRO::loadBoard( const wxString& aFileName, BOARD& aBoard, bool aIsNewLoad,
-                                   const std::map<std::string, UTF8>* aProperties, PROJECT* aProject )
+void PCB_IO_EASYEDAPRO::loadBoard( const wxString& aFileName, BOARD& aBoard, bool aIsNewLoad [[maybe_unused]],
+                                   const std::map<std::string, UTF8>* aProperties, PROJECT* aProject [[maybe_unused]] )
 {
     m_props = aProperties;
     m_importedDesignRules.clear();
@@ -294,15 +294,15 @@ void PCB_IO_EASYEDAPRO::loadBoard( const wxString& aFileName, BOARD& aBoard, boo
 }
 
 
-long long PCB_IO_EASYEDAPRO::GetLibraryTimestamp( const wxString& aLibraryPath ) const
+long long PCB_IO_EASYEDAPRO::GetLibraryTimestamp( const wxString& aLibraryPath [[maybe_unused]] ) const
 {
     return 0;
 }
 
 
 void PCB_IO_EASYEDAPRO::FootprintEnumerate( wxArrayString&  aFootprintNames,
-                                            const wxString& aLibraryPath, bool aBestEfforts,
-                                            const std::map<std::string, UTF8>* aProperties )
+                                            const wxString& aLibraryPath, bool aBestEfforts [[maybe_unused]],
+                                            const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     wxFileName fname( aLibraryPath );
 
@@ -417,8 +417,8 @@ void PCB_IO_EASYEDAPRO::LoadAllDataFromProject( const wxString&       aProjectPa
 
 
 std::unique_ptr<FOOTPRINT> PCB_IO_EASYEDAPRO::FootprintLoad( const wxString& aLibraryPath,
-                                                             const wxString& aFootprintName, bool aKeepUUID,
-                                                             const std::map<std::string, UTF8>* aProperties )
+                                                             const wxString& aFootprintName, bool aKeepUUID [[maybe_unused]],
+                                                             const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     // Suppress font substitution warnings (RAII - automatically restored on scope exit)
     FONTCONFIG_REPORTER_SCOPE fontconfigScope( nullptr );

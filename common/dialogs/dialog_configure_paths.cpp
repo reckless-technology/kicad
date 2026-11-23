@@ -376,7 +376,7 @@ void DIALOG_CONFIGURE_PATHS::OnGridCellChanging( wxGridEvent& event )
 }
 
 
-void DIALOG_CONFIGURE_PATHS::OnAddEnvVar( wxCommandEvent& event )
+void DIALOG_CONFIGURE_PATHS::OnAddEnvVar( wxCommandEvent& event [[maybe_unused]] )
 {
     m_EnvVars->OnAddRow(
             [&]() -> std::pair<int, int>
@@ -387,7 +387,7 @@ void DIALOG_CONFIGURE_PATHS::OnAddEnvVar( wxCommandEvent& event )
 }
 
 
-void DIALOG_CONFIGURE_PATHS::OnRemoveEnvVar( wxCommandEvent& event )
+void DIALOG_CONFIGURE_PATHS::OnRemoveEnvVar( wxCommandEvent& event [[maybe_unused]] )
 {
     m_EnvVars->OnDeleteRows(
             [&]( int row )
@@ -407,7 +407,7 @@ void DIALOG_CONFIGURE_PATHS::OnRemoveEnvVar( wxCommandEvent& event )
 }
 
 
-void DIALOG_CONFIGURE_PATHS::OnUpdateUI( wxUpdateUIEvent& event )
+void DIALOG_CONFIGURE_PATHS::OnUpdateUI( wxUpdateUIEvent& event [[maybe_unused]] )
 {
     // Handle a grid error.  This is delayed to OnUpdateUI so that we can change focus even when
     // the original validation was triggered from a killFocus event.
@@ -430,7 +430,7 @@ void DIALOG_CONFIGURE_PATHS::OnUpdateUI( wxUpdateUIEvent& event )
 }
 
 
-void DIALOG_CONFIGURE_PATHS::OnHelp( wxCommandEvent& event )
+void DIALOG_CONFIGURE_PATHS::OnHelp( wxCommandEvent& event [[maybe_unused]] )
 {
     wxSizer* sizerMain = GetSizer();
 

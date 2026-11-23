@@ -673,7 +673,7 @@ void NODE::Add( std::unique_ptr< VIA > aVia )
 }
 
 
-void NODE::add( ITEM* aItem, bool aAllowRedundant )
+void NODE::add( ITEM* aItem, bool aAllowRedundant [[maybe_unused]] )
 {
     switch( aItem->Kind() )
     {
@@ -1488,7 +1488,7 @@ void NODE::unlinkJoint( const VECTOR2I& aPos, const PNS_LAYER_RANGE& aLayers, NE
 }
 
 
-void NODE::Dump( bool aLong )
+void NODE::Dump( bool aLong [[maybe_unused]] )
 {
 #if 0
     std::unordered_set<SEGMENT*> all_segs;

@@ -79,7 +79,7 @@ public:
         }
     }
 
-    bool CanGetValueAs( int aRow, int aCol, const wxString& aTypeName ) override
+    bool CanGetValueAs( int aRow [[maybe_unused]], int aCol, const wxString& aTypeName ) override
     {
         if( m_forFieldProps )
         {
@@ -107,21 +107,21 @@ public:
         return CanGetValueAs( aRow, aCol, aTypeName );
     }
 
-    wxString GetValue( int row, int col ) override { return m_items[row].m_Text; }
+    wxString GetValue( int row, int col [[maybe_unused]] ) override { return m_items[row].m_Text; }
     void     SetValue( int row, int col, const wxString& value ) override
     {
         if( col == 0 )
             m_items[row].m_Text = value;
     }
 
-    bool GetValueAsBool( int row, int col ) override { return m_items[row].m_Visible; }
+    bool GetValueAsBool( int row, int col [[maybe_unused]] ) override { return m_items[row].m_Visible; }
     void SetValueAsBool( int row, int col, bool value ) override
     {
         if( col == 1 )
             m_items[row].m_Visible = value;
     }
 
-    long GetValueAsLong( int row, int col ) override { return m_items[row].m_Layer; }
+    long GetValueAsLong( int row, int col [[maybe_unused]] ) override { return m_items[row].m_Layer; }
     void SetValueAsLong( int row, int col, long value ) override
     {
         if( col == GetNumberCols() - 1 )
@@ -302,7 +302,7 @@ bool PANEL_FP_EDITOR_FIELD_DEFAULTS::TransferDataFromWindow()
 }
 
 
-void PANEL_FP_EDITOR_FIELD_DEFAULTS::OnAddTextItem( wxCommandEvent& event )
+void PANEL_FP_EDITOR_FIELD_DEFAULTS::OnAddTextItem( wxCommandEvent& event [[maybe_unused]] )
 {
     m_textItemsGrid->OnAddRow(
             [&]() -> std::pair<int, int>
@@ -324,7 +324,7 @@ void PANEL_FP_EDITOR_FIELD_DEFAULTS::OnAddTextItem( wxCommandEvent& event )
 }
 
 
-void PANEL_FP_EDITOR_FIELD_DEFAULTS::OnDeleteTextItem( wxCommandEvent& event )
+void PANEL_FP_EDITOR_FIELD_DEFAULTS::OnDeleteTextItem( wxCommandEvent& event [[maybe_unused]] )
 {
     m_textItemsGrid->OnDeleteRows(
             [&]( int row )

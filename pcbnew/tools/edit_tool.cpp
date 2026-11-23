@@ -193,7 +193,7 @@ EDIT_TOOL::EDIT_TOOL() :
 }
 
 
-void EDIT_TOOL::Reset( RESET_REASON aReason )
+void EDIT_TOOL::Reset( RESET_REASON aReason [[maybe_unused]] )
 {
     m_dragging = false;
     m_inMoveWithReference = false;
@@ -302,7 +302,7 @@ static std::shared_ptr<CONDITIONAL_MENU> makeShapeModificationMenu( TOOL_INTERAC
     static const std::vector<KICAD_T> polygonSimplifyTypes = { PCB_SHAPE_LOCATE_POLY_T, PCB_ZONE_T };
 
     auto hasCornerCondition =
-            [aTool]( const SELECTION& aSelection )
+            [aTool]( const SELECTION& aSelection [[maybe_unused]] )
             {
                 PCB_POINT_EDITOR* pt_tool = aTool->GetManager()->GetTool<PCB_POINT_EDITOR>();
 
@@ -310,7 +310,7 @@ static std::shared_ptr<CONDITIONAL_MENU> makeShapeModificationMenu( TOOL_INTERAC
             };
 
     auto hasMidpointCondition =
-            [aTool]( const SELECTION& aSelection )
+            [aTool]( const SELECTION& aSelection [[maybe_unused]] )
             {
                 PCB_POINT_EDITOR* pt_tool = aTool->GetManager()->GetTool<PCB_POINT_EDITOR>();
 
@@ -733,7 +733,7 @@ bool EDIT_TOOL::Init()
             };
 
     auto inFootprintEditor =
-            [this]( const SELECTION& aSelection )
+            [this]( const SELECTION& aSelection [[maybe_unused]] )
             {
                 return m_isFootprintEditor;
             };
@@ -846,7 +846,7 @@ bool EDIT_TOOL::Init()
             };
 
     auto noActiveToolCondition =
-            [this]( const SELECTION& aSelection )
+            [this]( const SELECTION& aSelection [[maybe_unused]] )
             {
                 return frame()->ToolStackIsEmpty();
             };
@@ -858,13 +858,13 @@ bool EDIT_TOOL::Init()
             };
 
     auto noItemsCondition =
-            [this]( const SELECTION& aSelections ) -> bool
+            [this]( const SELECTION& aSelections [[maybe_unused]] ) -> bool
             {
                 return frame()->GetBoard() && !frame()->GetBoard()->IsEmpty();
             };
 
     auto isSkippable =
-            [this]( const SELECTION& aSelection )
+            [this]( const SELECTION& aSelection [[maybe_unused]] )
             {
                 return frame()->IsCurrentTool( PCB_ACTIONS::moveIndividually );
             };
@@ -1010,7 +1010,7 @@ static FOOTPRINT* GetFootprintFromBoardByReference( PCB_BASE_FRAME& aFrame )
 }
 
 
-int EDIT_TOOL::GetAndPlace( const TOOL_EVENT& aEvent )
+int EDIT_TOOL::GetAndPlace( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     // GetAndPlace makes sense only in board editor, although it is also called
     // in fpeditor, that shares the same EDIT_TOOL list
@@ -1315,10 +1315,10 @@ int EDIT_TOOL::ToggleFootprintAttribute( const TOOL_EVENT& aEvent )
 }
 
 
-int EDIT_TOOL::ChangeTrackWidth( const TOOL_EVENT& aEvent )
+int EDIT_TOOL::ChangeTrackWidth( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     const PCB_SELECTION& selection = m_selectionTool->RequestSelection(
-            []( const VECTOR2I& aPt, GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
+            []( const VECTOR2I& aPt [[maybe_unused]], GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
             {
                 // Iterate from the back so we don't have to worry about removals.
                 for( int i = aCollector.GetCount() - 1; i >= 0; --i )
@@ -1392,7 +1392,7 @@ int EDIT_TOOL::ChangeTrackLayer( const TOOL_EVENT& aEvent )
     bool isNext = aEvent.IsAction( &PCB_ACTIONS::changeTrackLayerNext );
 
     const PCB_SELECTION& selection = m_selectionTool->RequestSelection(
-            []( const VECTOR2I& aPt, GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
+            []( const VECTOR2I& aPt [[maybe_unused]], GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
             {
                 // Iterate from the back so we don't have to worry about removals.
                 for( int i = aCollector.GetCount() - 1; i >= 0; --i )
@@ -1450,13 +1450,13 @@ int EDIT_TOOL::ChangeTrackLayer( const TOOL_EVENT& aEvent )
 }
 
 
-int EDIT_TOOL::FilletTracks( const TOOL_EVENT& aEvent )
+int EDIT_TOOL::FilletTracks( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     // Store last used fillet radius to allow pressing "enter" if repeat fillet is required
     static int filletRadius = 0;
 
     PCB_SELECTION& selection = m_selectionTool->RequestSelection(
-            []( const VECTOR2I& aPt, GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
+            []( const VECTOR2I& aPt [[maybe_unused]], GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
             {
                 // Iterate from the back so we don't have to worry about removals.
                 for( int i = aCollector.GetCount() - 1; i >= 0; --i )
@@ -1745,7 +1745,7 @@ static std::optional<CHAMFER_PARAMS> GetChamferParams( PCB_BASE_EDIT_FRAME& aFra
 int EDIT_TOOL::ModifyLines( const TOOL_EVENT& aEvent )
 {
     PCB_SELECTION& selection = m_selectionTool->RequestSelection(
-            []( const VECTOR2I& aPt, GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
+            []( const VECTOR2I& aPt [[maybe_unused]], GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
             {
                 std::vector<VECTOR2I> pts;
 
@@ -1989,10 +1989,10 @@ int EDIT_TOOL::ModifyLines( const TOOL_EVENT& aEvent )
 }
 
 
-int EDIT_TOOL::SimplifyPolygons( const TOOL_EVENT& aEvent )
+int EDIT_TOOL::SimplifyPolygons( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     PCB_SELECTION& selection = m_selectionTool->RequestSelection(
-            []( const VECTOR2I& aPt, GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
+            []( const VECTOR2I& aPt [[maybe_unused]], GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
             {
                 std::vector<VECTOR2I> pts;
 
@@ -2062,10 +2062,10 @@ int EDIT_TOOL::SimplifyPolygons( const TOOL_EVENT& aEvent )
 }
 
 
-int EDIT_TOOL::HealShapes( const TOOL_EVENT& aEvent )
+int EDIT_TOOL::HealShapes( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     PCB_SELECTION& selection = m_selectionTool->RequestSelection(
-            []( const VECTOR2I& aPt, GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
+            []( const VECTOR2I& aPt [[maybe_unused]], GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
             {
                 std::vector<VECTOR2I> pts;
 
@@ -2129,7 +2129,7 @@ int EDIT_TOOL::HealShapes( const TOOL_EVENT& aEvent )
 int EDIT_TOOL::BooleanPolygons( const TOOL_EVENT& aEvent )
 {
     PCB_SELECTION& selection = m_selectionTool->RequestSelection(
-            []( const VECTOR2I& aPt, GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
+            []( const VECTOR2I& aPt [[maybe_unused]], GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
             {
                 // Iterate from the back so we don't have to worry about removals.
                 for( int i = aCollector.GetCount() - 1; i >= 0; --i )
@@ -2289,7 +2289,7 @@ int EDIT_TOOL::BooleanPolygons( const TOOL_EVENT& aEvent )
 }
 
 
-int EDIT_TOOL::Properties( const TOOL_EVENT& aEvent )
+int EDIT_TOOL::Properties( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     PCB_BASE_EDIT_FRAME* editFrame = getEditFrame<PCB_BASE_EDIT_FRAME>();
 
@@ -2302,7 +2302,7 @@ int EDIT_TOOL::Properties( const TOOL_EVENT& aEvent )
     }
 
     const PCB_SELECTION& selection = m_selectionTool->RequestSelection(
-            []( const VECTOR2I& aPt, GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
+            []( const VECTOR2I& aPt [[maybe_unused]], GENERAL_COLLECTOR& aCollector [[maybe_unused]], PCB_SELECTION_TOOL* sTool [[maybe_unused]] )
             {
             } );
 
@@ -2398,7 +2398,7 @@ int EDIT_TOOL::Properties( const TOOL_EVENT& aEvent )
         if( !frame()->GetPropertiesPanel()->IsShownOnScreen() )
         {
             infobar->AddLink( _( "Show Properties panel" ),
-                    [this]( wxHyperlinkEvent& aHyperlinkEvent )
+                    [this]( wxHyperlinkEvent& aHyperlinkEvent [[maybe_unused]] )
                     {
                         frame()->ToggleProperties();
                     } );
@@ -2454,10 +2454,10 @@ int EDIT_TOOL::Properties( const TOOL_EVENT& aEvent )
 }
 
 
-int EDIT_TOOL::EditVertices( const TOOL_EVENT& aEvent )
+int EDIT_TOOL::EditVertices( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     const PCB_SELECTION& selection = m_selectionTool->RequestSelection(
-            []( const VECTOR2I& aPt, GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
+            []( const VECTOR2I& aPt [[maybe_unused]], GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
             {
                 sTool->FilterCollectorForMarkers( aCollector );
                 sTool->FilterCollectorForHierarchy( aCollector, true );
@@ -2543,7 +2543,7 @@ int EDIT_TOOL::Rotate( const TOOL_EVENT& aEvent )
     // Be sure that there is at least one item that we can modify. If nothing was selected before,
     // try looking for the stuff under mouse cursor (i.e. KiCad old-style hover selection)
     PCB_SELECTION& selection = m_selectionTool->RequestSelection(
-            [&]( const VECTOR2I& aPt, GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
+            [&]( const VECTOR2I& aPt [[maybe_unused]], GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
             {
                 sTool->FilterCollectorForMarkers( aCollector );
                 sTool->FilterCollectorForHierarchy( aCollector, true );
@@ -2574,7 +2574,7 @@ int EDIT_TOOL::Rotate( const TOOL_EVENT& aEvent )
     if( !m_isFootprintEditor && !frame()->GetPcbNewSettings()->m_AllowFreePads )
     {
         PCB_SELECTION& filtered = m_selectionTool->RequestSelection(
-                []( const VECTOR2I& aPt, GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
+                []( const VECTOR2I& aPt [[maybe_unused]], GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
                 {
                     sTool->FilterCollectorForMarkers( aCollector );
                     sTool->FilterCollectorForHierarchy( aCollector, true );
@@ -2854,7 +2854,7 @@ int EDIT_TOOL::Mirror( const TOOL_EVENT& aEvent )
         commit = &localCommit;
 
     PCB_SELECTION& selection = m_selectionTool->RequestSelection(
-            []( const VECTOR2I& aPt, GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
+            []( const VECTOR2I& aPt [[maybe_unused]], GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
             {
                 sTool->FilterCollectorForMarkers( aCollector );
                 sTool->FilterCollectorForHierarchy( aCollector, true );
@@ -2919,7 +2919,7 @@ int EDIT_TOOL::MirrorInteractive( const TOOL_EVENT& aEvent )
     }
 
     PCB_SELECTION& selection = m_selectionTool->RequestSelection(
-            []( const VECTOR2I& aPt, GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
+            []( const VECTOR2I& aPt [[maybe_unused]], GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
             {
                 sTool->FilterCollectorForMarkers( aCollector );
                 sTool->FilterCollectorForHierarchy( aCollector, true );
@@ -3135,7 +3135,7 @@ int EDIT_TOOL::JustifyText( const TOOL_EVENT& aEvent )
         commit = &localCommit;
 
     PCB_SELECTION& selection = m_selectionTool->RequestSelection(
-            []( const VECTOR2I& aPt, GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
+            []( const VECTOR2I& aPt [[maybe_unused]], GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
             {
                 sTool->FilterCollectorForHierarchy( aCollector, true );
                 sTool->FilterCollectorForLockedItems( aCollector );
@@ -3211,7 +3211,7 @@ int EDIT_TOOL::Flip( const TOOL_EVENT& aEvent )
         commit = &localCommit;
 
     PCB_SELECTION& selection = m_selectionTool->RequestSelection(
-            []( const VECTOR2I& aPt, GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
+            []( const VECTOR2I& aPt [[maybe_unused]], GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
             {
                 sTool->FilterCollectorForMarkers( aCollector );
                 sTool->FilterCollectorForHierarchy( aCollector, true );
@@ -3551,7 +3551,7 @@ int EDIT_TOOL::Remove( const TOOL_EVENT& aEvent )
         // so we just do the promotion but not the deletion (allowing for a second delete to do
         // it if that's what the user wanted).
         selectionCopy = m_selectionTool->RequestSelection(
-                []( const VECTOR2I& aPt, GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
+                []( const VECTOR2I& aPt [[maybe_unused]], GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
                 {
                     sTool->FilterCollectorForHierarchy( aCollector, true );
                     sTool->FilterCollectorForLockedItems( aCollector );
@@ -3565,7 +3565,7 @@ int EDIT_TOOL::Remove( const TOOL_EVENT& aEvent )
         size_t beforeFPCount = selectionCopy.CountType( PCB_FOOTPRINT_T );
 
         selectionCopy = m_selectionTool->RequestSelection(
-                []( const VECTOR2I& aPt, GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
+                []( const VECTOR2I& aPt [[maybe_unused]], GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
                 {
                     sTool->FilterCollectorForHierarchy( aCollector, true );
                     sTool->FilterCollectorForFreePads( aCollector );
@@ -3595,7 +3595,7 @@ int EDIT_TOOL::Remove( const TOOL_EVENT& aEvent )
 }
 
 
-int EDIT_TOOL::MoveExact( const TOOL_EVENT& aEvent )
+int EDIT_TOOL::MoveExact( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( isRouterActive() )
     {
@@ -3604,7 +3604,7 @@ int EDIT_TOOL::MoveExact( const TOOL_EVENT& aEvent )
     }
 
     const PCB_SELECTION& selection = m_selectionTool->RequestSelection(
-            []( const VECTOR2I& aPt, GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
+            []( const VECTOR2I& aPt [[maybe_unused]], GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
             {
                 sTool->FilterCollectorForMarkers( aCollector );
                 sTool->FilterCollectorForHierarchy( aCollector, true );
@@ -3927,7 +3927,7 @@ int EDIT_TOOL::Duplicate( const TOOL_EVENT& aEvent )
 int EDIT_TOOL::Increment( const TOOL_EVENT& aEvent )
 {
     PCB_SELECTION& selection = m_selectionTool->RequestSelection(
-            []( const VECTOR2I& aPt, GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
+            []( const VECTOR2I& aPt [[maybe_unused]], GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
             {
                 for( int i = aCollector.GetCount() - 1; i >= 0; i-- )
                 {
@@ -4015,7 +4015,7 @@ int EDIT_TOOL::Increment( const TOOL_EVENT& aEvent )
 }
 
 
-void EDIT_TOOL::PadFilter( const VECTOR2I&, GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
+void EDIT_TOOL::PadFilter( const VECTOR2I&, GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool [[maybe_unused]] )
 {
     for( int i = aCollector.GetCount() - 1; i >= 0; i-- )
     {
@@ -4025,7 +4025,7 @@ void EDIT_TOOL::PadFilter( const VECTOR2I&, GENERAL_COLLECTOR& aCollector, PCB_S
 }
 
 
-void EDIT_TOOL::FootprintFilter( const VECTOR2I&, GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
+void EDIT_TOOL::FootprintFilter( const VECTOR2I&, GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool [[maybe_unused]] )
 {
     for( int i = aCollector.GetCount() - 1; i >= 0; i-- )
     {
@@ -4132,7 +4132,7 @@ bool EDIT_TOOL::pickReferencePoint( const wxString& aTooltip, const wxString& aS
             } );
 
     picker->SetMotionHandler(
-            [&]( const VECTOR2D& aPos )
+            [&]( const VECTOR2D& aPos [[maybe_unused]] )
             {
                 m_statusPopup->Move( KIPLATFORM::UI::GetMousePosition() + wxPoint( 20, -50 ) );
             } );
@@ -4152,7 +4152,7 @@ bool EDIT_TOOL::pickReferencePoint( const wxString& aTooltip, const wxString& aS
             } );
 
     picker->SetFinalizeHandler(
-            [&]( const int& aFinalState )
+            [&]( const int& aFinalState [[maybe_unused]] )
             {
                 done = true;
             } );
@@ -4206,7 +4206,7 @@ int EDIT_TOOL::copyToClipboard( const TOOL_EVENT& aEvent )
     Activate();
 
     PCB_SELECTION& selection = m_selectionTool->RequestSelection(
-            [&]( const VECTOR2I& aPt, GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
+            [&]( const VECTOR2I& aPt [[maybe_unused]], GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
             {
                 sTool->FilterCollectorForHierarchy( aCollector, true );
                 sTool->FilterCollectorForMarkers( aCollector );
@@ -4251,10 +4251,10 @@ int EDIT_TOOL::copyToClipboard( const TOOL_EVENT& aEvent )
 }
 
 
-int EDIT_TOOL::copyToClipboardAsText( const TOOL_EVENT& aEvent )
+int EDIT_TOOL::copyToClipboardAsText( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     PCB_SELECTION& selection = m_selectionTool->RequestSelection(
-            []( const VECTOR2I& aPt, GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
+            []( const VECTOR2I& aPt [[maybe_unused]], GENERAL_COLLECTOR& aCollector [[maybe_unused]], PCB_SELECTION_TOOL* sTool [[maybe_unused]] )
             {
                 // Anything unsupported will just be ignored
             } );

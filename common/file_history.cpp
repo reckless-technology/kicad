@@ -186,7 +186,7 @@ SELECTION_CONDITION FILE_HISTORY::FileHistoryNotEmpty( const FILE_HISTORY& aHist
 }
 
 
-bool FILE_HISTORY::isHistoryNotEmpty( const SELECTION& aSelection, const FILE_HISTORY& aHistory )
+bool FILE_HISTORY::isHistoryNotEmpty( const SELECTION& aSelection [[maybe_unused]], const FILE_HISTORY& aHistory )
 {
     return aHistory.GetCount() != 0;
 }

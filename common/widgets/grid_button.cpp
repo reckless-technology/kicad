@@ -46,8 +46,8 @@ void GRID_BUTTON_RENDERER::Draw( wxGrid& aGrid, wxGridCellAttr& aAttr, wxDC& aDc
 }
 
 
-wxSize GRID_BUTTON_RENDERER::GetBestSize( wxGrid& aGrid, wxGridCellAttr& aAttr, wxDC& aDc,
-                                          int aRow, int aCol)
+wxSize GRID_BUTTON_RENDERER::GetBestSize( wxGrid& aGrid [[maybe_unused]], wxGridCellAttr& aAttr [[maybe_unused]], wxDC& aDc [[maybe_unused]],
+                                          int aRow [[maybe_unused]], int aCol [[maybe_unused]])
 {
     return m_button.GetSize();
 }
@@ -84,8 +84,8 @@ void GRID_BITMAP_BUTTON_RENDERER::Draw( wxGrid& aGrid, wxGridCellAttr& aAttr, wx
 }
 
 
-wxSize GRID_BITMAP_BUTTON_RENDERER::GetBestSize( wxGrid& aGrid, wxGridCellAttr& aAttr, wxDC& aDc,
-                                                 int aRow, int aCol)
+wxSize GRID_BITMAP_BUTTON_RENDERER::GetBestSize( wxGrid& aGrid, wxGridCellAttr& aAttr [[maybe_unused]], wxDC& aDc [[maybe_unused]],
+                                                 int aRow [[maybe_unused]], int aCol [[maybe_unused]])
 {
     return m_bitmap.GetPreferredBitmapSizeFor( &aGrid ) + BUTTON_PADDING;
 }

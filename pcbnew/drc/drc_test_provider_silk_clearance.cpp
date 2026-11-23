@@ -96,7 +96,7 @@ bool DRC_TEST_PROVIDER_SILK_CLEARANCE::Run()
     LSET      targetLayers = LSET::FrontMask() | LSET::BackMask() | LSET( { Edge_Cuts, Margin } );
 
     auto countItems =
-            [&]( BOARD_ITEM* item ) -> bool
+            [&]( BOARD_ITEM* item [[maybe_unused]] ) -> bool
             {
                 ++items;
                 return true;

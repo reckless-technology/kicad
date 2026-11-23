@@ -236,7 +236,7 @@ public:
      * @return a new instance of dialog that configures this plugin, or nullptr if this plugin
      *         does not support a configuration dialog.  Caller takes ownership.
      */
-    virtual DIALOG_SHIM* CreateConfigurationDialog( wxWindow* aParent, const wxString& aLibraryPath )
+    virtual DIALOG_SHIM* CreateConfigurationDialog( wxWindow* aParent [[maybe_unused]], const wxString& aLibraryPath [[maybe_unused]] )
     {
         return nullptr;
     }

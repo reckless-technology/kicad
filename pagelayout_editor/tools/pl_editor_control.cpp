@@ -51,7 +51,7 @@ void PL_EDITOR_CONTROL::Reset( RESET_REASON aReason )
 }
 
 
-int PL_EDITOR_CONTROL::New( const TOOL_EVENT& aEvent )
+int PL_EDITOR_CONTROL::New( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     wxCommandEvent evt( wxEVT_NULL, wxID_NEW );
     m_frame->Files_io( evt );
@@ -59,7 +59,7 @@ int PL_EDITOR_CONTROL::New( const TOOL_EVENT& aEvent )
 }
 
 
-int PL_EDITOR_CONTROL::Open( const TOOL_EVENT& aEvent )
+int PL_EDITOR_CONTROL::Open( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     wxCommandEvent evt( wxEVT_NULL, wxID_OPEN );
     m_frame->Files_io( evt );
@@ -67,7 +67,7 @@ int PL_EDITOR_CONTROL::Open( const TOOL_EVENT& aEvent )
 }
 
 
-int PL_EDITOR_CONTROL::Save( const TOOL_EVENT& aEvent )
+int PL_EDITOR_CONTROL::Save( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     wxCommandEvent evt( wxEVT_NULL, wxID_SAVE );
     m_frame->Files_io( evt );
@@ -75,7 +75,7 @@ int PL_EDITOR_CONTROL::Save( const TOOL_EVENT& aEvent )
 }
 
 
-int PL_EDITOR_CONTROL::SaveAs( const TOOL_EVENT& aEvent )
+int PL_EDITOR_CONTROL::SaveAs( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     wxCommandEvent evt( wxEVT_NULL, wxID_SAVEAS );
     m_frame->Files_io( evt );
@@ -83,7 +83,7 @@ int PL_EDITOR_CONTROL::SaveAs( const TOOL_EVENT& aEvent )
 }
 
 
-int PL_EDITOR_CONTROL::PageSetup( const TOOL_EVENT& aEvent )
+int PL_EDITOR_CONTROL::PageSetup( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->SaveCopyInUndoList();
 
@@ -107,21 +107,21 @@ int PL_EDITOR_CONTROL::PageSetup( const TOOL_EVENT& aEvent )
 }
 
 
-int PL_EDITOR_CONTROL::Print( const TOOL_EVENT& aEvent )
+int PL_EDITOR_CONTROL::Print( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->ToPrinter( false );
     return 0;
 }
 
 
-int PL_EDITOR_CONTROL::Plot( const TOOL_EVENT& aEvent )
+int PL_EDITOR_CONTROL::Plot( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     wxMessageBox( wxT( "Not yet available" ) );
     return 0;
 }
 
 
-int PL_EDITOR_CONTROL::ShowInspector( const TOOL_EVENT& aEvent )
+int PL_EDITOR_CONTROL::ShowInspector( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->ShowDesignInspector();
     return 0;
@@ -140,7 +140,7 @@ int PL_EDITOR_CONTROL::TitleBlockDisplayMode( const TOOL_EVENT& aEvent )
 }
 
 
-int PL_EDITOR_CONTROL::UpdateMessagePanel( const TOOL_EVENT& aEvent )
+int PL_EDITOR_CONTROL::UpdateMessagePanel( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     PL_SELECTION_TOOL* selTool = m_toolMgr->GetTool<PL_SELECTION_TOOL>();
     PL_SELECTION&      selection = selTool->GetSelection();
@@ -170,7 +170,7 @@ int PL_EDITOR_CONTROL::UpdateMessagePanel( const TOOL_EVENT& aEvent )
 }
 
 
-int PL_EDITOR_CONTROL::GridResetOrigin( const TOOL_EVENT& aEvent )
+int PL_EDITOR_CONTROL::GridResetOrigin( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->SetGridOrigin( VECTOR2I( 0, 0 ) );
     m_frame->GetCanvas()->ForceRefresh();

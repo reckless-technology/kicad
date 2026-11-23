@@ -90,7 +90,7 @@ SCH_IO_KICAD_LEGACY::~SCH_IO_KICAD_LEGACY()
 }
 
 
-void SCH_IO_KICAD_LEGACY::init( SCHEMATIC* aSchematic, const std::map<std::string, UTF8>* aProperties )
+void SCH_IO_KICAD_LEGACY::init( SCHEMATIC* aSchematic, const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     m_version   = 0;
     m_rootSheet = nullptr;
@@ -1476,7 +1476,7 @@ SCH_SYMBOL* SCH_IO_KICAD_LEGACY::loadSymbol( LINE_READER& aReader )
 
 
 std::shared_ptr<BUS_ALIAS> SCH_IO_KICAD_LEGACY::loadBusAlias( LINE_READER& aReader,
-                                                              SCH_SCREEN* aScreen )
+                                                              SCH_SCREEN* aScreen [[maybe_unused]] )
 {
     // BUS_ALIAS does not take a SCH_SCREEN* in its constructor; create a default instance
     auto busAlias = std::make_shared<BUS_ALIAS>();
@@ -2208,7 +2208,7 @@ void SCH_IO_KICAD_LEGACY::CreateLibrary( const wxString& aLibraryPath,
 
 
 bool SCH_IO_KICAD_LEGACY::DeleteLibrary( const wxString& aLibraryPath,
-                                         const std::map<std::string, UTF8>* aProperties )
+                                         const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     wxFileName fn = aLibraryPath;
 
@@ -2268,7 +2268,7 @@ bool SCH_IO_KICAD_LEGACY::CanReadLibrary( const wxString& aFileName ) const
 }
 
 
-bool SCH_IO_KICAD_LEGACY::IsLibraryWritable( const wxString& aLibraryPath )
+bool SCH_IO_KICAD_LEGACY::IsLibraryWritable( const wxString& aLibraryPath [[maybe_unused]] )
 {
     // Writing legacy symbol libraries is deprecated.
     return false;

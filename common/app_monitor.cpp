@@ -59,7 +59,7 @@ void SENTRY::Cleanup()
 }
 
 
-void SENTRY::AddTag( const wxString& aKey, const wxString& aValue )
+void SENTRY::AddTag( const wxString& aKey [[maybe_unused]], const wxString& aValue [[maybe_unused]] )
 {
 #ifdef KICAD_USE_SENTRY
     sentry_set_tag( aKey.c_str(), aValue.c_str() );
@@ -67,7 +67,7 @@ void SENTRY::AddTag( const wxString& aKey, const wxString& aValue )
 }
 
 
-void SENTRY::SetSentryOptIn( bool aOptIn )
+void SENTRY::SetSentryOptIn( bool aOptIn [[maybe_unused]] )
 {
 #ifdef KICAD_USE_SENTRY
     if( aOptIn )
@@ -230,7 +230,7 @@ bool SENTRY::IsOptedIn()
 }
 
 
-void SENTRY::LogAssert( const ASSERT_CACHE_KEY& aKey, const wxString& aAssertMsg )
+void SENTRY::LogAssert( const ASSERT_CACHE_KEY& aKey [[maybe_unused]], const wxString& aAssertMsg [[maybe_unused]] )
 {
 #ifdef KICAD_USE_SENTRY
     if( !APP_MONITOR::SENTRY::Instance()->IsOptedIn() )
@@ -254,7 +254,7 @@ void SENTRY::LogAssert( const ASSERT_CACHE_KEY& aKey, const wxString& aAssertMsg
 }
 
 
-void SENTRY::LogException( const wxString& aMsg, bool aUnhandled )
+void SENTRY::LogException( const wxString& aMsg [[maybe_unused]], bool aUnhandled [[maybe_unused]] )
 {
 #ifdef KICAD_USE_SENTRY
     if( !APP_MONITOR::SENTRY::Instance()->IsOptedIn() )
@@ -337,7 +337,7 @@ bool operator<( const ASSERT_CACHE_KEY& aKey1, const ASSERT_CACHE_KEY& aKey2 )
 }
 
 
-void AddBreadcrumb( BREADCRUMB_TYPE aType, const wxString& aMsg, const wxString& aCategory, BREADCRUMB_LEVEL aLevel )
+void AddBreadcrumb( BREADCRUMB_TYPE aType [[maybe_unused]], const wxString& aMsg [[maybe_unused]], const wxString& aCategory [[maybe_unused]], BREADCRUMB_LEVEL aLevel [[maybe_unused]] )
 {
 #ifdef KICAD_USE_SENTRY
     if( !SENTRY::Instance()->IsOptedIn() )
@@ -361,7 +361,7 @@ void AddBreadcrumb( BREADCRUMB_TYPE aType, const wxString& aMsg, const wxString&
 }
 
 
-void AddNavigationBreadcrumb( const wxString& aMsg, const wxString& aCategory )
+void AddNavigationBreadcrumb( const wxString& aMsg [[maybe_unused]], const wxString& aCategory [[maybe_unused]] )
 {
 #ifdef KICAD_USE_SENTRY
     AddBreadcrumb( BREADCRUMB_TYPE::NAVIGATION, aMsg, aCategory, BREADCRUMB_LEVEL::INFO );
@@ -369,7 +369,7 @@ void AddNavigationBreadcrumb( const wxString& aMsg, const wxString& aCategory )
 }
 
 
-void AddTransactionBreadcrumb( const wxString& aMsg, const wxString& aCategory )
+void AddTransactionBreadcrumb( const wxString& aMsg [[maybe_unused]], const wxString& aCategory [[maybe_unused]] )
 {
 #ifdef KICAD_USE_SENTRY
     AddBreadcrumb( BREADCRUMB_TYPE::TRANSACTION, aMsg, aCategory, BREADCRUMB_LEVEL::INFO );
@@ -436,7 +436,7 @@ private:
 }
 
 
-TRANSACTION::TRANSACTION( const std::string& aName, const std::string& aOperation )
+TRANSACTION::TRANSACTION( const std::string& aName [[maybe_unused]], const std::string& aOperation [[maybe_unused]] )
 {
 #ifdef KICAD_USE_SENTRY
     if( SENTRY::Instance()->IsOptedIn() )
@@ -466,7 +466,7 @@ void TRANSACTION::Start()
 }
 
 
-void TRANSACTION::StartSpan( const std::string& aOperation, const std::string& aDescription )
+void TRANSACTION::StartSpan( const std::string& aOperation [[maybe_unused]], const std::string& aDescription [[maybe_unused]] )
 {
 #ifdef KICAD_USE_SENTRY
     if( m_impl )

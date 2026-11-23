@@ -66,9 +66,9 @@ public:
 
     std::vector<FOOTPRINT*> GetImportedCachedLibraryFootprints() override;
 
-    long long GetLibraryTimestamp( const wxString& aLibraryPath ) const override { return 0; }
+    long long GetLibraryTimestamp( const wxString& aLibraryPath [[maybe_unused]] ) const override { return 0; }
 
-    bool IsLibraryWritable( const wxString& aLibraryPath ) override { return false; }
+    bool IsLibraryWritable( const wxString& aLibraryPath [[maybe_unused]] ) override { return false; }
 
     PCB_IO_SPRINT_LAYOUT();
     ~PCB_IO_SPRINT_LAYOUT() override;

@@ -130,14 +130,14 @@ DIALOG_SCH_FIND::DIALOG_SCH_FIND( SCH_BASE_FRAME* aParent, SCH_SEARCH_DATA* aDat
 }
 
 
-void DIALOG_SCH_FIND::OnClose( wxCloseEvent& aEvent )
+void DIALOG_SCH_FIND::OnClose( wxCloseEvent& aEvent [[maybe_unused]] )
 {
     // Notify the SCH_BASE_FRAME
     m_frame->OnFindDialogClose();
 }
 
 
-void DIALOG_SCH_FIND::OnIdle( wxIdleEvent& aEvent )
+void DIALOG_SCH_FIND::OnIdle( wxIdleEvent& aEvent [[maybe_unused]] )
 {
     if( m_findDirty )
     {
@@ -147,7 +147,7 @@ void DIALOG_SCH_FIND::OnIdle( wxIdleEvent& aEvent )
 }
 
 
-void DIALOG_SCH_FIND::OnCancel( wxCommandEvent& aEvent )
+void DIALOG_SCH_FIND::OnCancel( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     wxCloseEvent dummy;
     OnClose( dummy );
@@ -180,7 +180,7 @@ void DIALOG_SCH_FIND::OnCharHook( wxKeyEvent& aEvent )
 }
 
 
-void DIALOG_SCH_FIND::onShowSearchPanel( wxHyperlinkEvent& event )
+void DIALOG_SCH_FIND::onShowSearchPanel( wxHyperlinkEvent& event [[maybe_unused]] )
 {
     wxCHECK2( m_frame->GetFrameType() == FRAME_SCH, /* void */ );
 
@@ -210,7 +210,7 @@ void DIALOG_SCH_FIND::OnUpdateReplaceAllUI( wxUpdateUIEvent& aEvent )
 }
 
 
-void DIALOG_SCH_FIND::OnSearchForText( wxCommandEvent& aEvent )
+void DIALOG_SCH_FIND::OnSearchForText( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     m_findReplaceData->findString = m_comboFind->GetValue();
     m_findDirty = true;
@@ -234,7 +234,7 @@ void DIALOG_SCH_FIND::OnSearchForSelect( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_SCH_FIND::OnReplaceWithText( wxCommandEvent& aEvent )
+void DIALOG_SCH_FIND::OnReplaceWithText( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     m_findReplaceData->replaceString = m_comboReplace->GetValue();
 }
@@ -318,7 +318,7 @@ void DIALOG_SCH_FIND::updateFlags()
 }
 
 
-void DIALOG_SCH_FIND::OnFind( wxCommandEvent& aEvent )
+void DIALOG_SCH_FIND::OnFind( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     updateFlags();      // Ensure search flags are up to date
 

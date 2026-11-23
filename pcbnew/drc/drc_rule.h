@@ -56,7 +56,7 @@ public:
 
     virtual ~DRC_RULE();
 
-    virtual bool AppliesTo( const BOARD_ITEM* a, const BOARD_ITEM* b = nullptr ) const
+    virtual bool AppliesTo( const BOARD_ITEM* a [[maybe_unused]], const BOARD_ITEM* b [[maybe_unused]] = nullptr ) const
     {
         return true;
     };

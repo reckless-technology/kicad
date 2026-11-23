@@ -206,7 +206,7 @@ static void SetSchShapeFillAndColor( const ASCH_FILL_INTERFACE& elem, SCH_SHAPE*
 
 // A symbol's graphic takes Altium's line width and colour, so the symbol looks as Altium draws it
 static void SetLibShapeLine( const ASCH_BORDER_INTERFACE& elem, SCH_SHAPE* shape,
-                             ALTIUM_SCH_RECORD aType )
+                             ALTIUM_SCH_RECORD aType [[maybe_unused]] )
 {
     shape->SetStroke( STROKE_PARAMS( elem.LineWidth, LINE_STYLE::SOLID, GetColorFromInt( elem.Color ) ) );
 }
@@ -215,7 +215,7 @@ static void SetLibShapeLine( const ASCH_BORDER_INTERFACE& elem, SCH_SHAPE* shape
 // A solid closed shape in a symbol is filled with Altium's area colour, or left open where Altium
 // draws it transparent
 static void SetLibShapeFillAndColor( const ASCH_FILL_INTERFACE& elem, SCH_SHAPE* shape,
-                                     ALTIUM_SCH_RECORD aType, int aStrokeColor )
+                                     ALTIUM_SCH_RECORD aType, int aStrokeColor [[maybe_unused]] )
 {
     bool closedShape = false;
 
@@ -454,7 +454,7 @@ wxFileName SCH_IO_ALTIUM::getLibFileName()
 }
 
 
-SCH_SHEET* SCH_IO_ALTIUM::LoadSchematicProject( SCHEMATIC* aSchematic, const std::map<std::string, UTF8>* aProperties )
+SCH_SHEET* SCH_IO_ALTIUM::LoadSchematicProject( SCHEMATIC* aSchematic [[maybe_unused]], const std::map<std::string, UTF8>* aProperties )
 {
     int x = 1;
     int y = 1;
@@ -7764,7 +7764,7 @@ long long SCH_IO_ALTIUM::getLibraryTimestamp( const wxString& aLibraryPath ) con
 
 
 void SCH_IO_ALTIUM::ensureLoadedLibrary( const wxString& aLibraryPath,
-                                         const std::map<std::string, UTF8>* aProperties )
+                                         const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     // Suppress font substitution warnings (RAII - automatically restored on scope exit)
     FONTCONFIG_REPORTER_SCOPE fontconfigScope( nullptr );

@@ -67,7 +67,7 @@ public:
      * @param aID is the control ID to register the handler for.
      * @param aConditions are the UI conditions to use for the control states.
      */
-    virtual void RegisterUIUpdateHandler( int aID, const ACTION_CONDITIONS& aConditions )
+    virtual void RegisterUIUpdateHandler( int aID [[maybe_unused]], const ACTION_CONDITIONS& aConditions [[maybe_unused]] )
     {}
 
     /**
@@ -82,7 +82,7 @@ public:
      *
      * @param aID is the control ID to unregister the handler for.
      */
-    virtual void UnregisterUIUpdateHandler( int aID )
+    virtual void UnregisterUIUpdateHandler( int aID [[maybe_unused]] )
     {}
 
     /**
@@ -122,12 +122,12 @@ public:
     std::string CurrentToolName() const;
     bool IsCurrentTool( const TOOL_ACTION& aAction ) const;
 
-    virtual void DisplayToolMsg( const wxString& msg ) {};
+    virtual void DisplayToolMsg( const wxString& msg [[maybe_unused]] ) {};
 
     /**
      * Select the given action in the toolbar group which contains it, if any.
      */
-    virtual void SelectToolbarAction( const TOOL_ACTION& aAction ) {}
+    virtual void SelectToolbarAction( const TOOL_ACTION& aAction [[maybe_unused]] ) {}
 
     virtual void ShowChangedLanguage();
 

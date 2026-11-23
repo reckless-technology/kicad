@@ -161,7 +161,7 @@ public:
      */
     GRID_GEOMETRY AsGridGeometry() const;
 
-    double GetCoverageArea( int aTextMargin ) const override { return AsGridGeometry().Area(); }
+    double GetCoverageArea( int aTextMargin [[maybe_unused]] ) const override { return AsGridGeometry().Area(); }
 
     /**
      * @return true if aPos is within aTolerance of this grid's coverage region.
@@ -172,7 +172,7 @@ public:
     }
 
     LSET GetLayerSet() const override { return LSET::AllLayersMask(); }
-    void SetLayerSet( const LSET& aLayers ) override
+    void SetLayerSet( const LSET& aLayers [[maybe_unused]] ) override
     {
         // Grid items live on every layer; ignore attempts to assign a layer set.
     }
@@ -192,8 +192,8 @@ public:
     bool HitTest( const BOX2I& aRect, bool aContained, int aAccuracy = 0 ) const override;
 
     // Grid items have no physical footprint on any layer - silence the base-class warning.
-    void TransformShapeToPolygon( SHAPE_POLY_SET& aBuffer, PCB_LAYER_ID aLayer, int aClearance, int aError,
-                                  ERROR_LOC aErrorLoc, bool ignoreLineWidth = false ) const override
+    void TransformShapeToPolygon( SHAPE_POLY_SET& aBuffer [[maybe_unused]], PCB_LAYER_ID aLayer [[maybe_unused]], int aClearance [[maybe_unused]], int aError [[maybe_unused]],
+                                  ERROR_LOC aErrorLoc [[maybe_unused]], bool ignoreLineWidth [[maybe_unused]] = false ) const override
     {
     }
 

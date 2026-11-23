@@ -83,7 +83,7 @@ public:
         return dummy;
     }
 
-    void SetPosition( const VECTOR2I& aPos ) override
+    void SetPosition( const VECTOR2I& aPos [[maybe_unused]] ) override
     {
     }
 
@@ -181,12 +181,12 @@ public:
 
     bool Matches( const EDA_SEARCH_DATA& aSearchData, void* aAuxData ) const override;
 
-    double Similarity( const BOARD_ITEM& aBoardItem ) const override
+    double Similarity( const BOARD_ITEM& aBoardItem [[maybe_unused]] ) const override
     {
         return 0.0;
     }
 
-    bool operator==( const BOARD_ITEM& aBoardItem ) const override
+    bool operator==( const BOARD_ITEM& aBoardItem [[maybe_unused]] ) const override
     {
         return 0.0;
     }

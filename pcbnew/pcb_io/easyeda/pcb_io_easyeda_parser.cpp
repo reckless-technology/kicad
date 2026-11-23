@@ -53,7 +53,7 @@ static const int      SHAPE_JOIN_DISTANCE = pcbIUScale.mmToIU( 1.5 );
 static const VECTOR2I HIDDEN_TEXT_SIZE( pcbIUScale.mmToIU( 0.5 ), pcbIUScale.mmToIU( 0.5 ) );
 
 
-PCB_IO_EASYEDA_PARSER::PCB_IO_EASYEDA_PARSER( PROGRESS_REPORTER* aProgressReporter )
+PCB_IO_EASYEDA_PARSER::PCB_IO_EASYEDA_PARSER( PROGRESS_REPORTER* aProgressReporter [[maybe_unused]] )
 {
 }
 

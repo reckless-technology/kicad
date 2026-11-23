@@ -332,7 +332,7 @@ public:
      *
      * @param aNames will be filled with a list of sub-libraries within this symbol library
      */
-    virtual void GetSubLibraryNames( std::vector<wxString>& aNames ) {}
+    virtual void GetSubLibraryNames( std::vector<wxString>& aNames [[maybe_unused]] ) {}
 
     /**
      * Gets a description of a sublibrary.
@@ -343,7 +343,7 @@ public:
      *
      * @return the description of the sublibrary
      */
-    virtual wxString GetSubLibraryDescription( const wxString& aName ) { return wxEmptyString; }
+    virtual wxString GetSubLibraryDescription( const wxString& aName [[maybe_unused]] ) { return wxEmptyString; }
 
     /**
      * Retrieves a list of (custom) field names that are present on symbols in this library.
@@ -354,7 +354,7 @@ public:
      *
      * @param aNames will be filled with any custom fields present in this library.
      */
-    virtual void GetAvailableSymbolFields( std::vector<wxString>& aNames ) {}
+    virtual void GetAvailableSymbolFields( std::vector<wxString>& aNames [[maybe_unused]] ) {}
 
     /**
      * Retrieves a list of (custom) field names that should be shown by default for this library
@@ -387,7 +387,7 @@ public:
      * Some library plugins need to interface with other loaded libraries.
      * To do this, they receive a reference to the project-specific manager adapter.
      */
-    virtual void SetLibraryManagerAdapter( SYMBOL_LIBRARY_ADAPTER* aAdapter ) {}
+    virtual void SetLibraryManagerAdapter( SYMBOL_LIBRARY_ADAPTER* aAdapter [[maybe_unused]] ) {}
 
     //-----</PUBLIC SCH_IO API>------------------------------------------------
 

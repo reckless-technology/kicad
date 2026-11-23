@@ -123,7 +123,7 @@ EESCHEMA_JOBS_HANDLER::EESCHEMA_JOBS_HANDLER( KIWAY* aKiway ) :
         m_cliSchematic( nullptr )
 {
     Register( "bom", std::bind( &EESCHEMA_JOBS_HANDLER::JobExportBom, this, std::placeholders::_1 ),
-              [aKiway]( JOB* job, wxWindow* aParent ) -> bool
+              [aKiway]( JOB* job, wxWindow* aParent [[maybe_unused]] ) -> bool
               {
                   JOB_EXPORT_BOM* bomJob = dynamic_cast<JOB_EXPORT_BOM*>( job );
 
@@ -139,7 +139,7 @@ EESCHEMA_JOBS_HANDLER::EESCHEMA_JOBS_HANDLER( KIWAY* aKiway ) :
                   return dlg.ShowModal() == wxID_OK;
               } );
     Register( "pythonbom", std::bind( &EESCHEMA_JOBS_HANDLER::JobExportPythonBom, this, std::placeholders::_1 ),
-              []( JOB* job, wxWindow* aParent ) -> bool
+              []( JOB* job [[maybe_unused]], wxWindow* aParent [[maybe_unused]] ) -> bool
               {
                   return true;
               } );
@@ -175,27 +175,27 @@ EESCHEMA_JOBS_HANDLER::EESCHEMA_JOBS_HANDLER( KIWAY* aKiway ) :
                   return dlg.ShowModal() == wxID_OK;
               } );
     Register( "symupgrade", std::bind( &EESCHEMA_JOBS_HANDLER::JobSymUpgrade, this, std::placeholders::_1 ),
-              []( JOB* job, wxWindow* aParent ) -> bool
+              []( JOB* job [[maybe_unused]], wxWindow* aParent [[maybe_unused]] ) -> bool
               {
                   return true;
               } );
     Register( "symdowngrade", std::bind( &EESCHEMA_JOBS_HANDLER::JobSymDowngrade, this, std::placeholders::_1 ),
-              []( JOB* job, wxWindow* aParent ) -> bool
+              []( JOB* job [[maybe_unused]], wxWindow* aParent [[maybe_unused]] ) -> bool
               {
                   return true;
               } );
     Register( "symsvg", std::bind( &EESCHEMA_JOBS_HANDLER::JobSymExportSvg, this, std::placeholders::_1 ),
-              []( JOB* job, wxWindow* aParent ) -> bool
+              []( JOB* job [[maybe_unused]], wxWindow* aParent [[maybe_unused]] ) -> bool
               {
                   return true;
               } );
     Register( "sch_diff", std::bind( &EESCHEMA_JOBS_HANDLER::JobSchDiff, this, std::placeholders::_1 ),
-              []( JOB* job, wxWindow* aParent ) -> bool
+              []( JOB* job [[maybe_unused]], wxWindow* aParent [[maybe_unused]] ) -> bool
               {
                   return true;
               } );
     Register( "sym_diff", std::bind( &EESCHEMA_JOBS_HANDLER::JobSymDiff, this, std::placeholders::_1 ),
-              []( JOB* job, wxWindow* aParent ) -> bool
+              []( JOB* job [[maybe_unused]], wxWindow* aParent [[maybe_unused]] ) -> bool
               {
                   return true;
               } );
@@ -210,17 +210,17 @@ EESCHEMA_JOBS_HANDLER::EESCHEMA_JOBS_HANDLER( KIWAY* aKiway ) :
                   return dlg.ShowModal() == wxID_OK;
               } );
     Register( "upgrade", std::bind( &EESCHEMA_JOBS_HANDLER::JobUpgrade, this, std::placeholders::_1 ),
-              []( JOB* job, wxWindow* aParent ) -> bool
+              []( JOB* job [[maybe_unused]], wxWindow* aParent [[maybe_unused]] ) -> bool
               {
                   return true;
               } );
     Register( "downgrade", std::bind( &EESCHEMA_JOBS_HANDLER::JobDowngrade, this, std::placeholders::_1 ),
-              []( JOB* job, wxWindow* aParent ) -> bool
+              []( JOB* job [[maybe_unused]], wxWindow* aParent [[maybe_unused]] ) -> bool
               {
                   return true;
               } );
     Register( "sch_import", std::bind( &EESCHEMA_JOBS_HANDLER::JobImport, this, std::placeholders::_1 ),
-              []( JOB* job, wxWindow* aParent ) -> bool
+              []( JOB* job [[maybe_unused]], wxWindow* aParent [[maybe_unused]] ) -> bool
               {
                   return true;
               } );
@@ -3412,7 +3412,7 @@ int EESCHEMA_JOBS_HANDLER::OpenDiffDialog( KICAD_DIFF::DOC_KIND aKind, const wxS
 
 int EESCHEMA_JOBS_HANDLER::RunMerge( KICAD_DIFF::DOC_KIND aKind, const wxString& aAncestor,
                                      const wxString& aOurs, const wxString& aTheirs,
-                                     const wxString& aOutput, bool aInteractive, bool aSingleFile,
+                                     const wxString& aOutput, bool aInteractive, bool aSingleFile [[maybe_unused]],
                                      REPORTER* aReporter )
 {
     // Restore m_reporter on scope exit so a caller's transient (often

@@ -94,7 +94,7 @@ DIALOG_IMPORT_NETLIST::~DIALOG_IMPORT_NETLIST()
 }
 
 
-void DIALOG_IMPORT_NETLIST::onBrowseNetlistFiles( wxCommandEvent& event )
+void DIALOG_IMPORT_NETLIST::onBrowseNetlistFiles( wxCommandEvent& event [[maybe_unused]] )
 {
     wxString dirPath = wxFileName( Prj().GetProjectFullName() ).GetPath();
     wxString filename = m_parent->GetLastPath( LAST_PATH_NETLIST );
@@ -120,13 +120,13 @@ void DIALOG_IMPORT_NETLIST::onBrowseNetlistFiles( wxCommandEvent& event )
 
 
 
-void DIALOG_IMPORT_NETLIST::onImportNetlist( wxCommandEvent& event )
+void DIALOG_IMPORT_NETLIST::onImportNetlist( wxCommandEvent& event [[maybe_unused]] )
 {
     onFilenameChanged( true );
 }
 
 
-void DIALOG_IMPORT_NETLIST::onUpdatePCB( wxCommandEvent& event )
+void DIALOG_IMPORT_NETLIST::onUpdatePCB( wxCommandEvent& event [[maybe_unused]] )
 {
     wxFileName fn = m_NetlistFilenameCtrl->GetValue();
 
@@ -182,14 +182,14 @@ void DIALOG_IMPORT_NETLIST::onFilenameChanged( bool aLoadNetlist )
 }
 
 
-void DIALOG_IMPORT_NETLIST::OnMatchChanged( wxCommandEvent& event )
+void DIALOG_IMPORT_NETLIST::OnMatchChanged( wxCommandEvent& event [[maybe_unused]] )
 {
     if( m_initialized )
         loadNetlist( true );
 }
 
 
-void DIALOG_IMPORT_NETLIST::OnOptionChanged( wxCommandEvent& event )
+void DIALOG_IMPORT_NETLIST::OnOptionChanged( wxCommandEvent& event [[maybe_unused]] )
 {
     if( m_initialized )
         loadNetlist( true );

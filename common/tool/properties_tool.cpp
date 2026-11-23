@@ -24,7 +24,7 @@
 #include <widgets/properties_panel.h>
 
 
-int PROPERTIES_TOOL::UpdateProperties( const TOOL_EVENT& aEvent )
+int PROPERTIES_TOOL::UpdateProperties( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     EDA_DRAW_FRAME* editFrame = getEditFrame<EDA_DRAW_FRAME>();
 

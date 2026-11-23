@@ -1392,7 +1392,7 @@ static void isBlindBuriedViaFunc( LIBEVAL::CONTEXT* aCtx, void* self )
 }
 
 
-static void isCoupledDiffPairFunc( LIBEVAL::CONTEXT* aCtx, void* self )
+static void isCoupledDiffPairFunc( LIBEVAL::CONTEXT* aCtx, void* self [[maybe_unused]] )
 {
     PCBEXPR_CONTEXT*      context = static_cast<PCBEXPR_CONTEXT*>( aCtx );
     BOARD_CONNECTED_ITEM* a = dynamic_cast<BOARD_CONNECTED_ITEM*>( context->GetItem( 0 ) );

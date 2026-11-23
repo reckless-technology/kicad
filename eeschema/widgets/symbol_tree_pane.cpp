@@ -84,7 +84,7 @@ void SYMBOL_TREE_PANE::onMenuClose( wxMenuEvent& aEvent )
 }
 
 
-void SYMBOL_TREE_PANE::onSymbolSelected( wxCommandEvent& aEvent )
+void SYMBOL_TREE_PANE::onSymbolSelected( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     m_symbolEditFrame->GetToolManager()->RunAction( SCH_ACTIONS::editSymbol );
 
@@ -96,7 +96,7 @@ void SYMBOL_TREE_PANE::onSymbolSelected( wxCommandEvent& aEvent )
 }
 
 
-void SYMBOL_TREE_PANE::onUpdateUI( wxUpdateUIEvent& aEvent )
+void SYMBOL_TREE_PANE::onUpdateUI( wxUpdateUIEvent& aEvent [[maybe_unused]] )
 {
     if( m_symbolEditFrame->GetCanvas()->HasFocus() )
     {

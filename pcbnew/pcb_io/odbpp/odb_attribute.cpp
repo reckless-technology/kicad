@@ -98,7 +98,7 @@ void ATTR_MANAGER::WriteAttributesText( std::ostream& ost, const std::string& pr
 }
 
 
-void ATTR_MANAGER::WriteAttributes( std::ostream& ost, const std::string& prefix ) const
+void ATTR_MANAGER::WriteAttributes( std::ostream& ost, const std::string& prefix [[maybe_unused]] ) const
 {
     ost << std::endl << "#\n#Feature attribute names\n#" << std::endl;
     WriteAttributesName( ost );

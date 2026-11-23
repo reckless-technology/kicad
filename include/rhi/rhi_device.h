@@ -294,8 +294,8 @@ public:
      * @return false if either framebuffer lacks depth, the region does not fit in the source, the
      *         source has not been rendered yet or the device cannot copy depth.
      */
-    virtual bool CopyFramebufferDepth( RHI_FramebufferHandle aSource, RHI_FramebufferHandle aDestination,
-                                       uint32_t aSourceX = 0, uint32_t aSourceY = 0 )
+    virtual bool CopyFramebufferDepth( RHI_FramebufferHandle aSource [[maybe_unused]], RHI_FramebufferHandle aDestination [[maybe_unused]],
+                                       uint32_t aSourceX [[maybe_unused]] = 0, uint32_t aSourceY [[maybe_unused]] = 0 )
     {
         return false;
     }
@@ -306,14 +306,14 @@ public:
      *
      * @return true if it had to wait.
      */
-    virtual bool WaitForPresentSlot( RHI_SwapchainHandle aSwapchain, std::chrono::milliseconds aTimeout,
-                                     int aAllowed )
+    virtual bool WaitForPresentSlot( RHI_SwapchainHandle aSwapchain [[maybe_unused]], std::chrono::milliseconds aTimeout [[maybe_unused]],
+                                     int aAllowed [[maybe_unused]] )
     {
         return false;
     }
 
     /** Retry a fixed surface extent that lagged behind the requested window size. */
-    virtual RHI_SURFACE_EXTENT_POLL_RESULT PollSurfaceExtent( RHI_SwapchainHandle aSwapchain )
+    virtual RHI_SURFACE_EXTENT_POLL_RESULT PollSurfaceExtent( RHI_SwapchainHandle aSwapchain [[maybe_unused]] )
     {
         return RHI_SURFACE_EXTENT_POLL_RESULT::IDLE;
     }
@@ -322,20 +322,20 @@ public:
      * False when presents show at once instead of at the next vertical blank, so frames drawn
      * faster than the display refreshes are never seen.
      */
-    virtual bool PresentWaitsForDisplay( RHI_SwapchainHandle aSwapchain ) const { return true; }
+    virtual bool PresentWaitsForDisplay( RHI_SwapchainHandle aSwapchain [[maybe_unused]] ) const { return true; }
 
     /**
      * True when a present replaces one still queued for the next vertical blank, as in Vulkan
      * MAILBOX mode, so frames drawn faster than the display only cost GPU time.
      */
-    virtual bool PresentReplacesQueued( RHI_SwapchainHandle aSwapchain ) const { return false; }
+    virtual bool PresentReplacesQueued( RHI_SwapchainHandle aSwapchain [[maybe_unused]] ) const { return false; }
 
     /**
      * The vertical blank at which the display last showed a frame, or nothing if the backend
      * cannot tell.
      */
     virtual std::optional<std::chrono::steady_clock::time_point>
-    LastDisplayRefresh( RHI_SwapchainHandle aSwapchain ) const
+    LastDisplayRefresh( RHI_SwapchainHandle aSwapchain [[maybe_unused]] ) const
     {
         return std::nullopt;
     }

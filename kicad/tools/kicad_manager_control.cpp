@@ -78,7 +78,7 @@ KICAD_MANAGER_CONTROL::KICAD_MANAGER_CONTROL() :
 }
 
 
-void KICAD_MANAGER_CONTROL::Reset( RESET_REASON aReason )
+void KICAD_MANAGER_CONTROL::Reset( RESET_REASON aReason [[maybe_unused]] )
 {
     m_identityQuery.Cancel();
     m_frame = getEditFrame<KICAD_MANAGER_FRAME>();
@@ -154,7 +154,7 @@ wxFileName KICAD_MANAGER_CONTROL::newProjectDirectory( wxString* aFileName, bool
 }
 
 
-int KICAD_MANAGER_CONTROL::NewProject( const TOOL_EVENT& aEvent )
+int KICAD_MANAGER_CONTROL::NewProject( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     // The built-in "default" template lives in the stable default user templates path so that it
     // is always available regardless of how KICAD_USER_TEMPLATE_DIR is configured.  Seeding it
@@ -400,7 +400,7 @@ int KICAD_MANAGER_CONTROL::NewProject( const TOOL_EVENT& aEvent )
 }
 
 
-int KICAD_MANAGER_CONTROL::NewFromRepository( const TOOL_EVENT& aEvent )
+int KICAD_MANAGER_CONTROL::NewFromRepository( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     DIALOG_GIT_REPOSITORY dlg( m_frame, nullptr );
 
@@ -550,7 +550,7 @@ int KICAD_MANAGER_CONTROL::NewFromRepository( const TOOL_EVENT& aEvent )
 }
 
 
-int KICAD_MANAGER_CONTROL::NewJobsetFile( const TOOL_EVENT& aEvent )
+int KICAD_MANAGER_CONTROL::NewJobsetFile( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     wxString     default_dir = wxFileName( Prj().GetProjectFullName() ).GetPathWithSep();
     wxFileDialog dlg( m_frame, _( "Create New Jobset" ), default_dir, wxEmptyString, FILEEXT::JobsetFileWildcard(),
@@ -618,19 +618,19 @@ int KICAD_MANAGER_CONTROL::openProject( const wxString& aDefaultDir )
 }
 
 
-int KICAD_MANAGER_CONTROL::OpenDemoProject( const TOOL_EVENT& aEvent )
+int KICAD_MANAGER_CONTROL::OpenDemoProject( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     return openProject( PATHS::GetStockDemosPath() );
 }
 
 
-int KICAD_MANAGER_CONTROL::OpenProject( const TOOL_EVENT& aEvent )
+int KICAD_MANAGER_CONTROL::OpenProject( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     return openProject( m_frame->GetMruPath() );
 }
 
 
-int KICAD_MANAGER_CONTROL::OpenJobsetFile( const TOOL_EVENT& aEvent )
+int KICAD_MANAGER_CONTROL::OpenJobsetFile( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     wxString     default_dir = wxFileName( Prj().GetProjectFullName() ).GetPathWithSep();
     wxFileDialog dlg( m_frame, _( "Open Jobset" ), default_dir, wxEmptyString, FILEEXT::JobsetFileWildcard(),
@@ -649,7 +649,7 @@ int KICAD_MANAGER_CONTROL::OpenJobsetFile( const TOOL_EVENT& aEvent )
 }
 
 
-int KICAD_MANAGER_CONTROL::CloseProject( const TOOL_EVENT& aEvent )
+int KICAD_MANAGER_CONTROL::CloseProject( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->CloseProject( true );
     return 0;
@@ -664,7 +664,7 @@ int KICAD_MANAGER_CONTROL::LoadProject( const TOOL_EVENT& aEvent )
 }
 
 
-int KICAD_MANAGER_CONTROL::ArchiveProject( const TOOL_EVENT& aEvent )
+int KICAD_MANAGER_CONTROL::ArchiveProject( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     wxFileName fileName = m_frame->GetProjectFileName();
 
@@ -694,14 +694,14 @@ int KICAD_MANAGER_CONTROL::ArchiveProject( const TOOL_EVENT& aEvent )
 }
 
 
-int KICAD_MANAGER_CONTROL::UnarchiveProject( const TOOL_EVENT& aEvent )
+int KICAD_MANAGER_CONTROL::UnarchiveProject( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->UnarchiveFiles();
     return 0;
 }
 
 
-int KICAD_MANAGER_CONTROL::ExportForOlderVersion( const TOOL_EVENT& aEvent )
+int KICAD_MANAGER_CONTROL::ExportForOlderVersion( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     wxFileName proFn( Prj().GetProjectFullName() );
     wxString   projectDir = proFn.GetPath();
@@ -855,28 +855,28 @@ int KICAD_MANAGER_CONTROL::ExportForOlderVersion( const TOOL_EVENT& aEvent )
 }
 
 
-int KICAD_MANAGER_CONTROL::ExploreProject( const TOOL_EVENT& aEvent )
+int KICAD_MANAGER_CONTROL::ExploreProject( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     // Open project directory in host OS's file explorer
     LaunchExternal( Prj().GetProjectPath() );
     return 0;
 }
 
-int KICAD_MANAGER_CONTROL::RestoreLocalHistory( const TOOL_EVENT& aEvent )
+int KICAD_MANAGER_CONTROL::RestoreLocalHistory( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->RestoreLocalHistory();
     return 0;
 }
 
 
-int KICAD_MANAGER_CONTROL::ToggleLocalHistory( const TOOL_EVENT& aEvent )
+int KICAD_MANAGER_CONTROL::ToggleLocalHistory( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->ToggleLocalHistory();
     return 0;
 }
 
 
-int KICAD_MANAGER_CONTROL::ToggleGitCommitPane( const TOOL_EVENT& aEvent )
+int KICAD_MANAGER_CONTROL::ToggleGitCommitPane( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->ToggleGitCommitPane();
     return 0;
@@ -893,7 +893,7 @@ int KICAD_MANAGER_CONTROL::ViewDroppedViewers( const TOOL_EVENT& aEvent )
 
 
 
-int KICAD_MANAGER_CONTROL::SaveProjectAs( const TOOL_EVENT& aEvent )
+int KICAD_MANAGER_CONTROL::SaveProjectAs( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     wxString     msg;
 
@@ -972,7 +972,7 @@ int KICAD_MANAGER_CONTROL::SaveProjectAs( const TOOL_EVENT& aEvent )
 }
 
 
-int KICAD_MANAGER_CONTROL::Refresh( const TOOL_EVENT& aEvent )
+int KICAD_MANAGER_CONTROL::Refresh( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->RefreshProjectTree();
     return 0;
@@ -1124,7 +1124,7 @@ int KICAD_MANAGER_CONTROL::Execute( const TOOL_EVENT& aEvent )
 }
 
 
-int KICAD_MANAGER_CONTROL::ShowPluginManager( const TOOL_EVENT& aEvent )
+int KICAD_MANAGER_CONTROL::ShowPluginManager( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( KIPLATFORM::POLICY::GetPolicyBool( POLICY_KEY_PCM ) == KIPLATFORM::POLICY::PBOOL::DISABLED )
     {

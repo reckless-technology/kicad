@@ -819,7 +819,7 @@ void GRID_TRICKS::onGridMotion( wxMouseEvent& aEvent )
 }
 
 
-bool GRID_TRICKS::handleDoubleClick( wxGridEvent& aEvent )
+bool GRID_TRICKS::handleDoubleClick( wxGridEvent& aEvent [[maybe_unused]] )
 {
     // Double-click processing must be handled by specific sub-classes
     return false;
@@ -943,7 +943,7 @@ void GRID_TRICKS::onGridLabelRightClick( wxGridEvent&  )
 }
 
 
-void GRID_TRICKS::showPopupMenu( wxMenu& menu, wxGridEvent& aEvent )
+void GRID_TRICKS::showPopupMenu( wxMenu& menu, wxGridEvent& aEvent [[maybe_unused]] )
 {
     menu.Append( GRIDTRICKS_ID_CUT, _( "Cut" ) + "\tCtrl+X",
                  _( "Clear selected cells placing original contents on clipboard" ) );

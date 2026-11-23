@@ -245,7 +245,7 @@ void DIALOG_ABOUT::onHtmlLinkClicked( wxHtmlLinkEvent& event )
 }
 
 
-void DIALOG_ABOUT::onCopyVersionInfo( wxCommandEvent& event )
+void DIALOG_ABOUT::onCopyVersionInfo( wxCommandEvent& event [[maybe_unused]] )
 {
     wxLogNull doNotLog; // disable logging of failed clipboard actions
 
@@ -265,21 +265,21 @@ void DIALOG_ABOUT::onCopyVersionInfo( wxCommandEvent& event )
 }
 
 
-void DIALOG_ABOUT::onDonateClick( wxCommandEvent& event )
+void DIALOG_ABOUT::onDonateClick( wxCommandEvent& event [[maybe_unused]] )
 {
     if( TOOL_MANAGER* mgr = static_cast<EDA_BASE_FRAME*>( GetParent() )->GetToolManager() )
         mgr->RunAction( "common.SuiteControl.donate" );
 }
 
 
-void DIALOG_ABOUT::onReportBug( wxCommandEvent& event )
+void DIALOG_ABOUT::onReportBug( wxCommandEvent& event [[maybe_unused]] )
 {
     if( TOOL_MANAGER* mgr = static_cast<EDA_BASE_FRAME*>( GetParent() )->GetToolManager() )
         mgr->RunAction( "common.SuiteControl.reportBug" );
 }
 
 
-void DIALOG_ABOUT::OnNotebookPageChanged( wxNotebookEvent& aEvent )
+void DIALOG_ABOUT::OnNotebookPageChanged( wxNotebookEvent& aEvent [[maybe_unused]] )
 {
     // Work around wxMac issue where the notebook pages are blank
 #ifdef __WXMAC__

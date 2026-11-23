@@ -143,7 +143,7 @@ bool DIALOG_IMPORT_GFX::TransferDataToWindow()
 }
 
 
-void DIALOG_IMPORT_GFX::onFilenameChanged( wxCommandEvent& event )
+void DIALOG_IMPORT_GFX::onFilenameChanged( wxCommandEvent& event [[maybe_unused]] )
 {
     loadSourceFile();
 
@@ -279,7 +279,7 @@ void DIALOG_IMPORT_GFX::scaleFromSize( bool aFromWidth )
 }
 
 
-void DIALOG_IMPORT_GFX::onScaleChanged( wxCommandEvent& event )
+void DIALOG_IMPORT_GFX::onScaleChanged( wxCommandEvent& event [[maybe_unused]] )
 {
     const double scale = EDA_UNIT_UTILS::UI::DoubleValueFromString( m_importScaleCtrl->GetValue() );
 
@@ -293,19 +293,19 @@ void DIALOG_IMPORT_GFX::onScaleChanged( wxCommandEvent& event )
 }
 
 
-void DIALOG_IMPORT_GFX::onWidthChanged( wxCommandEvent& event )
+void DIALOG_IMPORT_GFX::onWidthChanged( wxCommandEvent& event [[maybe_unused]] )
 {
     scaleFromSize( true );
 }
 
 
-void DIALOG_IMPORT_GFX::onHeightChanged( wxCommandEvent& event )
+void DIALOG_IMPORT_GFX::onHeightChanged( wxCommandEvent& event [[maybe_unused]] )
 {
     scaleFromSize( false );
 }
 
 
-void DIALOG_IMPORT_GFX::onLockAspectChanged( wxCommandEvent& event )
+void DIALOG_IMPORT_GFX::onLockAspectChanged( wxCommandEvent& event [[maybe_unused]] )
 {
     // Locking the ratio again keeps the width and brings the height back into step.
     if( m_aspectRatioCheckbox->IsChecked() )
@@ -349,19 +349,19 @@ void DIALOG_IMPORT_GFX::updatePreview()
 }
 
 
-void DIALOG_IMPORT_GFX::onThresholdChanged( wxScrollEvent& event )
+void DIALOG_IMPORT_GFX::onThresholdChanged( wxScrollEvent& event [[maybe_unused]] )
 {
     updatePreview();
 }
 
 
-void DIALOG_IMPORT_GFX::onInvertChanged( wxCommandEvent& event )
+void DIALOG_IMPORT_GFX::onInvertChanged( wxCommandEvent& event [[maybe_unused]] )
 {
     updatePreview();
 }
 
 
-void DIALOG_IMPORT_GFX::onBrowseFiles( wxCommandEvent& event )
+void DIALOG_IMPORT_GFX::onBrowseFiles( wxCommandEvent& event [[maybe_unused]] )
 {
     wxString path;
     wxString filename = m_textCtrlFileName->GetValue();
@@ -494,7 +494,7 @@ bool DIALOG_IMPORT_GFX::TransferDataFromWindow()
 }
 
 
-void DIALOG_IMPORT_GFX::originOptionOnUpdateUI( wxUpdateUIEvent& event )
+void DIALOG_IMPORT_GFX::originOptionOnUpdateUI( wxUpdateUIEvent& event [[maybe_unused]] )
 {
     if( m_rbInteractivePlacement->GetValue() != m_placementInteractive )
         m_rbInteractivePlacement->SetValue( m_placementInteractive );

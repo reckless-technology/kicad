@@ -104,13 +104,13 @@ DIALOG_TEXT_PROPERTIES::DIALOG_TEXT_PROPERTIES( SCH_BASE_FRAME* aParent, SCH_ITE
 
     m_scintillaTricks = new SCINTILLA_TRICKS( m_textCtrl, wxT( "{}" ), false,
             // onAcceptFn
-            [this]( wxKeyEvent& aEvent )
+            [this]( wxKeyEvent& aEvent [[maybe_unused]] )
             {
                 wxPostEvent( this, wxCommandEvent( wxEVT_COMMAND_BUTTON_CLICKED, wxID_OK ) );
             },
 
             // onCharFn
-            [this]( wxStyledTextEvent& aEvent )
+            [this]( wxStyledTextEvent& aEvent [[maybe_unused]] )
             {
                 m_scintillaTricks->DoTextVarAutocomplete(
                         // getTokensFn
@@ -363,7 +363,7 @@ bool DIALOG_TEXT_PROPERTIES::TransferDataToWindow()
 }
 
 
-void DIALOG_TEXT_PROPERTIES::onBorderChecked( wxCommandEvent& aEvent )
+void DIALOG_TEXT_PROPERTIES::onBorderChecked( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     bool border = m_borderCheckbox->GetValue();
 
@@ -378,7 +378,7 @@ void DIALOG_TEXT_PROPERTIES::onBorderChecked( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_TEXT_PROPERTIES::onFillChecked( wxCommandEvent& aEvent )
+void DIALOG_TEXT_PROPERTIES::onFillChecked( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     bool fill = m_filledCtrl->GetValue();
 
@@ -403,7 +403,7 @@ void DIALOG_TEXT_PROPERTIES::onHyperlinkChecked( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_TEXT_PROPERTIES::onHyperlinkText( wxCommandEvent& event )
+void DIALOG_TEXT_PROPERTIES::onHyperlinkText( wxCommandEvent& event [[maybe_unused]] )
 {
     if( !m_hyperlinkCombo->GetValue().IsEmpty() )
         m_hyperlinkCb->SetValue( true );
@@ -598,7 +598,7 @@ bool DIALOG_TEXT_PROPERTIES::TransferDataFromWindow()
 }
 
 
-void DIALOG_TEXT_PROPERTIES::OnFormattingHelp( wxHyperlinkEvent& aEvent )
+void DIALOG_TEXT_PROPERTIES::OnFormattingHelp( wxHyperlinkEvent& aEvent [[maybe_unused]] )
 {
     m_helpWindow = SCH_TEXT::ShowSyntaxHelp( this );
 }

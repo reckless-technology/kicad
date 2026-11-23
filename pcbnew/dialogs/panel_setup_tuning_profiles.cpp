@@ -29,7 +29,7 @@
 #include <widgets/paged_dialog.h>
 
 PANEL_SETUP_TUNING_PROFILES::PANEL_SETUP_TUNING_PROFILES( wxWindow* aParentWindow, PCB_EDIT_FRAME* aFrame,
-                                                          BOARD* aBoard,
+                                                          BOARD* aBoard [[maybe_unused]],
                                                           std::shared_ptr<TUNING_PROFILES> aTimeDomainParameters ) :
         PANEL_SETUP_TUNING_PROFILES_BASE( aParentWindow ),
         m_tuningProfileParameters( std::move( aTimeDomainParameters ) ),
@@ -123,7 +123,7 @@ void PANEL_SETUP_TUNING_PROFILES::SyncCopperLayers( const int aNumCopperLayers )
 }
 
 
-void PANEL_SETUP_TUNING_PROFILES::OnAddTuningProfileClick( wxCommandEvent& event )
+void PANEL_SETUP_TUNING_PROFILES::OnAddTuningProfileClick( wxCommandEvent& event [[maybe_unused]] )
 {
     PANEL_SETUP_TUNING_PROFILE_INFO* panel = new PANEL_SETUP_TUNING_PROFILE_INFO( m_tuningProfiles, this );
     m_tuningProfiles->AddPage( panel, "Profile ", true );
@@ -132,7 +132,7 @@ void PANEL_SETUP_TUNING_PROFILES::OnAddTuningProfileClick( wxCommandEvent& event
 }
 
 
-void PANEL_SETUP_TUNING_PROFILES::OnRemoveTuningProfileClick( wxCommandEvent& event )
+void PANEL_SETUP_TUNING_PROFILES::OnRemoveTuningProfileClick( wxCommandEvent& event [[maybe_unused]] )
 {
     if( const wxWindow* page = m_tuningProfiles->GetCurrentPage() )
     {

@@ -113,7 +113,7 @@ void POLYGON_POINT_EDIT_BEHAVIOR::RemoveNullSegmentsIfPolygonSurvives( SHAPE_POL
 }
 
 
-void POLYGON_POINT_EDIT_BEHAVIOR::FinalizeItem( EDIT_POINTS& aPoints, COMMIT& aCommit )
+void POLYGON_POINT_EDIT_BEHAVIOR::FinalizeItem( EDIT_POINTS& aPoints [[maybe_unused]], COMMIT& aCommit [[maybe_unused]] )
 {
     RemoveNullSegmentsIfPolygonSurvives( m_polygon );
 }
@@ -137,8 +137,8 @@ bool EDA_SEGMENT_POINT_EDIT_BEHAVIOR::UpdatePoints( EDIT_POINTS& aPoints )
 
 
 void EDA_SEGMENT_POINT_EDIT_BEHAVIOR::UpdateItem( const EDIT_POINT& aEditedPoint,
-                                                  EDIT_POINTS& aPoints, COMMIT& aCommit,
-                                                  std::vector<EDA_ITEM*>& aUpdatedItems )
+                                                  EDIT_POINTS& aPoints, COMMIT& aCommit [[maybe_unused]],
+                                                  std::vector<EDA_ITEM*>& aUpdatedItems [[maybe_unused]] )
 {
     CHECK_POINT_COUNT( aPoints, SEGMENT_MAX_POINTS );
 
@@ -210,8 +210,8 @@ bool EDA_ELLIPSE_POINT_EDIT_BEHAVIOR::UpdatePoints( EDIT_POINTS& aPoints )
 }
 
 
-void EDA_ELLIPSE_POINT_EDIT_BEHAVIOR::UpdateItem( const EDIT_POINT& aEditedPoint, EDIT_POINTS& aPoints, COMMIT& aCommit,
-                                                  std::vector<EDA_ITEM*>& aUpdatedItems )
+void EDA_ELLIPSE_POINT_EDIT_BEHAVIOR::UpdateItem( const EDIT_POINT& aEditedPoint, EDIT_POINTS& aPoints, COMMIT& aCommit [[maybe_unused]],
+                                                  std::vector<EDA_ITEM*>& aUpdatedItems [[maybe_unused]] )
 {
     const bool   isArc = ( m_ellipse.GetShape() == SHAPE_T::ELLIPSE_ARC );
     const size_t expected = isArc ? ELLIPSE_ARC_POINTS : ELLIPSE_CLOSED_POINTS;
@@ -297,8 +297,8 @@ bool EDA_CIRCLE_POINT_EDIT_BEHAVIOR::UpdatePoints( EDIT_POINTS& aPoints )
 
 
 void EDA_CIRCLE_POINT_EDIT_BEHAVIOR::UpdateItem( const EDIT_POINT& aEditedPoint,
-                                                 EDIT_POINTS& aPoints, COMMIT& aCommit,
-                                                 std::vector<EDA_ITEM*>& aUpdatedItems )
+                                                 EDIT_POINTS& aPoints, COMMIT& aCommit [[maybe_unused]],
+                                                 std::vector<EDA_ITEM*>& aUpdatedItems [[maybe_unused]] )
 {
     CHECK_POINT_COUNT( aPoints, CIRC_MAX_POINTS );
 
@@ -312,7 +312,7 @@ void EDA_CIRCLE_POINT_EDIT_BEHAVIOR::UpdateItem( const EDIT_POINT& aEditedPoint,
 }
 
 
-OPT_VECTOR2I EDA_CIRCLE_POINT_EDIT_BEHAVIOR::Get45DegreeConstrainer( const EDIT_POINT& aEditedPoint,
+OPT_VECTOR2I EDA_CIRCLE_POINT_EDIT_BEHAVIOR::Get45DegreeConstrainer( const EDIT_POINT& aEditedPoint [[maybe_unused]],
                                                                      EDIT_POINTS&      aPoints ) const
 {
     return aPoints.Point( CIRC_CENTER ).GetPosition();
@@ -344,7 +344,7 @@ bool EDA_BEZIER_POINT_EDIT_BEHAVIOR::UpdatePoints( EDIT_POINTS& aPoints )
 
 
 void EDA_BEZIER_POINT_EDIT_BEHAVIOR::UpdateItem( const EDIT_POINT& aEditedPoint, EDIT_POINTS& aPoints,
-                                                 COMMIT& aCommit, std::vector<EDA_ITEM*>& aUpdatedItems )
+                                                 COMMIT& aCommit [[maybe_unused]], std::vector<EDA_ITEM*>& aUpdatedItems [[maybe_unused]] )
 {
     CHECK_POINT_COUNT( aPoints, BEZIER_MAX_POINTS );
 
@@ -376,7 +376,7 @@ void EDA_BEZIER_POINT_EDIT_BEHAVIOR::UpdateItem( const EDIT_POINT& aEditedPoint,
  * Move an end point of the arc, while keeping the tangent at the other endpoint.
  */
 static void editArcEndpointKeepTangent( EDA_SHAPE& aArc, const VECTOR2I& aCenter, const VECTOR2I& aStart,
-                                        const VECTOR2I& aMid, const VECTOR2I& aEnd, const VECTOR2I& aCursor )
+                                        const VECTOR2I& aMid, const VECTOR2I& aEnd, const VECTOR2I& aCursor [[maybe_unused]] )
 {
     VECTOR2I center = aCenter;
     bool     movingStart;
@@ -526,7 +526,7 @@ static void editArcEndpointKeepTangent( EDA_SHAPE& aArc, const VECTOR2I& aCenter
  * Move the arc center but keep endpoint locations.
  */
 static void editArcCenterKeepEndpoints( EDA_SHAPE& aArc, const VECTOR2I& aCenter, const VECTOR2I& aStart,
-                                        const VECTOR2I& aMid, const VECTOR2I& aEnd )
+                                        const VECTOR2I& aMid [[maybe_unused]], const VECTOR2I& aEnd )
 {
     const int c_snapEpsilon_sq = 4;
 
@@ -574,8 +574,8 @@ static void editArcCenterKeepEndpoints( EDA_SHAPE& aArc, const VECTOR2I& aCenter
  * Move an end point of the arc around the circumference.
  */
 void KI_ARC_EDIT::EditArcEndpointKeepCenter( EDA_SHAPE& aArc, const VECTOR2I& aCenter,
-                                             const VECTOR2I& aStart, const VECTOR2I& aMid,
-                                             const VECTOR2I& aEnd, const VECTOR2I& aCursor,
+                                             const VECTOR2I& aStart, const VECTOR2I& aMid [[maybe_unused]],
+                                             const VECTOR2I& aEnd, const VECTOR2I& aCursor [[maybe_unused]],
                                              const EDA_IU_SCALE& aIuScale )
 {
     // 1 mil floor in the caller's units keeps the arc non-degenerate without
@@ -635,7 +635,7 @@ void KI_ARC_EDIT::EditArcEndpointKeepCenter( EDA_SHAPE& aArc, const VECTOR2I& aC
 
 
 static void editArcEndpointKeepCenterAndRadius( EDA_SHAPE& aArc, const VECTOR2I& aCenter, const VECTOR2I& aStart,
-                                                const VECTOR2I& aMid, const VECTOR2I& aEnd )
+                                                const VECTOR2I& aMid [[maybe_unused]], const VECTOR2I& aEnd )
 {
     VECTOR2I p1;
     bool     movingStart = false;
@@ -673,7 +673,7 @@ static void editArcEndpointKeepCenterAndRadius( EDA_SHAPE& aArc, const VECTOR2I&
  * Move the mid point of the arc, while keeping the two endpoints.
  */
 void KI_ARC_EDIT::EditArcMidKeepCenter( EDA_SHAPE& aArc, const VECTOR2I& aCenter,
-                                        const VECTOR2I& aStart, const VECTOR2I& aMid,
+                                        const VECTOR2I& aStart, const VECTOR2I& aMid [[maybe_unused]],
                                         const VECTOR2I& aEnd, const VECTOR2I& aCursor,
                                         const EDA_IU_SCALE& aIuScale )
 {
@@ -758,8 +758,8 @@ bool EDA_ARC_POINT_EDIT_BEHAVIOR::UpdatePoints( EDIT_POINTS& aPoints )
 }
 
 
-void EDA_ARC_POINT_EDIT_BEHAVIOR::UpdateItem( const EDIT_POINT& aEditedPoint, EDIT_POINTS& aPoints, COMMIT& aCommit,
-                                              std::vector<EDA_ITEM*>& aUpdatedItems )
+void EDA_ARC_POINT_EDIT_BEHAVIOR::UpdateItem( const EDIT_POINT& aEditedPoint, EDIT_POINTS& aPoints, COMMIT& aCommit [[maybe_unused]],
+                                              std::vector<EDA_ITEM*>& aUpdatedItems [[maybe_unused]] )
 {
     CHECK_POINT_COUNT( aPoints, 4 );
 
@@ -824,7 +824,7 @@ void EDA_ARC_POINT_EDIT_BEHAVIOR::UpdateItem( const EDIT_POINT& aEditedPoint, ED
 }
 
 
-OPT_VECTOR2I EDA_ARC_POINT_EDIT_BEHAVIOR::Get45DegreeConstrainer( const EDIT_POINT& aEditedPoint,
+OPT_VECTOR2I EDA_ARC_POINT_EDIT_BEHAVIOR::Get45DegreeConstrainer( const EDIT_POINT& aEditedPoint [[maybe_unused]],
                                                                   EDIT_POINTS&      aPoints ) const
 {
     return aPoints.Point( ARC_CENTER ).GetPosition();
@@ -896,7 +896,7 @@ bool REFERENCE_IMAGE_POINT_EDIT_BEHAVIOR::UpdatePoints( EDIT_POINTS& aPoints )
 
 
 void REFERENCE_IMAGE_POINT_EDIT_BEHAVIOR::UpdateItem( const EDIT_POINT& aEditedPoint, EDIT_POINTS& aPoints,
-                                                      COMMIT& aCommit, std::vector<EDA_ITEM*>& aUpdatedItems )
+                                                      COMMIT& aCommit [[maybe_unused]], std::vector<EDA_ITEM*>& aUpdatedItems [[maybe_unused]] )
 {
     CHECK_POINT_COUNT( aPoints, REFIMG_MAX_POINTS );
 

@@ -67,7 +67,7 @@ static struct IFACE : public KIFACE_BASE, public UNITS_PROVIDER
 
     void OnKifaceEnd() override;
 
-    wxWindow* CreateKiWindow( wxWindow* aParent, int aClassId, KIWAY* aKiway, int aCtlBits = 0 ) override
+    wxWindow* CreateKiWindow( wxWindow* aParent, int aClassId, KIWAY* aKiway, int aCtlBits [[maybe_unused]] = 0 ) override
     {
         switch( aClassId )
         {
@@ -126,7 +126,7 @@ static struct IFACE : public KIFACE_BASE, public UNITS_PROVIDER
      * @param aDataId identifies which object you want the address of.
      * @return the object requested and must be cast into the know type.
      */
-    void* IfaceOrAddress( int aDataId ) override { return nullptr; }
+    void* IfaceOrAddress( int aDataId [[maybe_unused]] ) override { return nullptr; }
 
     /**
      * Saving a file under a different name is delegated to the various KIFACEs because
@@ -160,7 +160,7 @@ KIFACE_BASE& Kiface()
 
 // KIFACE_GETTER's actual spelling is a substitution macro found in kiway.h.
 // KIFACE_GETTER will not have name mangling due to declaration in kiway.h.
-KIFACE_API KIFACE* KIFACE_GETTER( int* aKIFACEversion, int aKiwayVersion, PGM_BASE* aProgram )
+KIFACE_API KIFACE* KIFACE_GETTER( int* aKIFACEversion [[maybe_unused]], int aKiwayVersion [[maybe_unused]], PGM_BASE* aProgram [[maybe_unused]] )
 {
     return &kiface;
 }

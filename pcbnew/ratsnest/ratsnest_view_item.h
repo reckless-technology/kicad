@@ -93,7 +93,7 @@ public:
 
     const std::shared_ptr<CONNECTIVITY_DATA>& GetConnectivity() const { return m_data; }
 
-    bool HitTest( const VECTOR2I& aPoint, int aAccuracy = 0 ) const override
+    bool HitTest( const VECTOR2I& aPoint [[maybe_unused]], int aAccuracy [[maybe_unused]] = 0 ) const override
     {
         return false;   // Not selectable
     }

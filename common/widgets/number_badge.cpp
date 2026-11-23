@@ -145,7 +145,7 @@ void NUMBER_BADGE::computeSize()
 }
 
 
-void NUMBER_BADGE::onPaint( wxPaintEvent& aEvt )
+void NUMBER_BADGE::onPaint( wxPaintEvent& aEvt [[maybe_unused]] )
 {
     // The drawing rectangle
     wxSize    clientSize = GetSize();

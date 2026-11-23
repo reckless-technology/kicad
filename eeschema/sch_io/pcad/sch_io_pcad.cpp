@@ -954,7 +954,7 @@ wxString SCH_IO_PCAD::getLibName( const ::SCHEMATIC* aSchematic, const wxString&
 void SCH_IO_PCAD::populateScreen( SCH_SCREEN* aScreen, const PCAD_SCH::SHEET& aSheet,
                                   const PCAD_SCH::SCHEMATIC& aPcad, double aPageH,
                                   const LIB_SYMBOL_STORE& aLibSymbols,
-                                  const wxString& aLibName )
+                                  const wxString& aLibName [[maybe_unused]] )
 {
     auto xform =
             [aPageH]( double x, double y )
@@ -1325,7 +1325,7 @@ void SCH_IO_PCAD::populateScreen( SCH_SCREEN* aScreen, const PCAD_SCH::SHEET& aS
 
 SCH_SHEET* SCH_IO_PCAD::LoadSchematicFile( const wxString& aFileName, ::SCHEMATIC* aSchematic,
                                            SCH_SHEET*             aAppendToMe,
-                                           const std::map<std::string, UTF8>* aProperties )
+                                           const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     wxCHECK( !aFileName.IsEmpty() && aSchematic != nullptr, nullptr );
 
@@ -1571,7 +1571,7 @@ bool SCH_IO_PCAD::CanReadLibrary( const wxString& aFileName ) const
 
 void SCH_IO_PCAD::EnumerateSymbolLib( wxArrayString& aSymbolNameList,
                                       const wxString& aLibraryPath,
-                                      const std::map<std::string, UTF8>* aProperties )
+                                      const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     ensureLoadedLibrary( aLibraryPath );
 
@@ -1582,7 +1582,7 @@ void SCH_IO_PCAD::EnumerateSymbolLib( wxArrayString& aSymbolNameList,
 
 void SCH_IO_PCAD::EnumerateSymbolLib( std::vector<LIB_SYMBOL*>& aSymbolList,
                                       const wxString& aLibraryPath,
-                                      const std::map<std::string, UTF8>* aProperties )
+                                      const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     ensureLoadedLibrary( aLibraryPath );
 
@@ -1592,7 +1592,7 @@ void SCH_IO_PCAD::EnumerateSymbolLib( std::vector<LIB_SYMBOL*>& aSymbolList,
 
 
 LIB_SYMBOL* SCH_IO_PCAD::LoadSymbol( const wxString& aLibraryPath, const wxString& aPartName,
-                                     const std::map<std::string, UTF8>* aProperties )
+                                     const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     ensureLoadedLibrary( aLibraryPath );
 

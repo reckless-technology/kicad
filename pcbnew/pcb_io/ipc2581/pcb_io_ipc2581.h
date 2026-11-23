@@ -114,25 +114,25 @@ public:
 
     std::vector<FOOTPRINT*> GetImportedCachedLibraryFootprints() override;
 
-    long long GetLibraryTimestamp( const wxString& aLibraryPath ) const override
+    long long GetLibraryTimestamp( const wxString& aLibraryPath [[maybe_unused]] ) const override
     {
         return 0;
     }
 
     // Reading currently disabled
-    bool CanReadBoard( const wxString& aFileName ) const override
+    bool CanReadBoard( const wxString& aFileName [[maybe_unused]] ) const override
     {
         return false;
     }
 
     // Reading currently disabled
-    bool CanReadFootprint( const wxString& aFileName ) const override
+    bool CanReadFootprint( const wxString& aFileName [[maybe_unused]] ) const override
     {
         return false;
     }
 
     // Reading currently disabled
-    bool CanReadLibrary( const wxString& aFileName ) const override
+    bool CanReadLibrary( const wxString& aFileName [[maybe_unused]] ) const override
     {
         return false;
     }

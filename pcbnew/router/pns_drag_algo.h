@@ -116,7 +116,7 @@ public:
      */
     virtual const ITEM_SET Traces() = 0;
 
-    virtual void SetMode( PNS::DRAG_MODE aDragMode ){};
+    virtual void SetMode( PNS::DRAG_MODE aDragMode [[maybe_unused]] ){};
 
     virtual PNS::DRAG_MODE Mode() const = 0;
 

@@ -106,14 +106,14 @@ int DIALOG_CONVERT_IMAGE_TO_OUTLINES::GetLayerSelection() const
 }
 
 
-void DIALOG_CONVERT_IMAGE_TO_OUTLINES::onSettingChanged( wxCommandEvent& aEvent )
+void DIALOG_CONVERT_IMAGE_TO_OUTLINES::onSettingChanged( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( m_onChange )
         m_onChange( GetThreshold(), GetInvert() );
 }
 
 
-void DIALOG_CONVERT_IMAGE_TO_OUTLINES::onThresholdScrolled( wxScrollEvent& aEvent )
+void DIALOG_CONVERT_IMAGE_TO_OUTLINES::onThresholdScrolled( wxScrollEvent& aEvent [[maybe_unused]] )
 {
     if( m_onChange )
         m_onChange( GetThreshold(), GetInvert() );

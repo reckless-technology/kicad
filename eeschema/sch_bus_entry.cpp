@@ -346,8 +346,8 @@ void SCH_BUS_ENTRY_BASE::Rotate( const VECTOR2I& aCenter, bool aRotateCCW )
 
 
 bool SCH_BUS_WIRE_ENTRY::UpdateDanglingState( std::vector<DANGLING_END_ITEM>& aItemListByType,
-                                              std::vector<DANGLING_END_ITEM>& aItemListByPos,
-                                              const SCH_SHEET_PATH*           aPath )
+                                              std::vector<DANGLING_END_ITEM>& aItemListByPos [[maybe_unused]],
+                                              const SCH_SHEET_PATH*           aPath [[maybe_unused]] )
 {
     bool previousStateStart = m_isStartDangling;
     bool previousStateEnd = m_isEndDangling;
@@ -406,8 +406,8 @@ bool SCH_BUS_WIRE_ENTRY::UpdateDanglingState( std::vector<DANGLING_END_ITEM>& aI
 
 
 bool SCH_BUS_BUS_ENTRY::UpdateDanglingState( std::vector<DANGLING_END_ITEM>& aItemListByType,
-                                             std::vector<DANGLING_END_ITEM>& aItemListByPos,
-                                             const SCH_SHEET_PATH*           aPath )
+                                             std::vector<DANGLING_END_ITEM>& aItemListByPos [[maybe_unused]],
+                                             const SCH_SHEET_PATH*           aPath [[maybe_unused]] )
 {
     bool previousStateStart = m_isStartDangling;
     bool previousStateEnd = m_isEndDangling;
@@ -459,7 +459,7 @@ std::vector<VECTOR2I> SCH_BUS_ENTRY_BASE::GetConnectionPoints() const
 
 
 bool SCH_BUS_ENTRY_BASE::HasConnectivityChanges( const SCH_ITEM* aItem,
-                                                 const SCH_SHEET_PATH* aInstance ) const
+                                                 const SCH_SHEET_PATH* aInstance [[maybe_unused]] ) const
 {
     // Do not compare to ourselves.
     if( aItem == this )
@@ -477,13 +477,13 @@ bool SCH_BUS_ENTRY_BASE::HasConnectivityChanges( const SCH_ITEM* aItem,
 }
 
 
-wxString SCH_BUS_WIRE_ENTRY::GetItemDescription( UNITS_PROVIDER* aUnitsProvider, bool aFull ) const
+wxString SCH_BUS_WIRE_ENTRY::GetItemDescription( UNITS_PROVIDER* aUnitsProvider [[maybe_unused]], bool aFull [[maybe_unused]] ) const
 {
     return wxString( _( "Bus to wire entry" ) );
 }
 
 
-wxString SCH_BUS_BUS_ENTRY::GetItemDescription( UNITS_PROVIDER* aUnitsProvider, bool aFull ) const
+wxString SCH_BUS_BUS_ENTRY::GetItemDescription( UNITS_PROVIDER* aUnitsProvider [[maybe_unused]], bool aFull [[maybe_unused]] ) const
 {
     return wxString( _( "Bus to bus entry" ) );
 }
@@ -531,8 +531,8 @@ bool SCH_BUS_ENTRY_BASE::HitTest( const SHAPE_LINE_CHAIN& aPoly, bool aContained
 }
 
 
-void SCH_BUS_ENTRY_BASE::Plot( PLOTTER* aPlotter, bool aBackground, const SCH_PLOT_OPTS& aPlotOpts,
-                               int aUnit, int aBodyStyle, const VECTOR2I& aOffset, bool aDimmed )
+void SCH_BUS_ENTRY_BASE::Plot( PLOTTER* aPlotter, bool aBackground, const SCH_PLOT_OPTS& aPlotOpts [[maybe_unused]],
+                               int aUnit [[maybe_unused]], int aBodyStyle [[maybe_unused]], const VECTOR2I& aOffset [[maybe_unused]], bool aDimmed [[maybe_unused]] )
 {
     if( aBackground )
         return;

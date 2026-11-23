@@ -262,7 +262,7 @@ bool DRC_TEST_PROVIDER_DISALLOW::Run()
                         PCB_LAYER_ID layer = track->GetLayer();
 
                         antiTrackKeepouts->QueryColliding( track, layer, layer,
-                                [&]( BOARD_ITEM* other ) -> bool
+                                [&]( BOARD_ITEM* other [[maybe_unused]] ) -> bool
                                 {
                                     return true;
                                 },

@@ -485,8 +485,8 @@ public:
         return true;
     }
 
-    void UpdateItem( const EDIT_POINT& aEditedPoint, EDIT_POINTS& aPoints, COMMIT& aCommit,
-                     std::vector<EDA_ITEM*>& aUpdatedItems ) override
+    void UpdateItem( const EDIT_POINT& aEditedPoint, EDIT_POINTS& aPoints, COMMIT& aCommit [[maybe_unused]],
+                     std::vector<EDA_ITEM*>& aUpdatedItems [[maybe_unused]] ) override
     {
         UpdateItem( m_rectangle, aEditedPoint, aPoints );
     }
@@ -634,8 +634,8 @@ public:
         return true;
     }
 
-    void UpdateItem( const EDIT_POINT& aEditedPoint, EDIT_POINTS& aPoints, COMMIT& aCommit,
-                     std::vector<EDA_ITEM*>& aUpdatedItems ) override
+    void UpdateItem( const EDIT_POINT& aEditedPoint, EDIT_POINTS& aPoints, COMMIT& aCommit [[maybe_unused]],
+                     std::vector<EDA_ITEM*>& aUpdatedItems [[maybe_unused]] ) override
     {
         m_zone.UnFill();
         POLYGON_POINT_EDIT_BEHAVIOR::UpdateOutlineFromPoints( *m_zone.Outline(), aEditedPoint, aPoints );
@@ -644,7 +644,7 @@ public:
 
     bool UpdateItemAppliesAllPoints() const override { return true; }
 
-    void FinalizeItem( EDIT_POINTS& aPoints, COMMIT& aCommit ) override
+    void FinalizeItem( EDIT_POINTS& aPoints [[maybe_unused]], COMMIT& aCommit [[maybe_unused]] ) override
     {
         POLYGON_POINT_EDIT_BEHAVIOR::RemoveNullSegmentsIfPolygonSurvives( *m_zone.Outline() );
     }
@@ -730,8 +730,8 @@ public:
         return true;
     }
 
-    void UpdateItem( const EDIT_POINT& aEditedPoint, EDIT_POINTS& aPoints, COMMIT& aCommit,
-                     std::vector<EDA_ITEM*>& aUpdatedItems ) override
+    void UpdateItem( const EDIT_POINT& aEditedPoint, EDIT_POINTS& aPoints, COMMIT& aCommit [[maybe_unused]],
+                     std::vector<EDA_ITEM*>& aUpdatedItems [[maybe_unused]] ) override
     {
         if( m_barcode.GetAngle().IsCardinal() )
         {
@@ -816,8 +816,8 @@ public:
         }
     }
 
-    void UpdateItem( const EDIT_POINT& aEditedPoint, EDIT_POINTS& aPoints, COMMIT& aCommit,
-                     std::vector<EDA_ITEM*>& aUpdatedItems ) override
+    void UpdateItem( const EDIT_POINT& aEditedPoint, EDIT_POINTS& aPoints, COMMIT& aCommit [[maybe_unused]],
+                     std::vector<EDA_ITEM*>& aUpdatedItems [[maybe_unused]] ) override
     {
         // Centre handle: translate the whole grid.
         if( isModified( aEditedPoint, aPoints.Point( 0 ) ) )
@@ -1137,8 +1137,8 @@ public:
         return true;
     }
 
-    void UpdateItem( const EDIT_POINT& aEditedPoint, EDIT_POINTS& aPoints, COMMIT& aCommit,
-                     std::vector<EDA_ITEM*>& aUpdatedItems ) override
+    void UpdateItem( const EDIT_POINT& aEditedPoint, EDIT_POINTS& aPoints, COMMIT& aCommit [[maybe_unused]],
+                     std::vector<EDA_ITEM*>& aUpdatedItems [[maybe_unused]] ) override
     {
         switch( m_pad.GetShape( m_layer ) )
         {
@@ -1268,8 +1268,8 @@ public:
         return true;
     }
 
-    void UpdateItem( const EDIT_POINT& aEditedPoint, EDIT_POINTS& aPoints, COMMIT& aCommit,
-                     std::vector<EDA_ITEM*>& aUpdatedItems ) override
+    void UpdateItem( const EDIT_POINT& aEditedPoint [[maybe_unused]], EDIT_POINTS& aPoints, COMMIT& aCommit [[maybe_unused]],
+                     std::vector<EDA_ITEM*>& aUpdatedItems [[maybe_unused]] ) override
     {
         m_generator.UpdateFromEditPoints( aPoints );
     }
@@ -1435,8 +1435,8 @@ public:
         return true;
     }
 
-    void UpdateItem( const EDIT_POINT& aEditedPoint, EDIT_POINTS& aPoints, COMMIT& aCommit,
-                     std::vector<EDA_ITEM*>& aUpdatedItems ) override
+    void UpdateItem( const EDIT_POINT& aEditedPoint, EDIT_POINTS& aPoints, COMMIT& aCommit [[maybe_unused]],
+                     std::vector<EDA_ITEM*>& aUpdatedItems [[maybe_unused]] ) override
     {
         CHECK_POINT_COUNT( aPoints, DIM_ALIGNED_MAX );
 
@@ -1629,8 +1629,8 @@ public:
         return true;
     }
 
-    void UpdateItem( const EDIT_POINT& aEditedPoint, EDIT_POINTS& aPoints, COMMIT& aCommit,
-                     std::vector<EDA_ITEM*>& aUpdatedItems ) override
+    void UpdateItem( const EDIT_POINT& aEditedPoint, EDIT_POINTS& aPoints, COMMIT& aCommit [[maybe_unused]],
+                     std::vector<EDA_ITEM*>& aUpdatedItems [[maybe_unused]] ) override
     {
         CHECK_POINT_COUNT( aPoints, DIM_CENTER_MAX );
 
@@ -1692,8 +1692,8 @@ public:
         return true;
     }
 
-    void UpdateItem( const EDIT_POINT& aEditedPoint, EDIT_POINTS& aPoints, COMMIT& aCommit,
-                     std::vector<EDA_ITEM*>& aUpdatedItems ) override
+    void UpdateItem( const EDIT_POINT& aEditedPoint, EDIT_POINTS& aPoints, COMMIT& aCommit [[maybe_unused]],
+                     std::vector<EDA_ITEM*>& aUpdatedItems [[maybe_unused]] ) override
     {
         CHECK_POINT_COUNT( aPoints, DIM_RADIAL_MAX );
 
@@ -1783,8 +1783,8 @@ public:
         return true;
     }
 
-    void UpdateItem( const EDIT_POINT& aEditedPoint, EDIT_POINTS& aPoints, COMMIT& aCommit,
-                     std::vector<EDA_ITEM*>& aUpdatedItems ) override
+    void UpdateItem( const EDIT_POINT& aEditedPoint, EDIT_POINTS& aPoints, COMMIT& aCommit [[maybe_unused]],
+                     std::vector<EDA_ITEM*>& aUpdatedItems [[maybe_unused]] ) override
     {
         CHECK_POINT_COUNT( aPoints, DIM_LEADER_MAX );
 
@@ -1843,8 +1843,8 @@ public:
         return true;
     }
 
-    void UpdateItem( const EDIT_POINT& aEditedPoint, EDIT_POINTS& aPoints, COMMIT& aCommit,
-                     std::vector<EDA_ITEM*>& aUpdatedItems ) override
+    void UpdateItem( const EDIT_POINT& aEditedPoint, EDIT_POINTS& aPoints, COMMIT& aCommit [[maybe_unused]],
+                     std::vector<EDA_ITEM*>& aUpdatedItems [[maybe_unused]] ) override
     {
         if( m_textbox.GetShape() == SHAPE_T::RECTANGLE )
         {
@@ -2104,7 +2104,7 @@ PCB_POINT_EDITOR::PCB_POINT_EDITOR() :
 {}
 
 
-void PCB_POINT_EDITOR::Reset( RESET_REASON aReason )
+void PCB_POINT_EDITOR::Reset( RESET_REASON aReason [[maybe_unused]] )
 {
     m_frame = getEditFrame<PCB_BASE_FRAME>();
 
@@ -5563,7 +5563,7 @@ int PCB_POINT_EDITOR::OnSelectionChange( const TOOL_EVENT& aEvent )
 }
 
 
-int PCB_POINT_EDITOR::movePoint( const TOOL_EVENT& aEvent )
+int PCB_POINT_EDITOR::movePoint( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( !m_editPoints || !m_editPoints->GetParent() || !HasPoint() )
         return 0;
@@ -6109,7 +6109,7 @@ bool PCB_POINT_EDITOR::CanRemoveCorner( const SELECTION& )
 }
 
 
-int PCB_POINT_EDITOR::addCorner( const TOOL_EVENT& aEvent )
+int PCB_POINT_EDITOR::addCorner( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( !m_editPoints )
         return 0;
@@ -6260,7 +6260,7 @@ int PCB_POINT_EDITOR::addCorner( const TOOL_EVENT& aEvent )
 }
 
 
-int PCB_POINT_EDITOR::removeCorner( const TOOL_EVENT& aEvent )
+int PCB_POINT_EDITOR::removeCorner( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( !m_editPoints || !m_editedPoint )
         return 0;
@@ -6346,7 +6346,7 @@ int PCB_POINT_EDITOR::removeCorner( const TOOL_EVENT& aEvent )
 }
 
 
-int PCB_POINT_EDITOR::chamferCorner( const TOOL_EVENT& aEvent )
+int PCB_POINT_EDITOR::chamferCorner( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( !m_editPoints || !m_editedPoint )
         return 0;
@@ -6454,7 +6454,7 @@ int PCB_POINT_EDITOR::chamferCorner( const TOOL_EVENT& aEvent )
 }
 
 
-int PCB_POINT_EDITOR::modifiedSelection( const TOOL_EVENT& aEvent )
+int PCB_POINT_EDITOR::modifiedSelection( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     updatePoints();
     return 0;

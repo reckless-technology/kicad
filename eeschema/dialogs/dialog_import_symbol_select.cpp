@@ -362,14 +362,14 @@ void DIALOG_IMPORT_SYMBOL_SELECT::updateImportButton()
 }
 
 
-void DIALOG_IMPORT_SYMBOL_SELECT::OnFilterTextChanged( wxCommandEvent& event )
+void DIALOG_IMPORT_SYMBOL_SELECT::OnFilterTextChanged( wxCommandEvent& event [[maybe_unused]] )
 {
     m_filterString = m_searchCtrl->GetValue().Lower();
     refreshList();
 }
 
 
-void DIALOG_IMPORT_SYMBOL_SELECT::OnSymbolSelected( wxDataViewEvent& event )
+void DIALOG_IMPORT_SYMBOL_SELECT::OnSymbolSelected( wxDataViewEvent& event [[maybe_unused]] )
 {
     int row = m_symbolList->GetSelectedRow();
 
@@ -466,7 +466,7 @@ bool DIALOG_IMPORT_SYMBOL_SELECT::matchesFilter( const wxString& aSymbolName ) c
 }
 
 
-void DIALOG_IMPORT_SYMBOL_SELECT::OnSelectAll( wxCommandEvent& event )
+void DIALOG_IMPORT_SYMBOL_SELECT::OnSelectAll( wxCommandEvent& event [[maybe_unused]] )
 {
     m_manager.SelectAll( [this]( const wxString& name ) { return matchesFilter( name ); } );
 
@@ -476,7 +476,7 @@ void DIALOG_IMPORT_SYMBOL_SELECT::OnSelectAll( wxCommandEvent& event )
 }
 
 
-void DIALOG_IMPORT_SYMBOL_SELECT::OnSelectNone( wxCommandEvent& event )
+void DIALOG_IMPORT_SYMBOL_SELECT::OnSelectNone( wxCommandEvent& event [[maybe_unused]] )
 {
     m_manager.DeselectAll( [this]( const wxString& name ) { return matchesFilter( name ); } );
 
@@ -486,7 +486,7 @@ void DIALOG_IMPORT_SYMBOL_SELECT::OnSelectNone( wxCommandEvent& event )
 }
 
 
-void DIALOG_IMPORT_SYMBOL_SELECT::OnUnitChanged( wxCommandEvent& event )
+void DIALOG_IMPORT_SYMBOL_SELECT::OnUnitChanged( wxCommandEvent& event [[maybe_unused]] )
 {
     if( m_selectedSymbol.IsEmpty() )
         return;

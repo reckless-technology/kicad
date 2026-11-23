@@ -36,7 +36,7 @@
 
 
 /// Layer names for GenCAD export.
-static std::string genCADLayerName( int aCuCount, PCB_LAYER_ID aId )
+static std::string genCADLayerName( int aCuCount [[maybe_unused]], PCB_LAYER_ID aId )
 {
     if( IsCopperLayer( aId ) )
     {

@@ -285,14 +285,14 @@ void SCH_GROUP::swapData( SCH_ITEM* aImage )
 }
 
 
-bool SCH_GROUP::HitTest( const VECTOR2I& aPosition, int aAccuracy ) const
+bool SCH_GROUP::HitTest( const VECTOR2I& aPosition [[maybe_unused]], int aAccuracy [[maybe_unused]] ) const
 {
     // Groups are selected by promoting a selection of one of their children
     return false;
 }
 
 
-bool SCH_GROUP::HitTest( const BOX2I& aRect, bool aContained, int aAccuracy ) const
+bool SCH_GROUP::HitTest( const BOX2I& aRect [[maybe_unused]], bool aContained [[maybe_unused]], int aAccuracy [[maybe_unused]] ) const
 {
     // Groups are selected by promoting a selection of one of their children
     return false;
@@ -339,7 +339,7 @@ std::vector<int> SCH_GROUP::ViewGetLayers() const
 }
 
 
-double SCH_GROUP::ViewGetLOD( int aLayer, const KIGFX::VIEW* aView ) const
+double SCH_GROUP::ViewGetLOD( int aLayer [[maybe_unused]], const KIGFX::VIEW* aView ) const
 {
     if( aView->IsLayerVisible( LAYER_SCHEMATIC_ANCHOR ) )
         return LOD_SHOW;
@@ -412,13 +412,13 @@ void SCH_GROUP::MirrorVertically( int aCenter )
 }
 
 
-void SCH_GROUP::Plot( PLOTTER* aPlotter, bool aBackground, const SCH_PLOT_OPTS& aPlotOpts,
-                      int aUnit, int aBodyStyle, const VECTOR2I& aOffset, bool aDimmed )
+void SCH_GROUP::Plot( PLOTTER* aPlotter [[maybe_unused]], bool aBackground [[maybe_unused]], const SCH_PLOT_OPTS& aPlotOpts [[maybe_unused]],
+                      int aUnit [[maybe_unused]], int aBodyStyle [[maybe_unused]], const VECTOR2I& aOffset [[maybe_unused]], bool aDimmed [[maybe_unused]] )
 {
 }
 
 
-wxString SCH_GROUP::GetItemDescription( UNITS_PROVIDER* aUnitsProvider, bool aFull ) const
+wxString SCH_GROUP::GetItemDescription( UNITS_PROVIDER* aUnitsProvider [[maybe_unused]], bool aFull [[maybe_unused]] ) const
 {
     if( m_name.empty() )
         return wxString::Format( _( "Unnamed Group, %zu members" ), m_items.size() );
@@ -433,14 +433,14 @@ BITMAPS SCH_GROUP::GetMenuImage() const
 }
 
 
-void SCH_GROUP::GetMsgPanelInfo( EDA_DRAW_FRAME* aFrame, std::vector<MSG_PANEL_ITEM>& aList )
+void SCH_GROUP::GetMsgPanelInfo( EDA_DRAW_FRAME* aFrame [[maybe_unused]], std::vector<MSG_PANEL_ITEM>& aList )
 {
     aList.emplace_back( _( "Group" ), m_name.empty() ? _( "<unnamed>" ) : m_name );
     aList.emplace_back( _( "Members" ), wxString::Format( wxT( "%zu" ), m_items.size() ) );
 }
 
 
-bool SCH_GROUP::Matches( const EDA_SEARCH_DATA& aSearchData, void* aAuxData ) const
+bool SCH_GROUP::Matches( const EDA_SEARCH_DATA& aSearchData, void* aAuxData [[maybe_unused]] ) const
 {
     return EDA_ITEM::Matches( UnescapeString( GetName() ), aSearchData );
 }

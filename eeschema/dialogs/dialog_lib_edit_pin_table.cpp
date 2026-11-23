@@ -340,7 +340,7 @@ public:
         return wxGetTranslation( GetPinTableColLabel( aCol ) );
     }
 
-    bool IsEmptyCell( int row, int col ) override
+    bool IsEmptyCell( int row [[maybe_unused]], int col [[maybe_unused]] ) override
     {
         return false;   // don't allow adjacent cell overflow, even if we are actually empty
     }
@@ -1059,7 +1059,7 @@ void DIALOG_LIB_EDIT_PIN_TABLE::OnColSort( wxGridEvent& aEvent )
 }
 
 
-void DIALOG_LIB_EDIT_PIN_TABLE::OnAddRow( wxCommandEvent& event )
+void DIALOG_LIB_EDIT_PIN_TABLE::OnAddRow( wxCommandEvent& event [[maybe_unused]] )
 {
     m_grid->OnAddRow(
             [&]() -> std::pair<int, int>
@@ -1111,7 +1111,7 @@ void DIALOG_LIB_EDIT_PIN_TABLE::AddPin( SCH_PIN* pin )
 }
 
 
-void DIALOG_LIB_EDIT_PIN_TABLE::OnDeleteRow( wxCommandEvent& event )
+void DIALOG_LIB_EDIT_PIN_TABLE::OnDeleteRow( wxCommandEvent& event [[maybe_unused]] )
 {
     m_grid->OnDeleteRows(
             [&]( int row )
@@ -1133,7 +1133,7 @@ void DIALOG_LIB_EDIT_PIN_TABLE::RemovePin( SCH_PIN* pin )
 }
 
 
-void DIALOG_LIB_EDIT_PIN_TABLE::OnCellEdited( wxGridEvent& event )
+void DIALOG_LIB_EDIT_PIN_TABLE::OnCellEdited( wxGridEvent& event [[maybe_unused]] )
 {
     // A bulk edit sends one event per row, so rebuild the summary once from OnUpdateUI
     m_summaryDirty = true;
@@ -1181,7 +1181,7 @@ bool DIALOG_LIB_EDIT_PIN_TABLE::IsDisplayGrouped()
 }
 
 
-void DIALOG_LIB_EDIT_PIN_TABLE::OnGroupSelected( wxCommandEvent& event )
+void DIALOG_LIB_EDIT_PIN_TABLE::OnGroupSelected( wxCommandEvent& event [[maybe_unused]] )
 {
     if( !m_grid->CommitPendingChanges() )
         return;
@@ -1214,7 +1214,7 @@ void DIALOG_LIB_EDIT_PIN_TABLE::OnRebuildRows( wxCommandEvent&  )
 }
 
 
-void DIALOG_LIB_EDIT_PIN_TABLE::OnMenu( wxCommandEvent& event )
+void DIALOG_LIB_EDIT_PIN_TABLE::OnMenu( wxCommandEvent& event [[maybe_unused]] )
 {
     SYMBOL_EDITOR_SETTINGS* cfg = static_cast<SYMBOL_EDITOR_SETTINGS*>( m_editFrame->config() );
 
@@ -1535,7 +1535,7 @@ void DIALOG_LIB_EDIT_PIN_TABLE::OnSize( wxSizeEvent& event )
 }
 
 
-void DIALOG_LIB_EDIT_PIN_TABLE::OnUpdateUI( wxUpdateUIEvent& event )
+void DIALOG_LIB_EDIT_PIN_TABLE::OnUpdateUI( wxUpdateUIEvent& event [[maybe_unused]] )
 {
     std::bitset<64> columnsShown = m_grid->GetShownColumns();
 
@@ -1560,7 +1560,7 @@ void DIALOG_LIB_EDIT_PIN_TABLE::OnUpdateUI( wxUpdateUIEvent& event )
 }
 
 
-void DIALOG_LIB_EDIT_PIN_TABLE::OnCancel( wxCommandEvent& event )
+void DIALOG_LIB_EDIT_PIN_TABLE::OnCancel( wxCommandEvent& event [[maybe_unused]] )
 {
     Close();
 }

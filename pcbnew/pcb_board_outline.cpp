@@ -79,7 +79,7 @@ LSET PCB_BOARD_OUTLINE::GetLayerSet() const
     return {};
 }
 
-bool PCB_BOARD_OUTLINE::IsOnLayer( PCB_LAYER_ID aLayer ) const
+bool PCB_BOARD_OUTLINE::IsOnLayer( PCB_LAYER_ID aLayer [[maybe_unused]] ) const
 {
     WXUNUSED( aLayer )
     return {};

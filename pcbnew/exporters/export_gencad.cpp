@@ -36,7 +36,7 @@
 
 
 /* Driver function: processing starts here */
-int BOARD_EDITOR_CONTROL::ExportGenCAD( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::ExportGenCAD( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     DIALOG_GENCAD_EXPORT_OPTIONS optionsDialog( m_frame, _( "Export to GenCAD" ), nullptr );
 

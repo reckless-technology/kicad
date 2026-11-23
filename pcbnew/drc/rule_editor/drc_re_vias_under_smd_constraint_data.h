@@ -76,7 +76,7 @@ public:
         return result;
     }
 
-    std::vector<wxString> GetConstraintClauses( const RULE_GENERATION_CONTEXT& aContext ) const override
+    std::vector<wxString> GetConstraintClauses( const RULE_GENERATION_CONTEXT& aContext [[maybe_unused]] ) const override
     {
         if( !m_disallowThroughVias && !m_disallowMicroVias && !m_disallowBlindVias && !m_disallowBuriedVias )
             return {};

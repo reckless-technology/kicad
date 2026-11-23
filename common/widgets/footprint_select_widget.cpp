@@ -28,7 +28,7 @@
 
 wxDEFINE_EVENT( EVT_FOOTPRINT_SELECTED, wxCommandEvent );
 
-FOOTPRINT_SELECT_WIDGET::FOOTPRINT_SELECT_WIDGET( EDA_DRAW_FRAME* aFrame, wxWindow* aParent, int aMaxItems ) :
+FOOTPRINT_SELECT_WIDGET::FOOTPRINT_SELECT_WIDGET( EDA_DRAW_FRAME* aFrame [[maybe_unused]], wxWindow* aParent, int aMaxItems ) :
         wxPanel( aParent ),
         m_max_items( aMaxItems ),
         m_pin_count( 0 ),
@@ -47,13 +47,13 @@ FOOTPRINT_SELECT_WIDGET::FOOTPRINT_SELECT_WIDGET( EDA_DRAW_FRAME* aFrame, wxWind
 }
 
 
-void FOOTPRINT_SELECT_WIDGET::Load( KIWAY& aKiway, PROJECT& aProject )
+void FOOTPRINT_SELECT_WIDGET::Load( KIWAY& aKiway, PROJECT& aProject [[maybe_unused]] )
 {
     m_kiway = &aKiway;
 }
 
 
-void FOOTPRINT_SELECT_WIDGET::OnComboBox( wxCommandEvent& aEvent )
+void FOOTPRINT_SELECT_WIDGET::OnComboBox( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     wxCommandEvent evt( EVT_FOOTPRINT_SELECTED );
     int            sel = m_fp_sel_ctrl->GetSelection();

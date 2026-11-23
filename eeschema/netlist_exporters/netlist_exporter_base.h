@@ -161,7 +161,7 @@ protected:
         NETLIST_EXPORTER_BASE& m_exporter;
     };
 
-    virtual bool writeNetlist( const wxString& aOutFileName, unsigned aNetlistOptions, REPORTER& aReporter )
+    virtual bool writeNetlist( const wxString& aOutFileName [[maybe_unused]], unsigned aNetlistOptions [[maybe_unused]], REPORTER& aReporter [[maybe_unused]] )
     {
         return false;
     }

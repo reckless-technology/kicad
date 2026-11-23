@@ -56,7 +56,7 @@ public:
         return wxDIR_CONTINUE;
     }
 
-    virtual wxDirTraverseResult OnDir( const wxString& aDirname ) override
+    virtual wxDirTraverseResult OnDir( const wxString& aDirname [[maybe_unused]] ) override
     {
         return wxDIR_CONTINUE;
     }

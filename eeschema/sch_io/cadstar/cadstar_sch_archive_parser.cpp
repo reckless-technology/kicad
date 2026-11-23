@@ -195,7 +195,7 @@ bool CADSTAR_SCH_ARCHIVE_PARSER::TERMINAL_SHAPE::IsTermShape( XNODE* aNode )
 }
 
 
-void CADSTAR_SCH_ARCHIVE_PARSER::TERMINAL_SHAPE::Parse( XNODE* aNode, PARSER_CONTEXT* aContext )
+void CADSTAR_SCH_ARCHIVE_PARSER::TERMINAL_SHAPE::Parse( XNODE* aNode, PARSER_CONTEXT* aContext [[maybe_unused]] )
 {
     wxCHECK( IsTermShape( aNode ), );
 
@@ -476,7 +476,7 @@ void CADSTAR_SCH_ARCHIVE_PARSER::LIBRARY_SCM::Parse( XNODE* aNode, PARSER_CONTEX
 }
 
 
-void CADSTAR_SCH_ARCHIVE_PARSER::SHEETS::Parse( XNODE* aNode, PARSER_CONTEXT* aContext )
+void CADSTAR_SCH_ARCHIVE_PARSER::SHEETS::Parse( XNODE* aNode, PARSER_CONTEXT* aContext [[maybe_unused]] )
 {
     wxCHECK( aNode->GetName() == wxT( "SHEETS" ), );
 
@@ -625,7 +625,7 @@ void CADSTAR_SCH_ARCHIVE_PARSER::SYMBOL::PIN_NUM::Parse( XNODE* aNode, PARSER_CO
 }
 
 
-void CADSTAR_SCH_ARCHIVE_PARSER::SYMBOLVARIANT::Parse( XNODE* aNode, PARSER_CONTEXT* aContext )
+void CADSTAR_SCH_ARCHIVE_PARSER::SYMBOLVARIANT::Parse( XNODE* aNode, PARSER_CONTEXT* aContext [[maybe_unused]] )
 {
     wxCHECK( aNode->GetName() == wxT( "SYMBOLVARIANT" ), );
 

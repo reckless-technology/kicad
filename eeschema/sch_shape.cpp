@@ -248,8 +248,8 @@ bool SCH_SHAPE::IsEndPoint( const VECTOR2I& aPt ) const
 }
 
 
-void SCH_SHAPE::Plot( PLOTTER* aPlotter, bool aBackground, const SCH_PLOT_OPTS& aPlotOpts,
-                      int aUnit, int aBodyStyle, const VECTOR2I& aOffset, bool aDimmed )
+void SCH_SHAPE::Plot( PLOTTER* aPlotter, bool aBackground, const SCH_PLOT_OPTS& aPlotOpts [[maybe_unused]],
+                      int aUnit [[maybe_unused]], int aBodyStyle, const VECTOR2I& aOffset, bool aDimmed )
 {
     if( IsPrivate() )
         return;
@@ -586,7 +586,7 @@ void SCH_SHAPE::GetMsgPanelInfo( EDA_DRAW_FRAME* aFrame, std::vector<MSG_PANEL_I
 }
 
 
-wxString SCH_SHAPE::GetItemDescription( UNITS_PROVIDER* aUnitsProvider, bool aFull ) const
+wxString SCH_SHAPE::GetItemDescription( UNITS_PROVIDER* aUnitsProvider, bool aFull [[maybe_unused]] ) const
 {
     switch( GetShape() )
     {

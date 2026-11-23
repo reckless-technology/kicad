@@ -976,7 +976,7 @@ bool DS_DATA_MODEL::LoadFromName( const wxString& aSheetName, const wxString& aB
 }
 
 
-void DS_DATA_MODEL::SetPageLayout( const char* aPageLayout, bool Append, const wxString& aSource )
+void DS_DATA_MODEL::SetPageLayout( const char* aPageLayout, bool Append, const wxString& aSource [[maybe_unused]] )
 {
     if( ! Append )
         ClearList();

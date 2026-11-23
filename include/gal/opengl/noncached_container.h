@@ -59,7 +59,7 @@ public:
     virtual VERTEX* Allocate( unsigned int aSize ) override;
 
     /// @copydoc VERTEX_CONTAINER::Delete( VERTEX_ITEM* aItem )
-    void Delete( VERTEX_ITEM* aItem ) override {}
+    void Delete( VERTEX_ITEM* aItem [[maybe_unused]] ) override {}
 
     /// @copydoc VERTEX_CONTAINER::Clear()
     virtual void Clear() override;

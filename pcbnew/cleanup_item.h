@@ -70,7 +70,7 @@ public:
     {
     }
 
-    void SetSeverities( int aSeverities ) override
+    void SetSeverities( int aSeverities [[maybe_unused]] ) override
     {
     }
 
@@ -79,7 +79,7 @@ public:
         return 0;
     }
 
-    int  GetCount( int aSeverity = -1 ) const override
+    int  GetCount( int aSeverity [[maybe_unused]] = -1 ) const override
     {
         return m_sourceVector->size();
     }

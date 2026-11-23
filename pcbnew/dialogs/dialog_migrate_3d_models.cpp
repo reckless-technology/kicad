@@ -869,7 +869,7 @@ void DIALOG_MIGRATE_3D_MODELS::updateAfterCatalogChange()
 }
 
 
-void DIALOG_MIGRATE_3D_MODELS::OnRemoveSearchDirectoryClick(wxCommandEvent& event)
+void DIALOG_MIGRATE_3D_MODELS::OnRemoveSearchDirectoryClick(wxCommandEvent& event [[maybe_unused]])
 {
     std::vector<wxString> deleted;
 

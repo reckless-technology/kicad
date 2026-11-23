@@ -265,7 +265,7 @@ void DRC_ENGINE::loadImplicitRules()
     std::vector<std::shared_ptr<DRC_RULE>> netclassItemSpecificRules;
 
     auto makeNetclassRules =
-            [&]( const std::shared_ptr<NETCLASS>& nc, bool isDefault )
+            [&]( const std::shared_ptr<NETCLASS>& nc, bool isDefault [[maybe_unused]] )
             {
                 std::optional<wxString> literal = LIBEVAL::EscapeStringLiteral( nc->GetName() );
 
@@ -933,7 +933,7 @@ void DRC_ENGINE::InitEngine( const wxFileName& aRulePath )
 }
 
 
-void DRC_ENGINE::RunTests( EDA_UNITS aUnits, bool aReportAllTrackErrors, bool aTestFootprints, BOARD_COMMIT* aCommit )
+void DRC_ENGINE::RunTests( EDA_UNITS aUnits, bool aReportAllTrackErrors, bool aTestFootprints, BOARD_COMMIT* aCommit [[maybe_unused]] )
 {
     PROF_TIMER timer;
 

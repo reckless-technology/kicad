@@ -60,7 +60,7 @@ bool RecreateCmpFile( BOARD * aBrd, const wxString& aFullCmpFileName )
 }
 
 
-int BOARD_EDITOR_CONTROL::ExportCmpFile( const TOOL_EVENT& aEvent )
+int BOARD_EDITOR_CONTROL::ExportCmpFile( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     // Build the .cmp file name from the board name
     BOARD*     board = m_frame->GetBoard();

@@ -95,7 +95,7 @@ bool DRC_TEST_PROVIDER_TEXT_MIRRORING::Run()
     };
 
     forEachGeometryItem( itemTypes, topLayers | bottomLayers,
-            [&]( BOARD_ITEM* item ) -> bool
+            [&]( BOARD_ITEM* item [[maybe_unused]] ) -> bool
             {
                 ++count;
                 return true;

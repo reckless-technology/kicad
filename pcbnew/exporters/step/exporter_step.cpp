@@ -980,7 +980,7 @@ bool EXPORTER_STEP::buildTrack3DShape( PCB_TRACK* aTrack, const VECTOR2D& aOrigi
 }
 
 
-void EXPORTER_STEP::buildZones3DShape( VECTOR2D aOrigin, bool aSolderMaskOnly )
+void EXPORTER_STEP::buildZones3DShape( VECTOR2D aOrigin [[maybe_unused]], bool aSolderMaskOnly )
 {
     for( ZONE* zone : m_board->Zones() )
     {
@@ -1016,7 +1016,7 @@ void EXPORTER_STEP::buildZones3DShape( VECTOR2D aOrigin, bool aSolderMaskOnly )
 }
 
 
-bool EXPORTER_STEP::buildGraphic3DShape( BOARD_ITEM* aItem, const VECTOR2D& aOrigin )
+bool EXPORTER_STEP::buildGraphic3DShape( BOARD_ITEM* aItem, const VECTOR2D& aOrigin [[maybe_unused]] )
 {
     PCB_LAYER_ID pcblayer = aItem->GetLayer();
     int          maxError = aItem->GetMaxError();

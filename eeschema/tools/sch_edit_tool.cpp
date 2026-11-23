@@ -492,7 +492,7 @@ bool SCH_EDIT_TOOL::Init()
     };
 
     auto haveHighlight =
-            [this]( const SELECTION& sel )
+            [this]( const SELECTION& sel [[maybe_unused]] )
             {
                 SCH_EDIT_FRAME* editFrame = dynamic_cast<SCH_EDIT_FRAME*>( m_frame );
 
@@ -500,7 +500,7 @@ bool SCH_EDIT_TOOL::Init()
             };
 
     auto anyTextTool =
-            [this]( const SELECTION& aSel )
+            [this]( const SELECTION& aSel [[maybe_unused]] )
             {
                 return ( m_frame->IsCurrentTool( SCH_ACTIONS::placeLabel )
                       || m_frame->IsCurrentTool( SCH_ACTIONS::placeClassLabel )
@@ -697,13 +697,13 @@ bool SCH_EDIT_TOOL::Init()
     auto singleSheetCondition = S_C::Count( 1 ) && S_C::OnlyTypes( sheetTypes );
 
     auto variantActiveCondition =
-            [this]( const SELECTION& aSel )
+            [this]( const SELECTION& aSel [[maybe_unused]] )
             {
                 return !m_frame->Schematic().GetCurrentVariant().IsEmpty();
             };
 
     auto noVariantActiveCondition =
-            [this]( const SELECTION& aSel )
+            [this]( const SELECTION& aSel [[maybe_unused]] )
             {
                 return m_frame->Schematic().GetCurrentVariant().IsEmpty();
             };
@@ -2101,7 +2101,7 @@ static SCH_LABEL_BASE* findSingleNetLabelForPin( SCH_PIN* aPin, SCHEMATIC& aSche
 }
 
 
-int SCH_EDIT_TOOL::SwapPinLabels( const TOOL_EVENT& aEvent )
+int SCH_EDIT_TOOL::SwapPinLabels( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SCH_SELECTION&         selection = m_selectionTool->RequestSelection( { SCH_PIN_T } );
     std::vector<EDA_ITEM*> orderedPins = selection.GetItemsSortedBySelectionOrder();
@@ -2152,7 +2152,7 @@ int SCH_EDIT_TOOL::SwapPinLabels( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDIT_TOOL::SwapUnitLabels( const TOOL_EVENT& aEvent )
+int SCH_EDIT_TOOL::SwapUnitLabels( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SCH_SELECTION&           selection = m_selectionTool->RequestSelection( { SCH_SYMBOL_T } );
     std::vector<SCH_SYMBOL*> selectedUnits = GetSameSymbolMultiUnitSelection( selection );
@@ -2231,7 +2231,7 @@ int SCH_EDIT_TOOL::SwapUnitLabels( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDIT_TOOL::RepeatDrawItem( const TOOL_EVENT& aEvent )
+int SCH_EDIT_TOOL::RepeatDrawItem( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     // This MUST be a copy as finalizing the SCH_ACTIONS::move lower down will reset m_frame's
     // m_items_to_repeat member variable.
@@ -2375,7 +2375,7 @@ int SCH_EDIT_TOOL::RepeatDrawItem( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDIT_TOOL::DoDelete( const TOOL_EVENT& aEvent )
+int SCH_EDIT_TOOL::DoDelete( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SCH_SCREEN*           screen = m_frame->GetScreen();
 
@@ -2616,7 +2616,7 @@ int SCH_EDIT_TOOL::EditField( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDIT_TOOL::AutoplaceFields( const TOOL_EVENT& aEvent )
+int SCH_EDIT_TOOL::AutoplaceFields( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SCH_SELECTION& selection = m_selectionTool->RequestSelection( RotatableItems );
     SCH_COMMIT     commit( m_toolMgr );
@@ -2705,7 +2705,7 @@ int SCH_EDIT_TOOL::ChangeSymbols( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDIT_TOOL::SetVariantSymbol( const TOOL_EVENT& aEvent )
+int SCH_EDIT_TOOL::SetVariantSymbol( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SCH_SELECTION& selection = m_selectionTool->RequestSelection( { SCH_SYMBOL_T } );
 
@@ -2828,7 +2828,7 @@ int SCH_EDIT_TOOL::SetVariantSymbol( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDIT_TOOL::ClearVariantSymbol( const TOOL_EVENT& aEvent )
+int SCH_EDIT_TOOL::ClearVariantSymbol( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SCH_SELECTION& selection = m_selectionTool->RequestSelection( { SCH_SYMBOL_T } );
 
@@ -2869,7 +2869,7 @@ int SCH_EDIT_TOOL::ClearVariantSymbol( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDIT_TOOL::CycleBodyStyle( const TOOL_EVENT& aEvent )
+int SCH_EDIT_TOOL::CycleBodyStyle( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SCH_SELECTION& selection = m_selectionTool->RequestSelection( { SCH_SYMBOL_T } );
 
@@ -2894,7 +2894,7 @@ int SCH_EDIT_TOOL::CycleBodyStyle( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDIT_TOOL::Properties( const TOOL_EVENT& aEvent )
+int SCH_EDIT_TOOL::Properties( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SCH_SELECTION& selection = m_selectionTool->RequestSelection();
     bool           clearSelection = selection.IsHover();
@@ -3765,7 +3765,7 @@ int SCH_EDIT_TOOL::JustifyText( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDIT_TOOL::CleanupSheetPins( const TOOL_EVENT& aEvent )
+int SCH_EDIT_TOOL::CleanupSheetPins( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SCH_SELECTION& selection = m_selectionTool->RequestSelection( { SCH_SHEET_T } );
     SCH_SHEET*     sheet = (SCH_SHEET*) selection.Front();
@@ -3792,7 +3792,7 @@ int SCH_EDIT_TOOL::CleanupSheetPins( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDIT_TOOL::EditPageNumber( const TOOL_EVENT& aEvent )
+int SCH_EDIT_TOOL::EditPageNumber( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SCH_SELECTION& selection = m_selectionTool->RequestSelection( { SCH_SHEET_T } );
 
@@ -3872,7 +3872,7 @@ int SCH_EDIT_TOOL::DdAppendFile( const TOOL_EVENT& aEvent )
 }
 
 
-int SCH_EDIT_TOOL::ConvertImageToOutlines( const TOOL_EVENT& aEvent )
+int SCH_EDIT_TOOL::ConvertImageToOutlines( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     SCH_SELECTION& selection = m_selectionTool->GetSelection();
 
@@ -4177,19 +4177,19 @@ void SCH_EDIT_TOOL::FixERCError( const std::shared_ptr<RC_ITEM>& aERCItem )
 }
 
 
-int SCH_EDIT_TOOL::ToggleLock( const TOOL_EVENT& aEvent )
+int SCH_EDIT_TOOL::ToggleLock( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     return modifyLockSelected( TOGGLE );
 }
 
 
-int SCH_EDIT_TOOL::Lock( const TOOL_EVENT& aEvent )
+int SCH_EDIT_TOOL::Lock( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     return modifyLockSelected( ON );
 }
 
 
-int SCH_EDIT_TOOL::Unlock( const TOOL_EVENT& aEvent )
+int SCH_EDIT_TOOL::Unlock( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     return modifyLockSelected( OFF );
 }

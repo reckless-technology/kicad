@@ -108,7 +108,7 @@ GROUP_TOOL::GROUP_TOOL() : TOOL_INTERACTIVE( "common.Groups" )
 }
 
 
-void GROUP_TOOL::Reset( RESET_REASON aReason )
+void GROUP_TOOL::Reset( RESET_REASON aReason [[maybe_unused]] )
 {
     m_frame = getEditFrame<EDA_DRAW_FRAME>();
     m_commit = createCommit();
@@ -152,7 +152,7 @@ int GROUP_TOOL::GroupProperties( const TOOL_EVENT& aEvent )
 }
 
 
-int GROUP_TOOL::Ungroup( const TOOL_EVENT& aEvent )
+int GROUP_TOOL::Ungroup( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     const SELECTION& selection = m_selectionTool->GetSelection();
     EDA_ITEMS        toSelect;
@@ -191,7 +191,7 @@ int GROUP_TOOL::Ungroup( const TOOL_EVENT& aEvent )
 }
 
 
-int GROUP_TOOL::AddToGroup( const TOOL_EVENT& aEvent )
+int GROUP_TOOL::AddToGroup( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     const SELECTION& selection = m_selectionTool->GetSelection();
 
@@ -255,7 +255,7 @@ int GROUP_TOOL::AddToGroup( const TOOL_EVENT& aEvent )
 }
 
 
-int GROUP_TOOL::RemoveFromGroup( const TOOL_EVENT& aEvent )
+int GROUP_TOOL::RemoveFromGroup( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     const SELECTION& selection = m_selectionTool->GetSelection();
 
@@ -323,7 +323,7 @@ int GROUP_TOOL::RemoveFromGroup( const TOOL_EVENT& aEvent )
 }
 
 
-int GROUP_TOOL::EnterGroup( const TOOL_EVENT& aEvent )
+int GROUP_TOOL::EnterGroup( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     const SELECTION& selection = m_selectionTool->GetSelection();
 
@@ -334,7 +334,7 @@ int GROUP_TOOL::EnterGroup( const TOOL_EVENT& aEvent )
 }
 
 
-int GROUP_TOOL::LeaveGroup( const TOOL_EVENT& aEvent )
+int GROUP_TOOL::LeaveGroup( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_selectionTool->ExitGroup( true /* Select the group */ );
     return 0;

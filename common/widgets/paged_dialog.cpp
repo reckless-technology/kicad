@@ -100,7 +100,7 @@ void pruneDestroyed( std::vector<wxWeakRef<wxWindow>>& aWindows )
 }
 
 
-wxColour fadedTextColour( const wxTreeCtrl* aTree )
+wxColour fadedTextColour( const wxTreeCtrl* aTree [[maybe_unused]] )
 {
 #ifdef __WXMAC__
     // GRAYTEXT draws almost as dark as normal text on macOS, so fade the tree's own text halfway
@@ -557,7 +557,7 @@ void PAGED_DIALOG::SetError( const wxString& aMessage, const wxString& aPageName
 }
 
 
-void PAGED_DIALOG::SetError( const wxString& aMessage, wxWindow* aPage, wxWindow* aCtrl,
+void PAGED_DIALOG::SetError( const wxString& aMessage, wxWindow* aPage [[maybe_unused]], wxWindow* aCtrl,
                              int aRow, int aCol )
 {
     m_infoBar->ShowMessageFor( aMessage, 10000, wxICON_WARNING );
@@ -1325,7 +1325,7 @@ void PAGED_DIALOG::updateSearch( SEARCH_ACTION aAction )
 }
 
 
-void PAGED_DIALOG::onSearchEnter( wxCommandEvent& aEvent )
+void PAGED_DIALOG::onSearchEnter( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     updateSearch( SEARCH_ACTION::FOCUS_TREE );
 }
@@ -1463,7 +1463,7 @@ void PAGED_DIALOG::onPageChanging( wxBookCtrlEvent& aEvent )
 }
 
 
-void PAGED_DIALOG::onResetButton( wxCommandEvent& aEvent )
+void PAGED_DIALOG::onResetButton( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     int sel = m_treebook->GetSelection();
 
@@ -1480,7 +1480,7 @@ void PAGED_DIALOG::onResetButton( wxCommandEvent& aEvent )
     }
 }
 
-void PAGED_DIALOG::onOpenPrefsDir( wxCommandEvent& aEvent )
+void PAGED_DIALOG::onOpenPrefsDir( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     wxString dir( PATHS::GetUserSettingsPath() );
     LaunchExternal( dir );

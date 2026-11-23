@@ -400,7 +400,7 @@ void SCH_IO_HTTP_LIB::EnumerateSymbolLib( std::vector<LIB_SYMBOL*>& aSymbolList,
 
 
 void SCH_IO_HTTP_LIB::CheckLibrary( const wxString& aLibraryPath,
-                                    const std::map<std::string, UTF8>* aProperties )
+                                    const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     ensureSettings( aLibraryPath );
     ensureConnection();
@@ -408,7 +408,7 @@ void SCH_IO_HTTP_LIB::CheckLibrary( const wxString& aLibraryPath,
 
 
 LIB_SYMBOL* SCH_IO_HTTP_LIB::LoadSymbol( const wxString& aLibraryPath, const wxString& aAliasName,
-                                         const std::map<std::string, UTF8>* aProperties )
+                                         const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     wxCHECK_MSG( m_adapter, nullptr, "HTTP plugin missing library manager adapter handle!" );
     ensureSettings( aLibraryPath );
@@ -862,8 +862,8 @@ LIB_SYMBOL* SCH_IO_HTTP_LIB::loadSymbolFromPart( const wxString& aLibraryPath,
     return symbol;
 }
 
-void SCH_IO_HTTP_LIB::SaveSymbol( const wxString& aLibraryPath, std::unique_ptr<LIB_SYMBOL> aSymbol,
-                                  const std::map<std::string, UTF8>* aProperties )
+void SCH_IO_HTTP_LIB::SaveSymbol( const wxString& aLibraryPath [[maybe_unused]], std::unique_ptr<LIB_SYMBOL> aSymbol [[maybe_unused]],
+                                  const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     // TODO: Implement this sometime;
 }

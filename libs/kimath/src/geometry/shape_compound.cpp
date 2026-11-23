@@ -23,7 +23,7 @@
 
 #include <geometry/shape_compound.h>
 
-const std::string SHAPE_COMPOUND::Format( bool aCplusPlus ) const
+const std::string SHAPE_COMPOUND::Format( bool aCplusPlus [[maybe_unused]] ) const
 {
     std::stringstream ss;
 
@@ -69,7 +69,7 @@ SHAPE_COMPOUND* SHAPE_COMPOUND::Clone() const
 }
 
 
-const BOX2I SHAPE_COMPOUND::BBox( int aClearance ) const
+const BOX2I SHAPE_COMPOUND::BBox( int aClearance [[maybe_unused]] ) const
 {
     BOX2I bb;
 
@@ -91,7 +91,7 @@ void SHAPE_COMPOUND::Move ( const VECTOR2I& aVector )
 }
 
 
-int SHAPE_COMPOUND::Distance( const SEG& aSeg ) const
+int SHAPE_COMPOUND::Distance( const SEG& aSeg [[maybe_unused]] ) const
 {
     assert(false);
     return 0;   // Make compiler happy

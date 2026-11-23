@@ -356,7 +356,7 @@ protected:
      * but GerbView uses both bitmaps
      * (alternate bitmaps to show layers in use, normal for others)
      */
-    virtual bool useAlternateBitmap(int aRow) { return false; }
+    virtual bool useAlternateBitmap(int aRow [[maybe_unused]]) { return false; }
 
     /**
      * Subclasses can override this to provide accurate representation

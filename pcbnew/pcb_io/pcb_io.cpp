@@ -89,8 +89,8 @@ void PCB_IO::LoadAndAppendBoard( const wxString& aFileName, BOARD& aAppendToMe,
 }
 
 
-void PCB_IO::loadBoard( const wxString& aFileName, BOARD& aBoard, bool aIsNewLoad,
-                        const std::map<std::string, UTF8>* aProperties, PROJECT* aProject )
+void PCB_IO::loadBoard( const wxString& aFileName [[maybe_unused]], BOARD& aBoard [[maybe_unused]], bool aIsNewLoad [[maybe_unused]],
+                        const std::map<std::string, UTF8>* aProperties [[maybe_unused]], PROJECT* aProject [[maybe_unused]] )
 {
     NOT_IMPLEMENTED( __FUNCTION__ );
 }
@@ -102,15 +102,15 @@ std::vector<FOOTPRINT*> PCB_IO::GetImportedCachedLibraryFootprints()
 }
 
 
-void PCB_IO::SaveBoard( const wxString& aFileName, BOARD& aBoard, const std::map<std::string, UTF8>* aProperties )
+void PCB_IO::SaveBoard( const wxString& aFileName [[maybe_unused]], BOARD& aBoard [[maybe_unused]], const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     // not pure virtual so that plugins only have to implement subset of the PLUGIN interface.
     NOT_IMPLEMENTED( __FUNCTION__ );
 }
 
 
-void PCB_IO::FootprintEnumerate( wxArrayString& aFootprintNames, const wxString& aLibraryPath,
-                                 bool aBestEfforts, const std::map<std::string, UTF8>* aProperties )
+void PCB_IO::FootprintEnumerate( wxArrayString& aFootprintNames [[maybe_unused]], const wxString& aLibraryPath [[maybe_unused]],
+                                 bool aBestEfforts [[maybe_unused]], const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     // not pure virtual so that plugins only have to implement subset of the PLUGIN interface.
     NOT_IMPLEMENTED( __FUNCTION__ );
@@ -157,24 +157,24 @@ bool PCB_IO::FootprintExists( const wxString& aLibraryPath, const wxString& aFoo
 }
 
 
-std::unique_ptr<FOOTPRINT> PCB_IO::FootprintLoad( const wxString& aLibraryPath, const wxString& aFootprintName,
-                                                  bool aKeepUUID, const std::map<std::string, UTF8>* aProperties )
+std::unique_ptr<FOOTPRINT> PCB_IO::FootprintLoad( const wxString& aLibraryPath [[maybe_unused]], const wxString& aFootprintName [[maybe_unused]],
+                                                  bool aKeepUUID [[maybe_unused]], const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     // not pure virtual so that plugins only have to implement subset of the PLUGIN interface.
     NOT_IMPLEMENTED( __FUNCTION__ );
 }
 
 
-void PCB_IO::FootprintSave( const wxString& aLibraryPath, const FOOTPRINT* aFootprint,
-                            const std::map<std::string, UTF8>* aProperties )
+void PCB_IO::FootprintSave( const wxString& aLibraryPath [[maybe_unused]], const FOOTPRINT* aFootprint [[maybe_unused]],
+                            const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     // not pure virtual so that plugins only have to implement subset of the PLUGIN interface.
     NOT_IMPLEMENTED( __FUNCTION__ );
 }
 
 
-void PCB_IO::FootprintDelete( const wxString& aLibraryPath, const wxString& aFootprintName,
-                              const std::map<std::string, UTF8>* aProperties )
+void PCB_IO::FootprintDelete( const wxString& aLibraryPath [[maybe_unused]], const wxString& aFootprintName [[maybe_unused]],
+                              const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     // not pure virtual so that plugins only have to implement subset of the PLUGIN interface.
     NOT_IMPLEMENTED( __FUNCTION__ );

@@ -822,7 +822,7 @@ void FOOTPRINT_EDIT_FRAME::updateInfoBar()
                                                       footprint->GetReference() ) );
 
                     infobar.AddLink( wxString::Format( _( "Open footprint from library %s" ), UnescapeString( lib ) ),
-                            [this]( wxHyperlinkEvent& aEvent )
+                            [this]( wxHyperlinkEvent& aEvent [[maybe_unused]] )
                             {
                                 GetToolManager()->RunAction( PCB_ACTIONS::editLibFpInFpEditor );
                             } );
@@ -835,7 +835,7 @@ void FOOTPRINT_EDIT_FRAME::updateInfoBar()
                     msgs.push_back( _( "Library is read-only.  Changes cannot be saved to this library." ) );
 
                     infobar.AddLink( _( "Save as editable copy" ),
-                            [this]( wxHyperlinkEvent& aEvent )
+                            [this]( wxHyperlinkEvent& aEvent [[maybe_unused]] )
                             {
                                 SaveFootprintAs( GetBoard()->GetFirstFootprint() );
                                 GetCanvas()->GetView()->Update( GetBoard()->GetFirstFootprint() );
@@ -1749,7 +1749,7 @@ const PCB_PLOT_PARAMS& FOOTPRINT_EDIT_FRAME::GetPlotSettings() const
 }
 
 
-void FOOTPRINT_EDIT_FRAME::SetPlotSettings( const PCB_PLOT_PARAMS& aSettings )
+void FOOTPRINT_EDIT_FRAME::SetPlotSettings( const PCB_PLOT_PARAMS& aSettings [[maybe_unused]] )
 {
     wxFAIL_MSG( wxT( "Plotting not supported in Footprint Editor" ) );
 }
@@ -1773,7 +1773,7 @@ APP_SETTINGS_BASE* FOOTPRINT_EDIT_FRAME::config() const
 }
 
 
-void FOOTPRINT_EDIT_FRAME::LoadSettings( APP_SETTINGS_BASE* aCfg )
+void FOOTPRINT_EDIT_FRAME::LoadSettings( APP_SETTINGS_BASE* aCfg [[maybe_unused]] )
 {
     // Get our own settings; aCfg will be the PCBNEW_SETTINGS because we're part of the pcbnew
     // compile unit
@@ -1806,7 +1806,7 @@ void FOOTPRINT_EDIT_FRAME::LoadSettings( APP_SETTINGS_BASE* aCfg )
 }
 
 
-void FOOTPRINT_EDIT_FRAME::SaveSettings( APP_SETTINGS_BASE* aCfg )
+void FOOTPRINT_EDIT_FRAME::SaveSettings( APP_SETTINGS_BASE* aCfg [[maybe_unused]] )
 {
     GetGalDisplayOptions().m_axesEnabled = true;
 
@@ -1881,7 +1881,7 @@ EDA_ANGLE FOOTPRINT_EDIT_FRAME::GetRotationAngle() const
 
 
 
-COLOR_SETTINGS* FOOTPRINT_EDIT_FRAME::GetColorSettings( bool aForceRefresh ) const
+COLOR_SETTINGS* FOOTPRINT_EDIT_FRAME::GetColorSettings( bool aForceRefresh [[maybe_unused]] ) const
 {
     FOOTPRINT_EDITOR_SETTINGS* cfg = GetFootprintEditorSettings();
     return ::GetColorSettings( cfg ? cfg->m_ColorTheme : DEFAULT_THEME );
@@ -1899,7 +1899,7 @@ MAGNETIC_SETTINGS* FOOTPRINT_EDIT_FRAME::GetMagneticItemsSettings()
 }
 
 
-const BOX2I FOOTPRINT_EDIT_FRAME::GetDocumentExtents( bool aIncludeAllVisible ) const
+const BOX2I FOOTPRINT_EDIT_FRAME::GetDocumentExtents( bool aIncludeAllVisible [[maybe_unused]] ) const
 {
     FOOTPRINT* footprint = GetBoard()->GetFirstFootprint();
 
@@ -1986,13 +1986,13 @@ void FOOTPRINT_EDIT_FRAME::doCloseWindow()
 }
 
 
-void FOOTPRINT_EDIT_FRAME::OnExitKiCad( wxCommandEvent& event )
+void FOOTPRINT_EDIT_FRAME::OnExitKiCad( wxCommandEvent& event [[maybe_unused]] )
 {
     Kiway().OnKiCadExit();
 }
 
 
-void FOOTPRINT_EDIT_FRAME::CloseFootprintEditor( wxCommandEvent& Event )
+void FOOTPRINT_EDIT_FRAME::CloseFootprintEditor( wxCommandEvent& Event [[maybe_unused]] )
 {
     Close();
 }
@@ -2521,7 +2521,7 @@ std::unique_ptr<GRID_HELPER> FOOTPRINT_EDIT_FRAME::MakeGridHelper()
 }
 
 
-void FOOTPRINT_EDIT_FRAME::OnSaveFootprintAsPng( wxCommandEvent& event )
+void FOOTPRINT_EDIT_FRAME::OnSaveFootprintAsPng( wxCommandEvent& event [[maybe_unused]] )
 {
     LIB_ID id = GetLoadedFPID();
 

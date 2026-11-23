@@ -206,7 +206,7 @@ std::string SPICE_GENERATOR::ItemParams() const
 }
 
 
-std::string SPICE_GENERATOR::TunerCommand( const SPICE_ITEM& aItem, double aValue ) const
+std::string SPICE_GENERATOR::TunerCommand( const SPICE_ITEM& aItem [[maybe_unused]], double aValue [[maybe_unused]] ) const
 {
     // No tuning available by default.
     return "";

@@ -303,46 +303,46 @@ void DIALOG_GENERATORS::onBoardChanged( wxCommandEvent& event )
 }
 
 
-void DIALOG_GENERATORS::OnBoardItemAdded( BOARD& aBoard, BOARD_ITEM* aBoardItem )
+void DIALOG_GENERATORS::OnBoardItemAdded( BOARD& aBoard [[maybe_unused]], BOARD_ITEM* aBoardItem [[maybe_unused]] )
 {
     RebuildModels();
 }
 
 
-void DIALOG_GENERATORS::OnBoardItemsAdded( BOARD& aBoard, std::vector<BOARD_ITEM*>& aBoardItems )
+void DIALOG_GENERATORS::OnBoardItemsAdded( BOARD& aBoard [[maybe_unused]], std::vector<BOARD_ITEM*>& aBoardItems [[maybe_unused]] )
 {
     RebuildModels();
 }
 
 
-void DIALOG_GENERATORS::OnBoardItemRemoved( BOARD& aBoard, BOARD_ITEM* aBoardItem )
+void DIALOG_GENERATORS::OnBoardItemRemoved( BOARD& aBoard [[maybe_unused]], BOARD_ITEM* aBoardItem [[maybe_unused]] )
 {
     RebuildModels();
 }
 
 
-void DIALOG_GENERATORS::OnBoardItemsRemoved( BOARD& aBoard, std::vector<BOARD_ITEM*>& aBoardItems )
+void DIALOG_GENERATORS::OnBoardItemsRemoved( BOARD& aBoard [[maybe_unused]], std::vector<BOARD_ITEM*>& aBoardItems [[maybe_unused]] )
 {
     RebuildModels();
 }
 
 
-void DIALOG_GENERATORS::OnBoardItemChanged( BOARD& aBoard, BOARD_ITEM* aBoardItem )
+void DIALOG_GENERATORS::OnBoardItemChanged( BOARD& aBoard [[maybe_unused]], BOARD_ITEM* aBoardItem [[maybe_unused]] )
 {
     RebuildModels();
 }
 
 
-void DIALOG_GENERATORS::OnBoardItemsChanged( BOARD& aBoard, std::vector<BOARD_ITEM*>& aBoardItems )
+void DIALOG_GENERATORS::OnBoardItemsChanged( BOARD& aBoard [[maybe_unused]], std::vector<BOARD_ITEM*>& aBoardItems [[maybe_unused]] )
 {
     RebuildModels();
 }
 
 
-void DIALOG_GENERATORS::OnBoardCompositeUpdate( BOARD&                    aBoard,
-                                                std::vector<BOARD_ITEM*>& aAddedItems,
-                                                std::vector<BOARD_ITEM*>& aRemovedItems,
-                                                std::vector<BOARD_ITEM*>& aChangedItems )
+void DIALOG_GENERATORS::OnBoardCompositeUpdate( BOARD&                    aBoard [[maybe_unused]],
+                                                std::vector<BOARD_ITEM*>& aAddedItems [[maybe_unused]],
+                                                std::vector<BOARD_ITEM*>& aRemovedItems [[maybe_unused]],
+                                                std::vector<BOARD_ITEM*>& aChangedItems [[maybe_unused]] )
 {
     RebuildModels();
 }
@@ -386,7 +386,7 @@ wxDataViewListStore* DIALOG_GENERATORS::getCurrentModel()
 }
 
 
-void DIALOG_GENERATORS::OnItemSelected( wxDataViewEvent& aEvent )
+void DIALOG_GENERATORS::OnItemSelected( wxDataViewEvent& aEvent [[maybe_unused]] )
 {
     wxDataViewListStore* model = getCurrentModel();
     wxString             pageName = m_Notebook->GetCurrentPage()->GetName();
@@ -422,13 +422,13 @@ void DIALOG_GENERATORS::OnItemSelected( wxDataViewEvent& aEvent )
 }
 
 
-void DIALOG_GENERATORS::OnRebuildSelectedClick( wxCommandEvent& event )
+void DIALOG_GENERATORS::OnRebuildSelectedClick( wxCommandEvent& event [[maybe_unused]] )
 {
     RebuildModels();
 }
 
 
-void DIALOG_GENERATORS::OnRebuildTypeClick( wxCommandEvent& event )
+void DIALOG_GENERATORS::OnRebuildTypeClick( wxCommandEvent& event [[maybe_unused]] )
 {
     wxDataViewListStore* model = getCurrentModel();
     wxString             pageName = m_Notebook->GetCurrentPage()->GetName();
@@ -459,14 +459,14 @@ void DIALOG_GENERATORS::OnRebuildTypeClick( wxCommandEvent& event )
 }
 
 
-void DIALOG_GENERATORS::OnRebuildAllClick( wxCommandEvent& event )
+void DIALOG_GENERATORS::OnRebuildAllClick( wxCommandEvent& event [[maybe_unused]] )
 {
     m_frame->GetToolManager()->RunAction( PCB_ACTIONS::regenerateAll );
     RebuildModels();
 }
 
 
-void DIALOG_GENERATORS::OnCancelClick( wxCommandEvent& event )
+void DIALOG_GENERATORS::OnCancelClick( wxCommandEvent& event [[maybe_unused]] )
 {
     GENERATOR_TOOL* genTool = m_frame->GetToolManager()->GetTool<GENERATOR_TOOL>();
     genTool->DestroyManagerDialog();

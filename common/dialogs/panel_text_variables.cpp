@@ -65,7 +65,7 @@ PANEL_TEXT_VARIABLES::PANEL_TEXT_VARIABLES( wxWindow* aParent, PROJECT* aProject
                          nullptr, this );
 
     Bind( wxEVT_IDLE,
-          [this]( wxIdleEvent& aEvent )
+          [this]( wxIdleEvent& aEvent [[maybe_unused]] )
           {
               // Careful of consuming CPU in an idle event handler.  Check the ticker first to
               // see if there's even a possibility of the text variables having changed.
@@ -191,7 +191,7 @@ void PANEL_TEXT_VARIABLES::OnGridCellChanging( wxGridEvent& event )
 }
 
 
-void PANEL_TEXT_VARIABLES::OnAddTextVar( wxCommandEvent& event )
+void PANEL_TEXT_VARIABLES::OnAddTextVar( wxCommandEvent& event [[maybe_unused]] )
 {
     m_TextVars->OnAddRow(
             [&]() -> std::pair<int, int>
@@ -202,7 +202,7 @@ void PANEL_TEXT_VARIABLES::OnAddTextVar( wxCommandEvent& event )
 }
 
 
-void PANEL_TEXT_VARIABLES::OnRemoveTextVar( wxCommandEvent& event )
+void PANEL_TEXT_VARIABLES::OnRemoveTextVar( wxCommandEvent& event [[maybe_unused]] )
 {
     m_TextVars->OnDeleteRows(
             [&]( int row )

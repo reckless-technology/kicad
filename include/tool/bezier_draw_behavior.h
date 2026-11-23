@@ -40,7 +40,7 @@ public:
     BEZIER_DRAW_BEHAVIOR( const BEZIER_DRAW_BEHAVIOR& ) = delete;
     BEZIER_DRAW_BEHAVIOR& operator=( const BEZIER_DRAW_BEHAVIOR& ) = delete;
 
-    bool OnProperties( EDA_SHAPE& aShape ) override
+    bool OnProperties( EDA_SHAPE& aShape [[maybe_unused]] ) override
     {
         return m_manager.GetStep() > KIGFX::PREVIEW::BEZIER_GEOM_MANAGER::SET_START;
     }

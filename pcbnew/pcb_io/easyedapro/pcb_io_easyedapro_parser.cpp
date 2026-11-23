@@ -118,7 +118,7 @@ nlohmann::json PCB_IO_EASYEDAPRO_PARSER::NormalizeSafeSpacing( const nlohmann::j
 }
 
 
-PCB_IO_EASYEDAPRO_PARSER::PCB_IO_EASYEDAPRO_PARSER( BOARD* aBoard, PROGRESS_REPORTER* aProgressReporter )
+PCB_IO_EASYEDAPRO_PARSER::PCB_IO_EASYEDAPRO_PARSER( BOARD* aBoard, PROGRESS_REPORTER* aProgressReporter [[maybe_unused]] )
 {
     m_board = aBoard;
 }
@@ -1162,7 +1162,7 @@ void PCB_IO_EASYEDAPRO_PARSER::ParseBoard( BOARD* aBoard, const nlohmann::json& 
                                            std::map<wxString, std::unique_ptr<FOOTPRINT>>&    aFootprintMap,
                                            const std::map<wxString, EASYEDAPRO::BLOB>&        aBlobMap,
                                            const std::multimap<wxString, EASYEDAPRO::POURED>& aPouredMap,
-                                           const std::vector<nlohmann::json>& aLines, const wxString& aFpLibName )
+                                           const std::vector<nlohmann::json>& aLines, const wxString& aFpLibName [[maybe_unused]] )
 {
     std::map<wxString, std::vector<nlohmann::json>> componentLines;
     std::map<wxString, std::vector<nlohmann::json>> ruleLines;

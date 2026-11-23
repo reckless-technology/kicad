@@ -37,7 +37,7 @@ PCB_STACKUP_TABLE::PCB_STACKUP_TABLE( BOARD_ITEM* aParent ) :
 }
 
 
-wxString PCB_STACKUP_TABLE::GetItemDescription( UNITS_PROVIDER* aUnitsProvider, bool aFull ) const
+wxString PCB_STACKUP_TABLE::GetItemDescription( UNITS_PROVIDER* aUnitsProvider [[maybe_unused]], bool aFull [[maybe_unused]] ) const
 {
     return wxString::Format( _( "Stackup Table (%d rows)" ), GetRowCount() );
 }
@@ -53,7 +53,7 @@ bool PCB_STACKUP_TABLE::operator==( const BOARD_ITEM& aOther ) const
 
 
 std::unique_ptr<GENERATED_TABLE_CONTENT> PCB_STACKUP_TABLE::generate( const BOARD&             aBoard,
-                                                                      GENERATED_TABLE_REFRESH* aRefresh ) const
+                                                                      GENERATED_TABLE_REFRESH* aRefresh [[maybe_unused]] ) const
 {
     auto content = std::make_unique<GENERATED_TABLE_CONTENT>();
     content->m_Rows = BuildStackupTableRows( aBoard, m_columns, m_units, m_precision );

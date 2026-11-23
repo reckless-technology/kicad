@@ -32,7 +32,7 @@ static std::mutex mutex3D_cacheManager;
 std::mutex PROJECT_PCB::s_libAdapterMutex;
 
 
-FOOTPRINT_LIBRARY_ADAPTER* PROJECT_PCB::FootprintLibAdapter( PROJECT* aProject )
+FOOTPRINT_LIBRARY_ADAPTER* PROJECT_PCB::FootprintLibAdapter( PROJECT* aProject [[maybe_unused]] )
 {
     std::scoped_lock lock( s_libAdapterMutex );
 

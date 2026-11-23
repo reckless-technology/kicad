@@ -202,7 +202,7 @@ bool DIALOG_PRINT::TransferDataToWindow()
 }
 
 
-void DIALOG_PRINT::OnUseColorThemeChecked( wxCommandEvent& event )
+void DIALOG_PRINT::OnUseColorThemeChecked( wxCommandEvent& event [[maybe_unused]] )
 {
     m_colorTheme->Enable( m_checkUseColorTheme->GetValue() );
 }
@@ -241,7 +241,7 @@ void DIALOG_PRINT::SavePrintOptions()
 }
 
 
-void DIALOG_PRINT::OnPageSetup( wxCommandEvent& event )
+void DIALOG_PRINT::OnPageSetup( wxCommandEvent& event [[maybe_unused]] )
 {
     wxPageSetupDialog pageSetupDialog( this, &m_parent->GetPageSetupData() );
     pageSetupDialog.ShowModal();
@@ -250,7 +250,7 @@ void DIALOG_PRINT::OnPageSetup( wxCommandEvent& event )
 }
 
 
-void DIALOG_PRINT::OnPrintPreview( wxCommandEvent& event )
+void DIALOG_PRINT::OnPrintPreview( wxCommandEvent& event [[maybe_unused]] )
 {
     SavePrintOptions();
     wxPrintData& prn_data = m_parent->GetPageSetupData().GetPrintData();

@@ -129,7 +129,7 @@ bool GLOBAL_EDIT_TOOL::swapBoardItem( BOARD_ITEM* aItem, std::map<PCB_LAYER_ID, 
 }
 
 
-int GLOBAL_EDIT_TOOL::SwapLayers( const TOOL_EVENT& aEvent )
+int GLOBAL_EDIT_TOOL::SwapLayers( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     std::map<PCB_LAYER_ID, PCB_LAYER_ID> layerMap;
 
@@ -190,7 +190,7 @@ int GLOBAL_EDIT_TOOL::SwapLayers( const TOOL_EVENT& aEvent )
 }
 
 
-int GLOBAL_EDIT_TOOL::EditTracksAndVias( const TOOL_EVENT& aEvent )
+int GLOBAL_EDIT_TOOL::EditTracksAndVias( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     PCB_EDIT_FRAME* editFrame = getEditFrame<PCB_EDIT_FRAME>();
     DIALOG_GLOBAL_EDIT_TRACKS_AND_VIAS dlg( editFrame );
@@ -200,7 +200,7 @@ int GLOBAL_EDIT_TOOL::EditTracksAndVias( const TOOL_EVENT& aEvent )
 }
 
 
-int GLOBAL_EDIT_TOOL::CleanupTracksAndVias( const TOOL_EVENT& aEvent )
+int GLOBAL_EDIT_TOOL::CleanupTracksAndVias( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     PCB_EDIT_FRAME* editFrame = getEditFrame<PCB_EDIT_FRAME>();
     DIALOG_CLEANUP_TRACKS_AND_VIAS dlg( editFrame );
@@ -210,7 +210,7 @@ int GLOBAL_EDIT_TOOL::CleanupTracksAndVias( const TOOL_EVENT& aEvent )
 }
 
 
-int GLOBAL_EDIT_TOOL::CleanupGraphics( const TOOL_EVENT& aEvent )
+int GLOBAL_EDIT_TOOL::CleanupGraphics( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     PCB_EDIT_FRAME* editFrame = getEditFrame<PCB_EDIT_FRAME>();
     DIALOG_CLEANUP_GRAPHICS dlg( editFrame, false );
@@ -220,11 +220,11 @@ int GLOBAL_EDIT_TOOL::CleanupGraphics( const TOOL_EVENT& aEvent )
 }
 
 
-int GLOBAL_EDIT_TOOL::RemoveUnusedPads( const TOOL_EVENT& aEvent )
+int GLOBAL_EDIT_TOOL::RemoveUnusedPads( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     PCB_EDIT_FRAME* editFrame = getEditFrame<PCB_EDIT_FRAME>();
     PCB_SELECTION&  selection = m_selectionTool->RequestSelection(
-            []( const VECTOR2I& aPt, GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
+            []( const VECTOR2I& aPt [[maybe_unused]], GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
             {
                 sTool->FilterCollectorForHierarchy( aCollector, true );
             } );
@@ -235,7 +235,7 @@ int GLOBAL_EDIT_TOOL::RemoveUnusedPads( const TOOL_EVENT& aEvent )
     return 0;
 }
 
-int GLOBAL_EDIT_TOOL::ZonesManager( const TOOL_EVENT& aEvent )
+int GLOBAL_EDIT_TOOL::ZonesManager( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     PCB_EDIT_FRAME* editFrame = getEditFrame<PCB_EDIT_FRAME>();
     BOARD_COMMIT    commit( editFrame );

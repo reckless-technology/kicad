@@ -999,7 +999,7 @@ void DIALOG_SIM_COMMAND::OnCommandType( wxCommandEvent& event )
 }
 
 
-void DIALOG_SIM_COMMAND::onSwapDCSources( wxCommandEvent& event )
+void DIALOG_SIM_COMMAND::onSwapDCSources( wxCommandEvent& event [[maybe_unused]] )
 {
     std::vector<std::pair<wxTextEntry*, wxTextEntry*>> textCtrl = { { m_dcStart1, m_dcStart2 },
                                                                     { m_dcStop1, m_dcStop2 },
@@ -1032,7 +1032,7 @@ void DIALOG_SIM_COMMAND::onSwapDCSources( wxCommandEvent& event )
 }
 
 
-void DIALOG_SIM_COMMAND::onDCSource1Selected( wxCommandEvent& event )
+void DIALOG_SIM_COMMAND::onDCSource1Selected( wxCommandEvent& event [[maybe_unused]] )
 {
     wxChar type = m_dcSourceType1->GetString( m_dcSourceType1->GetSelection() ).Upper()[ 0 ];
     updateDCSources( type, m_dcSource1 );
@@ -1040,7 +1040,7 @@ void DIALOG_SIM_COMMAND::onDCSource1Selected( wxCommandEvent& event )
 }
 
 
-void DIALOG_SIM_COMMAND::onDCSource2Selected( wxCommandEvent& event )
+void DIALOG_SIM_COMMAND::onDCSource2Selected( wxCommandEvent& event [[maybe_unused]] )
 {
     wxChar type = m_dcSourceType2->GetString( m_dcSourceType2->GetSelection() ).Upper()[ 0 ];
     updateDCSources( type, m_dcSource2 );
@@ -1048,7 +1048,7 @@ void DIALOG_SIM_COMMAND::onDCSource2Selected( wxCommandEvent& event )
 }
 
 
-void DIALOG_SIM_COMMAND::onDCEnableSecondSource( wxCommandEvent& event )
+void DIALOG_SIM_COMMAND::onDCEnableSecondSource( wxCommandEvent& event [[maybe_unused]] )
 {
     bool   is2ndSrcEnabled = m_dcEnable2->IsChecked();
     wxChar type = '?';
@@ -1097,7 +1097,7 @@ void DIALOG_SIM_COMMAND::loadDirectives()
 }
 
 
-void DIALOG_SIM_COMMAND::OnFilterText( wxCommandEvent& aEvent )
+void DIALOG_SIM_COMMAND::OnFilterText( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     for( int ii = 0; ii < (int) m_inputSignalsList->GetCount(); ++ii )
     {
@@ -1129,7 +1129,7 @@ void DIALOG_SIM_COMMAND::OnFilterText( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_SIM_COMMAND::OnFilterMouseMoved( wxMouseEvent& aEvent )
+void DIALOG_SIM_COMMAND::OnFilterMouseMoved( wxMouseEvent& aEvent [[maybe_unused]] )
 {
 #if defined( __WXOSX__ ) // Doesn't work properly on other ports
     wxPoint pos = aEvent.GetPosition();

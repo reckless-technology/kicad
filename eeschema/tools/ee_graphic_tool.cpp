@@ -79,12 +79,12 @@ bool EE_GRAPHIC_TOOL::Init()
     SCH_TOOL_BASE::Init();
 
     const auto inDrawingArc =
-            [this]( const SELECTION& aSel )
+            [this]( const SELECTION& aSel [[maybe_unused]] )
             {
                 return m_mode == MODE::ARC;
             };
 
-    const auto inManagedShape = [this]( const SELECTION& aSel )
+    const auto inManagedShape = [this]( const SELECTION& aSel [[maybe_unused]] )
             {
                 return m_mode == MODE::ARC || m_mode == MODE::BEZIER || m_mode == MODE::ELLIPSE_ARC;
             };

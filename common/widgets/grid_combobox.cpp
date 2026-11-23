@@ -174,7 +174,7 @@ void GRID_CELL_COMBOBOX::Reset()
 }
 
 
-void GRID_CELL_COMBOBOX::onComboDropDown( wxCommandEvent& aEvent )
+void GRID_CELL_COMBOBOX::onComboDropDown( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     auto evtHandler = static_cast<wxGridCellEditorEvtHandler*>( m_control->GetEventHandler() );
 
@@ -184,7 +184,7 @@ void GRID_CELL_COMBOBOX::onComboDropDown( wxCommandEvent& aEvent )
 }
 
 
-void GRID_CELL_COMBOBOX::onComboCloseUp( wxCommandEvent& aEvent )
+void GRID_CELL_COMBOBOX::onComboCloseUp( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     auto evtHandler = static_cast<wxGridCellEditorEvtHandler*>( m_control->GetEventHandler() );
 

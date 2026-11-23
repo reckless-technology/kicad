@@ -548,26 +548,26 @@ bool PANEL_DESIGN_BLOCK_LIB_TABLE::verifyTables()
 }
 
 
-void PANEL_DESIGN_BLOCK_LIB_TABLE::appendRowHandler( wxCommandEvent& event )
+void PANEL_DESIGN_BLOCK_LIB_TABLE::appendRowHandler( wxCommandEvent& event [[maybe_unused]] )
 {
     LIB_TABLE_GRID_TRICKS::AppendRowHandler( cur_grid(),
                                              DESIGN_BLOCK_IO_MGR::ShowType( DESIGN_BLOCK_IO_MGR::KICAD_SEXP ) );
 }
 
 
-void PANEL_DESIGN_BLOCK_LIB_TABLE::deleteRowHandler( wxCommandEvent& event )
+void PANEL_DESIGN_BLOCK_LIB_TABLE::deleteRowHandler( wxCommandEvent& event [[maybe_unused]] )
 {
     LIB_TABLE_GRID_TRICKS::DeleteRowHandler( cur_grid() );
 }
 
 
-void PANEL_DESIGN_BLOCK_LIB_TABLE::moveUpHandler( wxCommandEvent& event )
+void PANEL_DESIGN_BLOCK_LIB_TABLE::moveUpHandler( wxCommandEvent& event [[maybe_unused]] )
 {
     LIB_TABLE_GRID_TRICKS::MoveUpHandler( cur_grid() );
 }
 
 
-void PANEL_DESIGN_BLOCK_LIB_TABLE::moveDownHandler( wxCommandEvent& event )
+void PANEL_DESIGN_BLOCK_LIB_TABLE::moveDownHandler( wxCommandEvent& event [[maybe_unused]] )
 {
     LIB_TABLE_GRID_TRICKS::MoveDownHandler( cur_grid() );
 }
@@ -603,7 +603,7 @@ void PANEL_DESIGN_BLOCK_LIB_TABLE::onNotebookPageCloseRequest( wxAuiNotebookEven
 
 
 // @todo refactor this function into single location shared with PANEL_SYM_LIB_TABLE
-void PANEL_DESIGN_BLOCK_LIB_TABLE::onMigrateLibraries( wxCommandEvent& event )
+void PANEL_DESIGN_BLOCK_LIB_TABLE::onMigrateLibraries( wxCommandEvent& event [[maybe_unused]] )
 {
     if( !cur_grid()->CommitPendingChanges() )
         return;

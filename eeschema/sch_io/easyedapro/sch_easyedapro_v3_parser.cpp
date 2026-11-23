@@ -173,7 +173,7 @@ static wxString ResolveV3FootprintText( const wxString& aFootprintValue, const n
 }
 
 
-SCH_EASYEDAPRO_V3_PARSER::SCH_EASYEDAPRO_V3_PARSER( SCHEMATIC* aSchematic, PROGRESS_REPORTER* aProgressReporter )
+SCH_EASYEDAPRO_V3_PARSER::SCH_EASYEDAPRO_V3_PARSER( SCHEMATIC* aSchematic, PROGRESS_REPORTER* aProgressReporter [[maybe_unused]] )
 {
     m_schematic = aSchematic;
 }

@@ -161,7 +161,7 @@ public:
     bool Init() override;
 
     /// @copydoc TOOL_INTERACTIVE::Reset()
-    void Reset( RESET_REASON aReason ) override { }
+    void Reset( RESET_REASON aReason [[maybe_unused]] ) override { }
 
     /// Main event loop.
     int Main( const TOOL_EVENT& aEvent );

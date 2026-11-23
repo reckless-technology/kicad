@@ -311,7 +311,7 @@ void DRC_RE_CONDITION_GROUP_PANEL::removeConditionRow( int aIndex )
 }
 
 
-void DRC_RE_CONDITION_GROUP_PANEL::onAddClicked( wxCommandEvent& aEvent )
+void DRC_RE_CONDITION_GROUP_PANEL::onAddClicked( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     addConditionRow( BOOL_OPERATOR::AND );
 

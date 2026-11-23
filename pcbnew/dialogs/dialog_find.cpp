@@ -104,19 +104,19 @@ void DIALOG_FIND::Preload( const wxString& aFindString )
 }
 
 
-void DIALOG_FIND::onTextEnter( wxCommandEvent& aEvent )
+void DIALOG_FIND::onTextEnter( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     search( true );
 }
 
 
-void DIALOG_FIND::onFindNextClick( wxCommandEvent& aEvent )
+void DIALOG_FIND::onFindNextClick( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     search( true );
 }
 
 
-void DIALOG_FIND::onFindPreviousClick( wxCommandEvent& aEvent )
+void DIALOG_FIND::onFindPreviousClick( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     search( false );
 }
@@ -146,14 +146,14 @@ void DIALOG_FIND::OnCharHook( wxKeyEvent& aEvent )
 }
 
 
-void DIALOG_FIND::onSearchAgainClick( wxCommandEvent& aEvent )
+void DIALOG_FIND::onSearchAgainClick( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     m_upToDate = false;
     search( true );
 }
 
 
-void DIALOG_FIND::onShowSearchPanel( wxHyperlinkEvent& event )
+void DIALOG_FIND::onShowSearchPanel( wxHyperlinkEvent& event [[maybe_unused]] )
 {
     m_frame->GetToolManager()->RunAction( ACTIONS::showSearch );
 

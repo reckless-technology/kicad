@@ -50,7 +50,7 @@
 static bool sortPinsByNumber( SCH_PIN* aPin1, SCH_PIN* aPin2 );
 
 bool NETLIST_EXPORTER_XML::writeNetlist( const wxString& aOutFileName, unsigned aNetlistOptions,
-                                         REPORTER& aReporter )
+                                         REPORTER& aReporter [[maybe_unused]] )
 {
     // output the XML format netlist.
 

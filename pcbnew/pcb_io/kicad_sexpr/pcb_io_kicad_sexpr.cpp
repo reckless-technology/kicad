@@ -3826,7 +3826,7 @@ PCB_IO_KICAD_SEXPR::~PCB_IO_KICAD_SEXPR()
 
 
 void PCB_IO_KICAD_SEXPR::loadBoard( const wxString& aFileName, BOARD& aBoard, bool aIsNewLoad,
-                                    const std::map<std::string, UTF8>* aProperties, PROJECT* aProject )
+                                    const std::map<std::string, UTF8>* aProperties, PROJECT* aProject [[maybe_unused]] )
 {
     FILE_LINE_READER reader( aFileName );
 
@@ -4045,7 +4045,7 @@ const FOOTPRINT* PCB_IO_KICAD_SEXPR::GetEnumeratedFootprint( const wxString& aLi
 
 bool PCB_IO_KICAD_SEXPR::FootprintExists( const wxString& aLibraryPath,
                                           const wxString& aFootprintName,
-                                          const std::map<std::string, UTF8>* aProperties )
+                                          const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     // Note: checking the cache sounds like a good idea, but won't catch files which differ
     // only in case.
@@ -4062,7 +4062,7 @@ bool PCB_IO_KICAD_SEXPR::FootprintExists( const wxString& aLibraryPath,
 
 std::unique_ptr<FOOTPRINT> PCB_IO_KICAD_SEXPR::ImportFootprint( const wxString&                    aFootprintPath,
                                                                 wxString&                          aFootprintNameOut,
-                                                                const std::map<std::string, UTF8>* aProperties )
+                                                                const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     boost::ptr_map<wxString, FP_CACHE_ENTRY> footprints;
 
@@ -4274,7 +4274,7 @@ void PCB_IO_KICAD_SEXPR::CreateLibrary( const wxString& aLibraryPath,
 
 
 bool PCB_IO_KICAD_SEXPR::DeleteLibrary( const wxString& aLibraryPath,
-                                        const std::map<std::string, UTF8>* aProperties )
+                                        const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     wxFileName fn;
     fn.SetPath( aLibraryPath );

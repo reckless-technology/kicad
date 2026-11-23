@@ -57,7 +57,7 @@ SCH_IO_LIB_CACHE::~SCH_IO_LIB_CACHE()
 }
 
 
-void SCH_IO_LIB_CACHE::Save( const std::optional<bool>& aOpt )
+void SCH_IO_LIB_CACHE::Save( const std::optional<bool>& aOpt [[maybe_unused]] )
 {
     wxCHECK( false, /* void */ );
 }

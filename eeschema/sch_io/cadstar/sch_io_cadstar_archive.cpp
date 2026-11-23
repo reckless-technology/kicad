@@ -62,7 +62,7 @@ int SCH_IO_CADSTAR_ARCHIVE::GetModifyHash() const
 SCH_SHEET* SCH_IO_CADSTAR_ARCHIVE::LoadSchematicFile( const wxString&        aFileName,
                                                       SCHEMATIC*             aSchematic,
                                                       SCH_SHEET*             aAppendToMe,
-                                                      const std::map<std::string, UTF8>* aProperties )
+                                                      const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     wxCHECK( !aFileName.IsEmpty() && aSchematic, nullptr );
 

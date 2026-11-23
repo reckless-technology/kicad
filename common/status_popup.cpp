@@ -106,7 +106,7 @@ void STATUS_POPUP::updateSize()
 }
 
 
-void STATUS_POPUP::onExpire( wxTimerEvent& aEvent )
+void STATUS_POPUP::onExpire( wxTimerEvent& aEvent [[maybe_unused]] )
 {
     Hide();
 }

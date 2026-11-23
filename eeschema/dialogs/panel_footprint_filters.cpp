@@ -178,7 +178,7 @@ PANEL_FOOTPRINT_FILTERS::PANEL_FOOTPRINT_FILTERS( wxWindow* aParent, KIWAY& aKiw
 
     // Forward the delete button to the tricks
     m_deleteFilterButton->Bind( wxEVT_BUTTON,
-                                [&]( wxCommandEvent& aEvent )
+                                [&]( wxCommandEvent& aEvent [[maybe_unused]] )
                                 {
                                     wxCommandEvent cmdEvent( EDA_EVT_LISTBOX_DELETE );
                                     m_fpFilterTricks->ProcessEvent( cmdEvent );
@@ -186,7 +186,7 @@ PANEL_FOOTPRINT_FILTERS::PANEL_FOOTPRINT_FILTERS( wxWindow* aParent, KIWAY& aKiw
 
     // When the filter tricks modifies something, update ourselves
     m_FootprintFilterListBox->Bind( EDA_EVT_LISTBOX_CHANGED,
-                                    [&]( wxCommandEvent& aEvent )
+                                    [&]( wxCommandEvent& aEvent [[maybe_unused]] )
                                     {
                                         // Filters pasted or duplicated into the list need the
                                         // same space handling as ones typed into the dialogs.
@@ -203,7 +203,7 @@ PANEL_FOOTPRINT_FILTERS::PANEL_FOOTPRINT_FILTERS( wxWindow* aParent, KIWAY& aKiw
     // The selected event is sent whenever the selection changes, including when it is
     // cleared; the handler always reads the current state.
     m_FootprintFilterListBox->Bind( wxEVT_COMMAND_LISTBOX_SELECTED,
-                                    [this]( wxCommandEvent& aEvent )
+                                    [this]( wxCommandEvent& aEvent [[maybe_unused]] )
                                     {
                                         updateMatchingFootprints();
                                     } );
@@ -433,7 +433,7 @@ void PANEL_FOOTPRINT_FILTERS::showFpFilterMatchLoadIndication( bool aShow, float
 }
 
 
-void PANEL_FOOTPRINT_FILTERS::onFpFilterMatchLoadTimer( wxTimerEvent& aEvent )
+void PANEL_FOOTPRINT_FILTERS::onFpFilterMatchLoadTimer( wxTimerEvent& aEvent [[maybe_unused]] )
 {
     if( !matchLibrariesReady() )
         return;
@@ -556,7 +556,7 @@ void PANEL_FOOTPRINT_FILTERS::onMatchingFootprintKeyDown( wxKeyEvent& aEvent )
 }
 
 
-void PANEL_FOOTPRINT_FILTERS::OnAddFootprintFilter( wxCommandEvent& event )
+void PANEL_FOOTPRINT_FILTERS::OnAddFootprintFilter( wxCommandEvent& event [[maybe_unused]] )
 {
     wxString             filterLine;
     WX_TEXT_ENTRY_DIALOG dlg( this, _( "Filter:" ), _( "Add Footprint Filter" ), filterLine );
@@ -587,7 +587,7 @@ void PANEL_FOOTPRINT_FILTERS::OnAddFootprintFilter( wxCommandEvent& event )
 }
 
 
-void PANEL_FOOTPRINT_FILTERS::OnEditFootprintFilter( wxCommandEvent& event )
+void PANEL_FOOTPRINT_FILTERS::OnEditFootprintFilter( wxCommandEvent& event [[maybe_unused]] )
 {
     wxArrayInt selections;
     const int  n = m_FootprintFilterListBox->GetSelections( selections );

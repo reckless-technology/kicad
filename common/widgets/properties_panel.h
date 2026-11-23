@@ -100,15 +100,15 @@ protected:
 
     virtual void OnLanguageChanged( wxCommandEvent& aEvent );
 
-    virtual bool isKeyEditable( const wxPGProperty* aPGProp ) const { return false; }
-    virtual bool isKeyNameInUse( const wxString& aName ) const { return false; }
-    virtual void onKeyRenamed( const wxString& aOldName, const wxString& aNewName ) {}
+    virtual bool isKeyEditable( const wxPGProperty* aPGProp [[maybe_unused]] ) const { return false; }
+    virtual bool isKeyNameInUse( const wxString& aName [[maybe_unused]] ) const { return false; }
+    virtual void onKeyRenamed( const wxString& aOldName [[maybe_unused]], const wxString& aNewName [[maybe_unused]] ) {}
 
     virtual void onLabelEditBegin( wxPropertyGridEvent& aEvent );
     virtual void onLabelEditEnding( wxPropertyGridEvent& aEvent );
 
-    virtual bool buildContextMenu( wxMenu& aMenu, wxPGProperty* aPGProp ) { return false; }
-    virtual void onNewItemLeftBlank( const wxString& aKey ) {}
+    virtual bool buildContextMenu( wxMenu& aMenu [[maybe_unused]], wxPGProperty* aPGProp [[maybe_unused]] ) { return false; }
+    virtual void onNewItemLeftBlank( const wxString& aKey [[maybe_unused]] ) {}
     void onRightClick( wxPropertyGridEvent& aEvent );
 
     void beginLabelEdit( const wxString& aKey, bool aStartBlank = false );

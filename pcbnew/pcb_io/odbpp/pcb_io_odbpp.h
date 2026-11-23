@@ -94,16 +94,16 @@ public:
     uint32_t NewUid() { return ++m_maxUid; }
     uint32_t MaxUid() const { return m_maxUid; }
 
-    long long GetLibraryTimestamp( const wxString& aLibraryPath ) const override { return 0; }
+    long long GetLibraryTimestamp( const wxString& aLibraryPath [[maybe_unused]] ) const override { return 0; }
 
     // Reading currently disabled
-    bool CanReadBoard( const wxString& aFileName ) const override { return false; }
+    bool CanReadBoard( const wxString& aFileName [[maybe_unused]] ) const override { return false; }
 
     // Reading currently disabled
-    bool CanReadFootprint( const wxString& aFileName ) const override { return false; }
+    bool CanReadFootprint( const wxString& aFileName [[maybe_unused]] ) const override { return false; }
 
     // Reading currently disabled
-    bool CanReadLibrary( const wxString& aFileName ) const override { return false; }
+    bool CanReadLibrary( const wxString& aFileName [[maybe_unused]] ) const override { return false; }
 
 public:
     inline std::vector<ODB_LAYER_NAME>& GetLayerNameList() { return m_layer_name_list; }

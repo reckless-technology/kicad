@@ -62,7 +62,7 @@ static void vector2IwxDrawPolygon( wxDC* aDC, const VECTOR2I* Points, int n )
 }
 
 
-static void winDrawLine( wxDC* DC, int x1, int y1, int x2, int y2, int width )
+static void winDrawLine( wxDC* DC, int x1, int y1, int x2, int y2, int width [[maybe_unused]] )
 {
     GRLastMoveToX = x2;
     GRLastMoveToY = y2;
@@ -408,7 +408,7 @@ void GRSRect( wxDC* aDC, int x1, int y1, int x2, int y2, int aWidth, const COLOR
 }
 
 
-void GRSFilledRect( wxDC* aDC, int x1, int y1, int x2, int y2, int aWidth, const COLOR4D& aColor,
+void GRSFilledRect( wxDC* aDC, int x1, int y1, int x2, int y2, int aWidth, const COLOR4D& aColor [[maybe_unused]],
                     const COLOR4D& aBgColor )
 {
     VECTOR2I points[5];

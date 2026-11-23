@@ -76,7 +76,7 @@ public:
      * Safe to call from a worker thread. Implementations record the request and apply it on
      * the next UI refresh.
      */
-    virtual void SetIndeterminate( bool aIndeterminate ) {}
+    virtual void SetIndeterminate( bool aIndeterminate [[maybe_unused]] ) {}
 
     /**
      * Set the progress value to aProgress (0..1).

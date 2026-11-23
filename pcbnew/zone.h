@@ -109,7 +109,7 @@ public:
      * @return a VECTOR2I, position of the first point of the outline
      */
     VECTOR2I GetPosition() const override;
-    void     SetPosition( const VECTOR2I& aPos ) override {}
+    void     SetPosition( const VECTOR2I& aPos [[maybe_unused]] ) override {}
 
     /**
      * @param aPriority is the priority level.
@@ -160,7 +160,7 @@ public:
     const wxString& GetZoneName() const { return m_zoneName; }
     void SetZoneName( const wxString& aName ) { m_zoneName = aName; }
 
-    bool Matches( const EDA_SEARCH_DATA& aSearchData, void* aAuxData ) const override
+    bool Matches( const EDA_SEARCH_DATA& aSearchData, void* aAuxData [[maybe_unused]] ) const override
     {
         return BOARD_ITEM::Matches( GetZoneName(), aSearchData );
     }

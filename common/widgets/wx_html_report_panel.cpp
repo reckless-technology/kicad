@@ -236,7 +236,7 @@ wxString WX_HTML_REPORT_PANEL::generatePlainText( const REPORT_LINE& aLine )
 }
 
 
-void WX_HTML_REPORT_PANEL::onRightClick( wxMouseEvent& event )
+void WX_HTML_REPORT_PANEL::onRightClick( wxMouseEvent& event [[maybe_unused]] )
 {
     wxMenu popup;
     popup.Append( wxID_COPY, _( "Copy" ) );
@@ -294,7 +294,7 @@ void WX_HTML_REPORT_PANEL::onCheckBox( wxCommandEvent& event )
 }
 
 
-void WX_HTML_REPORT_PANEL::onBtnSaveToFile( wxCommandEvent& event )
+void WX_HTML_REPORT_PANEL::onBtnSaveToFile( wxCommandEvent& event [[maybe_unused]] )
 {
     wxFileName fn;
 

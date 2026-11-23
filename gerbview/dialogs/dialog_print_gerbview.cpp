@@ -197,14 +197,14 @@ void DIALOG_PRINT_GERBVIEW::createLeftPanel()
 }
 
 
-void DIALOG_PRINT_GERBVIEW::onSelectAllClick( wxCommandEvent& event )
+void DIALOG_PRINT_GERBVIEW::onSelectAllClick( wxCommandEvent& event [[maybe_unused]] )
 {
     for( wxCheckListBox* checkbox : m_layerLists )
         setListBoxValue( checkbox, true );
 }
 
 
-void DIALOG_PRINT_GERBVIEW::onDeselectAllClick( wxCommandEvent& event )
+void DIALOG_PRINT_GERBVIEW::onDeselectAllClick( wxCommandEvent& event [[maybe_unused]] )
 {
     for( wxCheckListBox* checkbox : m_layerLists )
         setListBoxValue( checkbox, false );
@@ -271,7 +271,7 @@ void DIALOG_PRINT_GERBVIEW::saveSettings()
 }
 
 
-int GERBVIEW_CONTROL::Print( const TOOL_EVENT& aEvent )
+int GERBVIEW_CONTROL::Print( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     // Selection affects the original item visibility
     m_toolMgr->RunAction( ACTIONS::selectionClear );

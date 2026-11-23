@@ -368,14 +368,14 @@ void TEMPLATE_WIDGET::onRightClick( wxMouseEvent& event )
 }
 
 
-void TEMPLATE_WIDGET::onTogglePinned( wxCommandEvent& event )
+void TEMPLATE_WIDGET::onTogglePinned( wxCommandEvent& event [[maybe_unused]] )
 {
     if( m_currTemplate )
         m_dialog->SetTemplatePinned( GetTemplatePath(), !m_pinned );
 }
 
 
-void TEMPLATE_WIDGET::onEditTemplate( wxCommandEvent& event )
+void TEMPLATE_WIDGET::onEditTemplate( wxCommandEvent& event [[maybe_unused]] )
 {
     if( !m_currTemplate )
         return;
@@ -408,7 +408,7 @@ void TEMPLATE_WIDGET::onEditTemplate( wxCommandEvent& event )
 }
 
 
-void TEMPLATE_WIDGET::onOpenFolder( wxCommandEvent& event )
+void TEMPLATE_WIDGET::onOpenFolder( wxCommandEvent& event [[maybe_unused]] )
 {
     if( !m_currTemplate )
         return;
@@ -421,7 +421,7 @@ void TEMPLATE_WIDGET::onOpenFolder( wxCommandEvent& event )
 }
 
 
-void TEMPLATE_WIDGET::onDuplicateTemplate( wxCommandEvent& event )
+void TEMPLATE_WIDGET::onDuplicateTemplate( wxCommandEvent& event [[maybe_unused]] )
 {
     if( !m_currTemplate )
         return;
@@ -957,21 +957,21 @@ void DIALOG_TEMPLATE_SELECTOR::ApplyFilter()
 }
 
 
-void DIALOG_TEMPLATE_SELECTOR::OnSearchCtrl( wxCommandEvent& event )
+void DIALOG_TEMPLATE_SELECTOR::OnSearchCtrl( wxCommandEvent& event [[maybe_unused]] )
 {
     m_searchTimer.Stop();
     m_searchTimer.StartOnce( 200 );
 }
 
 
-void DIALOG_TEMPLATE_SELECTOR::OnSearchCtrlCancel( wxCommandEvent& event )
+void DIALOG_TEMPLATE_SELECTOR::OnSearchCtrlCancel( wxCommandEvent& event [[maybe_unused]] )
 {
     m_searchCtrl->Clear();
     ApplyFilter();
 }
 
 
-void DIALOG_TEMPLATE_SELECTOR::OnFilterChanged( wxCommandEvent& event )
+void DIALOG_TEMPLATE_SELECTOR::OnFilterChanged( wxCommandEvent& event [[maybe_unused]] )
 {
     KICAD_SETTINGS* settings = Pgm().GetSettingsManager().GetAppSettings<KICAD_SETTINGS>( "kicad" );
 
@@ -982,13 +982,13 @@ void DIALOG_TEMPLATE_SELECTOR::OnFilterChanged( wxCommandEvent& event )
 }
 
 
-void DIALOG_TEMPLATE_SELECTOR::OnSearchTimer( wxTimerEvent& event )
+void DIALOG_TEMPLATE_SELECTOR::OnSearchTimer( wxTimerEvent& event [[maybe_unused]] )
 {
     ApplyFilter();
 }
 
 
-void DIALOG_TEMPLATE_SELECTOR::OnRefreshTimer( wxTimerEvent& event )
+void DIALOG_TEMPLATE_SELECTOR::OnRefreshTimer( wxTimerEvent& event [[maybe_unused]] )
 {
     if( m_refreshPauseCount > 0 )
     {
@@ -1000,7 +1000,7 @@ void DIALOG_TEMPLATE_SELECTOR::OnRefreshTimer( wxTimerEvent& event )
 }
 
 
-void DIALOG_TEMPLATE_SELECTOR::OnBackClicked( wxCommandEvent& event )
+void DIALOG_TEMPLATE_SELECTOR::OnBackClicked( wxCommandEvent& event [[maybe_unused]] )
 {
     if( m_selectedWidget )
         m_selectedWidget->Unselect();
@@ -1210,7 +1210,7 @@ bool DIALOG_TEMPLATE_SELECTOR::browsedPathIsDuplicate() const
 }
 
 
-void DIALOG_TEMPLATE_SELECTOR::OnFileSystemEvent( wxFileSystemWatcherEvent& event )
+void DIALOG_TEMPLATE_SELECTOR::OnFileSystemEvent( wxFileSystemWatcherEvent& event [[maybe_unused]] )
 {
     if( !m_watcher )
         return;
@@ -1432,7 +1432,7 @@ PROJECT_TEMPLATE* DIALOG_TEMPLATE_SELECTOR::GetSelectedTemplate()
 }
 
 
-void DIALOG_TEMPLATE_SELECTOR::onBrowseClicked( wxCommandEvent& aEvent )
+void DIALOG_TEMPLATE_SELECTOR::onBrowseClicked( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     wxString startPath = m_browsedTemplatesPath;
 
@@ -1464,7 +1464,7 @@ void DIALOG_TEMPLATE_SELECTOR::onBrowseClicked( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_TEMPLATE_SELECTOR::onClearBrowsedClicked( wxCommandEvent& aEvent )
+void DIALOG_TEMPLATE_SELECTOR::onClearBrowsedClicked( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( m_browsedTemplatesPath.IsEmpty() )
         return;

@@ -207,7 +207,7 @@ private:
 
     void evalRotationValue( TEXT_CTRL_EVAL* aRotationControl );
 
-    void View3DISO( wxCommandEvent& event ) override
+    void View3DISO( wxCommandEvent& event [[maybe_unused]] ) override
     {
         m_currentCamera.ToggleProjection();
         m_previewPane->Refresh();
@@ -218,22 +218,22 @@ private:
     // Useful for 3D model placement
     void setBodyStyleView( wxCommandEvent& event ) override;
 
-	void View3DLeft( wxCommandEvent& event ) override
+	void View3DLeft( wxCommandEvent& event [[maybe_unused]] ) override
     {
         m_previewPane->SetView3D( VIEW3D_TYPE::VIEW3D_LEFT );
     }
 
-	void View3DFront( wxCommandEvent& event ) override
+	void View3DFront( wxCommandEvent& event [[maybe_unused]] ) override
     {
         m_previewPane->SetView3D( VIEW3D_TYPE::VIEW3D_FRONT );
     }
 
-	void View3DTop( wxCommandEvent& event ) override
+	void View3DTop( wxCommandEvent& event [[maybe_unused]] ) override
     {
         m_previewPane->SetView3D( VIEW3D_TYPE::VIEW3D_TOP );
     }
 
-	void View3DUpdate( wxCommandEvent& event ) override
+	void View3DUpdate( wxCommandEvent& event [[maybe_unused]] ) override
     {
         cancelAlignment();
         m_previewPane->ReloadRequest();
@@ -242,17 +242,17 @@ private:
 
     void View3DSettings( wxCommandEvent& event ) override;
 
-	void View3DRight( wxCommandEvent& event ) override
+	void View3DRight( wxCommandEvent& event [[maybe_unused]] ) override
     {
         m_previewPane->SetView3D( VIEW3D_TYPE::VIEW3D_RIGHT );
     }
 
-	void View3DBack( wxCommandEvent& event ) override
+	void View3DBack( wxCommandEvent& event [[maybe_unused]] ) override
     {
         m_previewPane->SetView3D( VIEW3D_TYPE::VIEW3D_BACK );
     }
 
-	void View3DBottom( wxCommandEvent& event ) override
+	void View3DBottom( wxCommandEvent& event [[maybe_unused]] ) override
     {
         m_previewPane->SetView3D( VIEW3D_TYPE::VIEW3D_BOTTOM );
     }

@@ -176,10 +176,10 @@ public:
     bool ApplyData( std::function<bool( FOOTPRINT& )> aChangeHandler );
 
 private:
-    bool fieldSupportsVariants( const wxString& aFieldName ) const override { return false; }
+    bool fieldSupportsVariants( const wxString& aFieldName [[maybe_unused]] ) const override { return false; }
     bool fieldIsItemProperty( const wxString& aFieldName ) const override;
 
-    bool getLiveFieldValueForVariant( const FOOTPRINT_REF& aRef, const wxString& aFieldName, const wxString& aVariant,
+    bool getLiveFieldValueForVariant( const FOOTPRINT_REF& aRef, const wxString& aFieldName, const wxString& aVariant [[maybe_unused]],
                                       wxString& aValue ) override
     {
         return getLiveFieldValue( aRef, aFieldName, aValue );

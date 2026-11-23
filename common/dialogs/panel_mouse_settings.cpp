@@ -60,7 +60,7 @@ PANEL_MOUSE_SETTINGS::PANEL_MOUSE_SETTINGS( wxWindow* aParent ) :
     }
 
     m_checkAutoZoomSpeed->Bind( wxEVT_COMMAND_CHECKBOX_CLICKED,
-            [&]( wxCommandEvent& aEvt )
+            [&]( wxCommandEvent& aEvt [[maybe_unused]] )
             {
                 m_zoomSpeed->Enable( !m_checkAutoZoomSpeed->GetValue() );
             } );
@@ -392,7 +392,7 @@ TOUCHPAD_MODE PANEL_MOUSE_SETTINGS::getTouchpadMode() const
 }
 
 
-void PANEL_MOUSE_SETTINGS::onMouseDefaults( wxCommandEvent& event )
+void PANEL_MOUSE_SETTINGS::onMouseDefaults( wxCommandEvent& event [[maybe_unused]] )
 {
     m_currentScrollMod.zoom              = 0;
     m_currentScrollMod.panh              = WXK_CONTROL;
@@ -406,7 +406,7 @@ void PANEL_MOUSE_SETTINGS::onMouseDefaults( wxCommandEvent& event )
 }
 
 
-void PANEL_MOUSE_SETTINGS::onTrackpadDefaults( wxCommandEvent& event )
+void PANEL_MOUSE_SETTINGS::onTrackpadDefaults( wxCommandEvent& event [[maybe_unused]] )
 {
     m_choiceTouchpadMode->SetSelection( static_cast<int>( TOUCHPAD_MODE::SCROLL_GESTURES ) );
 

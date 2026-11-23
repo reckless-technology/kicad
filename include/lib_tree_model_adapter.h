@@ -278,11 +278,11 @@ public:
 
     LIB_TREE_NODE* GetTreeNodeFor( const wxDataViewItem& aSelection ) const;
 
-    virtual wxString GenerateInfo( const LIB_ID& aLibId, int aUnit ) { return wxEmptyString; }
+    virtual wxString GenerateInfo( const LIB_ID& aLibId [[maybe_unused]], int aUnit [[maybe_unused]] ) { return wxEmptyString; }
 
-    virtual bool HasPreview( const wxDataViewItem& aItem ) { return false; }
-    virtual void ShowPreview( wxWindow* aParent, const wxDataViewItem& aItem ) {}
-    virtual void ShutdownPreview( wxWindow* aParent ) {}
+    virtual bool HasPreview( const wxDataViewItem& aItem [[maybe_unused]] ) { return false; }
+    virtual void ShowPreview( wxWindow* aParent [[maybe_unused]], const wxDataViewItem& aItem [[maybe_unused]] ) {}
+    virtual void ShutdownPreview( wxWindow* aParent [[maybe_unused]] ) {}
 
     TOOL_DISPATCHER* GetToolDispatcher() const;
 
@@ -411,7 +411,7 @@ protected:
     /**
      * Set the value of an item. Does nothing - this model doesn't support editing.
      */
-    bool SetValue( const wxVariant& aVariant, const wxDataViewItem& aItem, unsigned int aCol ) override
+    bool SetValue( const wxVariant& aVariant [[maybe_unused]], const wxDataViewItem& aItem [[maybe_unused]], unsigned int aCol [[maybe_unused]] ) override
     {
         return false;
     }

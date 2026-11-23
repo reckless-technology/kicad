@@ -348,7 +348,7 @@ void SCH_IO_LTSPICE_PARSER::CreateItems( LTSPICE_SCHEMATIC::LT_ASC& aAscfile, SC
 }
 
 
-void SCH_IO_LTSPICE_PARSER::CreateSymLine( LIB_SYMBOL* aSymbol, const LTSPICE_SCHEMATIC::LT_SYMBOL& aLTSymbol,
+void SCH_IO_LTSPICE_PARSER::CreateSymLine( LIB_SYMBOL* aSymbol [[maybe_unused]], const LTSPICE_SCHEMATIC::LT_SYMBOL& aLTSymbol,
                                            int aIndex, SCH_SHAPE* shape )
 {
     const LTSPICE_SCHEMATIC::LINE& lt_line = aLTSymbol.Lines[aIndex];
@@ -1220,9 +1220,9 @@ void SCH_IO_LTSPICE_PARSER::AddAscWire( const LTSPICE_SCHEMATIC::LT_ASC& aAscfil
 }
 
 
-SCH_SYMBOL* SCH_IO_LTSPICE_PARSER::CreatePowerSymbol( const VECTOR2I& aOffset, const wxString& aValue, int aFontSize,
+SCH_SYMBOL* SCH_IO_LTSPICE_PARSER::CreatePowerSymbol( const VECTOR2I& aOffset, const wxString& aValue [[maybe_unused]], int aFontSize,
                                                       SCH_SCREEN*                           aScreen,
-                                                      std::vector<LTSPICE_SCHEMATIC::WIRE>& aWires )
+                                                      std::vector<LTSPICE_SCHEMATIC::WIRE>& aWires [[maybe_unused]] )
 {
     LIB_SYMBOL* lib_symbol = new LIB_SYMBOL( wxS( "GND" ) );
     SCH_SHAPE*  shape = new SCH_SHAPE( SHAPE_T::POLY, LAYER_DEVICE );

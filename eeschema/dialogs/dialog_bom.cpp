@@ -213,7 +213,7 @@ bool DIALOG_BOM::pluginExists( const wxString& aName )
 }
 
 
-void DIALOG_BOM::OnGeneratorSelected( wxCommandEvent& event )
+void DIALOG_BOM::OnGeneratorSelected( wxCommandEvent& event [[maybe_unused]] )
 {
     pluginInit();
 }
@@ -269,7 +269,7 @@ void DIALOG_BOM::pluginInit()
 }
 
 
-void DIALOG_BOM::OnRunGenerator( wxCommandEvent& event )
+void DIALOG_BOM::OnRunGenerator( wxCommandEvent& event [[maybe_unused]] )
 {
     // Calculate the xml netlist filename
     wxFileName fn = m_parent->Schematic().GetFileName();
@@ -303,7 +303,7 @@ void DIALOG_BOM::OnRunGenerator( wxCommandEvent& event )
 }
 
 
-void DIALOG_BOM::OnRemoveGenerator( wxCommandEvent& event )
+void DIALOG_BOM::OnRemoveGenerator( wxCommandEvent& event [[maybe_unused]] )
 {
     int ii = m_lbGenerators->GetSelection();
 
@@ -321,7 +321,7 @@ void DIALOG_BOM::OnRemoveGenerator( wxCommandEvent& event )
 }
 
 
-void DIALOG_BOM::OnAddGenerator( wxCommandEvent& event )
+void DIALOG_BOM::OnAddGenerator( wxCommandEvent& event [[maybe_unused]] )
 {
     wxString filename = chooseGenerator();
 
@@ -376,7 +376,7 @@ wxString DIALOG_BOM::chooseGenerator()
 }
 
 
-void DIALOG_BOM::OnEditGenerator( wxCommandEvent& event )
+void DIALOG_BOM::OnEditGenerator( wxCommandEvent& event [[maybe_unused]] )
 {
     auto plugin = selectedGenerator();
 
@@ -400,7 +400,7 @@ void DIALOG_BOM::OnEditGenerator( wxCommandEvent& event )
 }
 
 
-void DIALOG_BOM::OnHelp( wxCommandEvent& event )
+void DIALOG_BOM::OnHelp( wxCommandEvent& event [[maybe_unused]] )
 {
     if( m_helpWindow )
     {
@@ -419,7 +419,7 @@ void DIALOG_BOM::OnHelp( wxCommandEvent& event )
 }
 
 
-void DIALOG_BOM::OnCommandLineEdited( wxCommandEvent& event )
+void DIALOG_BOM::OnCommandLineEdited( wxCommandEvent& event [[maybe_unused]] )
 {
     auto generator = selectedGenerator();
 
@@ -428,7 +428,7 @@ void DIALOG_BOM::OnCommandLineEdited( wxCommandEvent& event )
 }
 
 
-void DIALOG_BOM::OnNameEdited( wxCommandEvent& event )
+void DIALOG_BOM::OnNameEdited( wxCommandEvent& event [[maybe_unused]] )
 {
     if( m_textCtrlName->GetValue().IsEmpty() )
         return;
@@ -443,7 +443,7 @@ void DIALOG_BOM::OnNameEdited( wxCommandEvent& event )
 }
 
 
-void DIALOG_BOM::OnShowConsoleChanged( wxCommandEvent& event )
+void DIALOG_BOM::OnShowConsoleChanged( wxCommandEvent& event [[maybe_unused]] )
 {
 #ifdef __WINDOWS__
     static constexpr wxChar OPT_SHOW_CONSOLE[] = wxT( "show_console" );
@@ -466,7 +466,7 @@ void DIALOG_BOM::OnShowConsoleChanged( wxCommandEvent& event )
 }
 
 
-void DIALOG_BOM::OnIdle( wxIdleEvent& event )
+void DIALOG_BOM::OnIdle( wxIdleEvent& event [[maybe_unused]] )
 {
     // On some platforms we initialize wxTextCtrls to all-selected, but we don't want that
     // for the messages text box.

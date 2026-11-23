@@ -414,7 +414,7 @@ static int g_last_menu_highlighted_id = 0;
 static VECTOR2D g_menu_open_position;
 
 
-void ACTION_MENU::OnIdle( wxIdleEvent& event )
+void ACTION_MENU::OnIdle( wxIdleEvent& event [[maybe_unused]] )
 {
     g_last_menu_highlighted_id = 0;
     g_menu_open_position.x = 0.0;

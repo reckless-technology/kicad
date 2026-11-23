@@ -47,13 +47,13 @@ GERBVIEW_CONTROL::GERBVIEW_CONTROL() : TOOL_INTERACTIVE( "gerbview.Control" ), m
 }
 
 
-void GERBVIEW_CONTROL::Reset( RESET_REASON aReason )
+void GERBVIEW_CONTROL::Reset( RESET_REASON aReason [[maybe_unused]] )
 {
     m_frame = getEditFrame<GERBVIEW_FRAME>();
 }
 
 
-int GERBVIEW_CONTROL::OpenAutodetected( const TOOL_EVENT& aEvent )
+int GERBVIEW_CONTROL::OpenAutodetected( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->LoadAutodetectedFiles( wxEmptyString );
 
@@ -61,7 +61,7 @@ int GERBVIEW_CONTROL::OpenAutodetected( const TOOL_EVENT& aEvent )
 }
 
 
-int GERBVIEW_CONTROL::OpenGerber( const TOOL_EVENT& aEvent )
+int GERBVIEW_CONTROL::OpenGerber( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->LoadGerberFiles( wxEmptyString );
 
@@ -69,7 +69,7 @@ int GERBVIEW_CONTROL::OpenGerber( const TOOL_EVENT& aEvent )
 }
 
 
-int GERBVIEW_CONTROL::OpenDrillFile( const TOOL_EVENT& aEvent )
+int GERBVIEW_CONTROL::OpenDrillFile( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->LoadExcellonFiles( wxEmptyString );
 
@@ -77,7 +77,7 @@ int GERBVIEW_CONTROL::OpenDrillFile( const TOOL_EVENT& aEvent )
 }
 
 
-int GERBVIEW_CONTROL::OpenJobFile( const TOOL_EVENT& aEvent )
+int GERBVIEW_CONTROL::OpenJobFile( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->LoadGerberJobFile( wxEmptyString );
     canvas()->Refresh();
@@ -86,7 +86,7 @@ int GERBVIEW_CONTROL::OpenJobFile( const TOOL_EVENT& aEvent )
 }
 
 
-int GERBVIEW_CONTROL::OpenZipFile( const TOOL_EVENT& aEvent )
+int GERBVIEW_CONTROL::OpenZipFile( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->LoadZipArchiveFile( wxEmptyString );
     canvas()->Refresh();
@@ -95,7 +95,7 @@ int GERBVIEW_CONTROL::OpenZipFile( const TOOL_EVENT& aEvent )
 }
 
 
-int GERBVIEW_CONTROL::ToggleLayerManager( const TOOL_EVENT& aEvent )
+int GERBVIEW_CONTROL::ToggleLayerManager( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->ToggleLayerManager();
 
@@ -103,7 +103,7 @@ int GERBVIEW_CONTROL::ToggleLayerManager( const TOOL_EVENT& aEvent )
 }
 
 
-int GERBVIEW_CONTROL::ExportToPcbnew( const TOOL_EVENT& aEvent )
+int GERBVIEW_CONTROL::ExportToPcbnew( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     int layercount = 0;
 
@@ -393,7 +393,7 @@ int GERBVIEW_CONTROL::DisplayControl( const TOOL_EVENT& aEvent )
 }
 
 
-int GERBVIEW_CONTROL::LayerNext( const TOOL_EVENT& aEvent )
+int GERBVIEW_CONTROL::LayerNext( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     int layer = m_frame->GetActiveLayer();
 
@@ -404,7 +404,7 @@ int GERBVIEW_CONTROL::LayerNext( const TOOL_EVENT& aEvent )
 }
 
 
-int GERBVIEW_CONTROL::LayerPrev( const TOOL_EVENT& aEvent )
+int GERBVIEW_CONTROL::LayerPrev( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     int layer = m_frame->GetActiveLayer();
 
@@ -415,7 +415,7 @@ int GERBVIEW_CONTROL::LayerPrev( const TOOL_EVENT& aEvent )
 }
 
 
-int GERBVIEW_CONTROL::MoveLayerUp( const TOOL_EVENT& aEvent )
+int GERBVIEW_CONTROL::MoveLayerUp( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     int layer = m_frame->GetActiveLayer();
     GERBER_FILE_IMAGE_LIST& list = GERBER_FILE_IMAGE_LIST::GetImagesList();
@@ -430,7 +430,7 @@ int GERBVIEW_CONTROL::MoveLayerUp( const TOOL_EVENT& aEvent )
 }
 
 
-int GERBVIEW_CONTROL::MoveLayerDown( const TOOL_EVENT& aEvent )
+int GERBVIEW_CONTROL::MoveLayerDown( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     int                     layer = m_frame->GetActiveLayer();
     GERBER_FILE_IMAGE_LIST& list = GERBER_FILE_IMAGE_LIST::GetImagesList();
@@ -446,7 +446,7 @@ int GERBVIEW_CONTROL::MoveLayerDown( const TOOL_EVENT& aEvent )
 }
 
 
-int GERBVIEW_CONTROL::ClearLayer( const TOOL_EVENT& aEvent )
+int GERBVIEW_CONTROL::ClearLayer( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->Erase_Current_DrawLayer( true );
     m_frame->ClearMsgPanel();
@@ -455,7 +455,7 @@ int GERBVIEW_CONTROL::ClearLayer( const TOOL_EVENT& aEvent )
 }
 
 
-int GERBVIEW_CONTROL::ClearAllLayers( const TOOL_EVENT& aEvent )
+int GERBVIEW_CONTROL::ClearAllLayers( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->Clear_DrawLayers( false );
     m_toolMgr->RunAction( ACTIONS::zoomFitScreen );
@@ -471,7 +471,7 @@ int GERBVIEW_CONTROL::ClearAllLayers( const TOOL_EVENT& aEvent )
 }
 
 
-int GERBVIEW_CONTROL::ReloadAllLayers( const TOOL_EVENT& aEvent )
+int GERBVIEW_CONTROL::ReloadAllLayers( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     struct SAVED_LAYER
     {
@@ -579,7 +579,7 @@ int GERBVIEW_CONTROL::ReloadAllLayers( const TOOL_EVENT& aEvent )
 }
 
 
-int GERBVIEW_CONTROL::UpdateMessagePanel( const TOOL_EVENT& aEvent )
+int GERBVIEW_CONTROL::UpdateMessagePanel( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     GERBVIEW_SELECTION_TOOL* selTool = m_toolMgr->GetTool<GERBVIEW_SELECTION_TOOL>();
     GERBVIEW_SELECTION&      selection = selTool->GetSelection();

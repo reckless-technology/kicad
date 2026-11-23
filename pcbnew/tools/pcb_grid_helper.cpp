@@ -515,13 +515,13 @@ VECTOR2I PCB_GRID_HELPER::SnapToPad( const VECTOR2I& aMousePos, std::deque<PAD*>
 }
 
 
-void PCB_GRID_HELPER::OnBoardItemRemoved( BOARD& aBoard, BOARD_ITEM* aRemovedItem )
+void PCB_GRID_HELPER::OnBoardItemRemoved( BOARD& aBoard [[maybe_unused]], BOARD_ITEM* aRemovedItem )
 {
     forgetRemovedItems( { aRemovedItem } );
 }
 
 
-void PCB_GRID_HELPER::OnBoardItemsRemoved( BOARD& aBoard, std::vector<BOARD_ITEM*>& aBoardItems )
+void PCB_GRID_HELPER::OnBoardItemsRemoved( BOARD& aBoard [[maybe_unused]], std::vector<BOARD_ITEM*>& aBoardItems [[maybe_unused]] )
 {
     // This is a bulk-remove.  Simply clearing the snap caches will be the most performant.
     m_snapItem = std::nullopt;
@@ -530,7 +530,7 @@ void PCB_GRID_HELPER::OnBoardItemsRemoved( BOARD& aBoard, std::vector<BOARD_ITEM
 }
 
 
-void PCB_GRID_HELPER::OnBoardCompositeUpdate( BOARD& aBoard, std::vector<BOARD_ITEM*>& aAddedItems,
+void PCB_GRID_HELPER::OnBoardCompositeUpdate( BOARD& aBoard [[maybe_unused]], std::vector<BOARD_ITEM*>& aAddedItems [[maybe_unused]],
                                               std::vector<BOARD_ITEM*>& aRemovedItems,
                                               std::vector<BOARD_ITEM*>& aChangedItems )
 {
@@ -701,7 +701,7 @@ SNAP_INFERENCE_SETTINGS PCB_GRID_HELPER::snapInferenceSettings() const
 
 
 VECTOR2I PCB_GRID_HELPER::BestDragOrigin( const VECTOR2I& aMousePos, std::vector<BOARD_ITEM*>& aItems,
-                                          GRID_HELPER_GRIDS                   aGrid,
+                                          GRID_HELPER_GRIDS                   aGrid [[maybe_unused]],
                                           const PCB_SELECTION_FILTER_OPTIONS* aSelectionFilter )
 {
     wxLogTrace( traceSnap, "BestDragOrigin: mouse pos (%d, %d), items count: %zu", aMousePos.x, aMousePos.y,

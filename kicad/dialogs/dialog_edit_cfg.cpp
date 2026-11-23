@@ -315,7 +315,7 @@ void DIALOG_EDIT_CFG::OnCellRightClick( wxGridEvent& aEvent )
 }
 
 
-void DIALOG_EDIT_CFG::OnResetDefault( wxCommandEvent& aEvent )
+void DIALOG_EDIT_CFG::OnResetDefault( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( m_contextRow < 0 )
         return;

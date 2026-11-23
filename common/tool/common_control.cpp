@@ -68,20 +68,20 @@ wxString COMMON_CONTROL::m_bugReportTemplate = wxS(
         "```" );
 
 
-void COMMON_CONTROL::Reset( RESET_REASON aReason )
+void COMMON_CONTROL::Reset( RESET_REASON aReason [[maybe_unused]] )
 {
     m_frame = getEditFrame<EDA_BASE_FRAME>();
 }
 
 
-int COMMON_CONTROL::OpenPreferences( const TOOL_EVENT& aEvent )
+int COMMON_CONTROL::OpenPreferences( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->ShowPreferences( wxEmptyString, wxEmptyString );
     return 0;
 }
 
 
-int COMMON_CONTROL::ConfigurePaths( const TOOL_EVENT& aEvent )
+int COMMON_CONTROL::ConfigurePaths( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     // If _pcbnew.kiface is running have it put up the dialog so the 3D paths can also
     // be edited
@@ -195,7 +195,7 @@ int COMMON_CONTROL::ShowPlayer( const TOOL_EVENT& aEvent )
 }
 
 
-int COMMON_CONTROL::Quit( const TOOL_EVENT& aEvent )
+int COMMON_CONTROL::Quit( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->CallAfter(
             [this]()
@@ -210,10 +210,10 @@ int COMMON_CONTROL::Quit( const TOOL_EVENT& aEvent )
 class TERMINATE_HANDLER : public wxProcess
 {
 public:
-    TERMINATE_HANDLER( const wxString& appName )
+    TERMINATE_HANDLER( const wxString& appName [[maybe_unused]] )
     { }
 
-    void OnTerminate( int pid, int status ) override
+    void OnTerminate( int pid [[maybe_unused]], int status [[maybe_unused]] ) override
     {
         delete this;
     }
@@ -275,7 +275,7 @@ int COMMON_CONTROL::Execute( const TOOL_EVENT& aEvent )
 }
 
 
-int COMMON_CONTROL::ShowProjectManager( const TOOL_EVENT& aEvent )
+int COMMON_CONTROL::ShowProjectManager( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     // Note: dynamic_cast doesn't work over the Kiway() on MacOS.  We have to use static_cast
     // here.
@@ -363,7 +363,7 @@ int COMMON_CONTROL::ShowHelp( const TOOL_EVENT& aEvent )
 }
 
 
-int COMMON_CONTROL::About( const TOOL_EVENT& aEvent )
+int COMMON_CONTROL::About( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     void ShowAboutDialog( EDA_BASE_FRAME * aParent ); // See AboutDialog_main.cpp
     ShowAboutDialog( m_frame );
@@ -371,14 +371,14 @@ int COMMON_CONTROL::About( const TOOL_EVENT& aEvent )
 }
 
 
-int COMMON_CONTROL::ListHotKeys( const TOOL_EVENT& aEvent )
+int COMMON_CONTROL::ListHotKeys( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     DisplayHotkeyList( m_frame );
     return 0;
 }
 
 
-int COMMON_CONTROL::GetInvolved( const TOOL_EVENT& aEvent )
+int COMMON_CONTROL::GetInvolved( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( !wxLaunchDefaultBrowser( URL_GET_INVOLVED ) )
     {
@@ -393,7 +393,7 @@ int COMMON_CONTROL::GetInvolved( const TOOL_EVENT& aEvent )
 }
 
 
-int COMMON_CONTROL::Donate( const TOOL_EVENT& aEvent )
+int COMMON_CONTROL::Donate( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( !wxLaunchDefaultBrowser( URL_DONATE ) )
     {
@@ -408,7 +408,7 @@ int COMMON_CONTROL::Donate( const TOOL_EVENT& aEvent )
 }
 
 
-int COMMON_CONTROL::ReportBug( const TOOL_EVENT& aEvent )
+int COMMON_CONTROL::ReportBug( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( WarnUserIfOperatingSystemUnsupported() )
         return 0;
@@ -428,7 +428,7 @@ int COMMON_CONTROL::ReportBug( const TOOL_EVENT& aEvent )
 }
 
 
-int COMMON_CONTROL::ReloadPlugins( const TOOL_EVENT& aEvent )
+int COMMON_CONTROL::ReloadPlugins( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( Pgm().GetCommonSettings()->m_Api.enable_server )
     {
@@ -443,7 +443,7 @@ int COMMON_CONTROL::ReloadPlugins( const TOOL_EVENT& aEvent )
 }
 
 
-int COMMON_CONTROL::ShowPluginFolder( const TOOL_EVENT& aEvent )
+int COMMON_CONTROL::ShowPluginFolder( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     wxString dir( PATHS::GetUserPluginsPath() );
 

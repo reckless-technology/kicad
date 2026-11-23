@@ -331,7 +331,7 @@ bool DIALOG_SHAPE_PROPERTIES::TransferDataToWindow()
 }
 
 
-void DIALOG_SHAPE_PROPERTIES::onBorderChecked( wxCommandEvent& event )
+void DIALOG_SHAPE_PROPERTIES::onBorderChecked( wxCommandEvent& event [[maybe_unused]] )
 {
     bool border = m_borderCheckbox->GetValue();
 
@@ -355,7 +355,7 @@ void DIALOG_SHAPE_PROPERTIES::onBorderChecked( wxCommandEvent& event )
 }
 
 
-void DIALOG_SHAPE_PROPERTIES::onFillChoice( wxCommandEvent& event )
+void DIALOG_SHAPE_PROPERTIES::onFillChoice( wxCommandEvent& event [[maybe_unused]] )
 {
     m_fillColorLabel->Enable( m_fillCtrl->GetSelection() != UI_FILL_MODE::NONE );
     m_fillColorSwatch->Enable( m_fillCtrl->GetSelection() != UI_FILL_MODE::NONE );
@@ -395,7 +395,7 @@ void DIALOG_SHAPE_PROPERTIES::onFillRadioButton( wxCommandEvent& event )
 }
 
 
-void DIALOG_SHAPE_PROPERTIES::onBorderSwatch( wxCommandEvent& aEvent )
+void DIALOG_SHAPE_PROPERTIES::onBorderSwatch( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( m_rbFillOutline->GetValue() )
         m_fillColorSwatch->SetSwatchColor( m_borderColorSwatch->GetSwatchColor(), false );
@@ -415,7 +415,7 @@ void DIALOG_SHAPE_PROPERTIES::onBorderSwatch( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_SHAPE_PROPERTIES::onCustomColorSwatch( wxCommandEvent& aEvent )
+void DIALOG_SHAPE_PROPERTIES::onCustomColorSwatch( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     m_rbFillCustom->SetValue( true );
 }

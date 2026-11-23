@@ -224,13 +224,13 @@ void DIALOG_KICAD_DIFF::showDiffSummary()
 }
 
 
-void DIALOG_KICAD_DIFF::OnClose( wxCloseEvent& aEvent )
+void DIALOG_KICAD_DIFF::OnClose( wxCloseEvent& aEvent [[maybe_unused]] )
 {
     EndModal( wxID_OK );
 }
 
 
-void DIALOG_KICAD_DIFF::OnOK( wxCommandEvent& aEvent )
+void DIALOG_KICAD_DIFF::OnOK( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     EndModal( wxID_OK );
 }

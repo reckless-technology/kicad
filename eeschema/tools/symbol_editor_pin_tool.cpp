@@ -90,7 +90,7 @@ bool SYMBOL_EDITOR_PIN_TOOL::Init()
     SCH_TOOL_BASE::Init();
 
     auto canEdit =
-            [this]( const SELECTION& sel )
+            [this]( const SELECTION& sel [[maybe_unused]] )
             {
                 SYMBOL_EDIT_FRAME* editor = static_cast<SYMBOL_EDIT_FRAME*>( m_frame );
 
@@ -352,7 +352,7 @@ SCH_PIN* SYMBOL_EDITOR_PIN_TOOL::CreatePin( const VECTOR2I& aPosition, LIB_SYMBO
 }
 
 
-void SYMBOL_EDITOR_PIN_TOOL::CreateImagePins( SCH_COMMIT* aCommit, SCH_PIN* aPin )
+void SYMBOL_EDITOR_PIN_TOOL::CreateImagePins( SCH_COMMIT* aCommit [[maybe_unused]], SCH_PIN* aPin )
 {
     int      ii;
     SCH_PIN* newPin;

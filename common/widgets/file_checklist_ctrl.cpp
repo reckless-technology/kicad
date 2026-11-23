@@ -260,7 +260,7 @@ public:
     // Section rows carry a name and a count in the file column. Without this the base class
     // reports that a container has a value only in column 0, and the section label is never
     // drawn, leaving the header as a bare checkbox.
-    bool HasContainerColumns( const wxDataViewItem& aItem ) const override { return true; }
+    bool HasContainerColumns( const wxDataViewItem& aItem [[maybe_unused]] ) const override { return true; }
 
     unsigned int GetChildren( const wxDataViewItem& aItem, wxDataViewItemArray& aChildren ) const override
     {

@@ -935,7 +935,7 @@ void GIT_COMMIT_PANE::onIdle( wxIdleEvent& aEvent )
 }
 
 
-void GIT_COMMIT_PANE::onSettings( wxCommandEvent& aEvent )
+void GIT_COMMIT_PANE::onSettings( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     wxMenu menu;
 
@@ -1201,7 +1201,7 @@ void GIT_COMMIT_PANE::updateSummaryCount()
 }
 
 
-void GIT_COMMIT_PANE::onMessageChanged( wxCommandEvent& aEvent )
+void GIT_COMMIT_PANE::onMessageChanged( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     updateSummaryCount();
     updateCommitButton();
@@ -1232,7 +1232,7 @@ void GIT_COMMIT_PANE::SetCommitMessage( const wxString& aMessage )
 }
 
 
-void GIT_COMMIT_PANE::onNewBranchToggled( wxCommandEvent& aEvent )
+void GIT_COMMIT_PANE::onNewBranchToggled( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     updateCommitButton();
 
@@ -1241,7 +1241,7 @@ void GIT_COMMIT_PANE::onNewBranchToggled( wxCommandEvent& aEvent )
 }
 
 
-void GIT_COMMIT_PANE::onShowDiff( wxCommandEvent& aEvent )
+void GIT_COMMIT_PANE::onShowDiff( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     wxString path = m_checklist->GetItemPath( m_checklist->GetSelection() );
 
@@ -1299,7 +1299,7 @@ void GIT_COMMIT_PANE::populateRecentMessages( const std::vector<wxString>& aMess
 }
 
 
-void GIT_COMMIT_PANE::onRecentMessage( wxCommandEvent& aEvent )
+void GIT_COMMIT_PANE::onRecentMessage( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     int      picked = m_recentMessages->GetSelection() - 1;
     wxString summary, description;
@@ -1335,7 +1335,7 @@ void GIT_COMMIT_PANE::setDescription( const wxString& aText )
 }
 
 
-void GIT_COMMIT_PANE::onChecklistChanged( wxDataViewEvent& aEvent )
+void GIT_COMMIT_PANE::onChecklistChanged( wxDataViewEvent& aEvent [[maybe_unused]] )
 {
     updateCommitButton();
     updateSummary();
@@ -1580,19 +1580,19 @@ void GIT_COMMIT_PANE::onFileActivated( wxDataViewEvent& aEvent )
 }
 
 
-void GIT_COMMIT_PANE::onCommit( wxCommandEvent& aEvent )
+void GIT_COMMIT_PANE::onCommit( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     doCommit( m_commitButtonPushes );
 }
 
 
-void GIT_COMMIT_PANE::onCommitAndPush( wxCommandEvent& aEvent )
+void GIT_COMMIT_PANE::onCommitAndPush( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     doCommit( true );
 }
 
 
-void GIT_COMMIT_PANE::onPull( wxCommandEvent& aEvent )
+void GIT_COMMIT_PANE::onPull( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     syncListener();
 
@@ -1823,7 +1823,7 @@ void GIT_COMMIT_PANE::finishAbandonOperation( std::shared_ptr<KIGIT_COMMON> aCom
 }
 
 
-void GIT_COMMIT_PANE::onAmendToggled( wxCommandEvent& aEvent )
+void GIT_COMMIT_PANE::onAmendToggled( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( m_amendCheckbox->IsChecked() )
     {
@@ -1838,7 +1838,7 @@ void GIT_COMMIT_PANE::onAmendToggled( wxCommandEvent& aEvent )
 }
 
 
-void GIT_COMMIT_PANE::onUndoCommit( wxCommandEvent& aEvent )
+void GIT_COMMIT_PANE::onUndoCommit( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     syncListener();
 

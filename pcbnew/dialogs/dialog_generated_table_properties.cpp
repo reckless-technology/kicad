@@ -409,7 +409,7 @@ void DIALOG_GENERATED_TABLE_PROPERTIES::onColumnGridSize( wxSizeEvent& aEvent )
 }
 
 
-void DIALOG_GENERATED_TABLE_PROPERTIES::onBorderChecked( wxCommandEvent& aEvent )
+void DIALOG_GENERATED_TABLE_PROPERTIES::onBorderChecked( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     int defaultWidth = m_frame->GetDesignSettings().GetLineThickness( m_LayerSelectionCtrl->GetLayerIDSelection() );
 
@@ -446,19 +446,19 @@ void DIALOG_GENERATED_TABLE_PROPERTIES::moveColumn( int aDelta )
 }
 
 
-void DIALOG_GENERATED_TABLE_PROPERTIES::onMoveUp( wxCommandEvent& aEvent )
+void DIALOG_GENERATED_TABLE_PROPERTIES::onMoveUp( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     moveColumn( -1 );
 }
 
 
-void DIALOG_GENERATED_TABLE_PROPERTIES::onMoveDown( wxCommandEvent& aEvent )
+void DIALOG_GENERATED_TABLE_PROPERTIES::onMoveDown( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     moveColumn( 1 );
 }
 
 
-void DIALOG_GENERATED_TABLE_PROPERTIES::onResetColumns( wxCommandEvent& aEvent )
+void DIALOG_GENERATED_TABLE_PROPERTIES::onResetColumns( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     setColumns( m_table->Schema().Defaults() );
 }

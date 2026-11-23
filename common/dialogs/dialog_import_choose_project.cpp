@@ -70,13 +70,13 @@ DIALOG_IMPORT_CHOOSE_PROJECT::DIALOG_IMPORT_CHOOSE_PROJECT( wxWindow* aParent,
 }
 
 
-void DIALOG_IMPORT_CHOOSE_PROJECT::onItemActivated( wxListEvent& event )
+void DIALOG_IMPORT_CHOOSE_PROJECT::onItemActivated( wxListEvent& event [[maybe_unused]] )
 {
     EndModal( wxID_OK );
 }
 
 
-void DIALOG_IMPORT_CHOOSE_PROJECT::onClose( wxCloseEvent& event )
+void DIALOG_IMPORT_CHOOSE_PROJECT::onClose( wxCloseEvent& event [[maybe_unused]] )
 {
     EndModal( wxID_CANCEL );
 }

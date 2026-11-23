@@ -68,7 +68,7 @@ public:
 
     wxString GetGeneratorType() const override { return GENERATOR_TYPE; }
 
-    wxString GetItemDescription( UNITS_PROVIDER* aUnitsProvider, bool aFull ) const override
+    wxString GetItemDescription( UNITS_PROVIDER* aUnitsProvider [[maybe_unused]], bool aFull [[maybe_unused]] ) const override
     {
         return wxString( _( "Via Stitching" ) );
     }

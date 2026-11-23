@@ -55,7 +55,7 @@ private:
      */
     void LoadFieldNames();
 
-    void OnTableSelectionChanged( const std::set<int>& aRows ) override {}
+    void OnTableSelectionChanged( const std::set<int>& aRows [[maybe_unused]] ) override {}
 
     void OnScope( wxCommandEvent& aEvent ) override;
     void OnMenu( wxCommandEvent& aEvent ) override;

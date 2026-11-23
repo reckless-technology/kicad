@@ -308,7 +308,7 @@ public:
     {
     }
 
-    void Load( const JSON_SETTINGS& aSettings, bool aResetIfMissing = true ) const override
+    void Load( const JSON_SETTINGS& aSettings, bool aResetIfMissing [[maybe_unused]] = true ) const override
     {
         if( m_readOnly )
             return;

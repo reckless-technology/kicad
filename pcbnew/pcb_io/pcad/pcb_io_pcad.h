@@ -48,7 +48,7 @@ public:
 
     bool CanReadBoard( const wxString& aFileName ) const override;
 
-    long long GetLibraryTimestamp( const wxString& aLibraryPath ) const override
+    long long GetLibraryTimestamp( const wxString& aLibraryPath [[maybe_unused]] ) const override
     {
         // No support for libraries....
         return 0;

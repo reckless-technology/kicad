@@ -54,7 +54,7 @@ public:
         SCH_ITEM( nullptr, NOT_USED )
     {}
 
-    wxString GetItemDescription( UNITS_PROVIDER* aUnitsProvider, bool aFull ) const override
+    wxString GetItemDescription( UNITS_PROVIDER* aUnitsProvider [[maybe_unused]], bool aFull [[maybe_unused]] ) const override
     {
         return _( "(Deleted Item)" );
     }
@@ -76,17 +76,17 @@ public:
 
     // pure virtuals:
     void SetPosition( const VECTOR2I& ) override {}
-    void Move( const VECTOR2I& aMoveVector ) override {}
-    void MirrorHorizontally( int aCenter ) override {}
-    void MirrorVertically( int aCenter ) override {}
-    void Rotate( const VECTOR2I& aCenter, bool aRotateCCW ) override {}
+    void Move( const VECTOR2I& aMoveVector [[maybe_unused]] ) override {}
+    void MirrorHorizontally( int aCenter [[maybe_unused]] ) override {}
+    void MirrorVertically( int aCenter [[maybe_unused]] ) override {}
+    void Rotate( const VECTOR2I& aCenter [[maybe_unused]], bool aRotateCCW [[maybe_unused]] ) override {}
 
-    double Similarity( const SCH_ITEM& aOther ) const override
+    double Similarity( const SCH_ITEM& aOther [[maybe_unused]] ) const override
     {
         return 0.0;
     }
 
-    bool operator==( const SCH_ITEM& aOther ) const override
+    bool operator==( const SCH_ITEM& aOther [[maybe_unused]] ) const override
     {
         return false;
     }

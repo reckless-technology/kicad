@@ -464,7 +464,7 @@ bool PCB_IO_KICAD_LEGACY::CanReadFootprint( const wxString& aFileName ) const
 
 
 void PCB_IO_KICAD_LEGACY::loadBoard( const wxString& aFileName, BOARD& aBoard, bool aIsNewLoad,
-                                     const std::map<std::string, UTF8>* aProperties, PROJECT* aProject )
+                                     const std::map<std::string, UTF8>* aProperties, PROJECT* aProject [[maybe_unused]] )
 {
     init( aProperties );
 
@@ -3270,7 +3270,7 @@ void PCB_IO_KICAD_LEGACY::FootprintEnumerate( wxArrayString& aFootprintNames, co
 
 
 std::unique_ptr<FOOTPRINT> PCB_IO_KICAD_LEGACY::FootprintLoad( const wxString& aLibraryPath,
-                                                               const wxString& aFootprintName, bool aKeepUUID,
+                                                               const wxString& aFootprintName, bool aKeepUUID [[maybe_unused]],
                                                                const std::map<std::string, UTF8>* aProperties )
 {
     init( aProperties );
@@ -3291,7 +3291,7 @@ std::unique_ptr<FOOTPRINT> PCB_IO_KICAD_LEGACY::FootprintLoad( const wxString& a
 
 
 bool PCB_IO_KICAD_LEGACY::DeleteLibrary( const wxString& aLibraryPath,
-                                         const std::map<std::string, UTF8>* aProperties )
+                                         const std::map<std::string, UTF8>* aProperties [[maybe_unused]] )
 {
     wxFileName fn = aLibraryPath;
 

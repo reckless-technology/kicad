@@ -164,8 +164,8 @@ ALTIUM_COMPOUND_FILE::FindStreamSingleLevel( const CFB::COMPOUND_FILE_ENTRY* aEn
     const CFB::COMPOUND_FILE_ENTRY* ret = nullptr;
 
     m_reader->EnumFiles( aEntry, 1,
-                         [&]( const CFB::COMPOUND_FILE_ENTRY* entry, const CFB::utf16string& dir,
-                              int level ) -> int
+                         [&]( const CFB::COMPOUND_FILE_ENTRY* entry, const CFB::utf16string& dir [[maybe_unused]],
+                              int level [[maybe_unused]] ) -> int
                          {
                             if( ret != nullptr )
                                 return 1;
@@ -244,8 +244,8 @@ ALTIUM_COMPOUND_FILE::EnumDir( const std::wstring& aDir ) const
 
     m_reader->EnumFiles(
             root, 1,
-            [&]( const CFB::COMPOUND_FILE_ENTRY* tentry, const CFB::utf16string& dir,
-                 int level ) -> int
+            [&]( const CFB::COMPOUND_FILE_ENTRY* tentry, const CFB::utf16string& dir [[maybe_unused]],
+                 int level [[maybe_unused]] ) -> int
             {
                 if( m_reader->IsStream( tentry ) )
                     return 0;

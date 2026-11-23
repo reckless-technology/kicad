@@ -121,7 +121,7 @@ public:
             LIBEVAL::VALUE( aPinTypeName )
     {};
 
-    bool EqualTo( LIBEVAL::CONTEXT* aCtx, const VALUE* b ) const override
+    bool EqualTo( LIBEVAL::CONTEXT* aCtx [[maybe_unused]], const VALUE* b ) const override
     {
         const wxString& thisStr = AsString();
         const wxString& otherStr = b->AsString();
@@ -913,7 +913,7 @@ const std::vector<EDA_UNITS>& PCBEXPR_UNITLESS_RESOLVER::GetSupportedUnitsTypes(
 }
 
 
-double PCBEXPR_UNITLESS_RESOLVER::Convert( const wxString& aString, int unitId ) const
+double PCBEXPR_UNITLESS_RESOLVER::Convert( const wxString& aString, int unitId [[maybe_unused]] ) const
 {
     return wxAtof( aString );
 };

@@ -74,7 +74,7 @@ VECTOR2I ARRAY_GRID_OPTIONS::gtItemPosRelativeToItem0( int n ) const
 }
 
 
-ARRAY_OPTIONS::TRANSFORM ARRAY_GRID_OPTIONS::GetTransform( int n, const VECTOR2I& aPos ) const
+ARRAY_OPTIONS::TRANSFORM ARRAY_GRID_OPTIONS::GetTransform( int n, const VECTOR2I& aPos [[maybe_unused]] ) const
 {
     VECTOR2I point = gtItemPosRelativeToItem0( n );
 

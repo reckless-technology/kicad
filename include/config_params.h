@@ -84,14 +84,14 @@ public:
      *
      * @param aConfig the wxConfigBase that holds the parameter.
      */
-    virtual void ReadParam( wxConfigBase* aConfig ) const {};
+    virtual void ReadParam( wxConfigBase* aConfig [[maybe_unused]] ) const {};
 
     /**
      * Save the value of the parameter stored in \a aConfig.
      *
      * @param aConfig the wxConfigBase that can store the parameter.
      */
-    virtual void SaveParam( wxConfigBase* aConfig ) const {};
+    virtual void SaveParam( wxConfigBase* aConfig [[maybe_unused]] ) const {};
 
     wxString    m_Ident;  ///<  Keyword in config data
     paramcfg_id m_Type;   ///<  Type of parameter

@@ -35,7 +35,7 @@ namespace SIM_MODEL_RAW_SPICE_PARSER
 }
 
 
-std::string SPICE_GENERATOR_RAW_SPICE::ModelLine( const SPICE_ITEM& aItem ) const
+std::string SPICE_GENERATOR_RAW_SPICE::ModelLine( const SPICE_ITEM& aItem [[maybe_unused]] ) const
 {
     return "";
 }
@@ -87,7 +87,7 @@ std::string SPICE_GENERATOR_RAW_SPICE::ItemPins( const SPICE_ITEM& aItem ) const
 }
 
 
-std::string SPICE_GENERATOR_RAW_SPICE::ItemModelName( const SPICE_ITEM& aItem ) const
+std::string SPICE_GENERATOR_RAW_SPICE::ItemModelName( const SPICE_ITEM& aItem [[maybe_unused]] ) const
 {
     return "";
 }
@@ -112,7 +112,7 @@ std::string SPICE_GENERATOR_RAW_SPICE::ItemParams() const
 }
 
 
-std::string SPICE_GENERATOR_RAW_SPICE::Preview( const SPICE_ITEM& aItem ) const
+std::string SPICE_GENERATOR_RAW_SPICE::Preview( const SPICE_ITEM& aItem [[maybe_unused]] ) const
 {
     return ItemParams();
 }
@@ -147,8 +147,8 @@ void SIM_MODEL_RAW_SPICE::AssignSymbolPinNumberToModelPin( const std::string& aM
 }
 
 
-std::vector<wxString> SIM_MODEL_RAW_SPICE::GetSpiceIncludes( const SPICE_ITEM& aItem, SCHEMATIC* aSchematic,
-                                                             REPORTER& aReporter ) const
+std::vector<wxString> SIM_MODEL_RAW_SPICE::GetSpiceIncludes( const SPICE_ITEM& aItem [[maybe_unused]], SCHEMATIC* aSchematic [[maybe_unused]],
+                                                             REPORTER& aReporter [[maybe_unused]] ) const
 {
     wxString path = GetParam( static_cast<int>( SPICE_PARAM::LIB ) ).value;
 

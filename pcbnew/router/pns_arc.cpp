@@ -25,7 +25,7 @@
 namespace PNS {
 
 
-const SHAPE_LINE_CHAIN ARC::Hull( int aClearance, int aWalkaroundThickness, int aLayer ) const
+const SHAPE_LINE_CHAIN ARC::Hull( int aClearance, int aWalkaroundThickness, int aLayer [[maybe_unused]] ) const
 {
     return ArcHull( m_arc, aClearance, aWalkaroundThickness );
 }

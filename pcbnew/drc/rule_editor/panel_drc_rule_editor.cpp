@@ -166,7 +166,7 @@ PANEL_DRC_RULE_EDITOR::PANEL_DRC_RULE_EDITOR( wxWindow* aParent, BOARD* aBoard,
     m_scintillaTricks = std::make_unique<SCINTILLA_TRICKS>(
             m_textConditionCtrl, wxT( "()" ), false,
             // onAcceptFn
-            [this]( wxKeyEvent& aEvent )
+            [this]( wxKeyEvent& aEvent [[maybe_unused]] )
             {
                 wxPostEvent( PAGED_DIALOG::GetDialog( this ), wxCommandEvent( wxEVT_COMMAND_BUTTON_CLICKED, wxID_OK ) );
             },
@@ -438,7 +438,7 @@ PANEL_DRC_RULE_EDITOR::getConstraintPanel( wxWindow* aParent, const DRC_RULE_EDI
 }
 
 
-bool PANEL_DRC_RULE_EDITOR::ValidateInputs( int* aErrorCount, wxString* aValidationMessage )
+bool PANEL_DRC_RULE_EDITOR::ValidateInputs( int* aErrorCount, wxString* aValidationMessage [[maybe_unused]] )
 {
     if( !m_callBackRuleNameValidation( m_constraintData->GetId(), m_nameCtrl->GetValue() ) )
     {
@@ -483,7 +483,7 @@ bool PANEL_DRC_RULE_EDITOR::ValidateRule()
 }
 
 
-void PANEL_DRC_RULE_EDITOR::onSaveButtonClicked( wxCommandEvent& aEvent )
+void PANEL_DRC_RULE_EDITOR::onSaveButtonClicked( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     ValidateRule();
 
@@ -841,7 +841,7 @@ void PANEL_DRC_RULE_EDITOR::onScintillaCharAdded( wxStyledTextEvent& aEvent )
 }
 
 
-void PANEL_DRC_RULE_EDITOR::onSyntaxHelp( wxHyperlinkEvent& aEvent )
+void PANEL_DRC_RULE_EDITOR::onSyntaxHelp( wxHyperlinkEvent& aEvent [[maybe_unused]] )
 {
     if( m_helpWindow )
     {
@@ -916,7 +916,7 @@ void PANEL_DRC_RULE_EDITOR::onSyntaxHelp( wxHyperlinkEvent& aEvent )
 }
 
 
-void PANEL_DRC_RULE_EDITOR::onCheckSyntax( wxCommandEvent& event )
+void PANEL_DRC_RULE_EDITOR::onCheckSyntax( wxCommandEvent& event [[maybe_unused]] )
 {
     m_syntaxErrorReport->Clear();
 
@@ -974,7 +974,7 @@ void PANEL_DRC_RULE_EDITOR::onErrorLinkClicked( wxHtmlLinkEvent& event )
 }
 
 
-void PANEL_DRC_RULE_EDITOR::onContextMenu( wxMouseEvent& event )
+void PANEL_DRC_RULE_EDITOR::onContextMenu( wxMouseEvent& event [[maybe_unused]] )
 {
     wxMenu menu;
 
@@ -1025,7 +1025,7 @@ void PANEL_DRC_RULE_EDITOR::onContextMenu( wxMouseEvent& event )
 }
 
 
-void PANEL_DRC_RULE_EDITOR::onShowMatchesButtonClicked( wxCommandEvent& event )
+void PANEL_DRC_RULE_EDITOR::onShowMatchesButtonClicked( wxCommandEvent& event [[maybe_unused]] )
 {
     if( !m_constraintData )
     {

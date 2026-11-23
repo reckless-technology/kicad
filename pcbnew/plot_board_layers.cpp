@@ -1386,7 +1386,7 @@ static void FillNegativeKnockout( PLOTTER *aPlotter, const BOX2I &aBbbox )
 }
 
 
-static void plotBackgroundColor( BOARD* aBoard, const PCB_PLOT_PARAMS* aPlotOpts, PLOTTER* aPlotter )
+static void plotBackgroundColor( BOARD* aBoard [[maybe_unused]], const PCB_PLOT_PARAMS* aPlotOpts, PLOTTER* aPlotter )
 {
     const PAGE_INFO& pageInfo = aPlotter->PageSettings();
     const VECTOR2I   pageSizeIU( pageInfo.GetWidthIU( pcbIUScale.IU_PER_MILS ),

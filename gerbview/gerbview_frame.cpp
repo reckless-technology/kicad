@@ -247,7 +247,7 @@ void GERBVIEW_FRAME::doCloseWindow()
 }
 
 
-bool GERBVIEW_FRAME::OpenProjectFiles( const std::vector<wxString>& aFileSet, int aCtl )
+bool GERBVIEW_FRAME::OpenProjectFiles( const std::vector<wxString>& aFileSet, int aCtl [[maybe_unused]] )
 {
     // Ensure the frame is shown when opening the file(s), to avoid issues (crash) on GAL
     // when trying to change the view if it is not fully initialized.
@@ -357,7 +357,7 @@ void GERBVIEW_FRAME::SaveSettings( APP_SETTINGS_BASE* aCfg )
 }
 
 
-COLOR_SETTINGS* GERBVIEW_FRAME::GetColorSettings( bool aForceRefresh ) const
+COLOR_SETTINGS* GERBVIEW_FRAME::GetColorSettings( bool aForceRefresh [[maybe_unused]] ) const
 {
     GERBVIEW_SETTINGS* cfg = GetAppSettings<GERBVIEW_SETTINGS>( "gerbview" );
     return ::GetColorSettings( cfg ? cfg->m_ColorTheme : DEFAULT_THEME );
@@ -1199,7 +1199,7 @@ void GERBVIEW_FRAME::setupUIConditions()
         };
 
     auto layersManagerShownCondition =
-        [this] ( const SELECTION& aSel )
+        [this] ( const SELECTION& aSel [[maybe_unused]] )
         {
             return m_show_layer_manager_tools;
         };
