@@ -206,6 +206,7 @@ set( QA_EESCHEMA_SRCS
     test_crossing_label.cpp
     test_eagle_plugin.cpp
     test_link_imported_footprints.cpp
+    test_import_local_symbol_libs.cpp
     test_sch_footprint_field_reconciler.cpp
     test_symbol_import_reconciler.cpp
     test_easyedapro_v3_import.cpp

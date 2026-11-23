@@ -78,6 +78,7 @@ set( QA_PCBNEW_SRCS
     test_footprint.cpp
     test_footprint_editor_tabs.cpp
     test_footprint_import_reconciler.cpp
+    test_import_local_footprint_libs.cpp
     test_import_design_rules.cpp
     test_footprint_library_adapter.cpp
     test_footprint_load_save.cpp
