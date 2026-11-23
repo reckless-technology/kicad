@@ -371,6 +371,18 @@ private:
 
     void ParseLibHeader( const ALTIUM_COMPOUND_FILE& aAltiumSchFile, std::vector<int>& aFontSizes );
     CASE_INSENSITIVE_MAP<LIB_SYMBOL*> ParseLibFile( const ALTIUM_COMPOUND_FILE& aAltiumSchFile );
+
+    /**
+     * Build the symbols of a Protel for Windows 1.2 - 2.0 schematic library from the Altium
+     * records ALTIUM_PROTEL2_SCHLIB translates them into.
+     */
+    CASE_INSENSITIVE_MAP<LIB_SYMBOL*> ParseProtel2LibFile( const wxString& aLibraryPath );
+
+    /**
+     * Build one symbol from its Altium records, the component record first.
+     */
+    LIB_SYMBOL* ParseLibRecords( const wxString& aName, const std::vector<std::map<wxString, wxString>>& aRecords,
+                                 std::vector<int>& aFontSizes );
     std::vector<LIB_SYMBOL*> ParseLibComponent( const std::map<wxString, wxString>& aProperties );
 
     void doEnumerateSymbolLib( const wxString& aLibraryPath, const std::map<std::string, UTF8>* aProperties,
