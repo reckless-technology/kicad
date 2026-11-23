@@ -867,6 +867,8 @@ void ALTIUM_PCB::Parse( const ALTIUM_PCB_COMPOUND_FILE&              altiumPcbFi
     // Copper that touches no pad returns to the board here, before the tuning patterns claim it
     HelperFoldComponentCopperIntoPads();
 
+    HelperRemoveRedundantTracks();
+
     // Rebuild interactive length-tuning meanders from the SmartUnions definitions now that all
     // copper that the unions reference has been created and added to the board.
     HelperCreateTuningPatterns();
@@ -5806,6 +5808,112 @@ void ALTIUM_PCB::ParseTracks6Data( const ALTIUM_PCB_COMPOUND_FILE&     aAltiumPc
 
     if( reader.GetRemainingBytes() != 0 )
         THROW_IO_ERROR( wxT( "Tracks6 stream is not fully parsed" ) );
+}
+
+
+void ALTIUM_PCB::HelperRemoveRedundantTracks()
+{
+    // Tracks a length-tuning union claims stay, whatever they look like
+    std::set<const BOARD_ITEM*> unionItems;
+
+    for( const auto& [index, items] : m_unionToBoardItems )
+        unionItems.insert( items.begin(), items.end() );
+
+    std::vector<PCB_TRACK*> candidates;
+
+    for( PCB_TRACK* track : m_board->Tracks() )
+    {
+        if( track->Type() == PCB_TRACE_T && !unionItems.count( track ) )
+            candidates.push_back( track );
+    }
+
+    // Duplicates: same layer, net, width and end points in either order
+    using TRACK_KEY = std::tuple<int, int, int, VECTOR2I, VECTOR2I>;
+
+    auto keyOf =
+            []( const PCB_TRACK* aTrack )
+            {
+                VECTOR2I a = aTrack->GetStart();
+                VECTOR2I b = aTrack->GetEnd();
+
+                if( std::tie( b.x, b.y ) < std::tie( a.x, a.y ) )
+                    std::swap( a, b );
+
+                return TRACK_KEY( aTrack->GetLayer(), aTrack->GetNetCode(), aTrack->GetWidth(), a, b );
+            };
+
+    std::set<TRACK_KEY>     seen;
+    std::set<BOARD_ITEM*>   redundant;
+    std::vector<PCB_TRACK*> dots;
+
+    for( PCB_TRACK* track : candidates )
+    {
+        if( !seen.insert( keyOf( track ) ).second )
+            redundant.insert( track );
+        else if( track->GetStart() == track->GetEnd() )
+            dots.push_back( track );
+    }
+
+    // A dot inside other copper of its net and layer adds nothing to it
+    auto isCovered =
+            [&]( PCB_TRACK* aDot )
+            {
+                PCB_LAYER_ID   layer = aDot->GetLayer();
+                // Approximated from inside and the copper from outside, so that a dot exactly as
+                // wide as the end of the track it sits on counts as covered
+                SHAPE_POLY_SET dot;
+                aDot->TransformShapeToPolygon( dot, layer, 0, ARC_HIGH_DEF, ERROR_INSIDE );
+
+                BOX2I dotBox = aDot->GetBoundingBox();
+
+                auto covers =
+                        [&]( BOARD_ITEM* aItem )
+                        {
+                            if( aItem == aDot || redundant.count( aItem )
+                                || !aItem->IsOnLayer( layer )
+                                || !aItem->GetBoundingBox().Contains( dotBox ) )
+                            {
+                                return false;
+                            }
+
+                            SHAPE_POLY_SET copper;
+                            aItem->TransformShapeToPolygon( copper, layer, 0, ARC_HIGH_DEF,
+                                                            ERROR_OUTSIDE );
+
+                            SHAPE_POLY_SET rest = dot;
+                            rest.BooleanSubtract( copper );
+                            return rest.IsEmpty();
+                        };
+
+                for( PCB_TRACK* other : m_board->Tracks() )
+                {
+                    if( other->GetNetCode() == aDot->GetNetCode() && covers( other ) )
+                        return true;
+                }
+
+                for( FOOTPRINT* footprint : m_board->Footprints() )
+                {
+                    for( PAD* pad : footprint->Pads() )
+                    {
+                        if( pad->GetNetCode() == aDot->GetNetCode() && covers( pad ) )
+                            return true;
+                    }
+                }
+
+                return false;
+            };
+
+    for( PCB_TRACK* dot : dots )
+    {
+        if( isCovered( dot ) )
+            redundant.insert( dot );
+    }
+
+    for( BOARD_ITEM* track : redundant )
+    {
+        m_board->Remove( track );
+        delete track;
+    }
 }
 
 
