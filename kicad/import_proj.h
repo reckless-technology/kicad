@@ -106,6 +106,17 @@ private:
 
     void AltiumProjectHandler();
 
+    /**
+     * Write a KiCad jobset beside the project for each Altium output job it names.
+     *
+     * One output job makes "<project>.kicad_jobset", several make "<project>-<output job>.kicad_jobset".
+     * Call after the board import, whose copper layers decide which mid layers a plot can keep.
+     */
+    void importAltiumOutJobs( const std::vector<wxString>& aOutJobs );
+
+    /// The copper layers of the imported board, or of a two-layer board when none was imported
+    std::set<wxString> importedCopperLayers();
+
     void GedaProjectHandler();
 
     /**

@@ -68,6 +68,7 @@ enum MAIL_T
     MAIL_SCH_GET_REF_SUFFIXES,  // Fetch the composed reference suffix of each sheet path in page order
     MAIL_LIB_SAVE_ALL,          // Save every modified library in a library editor; replies "success" or "failed"
     MAIL_LIB_HAS_UNSAVED,       // Whether a library editor holds unsaved edits in any tab; replies "yes" or "no"
+    MAIL_PCB_GET_COPPER_LAYERS, // Fetch the canonical names of the board's copper layers, one per line
 };
 
 /**
