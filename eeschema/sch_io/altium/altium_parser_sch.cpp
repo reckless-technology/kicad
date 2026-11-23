@@ -855,6 +855,7 @@ ASCH_SHEET::ASCH_SHEET( const std::map<wxString, wxString>& aProps ) :
                            ReadKiCadUnitFrac( aProps, "CUSTOMY" ) );
 
     sheetSize = ReadEnum<ASCH_SHEET_SIZE>( aProps, "SHEETSTYLE", 0, 17, ASCH_SHEET_SIZE::A4 );
+    systemFontId = ALTIUM_PROPS_UTILS::ReadInt( aProps, "SYSTEMFONT", 1 );
     sheetOrientation = ReadEnum<ASCH_SHEET_WORKSPACEORIENTATION>(
             aProps, "WORKSPACEORIENTATION", 0, 1, ASCH_SHEET_WORKSPACEORIENTATION::LANDSCAPE );
 }
