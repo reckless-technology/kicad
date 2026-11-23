@@ -189,6 +189,16 @@ private:
     void NormalizeRepeatedSheetInstances();
 
     /**
+     * Give every symbol an instance, with its reference, on each sheet path of the loaded hierarchy.
+     *
+     * A designator is recorded against the path the sheet was parsed under, which is the sheet's own
+     * file when it later becomes a sub-sheet. A symbol on such a sheet has no instance on its real path
+     * until this copies one there, and without it the symbol is taken as unannotated, so the automatic
+     * net names of its pins are built from its UUID, which differs on every import.
+     */
+    void EnsureSymbolInstancesOnHierarchy();
+
+    /**
      * Name power nets after their net labels, as Altium does unless Power Port Names Take
      * Priority is set. A power pin outranks a local label here, so the label becomes global
      * wherever that cannot change connectivity.
