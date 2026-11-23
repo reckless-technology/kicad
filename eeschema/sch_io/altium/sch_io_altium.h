@@ -229,6 +229,14 @@ private:
      */
     static void SetTextFont( EDA_TEXT* aText, const wxString& aFace, int aCellHeight, bool aBold, bool aItalic );
 
+    /**
+     * Give a text in a library symbol, from an Altium library, its font, colour, justification and
+     * the anchor that puts its glyphs where Altium draws them, in the symbol's own frame.
+     */
+    void StyleLibraryText( EDA_TEXT* aText, TEXT_KIND aKind, const VECTOR2I& aLocation, int aFontId,
+                           ASCH_LABEL_JUSTIFICATION aJustification, ASCH_RECORD_ORIENTATION aOrientation,
+                           const std::map<wxString, wxString>& aProperties ) const;
+
     void AddTextBox( const ASCH_TEXT_FRAME* aElem );
     void AddLibTextBox( const ASCH_TEXT_FRAME* aElem, std::vector<LIB_SYMBOL*>& aSymbol = nullsym,
                         std::vector<int>& aFontSize = nullint );
