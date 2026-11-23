@@ -66,6 +66,49 @@ int testFootprintLink( const wxString& aFootprint, PROJECT* aProject )
 }
 
 
+wxString findFootprintLibId( const wxString& aFootprintId, PROJECT* aProject )
+{
+    LIB_ID wanted;
+
+    if( wanted.Parse( aFootprintId ) >= 0 || wanted.GetLibItemName().empty() )
+        return wxEmptyString;
+
+    const wxString name = wanted.GetUniStringLibItemName();
+
+    if( std::optional<LIBRARY_MANAGER_ADAPTER*> mgr =
+                Pgm().GetLibraryManager().Adapter( LIBRARY_TABLE_TYPE::FOOTPRINT ) )
+    {
+        ( *mgr )->BlockUntilLoaded();
+    }
+
+    FOOTPRINT_LIBRARY_ADAPTER* adapter = PROJECT_PCB::FootprintLibAdapter( aProject );
+
+    if( !adapter )
+        return wxEmptyString;
+
+    auto holds =
+            [&]( const wxString& aNickname )
+            {
+                if( !adapter->IsLibraryLoaded( aNickname ) )
+                    adapter->LoadOne( aNickname );
+
+                return adapter->HasLibrary( aNickname, true ) && adapter->FootprintExists( aNickname, name );
+            };
+
+    // the library the source named wins when it is one of ours
+    if( !wanted.GetLibNickname().empty() && holds( wanted.GetUniStringLibNickname() ) )
+        return aFootprintId;
+
+    for( const LIBRARY_TABLE_ROW* row : adapter->Rows() )
+    {
+        if( holds( row->Nickname() ) )
+            return LIB_ID( row->Nickname(), name ).Format();
+    }
+
+    return wxEmptyString;
+}
+
+
 void getFootprintPadNumbers( const wxString& aFootprint, PROJECT* aProject, std::set<wxString>& aPadNumbers )
 {
     LIB_ID fpID;
@@ -162,6 +205,9 @@ static struct IFACE : public KIFACE_BASE
         case KIFACE_FOOTPRINT_PAD_NUMBERS:
             return KifaceServiceAddress<KIFACE_FOOTPRINT_PAD_NUMBERS_SERVICE>(
                     &getFootprintPadNumbers );
+
+        case KIFACE_FIND_FOOTPRINT_LIB_ID:
+            return KifaceServiceAddress<KIFACE_FIND_FOOTPRINT_LIB_ID_SERVICE>( &findFootprintLibId );
 
         default:
             return nullptr;

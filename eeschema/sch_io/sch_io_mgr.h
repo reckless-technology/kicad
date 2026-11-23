@@ -24,6 +24,7 @@
 #define _SCH_IO_MGR_H_
 
 #include <import_export.h>
+#include <functional>
 #include <map>
 #include <enum_vector.h>
 #include <reporter.h>
@@ -114,10 +115,24 @@ public:
     static SCH_FILE_T GuessPluginTypeFromSchPath( const wxString& aSchematicPath, int aCtl = 0 );
 
     /**
-     * Convert a schematic symbol library to the latest KiCad format
+     * Find the footprint library for a symbol's footprint.
+     *
+     * Gets the footprint field's text and returns the full library identifier of the footprint in an installed
+     * library, or an empty string when no installed library holds it.
+     */
+    using FOOTPRINT_RESOLVER = std::function<wxString( const wxString& )>;
+
+    /**
+     * Convert a schematic symbol library to the latest KiCad format.
+     *
+     * @param aFootprintResolver when set, replaces each symbol's footprint field with the installed library's
+     *                           footprint it names.  Altium symbols name the footprint's source library, which
+     *                           is not an installed one, or none (Altium matches footprints by name in any
+     *                           installed library).
      */
     static bool ConvertLibrary( std::map<std::string, UTF8>* aOldFileProps, const wxString& aOldFilePath,
-                                const wxString& aNewFilepath, REPORTER* aReporter = nullptr );
+                                const wxString& aNewFilepath, REPORTER* aReporter = nullptr,
+                                const FOOTPRINT_RESOLVER& aFootprintResolver = nullptr );
 };
 
 #endif // _SCH_IO_MGR_H_
