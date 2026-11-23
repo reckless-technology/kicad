@@ -306,6 +306,100 @@ BOOST_AUTO_TEST_CASE( ConnectedFullCircleArcPreservesRingGeometry )
 
 
 /**
+ * Altium keeps some arcs with a negative radius (a silkscreen circle split into two halves, in
+ * one board met).  Read as unsigned, the radius became about 4.3 m and the arc was thrown far off
+ * the board.  A negative radius puts each point on the far side of the centre, so it is the same
+ * arc turned through half a circle.
+ */
+BOOST_AUTO_TEST_CASE( NegativeArcRadiusTurnsTheArc )
+{
+    auto parseArc = []( int32_t aRadius, double aStart, double aEnd )
+    {
+        constexpr uint32_t      subrecordSize = 57;
+        constexpr size_t        recordSize = 1 + sizeof( subrecordSize ) + subrecordSize;
+        std::unique_ptr<char[]> content = std::make_unique<char[]>( recordSize );
+        size_t                  offset = 0;
+
+        auto append = [&]( auto aValue )
+        {
+            std::memcpy( content.get() + offset, &aValue, sizeof( aValue ) );
+            offset += sizeof( aValue );
+        };
+
+        append( static_cast<uint8_t>( ALTIUM_RECORD::ARC ) );
+        append( subrecordSize );
+        append( static_cast<uint8_t>( ALTIUM_LAYER::TOP_OVERLAY ) );
+        append( uint8_t{ 0 } );
+        append( uint8_t{ 0 } );
+        append( uint16_t{ 0 } );
+        append( static_cast<uint16_t>( ALTIUM_POLYGON_NONE ) );
+        append( static_cast<uint16_t>( ALTIUM_COMPONENT_NONE ) );
+        append( uint32_t{ 0 } );
+        append( int32_t{ 0 } );
+        append( int32_t{ 0 } );
+        append( aRadius );
+        append( aStart );
+        append( aEnd );
+        append( uint32_t{ 78740 } );
+        append( uint16_t{ 0 } );
+        append( uint8_t{ 0 } );
+        append( uint32_t{ 0 } );
+        append( static_cast<uint32_t>( ALTIUM_LAYER::UNKNOWN ) );
+        append( uint8_t{ 0 } );
+
+        BOOST_REQUIRE_EQUAL( offset, recordSize );
+
+        ALTIUM_BINARY_PARSER reader( content, recordSize );
+        return AARC6( reader );
+    };
+
+    // 39370 units of 0.1 microinch are 0.1 mm
+    AARC6 half = parseArc( -39370, 180.0, 360.0 );
+
+    BOOST_CHECK_EQUAL( half.radius, pcbIUScale.mmToIU( 0.1 ) );
+    BOOST_CHECK_EQUAL( half.startangle, 0.0 );
+    BOOST_CHECK_EQUAL( half.endangle, 180.0 );
+
+    AARC6 quarter = parseArc( -39370, 0.0, 90.0 );
+
+    BOOST_CHECK_EQUAL( quarter.startangle, 180.0 );
+    BOOST_CHECK_EQUAL( quarter.endangle, 270.0 );
+
+    // a full circle is the same circle
+    AARC6 circle = parseArc( -39370, 0.0, 360.0 );
+
+    BOOST_CHECK_EQUAL( circle.radius, pcbIUScale.mmToIU( 0.1 ) );
+    BOOST_CHECK_EQUAL( circle.startangle, 0.0 );
+    BOOST_CHECK_EQUAL( circle.endangle, 360.0 );
+
+    // and a positive radius is left alone
+    AARC6 positive = parseArc( 39370, 0.0, 90.0 );
+
+    BOOST_CHECK_EQUAL( positive.radius, pcbIUScale.mmToIU( 0.1 ) );
+    BOOST_CHECK_EQUAL( positive.startangle, 0.0 );
+    BOOST_CHECK_EQUAL( positive.endangle, 90.0 );
+
+    // the converted arc stays at its centre
+    BOARD                 board;
+    LAYER_MAPPING_HANDLER layerMappingHandler;
+    ALTIUM_PCB            importer( &board, nullptr, layerMappingHandler );
+
+    convertConnectedArc( importer, half, F_Cu );
+
+    for( const PCB_TRACK* track : board.Tracks() )
+    {
+        BOOST_REQUIRE_EQUAL( track->Type(), PCB_ARC_T );
+
+        const PCB_ARC* arc = static_cast<const PCB_ARC*>( track );
+
+        BOOST_CHECK_CLOSE( arc->GetRadius(), pcbIUScale.mmToIU( 0.1 ), 1e-6 );
+        BOOST_CHECK_LE( std::abs( arc->GetStart().x ), pcbIUScale.mmToIU( 0.1 ) + 1 );
+        BOOST_CHECK_LE( std::abs( arc->GetStart().y ), pcbIUScale.mmToIU( 0.1 ) + 1 );
+    }
+}
+
+
+/**
  * Test basic board loading - verifies that the Altium import doesn't trigger any assertions
  * during the load process. This catches regressions in layer mapping and other import issues.
  */

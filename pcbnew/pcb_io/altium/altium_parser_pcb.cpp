@@ -1087,11 +1087,23 @@ AARC6::AARC6( ALTIUM_BINARY_PARSER& aReader )
     component    = aReader.Read<uint16_t>();
     aReader.Skip( 4 );
     center     = aReader.ReadVector2IPos();
-    radius     = aReader.ReadKicadUnit();
+
+    int32_t signedRadius = aReader.ReadKicadUnit();
+
     startangle = aReader.Read<double>();
     endangle   = aReader.Read<double>();
     width      = aReader.ReadKicadUnit();
     subpolyindex = aReader.Read<uint16_t>();
+
+    // Altium keeps some arcs with a negative radius, which puts each point of the arc on the far
+    // side of the centre: the same arc turned through half a circle.  A full circle is unchanged.
+    radius = static_cast<uint32_t>( std::abs( signedRadius ) );
+
+    if( signedRadius < 0 && !( startangle == 0. && endangle == 360. ) )
+    {
+        startangle = std::fmod( startangle + 180., 360. );
+        endangle = std::fmod( endangle + 180., 360. );
+    }
 
     int remaining = aReader.GetRemainingSubrecordBytes();
 
