@@ -118,7 +118,7 @@ NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE( IGNORED_CHECK, key, description )
 
 struct REPORT_BASE
 {
-    wxString $schema;
+    wxString schema;
     wxString source;
     wxString date;
     wxString kicad_version;
@@ -138,9 +138,34 @@ struct DRC_REPORT : REPORT_BASE
     std::vector<IGNORED_CHECK>             ignored_checks;
 };
 
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE( DRC_REPORT, $schema, source, date, kicad_version, violations,
-                                    unconnected_items, schematic_parity, coordinate_units,
-                                    included_severities, ignored_checks )
+// The member is named schema because $ is not valid in a C++ identifier; the JSON key stays "$schema".
+inline void to_json( nlohmann::json& aJson, const DRC_REPORT& aReport )
+{
+    aJson["$schema"] = aReport.schema;
+    aJson["source"] = aReport.source;
+    aJson["date"] = aReport.date;
+    aJson["kicad_version"] = aReport.kicad_version;
+    aJson["violations"] = aReport.violations;
+    aJson["unconnected_items"] = aReport.unconnected_items;
+    aJson["schematic_parity"] = aReport.schematic_parity;
+    aJson["coordinate_units"] = aReport.coordinate_units;
+    aJson["included_severities"] = aReport.included_severities;
+    aJson["ignored_checks"] = aReport.ignored_checks;
+}
+
+inline void from_json( const nlohmann::json& aJson, DRC_REPORT& aReport )
+{
+    aJson.at( "$schema" ).get_to( aReport.schema );
+    aJson.at( "source" ).get_to( aReport.source );
+    aJson.at( "date" ).get_to( aReport.date );
+    aJson.at( "kicad_version" ).get_to( aReport.kicad_version );
+    aJson.at( "violations" ).get_to( aReport.violations );
+    aJson.at( "unconnected_items" ).get_to( aReport.unconnected_items );
+    aJson.at( "schematic_parity" ).get_to( aReport.schematic_parity );
+    aJson.at( "coordinate_units" ).get_to( aReport.coordinate_units );
+    aJson.at( "included_severities" ).get_to( aReport.included_severities );
+    aJson.at( "ignored_checks" ).get_to( aReport.ignored_checks );
+}
 
 
 struct ERC_SHEET
@@ -162,8 +187,30 @@ struct ERC_REPORT : REPORT_BASE
     std::vector<IGNORED_CHECK> ignored_checks;
 };
 
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE( ERC_REPORT, $schema, source, date, kicad_version, sheets,
-                                    coordinate_units, included_severities, ignored_checks )
+// See DRC_REPORT above for why the JSON key is "$schema" and the member is schema.
+inline void to_json( nlohmann::json& aJson, const ERC_REPORT& aReport )
+{
+    aJson["$schema"] = aReport.schema;
+    aJson["source"] = aReport.source;
+    aJson["date"] = aReport.date;
+    aJson["kicad_version"] = aReport.kicad_version;
+    aJson["sheets"] = aReport.sheets;
+    aJson["coordinate_units"] = aReport.coordinate_units;
+    aJson["included_severities"] = aReport.included_severities;
+    aJson["ignored_checks"] = aReport.ignored_checks;
+}
+
+inline void from_json( const nlohmann::json& aJson, ERC_REPORT& aReport )
+{
+    aJson.at( "$schema" ).get_to( aReport.schema );
+    aJson.at( "source" ).get_to( aReport.source );
+    aJson.at( "date" ).get_to( aReport.date );
+    aJson.at( "kicad_version" ).get_to( aReport.kicad_version );
+    aJson.at( "sheets" ).get_to( aReport.sheets );
+    aJson.at( "coordinate_units" ).get_to( aReport.coordinate_units );
+    aJson.at( "included_severities" ).get_to( aReport.included_severities );
+    aJson.at( "ignored_checks" ).get_to( aReport.ignored_checks );
+}
 
 } // namespace RC_JSON
 
