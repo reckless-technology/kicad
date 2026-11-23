@@ -691,8 +691,37 @@ SCH_SHEET* SCH_IO_ALTIUM::LoadSchematicFile( const wxString& aFileName, SCHEMATI
 
     if( aProperties && aProperties->count( "project_file" ) )
     {
-        ApplyAltiumProjectParametersToProject( &m_schematic->Project(),
-                                               ParseAltiumProjectParameters( aProperties->at( "project_file" ) ) );
+        std::map<wxString, wxString> projectParameters =
+                ParseAltiumProjectParameters( aProperties->at( "project_file" ) );
+
+        ApplyAltiumProjectParametersToProject( &m_schematic->Project(), projectParameters );
+
+        // A sheet without a date of its own takes the project's, so the title block carries the
+        // document's date rather than none
+        wxString projectDate;
+
+        for( const wxString& name : { wxS( "DATE" ), wxS( "DOCUMENTDATE" ) } )
+        {
+            auto it = projectParameters.find( name );
+
+            if( projectDate.IsEmpty() && it != projectParameters.end() && it->second != wxS( "*" ) )
+                projectDate = it->second;
+        }
+
+        if( !projectDate.IsEmpty() )
+        {
+            SCH_SCREENS screens( m_rootSheet );
+
+            for( SCH_SCREEN* screen = screens.GetFirst(); screen; screen = screens.GetNext() )
+            {
+                if( screen->GetTitleBlock().GetDate().IsEmpty() )
+                {
+                    TITLE_BLOCK titleBlock = screen->GetTitleBlock();
+                    titleBlock.SetDate( projectDate );
+                    screen->SetTitleBlock( titleBlock );
+                }
+            }
+        }
     }
 
     // anything still undefined has no value, which Altium shows as nothing, and a sheet parameter that
@@ -3485,7 +3514,7 @@ void SCH_IO_ALTIUM::ParseLabel( const std::map<wxString, wxString>& aProperties,
         { "TITLE",                   "TITLE"               },  // including 1:1 maps makes it easier
         { "REVISION",                "REVISION"            },  //   to see that the list is complete
         { "DATE",                    "ISSUE_DATE"          },
-        { "CURRENTDATE",             "CURRENT_DATE"        },
+        { "CURRENTDATE",             "ISSUE_DATE"          },  // the document's date, not today's
         { "CURRENTTIME",             "CURRENT_TIME_LOCALE" },
         { "COMPANYNAME",             "COMPANY"             },
         { "DOCUMENTNAME",            "FILENAME"            },
@@ -6228,28 +6257,13 @@ void SCH_IO_ALTIUM::ParseSheet( const std::map<wxString, wxString>& aProperties 
     }
     else
     {
-        switch( m_altiumSheet->sheetSize )
-        {
-        default:
-        case ASCH_SHEET_SIZE::A4:      pageInfo.SetType( "A4", isPortrait );       break;
-        case ASCH_SHEET_SIZE::A3:      pageInfo.SetType( "A3", isPortrait );       break;
-        case ASCH_SHEET_SIZE::A2:      pageInfo.SetType( "A2", isPortrait );       break;
-        case ASCH_SHEET_SIZE::A1:      pageInfo.SetType( "A1", isPortrait );       break;
-        case ASCH_SHEET_SIZE::A0:      pageInfo.SetType( "A0", isPortrait );       break;
-        case ASCH_SHEET_SIZE::A:       pageInfo.SetType( "A", isPortrait );        break;
-        case ASCH_SHEET_SIZE::B:       pageInfo.SetType( "B", isPortrait );        break;
-        case ASCH_SHEET_SIZE::C:       pageInfo.SetType( "C", isPortrait );        break;
-        case ASCH_SHEET_SIZE::D:       pageInfo.SetType( "D", isPortrait );        break;
-        case ASCH_SHEET_SIZE::E:       pageInfo.SetType( "E", isPortrait );        break;
-        case ASCH_SHEET_SIZE::LETTER:  pageInfo.SetType( "USLetter", isPortrait ); break;
-        case ASCH_SHEET_SIZE::LEGAL:   pageInfo.SetType( "USLegal", isPortrait );  break;
-        case ASCH_SHEET_SIZE::TABLOID: pageInfo.SetType( "A3", isPortrait );       break;
-        case ASCH_SHEET_SIZE::ORCAD_A: pageInfo.SetType( "A", isPortrait );        break;
-        case ASCH_SHEET_SIZE::ORCAD_B: pageInfo.SetType( "B", isPortrait );        break;
-        case ASCH_SHEET_SIZE::ORCAD_C: pageInfo.SetType( "C", isPortrait );        break;
-        case ASCH_SHEET_SIZE::ORCAD_D: pageInfo.SetType( "D", isPortrait );        break;
-        case ASCH_SHEET_SIZE::ORCAD_E: pageInfo.SetType( "E", isPortrait );        break;
-        }
+        // Altium's standard sheet styles are its own sizes, not the paper sizes they are named
+        // after (its "A3" is 15.5 x 11.1 inches), and the drawing fills the sheet
+        VECTOR2I size = ASchSheetGetSize( m_altiumSheet->sheetSize );
+
+        PAGE_INFO::SetCustomWidthMils( size.x * 10 );
+        PAGE_INFO::SetCustomHeightMils( size.y * 10 );
+        pageInfo.SetType( PAGE_SIZE_TYPE::User, isPortrait );
     }
 
     screen->SetPageSettings( pageInfo );
@@ -6519,6 +6533,12 @@ void SCH_IO_ALTIUM::ParseParameter( const std::map<wxString, wxString>& aPropert
         else if( paramName == "DATE" )
         {
             m_currentTitleBlock->SetDate( kicadText );
+        }
+        else if( paramName == "DOCUMENTDATE" && m_currentTitleBlock->GetDate().IsEmpty() )
+        {
+            // The document's date where the sheet has no Date of its own
+            m_currentTitleBlock->SetDate( kicadText );
+            m_schematic->Project().GetTextVars()[ paramName ] = kicadText;
         }
         else if( paramName == "COMPANYNAME" )
         {
