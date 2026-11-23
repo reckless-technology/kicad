@@ -396,3 +396,63 @@ def test_sym_merge_driver_combines_field_and_pin_edits(kitest: KiTestFixture) ->
     assert datasheet in result
     assert result.count("(at -17.78 2.54 0)") == text.count("(at -17.78 2.54 0)") + 1
 
+
+
+COMMON_ONLY_SYMBOL_LIB = """(kicad_symbol_lib
+\t(version 20251024)
+\t(generator "kicad_symbol_editor")
+\t(generator_version "9.99")
+\t(symbol "COMMONONLY"
+\t\t(exclude_from_sim no)
+\t\t(in_bom yes)
+\t\t(on_board yes)
+\t\t(property "Reference" "Q"
+\t\t\t(at 0 0 0)
+\t\t\t(effects (font (size 1.27 1.27)))
+\t\t)
+\t\t(property "Value" "COMMONONLY"
+\t\t\t(at 0 0 0)
+\t\t\t(effects (font (size 1.27 1.27)))
+\t\t)
+\t\t(symbol "COMMONONLY_1_0"
+\t\t\t(rectangle (start -2 2) (end 2 -2)
+\t\t\t\t(stroke (width 0.254) (type default))
+\t\t\t\t(fill (type none))
+\t\t\t)
+\t\t\t(pin passive line (at -5 0 0) (length 3)
+\t\t\t\t(name "A" (effects (font (size 1.27 1.27))))
+\t\t\t\t(number "1" (effects (font (size 1.27 1.27))))
+\t\t\t)
+\t\t)
+\t\t(embedded_fonts no)
+\t)
+)
+"""
+
+
+def test_sym_upgrade_adds_no_empty_unit(kitest: KiTestFixture) -> None:
+    """
+    A symbol with only the unit's common items (COMMONONLY_1_0) must not gain an empty COMMONONLY_1_1.
+    """
+
+    output_path = Path(kitest.get_output_path("cli/sym_upgrade_common/"))
+    output_path.mkdir(parents=True, exist_ok=True)
+
+    input_file = output_path / "common_only.kicad_sym"
+    output_file = output_path / "common_only_upgraded.kicad_sym"
+    input_file.write_text(COMMON_ONLY_SYMBOL_LIB, encoding="utf-8")
+
+    if output_file.exists():
+        output_file.unlink()
+
+    stdout, stderr, exitcode = utils.run_and_capture(
+        get_sym_upgrade_cmd(str(input_file), str(output_file))
+    )
+
+    assert exitcode == 0
+    assert output_file.is_file()
+
+    upgraded = output_file.read_text(encoding="utf-8")
+
+    assert '(symbol "COMMONONLY_1_0"' in upgraded
+    assert '(symbol "COMMONONLY_1_1"' not in upgraded
