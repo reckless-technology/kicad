@@ -1180,4 +1180,47 @@ BOOST_AUTO_TEST_CASE( AltiumSymbolGraphicsStyle )
 }
 
 
+// A symbol read from an Altium library takes the library's font table as a placed symbol takes
+// its sheet's: here the designator is in font 2, 9 point Consolas, Altium's dark blue, bottom left
+// justified at (11596.8504, 5249.6080) mil, and placed so its glyphs land where Altium draws them.
+BOOST_AUTO_TEST_CASE( AltiumLibraryText )
+{
+    SCH_IO_ALTIUM plugin;
+
+    std::vector<LIB_SYMBOL*> symbols;
+    plugin.EnumerateSymbolLib( symbols, dataFile( "mounting_holes.SchLib" ) );
+
+    LIB_SYMBOL* symbol = nullptr;
+
+    for( LIB_SYMBOL* candidate : symbols )
+    {
+        if( candidate->GetName() == wxT( "MH M2.5 Mounting hole" ) )
+            symbol = candidate;
+    }
+
+    BOOST_REQUIRE( symbol );
+
+    SCH_FIELD& reference = symbol->GetReferenceField();
+    BOOST_CHECK_EQUAL( reference.GetFontName(), wxT( "Consolas" ) );
+    BOOST_CHECK_EQUAL( reference.GetTextColor(), COLOR4D( 0.0, 0.0, 128.0 / 255.0, 1.0 ) );
+
+    KIFONT::FONT* font = KIFONT::FONT::GetFont( wxT( "Consolas" ), false, false );
+    BOOST_REQUIRE( font && font->IsOutline() );
+
+    double ascent = 0.0;
+    double descent = 0.0;
+    static_cast<KIFONT::OUTLINE_FONT*>( font )->GetAscentAndDescent( ascent, descent );
+
+    const double cell = schIUScale.MilsToIU( 90 );
+    const double em = cell / ( ascent + descent );
+    const double size = em / 1.4;
+    const double up = em * descent + ( 0.415 - 0.33 * 1.4 * ( ascent + descent ) ) * size;
+
+    BOOST_CHECK_EQUAL( reference.GetTextHeight(), KiROUND( size ) );
+    BOOST_CHECK_EQUAL( reference.GetTextPos(),
+                       VECTOR2I( KiROUND( 11596.8504 * schIUScale.IU_PER_MILS ),
+                                 KiROUND( -5249.6080 * schIUScale.IU_PER_MILS - up ) ) );
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()
