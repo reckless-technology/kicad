@@ -836,6 +836,11 @@ struct ASCH_SHEET : ASCH_OWNER_INTERFACE
 
     int systemFontId; ///< the font Altium draws pins and directives in
 
+    bool borderOn;          ///< Altium draws a border with zone references round the sheet
+    int  customXZones;      ///< a custom sheet's zone columns
+    int  customYZones;      ///< a custom sheet's zone rows
+    int  customMarginWidth; ///< a custom sheet's border width, in Altium's 10 mil units
+
     explicit ASCH_SHEET( const std::map<wxString, wxString>& aProps );
 };
 
