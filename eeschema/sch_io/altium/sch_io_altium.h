@@ -36,6 +36,7 @@
 class SYMBOL;
 class SCH_SYMBOL;
 class SCH_SHEET;
+class EDA_TEXT;
 class TITLE_BLOCK;
 
 class ALTIUM_COMPOUND_FILE;
@@ -172,6 +173,19 @@ private:
      * wherever that cannot change connectivity.
      */
     void NameNetsAfterNetLabels();
+
+    /**
+     * Give a text the face, size and style of a font from the sheet's font table.
+     *
+     * Altium draws a font of N points with its ascent plus descent N * 10 mil tall, so an outline
+     * font is sized from its own metrics to match. A font that resolves only to the stroke font
+     * gets half that height.
+     *
+     * @param aText is the text to style.
+     * @param aFontId is Altium's one-based font id; anything out of range means font 1.
+     */
+    void SetTextFont( EDA_TEXT* aText, int aFontId ) const;
+
     void AddTextBox( const ASCH_TEXT_FRAME* aElem );
     void AddLibTextBox( const ASCH_TEXT_FRAME* aElem, std::vector<LIB_SYMBOL*>& aSymbol = nullsym,
                         std::vector<int>& aFontSize = nullint );

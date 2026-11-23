@@ -180,6 +180,57 @@ double OUTLINE_FONT::GetInterline( double aGlyphHeight, const METRICS& aFontMetr
 }
 
 
+void OUTLINE_FONT::GetAscentAndDescent( double& aAscent, double& aDescent ) const
+{
+    aAscent = 0.905;
+    aDescent = 0.212;
+
+    if( !m_face || m_face->units_per_EM == 0 )
+        return;
+
+    const double unitsPerEm = m_face->units_per_EM;
+
+    // The hhea table's own values. FreeType's face ascender and descender come from OS/2
+    // instead when a font asks for its typographic metrics, which is not what we want here.
+    TT_HoriHeader* hhea = reinterpret_cast<TT_HoriHeader*>( FT_Get_Sfnt_Table( m_face, FT_SFNT_HHEA ) );
+
+    if( hhea && hhea->Ascender - hhea->Descender > 0 )
+    {
+        aAscent = hhea->Ascender / unitsPerEm;
+        aDescent = -hhea->Descender / unitsPerEm;
+        return;
+    }
+
+    TT_OS2* os2 = reinterpret_cast<TT_OS2*>( FT_Get_Sfnt_Table( m_face, FT_SFNT_OS2 ) );
+
+    if( os2 && os2->sTypoAscender - os2->sTypoDescender > 0 )
+    {
+        aAscent = os2->sTypoAscender / unitsPerEm;
+        aDescent = -os2->sTypoDescender / unitsPerEm;
+        return;
+    }
+
+    // Not a TrueType or OpenType font: FreeType's own metrics
+    if( m_face->ascender - m_face->descender > 0 )
+    {
+        aAscent = m_face->ascender / unitsPerEm;
+        aDescent = -m_face->descender / unitsPerEm;
+    }
+}
+
+
+double OUTLINE_FONT::GetTextSizeForAscentPlusDescent( double aHeight ) const
+{
+    double ascent = 0.0;
+    double descent = 0.0;
+
+    GetAscentAndDescent( ascent, descent );
+
+    // An outline font's em is drawn m_outlineFontSizeCompensation times the text size
+    return aHeight / ( ascent + descent ) / m_outlineFontSizeCompensation;
+}
+
+
 static bool contourIsFilled( const CONTOUR& c )
 {
     switch( c.m_Orientation )
