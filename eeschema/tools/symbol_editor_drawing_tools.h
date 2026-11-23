@@ -56,13 +56,9 @@ private:
     void setTransitions() override;
 
 private:
-    bool              m_lastTextBold;
-    bool              m_lastTextItalic;
     EDA_ANGLE         m_lastTextAngle;
-    GR_TEXT_H_ALIGN_T m_lastTextJust;
 
     ///< Re-entrancy guards
-    bool              m_inDrawShape;
     bool              m_inPlaceAnchor;
     bool              m_inTwoClickPlace;
 

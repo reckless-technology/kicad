@@ -45,11 +45,7 @@ KIID SYMBOL_EDITOR_DRAWING_TOOLS::g_lastPin;
 
 SYMBOL_EDITOR_DRAWING_TOOLS::SYMBOL_EDITOR_DRAWING_TOOLS() :
         SCH_TOOL_BASE<SYMBOL_EDIT_FRAME>( "eeschema.SymbolDrawing" ),
-        m_lastTextBold( false ),
-        m_lastTextItalic( false ),
         m_lastTextAngle( ANGLE_HORIZONTAL ),
-        m_lastTextJust( GR_TEXT_H_ALIGN_LEFT ),
-        m_inDrawShape( false ),
         m_inPlaceAnchor( false ),
         m_inTwoClickPlace( false )
 {

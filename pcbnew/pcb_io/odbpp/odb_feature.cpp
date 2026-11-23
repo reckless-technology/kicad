@@ -1315,9 +1315,7 @@ void ODB_PAD::WriteRecordContent( std::ostream& ost, const ODB_FORMAT& aFormat )
 {
     ost << m_center.first << " " << m_center.second << " ";
 
-    // TODO: support resize symbol
-    // ost << "-1" << " " << m_symIndex << " "
-    //     << m_resize << " P 0 ";
+    // TODO: support resize symbol, which would write "-1" and the symbol index, then the resize factor
 
     ost << m_symIndex << " P 0 ";
 

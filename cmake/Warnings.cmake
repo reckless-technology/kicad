@@ -295,3 +295,26 @@ if( MSVC )
     # disable alignas warning used on structure, class or union
     string( APPEND WARN_FLAGS_CXX " /wd4324" )
 endif()
+
+
+# Reckless: treat every warning in our own code as an error. Third-party code under thirdparty/ keeps its own
+# flags (thirdparty/CMakeLists.txt turns this back off for its directory). This uses the targets'
+# COMPILE_WARNING_AS_ERROR property rather than a -Werror in the flags, so that configure-time feature checks,
+# which compile with CMAKE_CXX_FLAGS, are not turned into failures by a warning.
+if( CMAKE_CXX_COMPILER_ID MATCHES "Clang" )
+    set( KICAD_WERROR_DEFAULT ON )
+else()
+    set( KICAD_WERROR_DEFAULT OFF )
+endif()
+
+option( KICAD_WERROR "Treat compiler warnings as errors in KiCad's own code (not thirdparty/)"
+        ${KICAD_WERROR_DEFAULT} )
+
+if( KICAD_WERROR )
+    if( CMAKE_VERSION VERSION_LESS 3.24 )
+        message( FATAL_ERROR "KICAD_WERROR needs CMake 3.24 or newer" )
+    endif()
+
+    set( CMAKE_COMPILE_WARNING_AS_ERROR ON )
+    message( STATUS "Compiler warnings are errors (KICAD_WERROR)" )
+endif()

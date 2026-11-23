@@ -88,7 +88,7 @@ SCH_SHEET* SCH_IO_TARGET3001::LoadSchematicFile( const wxString& aFileName, SCHE
         rootSheet->SetScreen( screen );
     }
 
-    TARGET3001_SCH_BUILDER builder( aSchematic, rootSheet, project, aFileName, m_reporter );
+    TARGET3001_SCH_BUILDER builder( aSchematic, rootSheet, project, aFileName );
     builder.Build();
 
     aSchematic->RefreshHierarchy();

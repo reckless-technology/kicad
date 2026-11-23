@@ -688,13 +688,16 @@ static bool rescaleShapes( const TDF_Label& theLabel, const gp_XYZ& aScale )
 }
 
 
-static bool fuseShapes( auto& aInputShapes, TopoDS_Shape& aOutShape, REPORTER* aReporter )
+static bool fuseShapes( const NCollection_List<TopoDS_Shape>& aInputShapes, TopoDS_Shape& aOutShape, REPORTER* aReporter )
 {
     BRepAlgoAPI_Fuse               mkFuse;
     NCollection_List<TopoDS_Shape> shapeArguments, shapeTools;
 
-    for( const TopoDS_Shape& sh : aInputShapes )
+    // OCCT's own iterator: its STL adapter derives from the deprecated std::iterator
+    for( NCollection_List<TopoDS_Shape>::Iterator shapeIt( aInputShapes ); shapeIt.More(); shapeIt.Next() )
     {
+        const TopoDS_Shape& sh = shapeIt.Value();
+
         if( sh.IsNull() )
             continue;
 
@@ -803,7 +806,7 @@ static bool fuseShapes( auto& aInputShapes, TopoDS_Shape& aOutShape, REPORTER* a
 }
 
 
-static TopoDS_Compound makeCompound( const auto& aInputShapes )
+static TopoDS_Compound makeCompound( const std::vector<TopoDS_Shape>& aInputShapes )
 {
     TopoDS_Compound compound;
     BRep_Builder    builder;
@@ -811,6 +814,20 @@ static TopoDS_Compound makeCompound( const auto& aInputShapes )
 
     for( const TopoDS_Shape& shape : aInputShapes )
         builder.Add( compound, shape );
+
+    return compound;
+}
+
+
+static TopoDS_Compound makeCompound( const NCollection_List<TopoDS_Shape>& aInputShapes )
+{
+    TopoDS_Compound compound;
+    BRep_Builder    builder;
+    builder.MakeCompound( compound );
+
+    // OCCT's own iterator: its STL adapter derives from the deprecated std::iterator
+    for( NCollection_List<TopoDS_Shape>::Iterator shapeIt( aInputShapes ); shapeIt.More(); shapeIt.Next() )
+        builder.Add( compound, shapeIt.Value() );
 
     return compound;
 }
@@ -2758,8 +2775,9 @@ bool STEP_PCB_MODEL::CreatePCB( SHAPE_POLY_SET& aOutline, const VECTOR2D& aOrigi
 
                             const NCollection_List<int>& indices = aBSBHoles.Compare( shapeBbox );
 
-                            for( const int& index : indices )
-                                holelist.Append( aHolesList[index] );
+                            // OCCT's own iterator: its STL adapter derives from the deprecated std::iterator
+                            for( NCollection_List<int>::Iterator indexIt( indices ); indexIt.More(); indexIt.Next() )
+                                holelist.Append( aHolesList[indexIt.Value()] );
 
                             // Workaround for OCCT bug (https://github.com/Open-Cascade-SAS/OCCT/issues/506)
                             // Bnd_BoundSortBox::Compare can fail to detect intersections in certain edge

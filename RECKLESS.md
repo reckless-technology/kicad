@@ -37,3 +37,13 @@ As for KiCad (dev-docs.kicad.org, "Building on Linux"), with clang-20. We config
 `-DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=/opt/kicad-reckless -DKICAD_VERSION_EXTRA=reckless
 -DCMAKE_C_COMPILER=clang-20 -DCMAKE_CXX_COMPILER=clang++-20` and set `CMAKE_INSTALL_RPATH` to the prefix's `lib` and
 `lib/kicad/plugins/3d`, so the programs run without wrapper scripts.
+
+### Warnings are errors
+
+`KICAD_WERROR` (cmake/Warnings.cmake) makes every compiler warning in KiCad's own code an error, through CMake's
+`COMPILE_WARNING_AS_ERROR` target property (CMake 3.24 or newer), so configure-time feature checks are not affected.
+It is ON by default with Clang and OFF with other compilers; `-DKICAD_WERROR=OFF` turns it off. Code under
+`thirdparty/` keeps its own flags. The set of warnings is upstream's own (`-Wall` and the extras in
+`cmake/Warnings.cmake`); `-Wextra` and `-Wpedantic` are not enabled, pending #6. A warning is fixed at its cause,
+not silenced with a pragma or a `-Wno-` flag. Upstream changes can introduce a warning when `reckless/main` is
+rebased: fix it in that rebase.
