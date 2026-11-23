@@ -146,6 +146,13 @@ struct ALTIUM_SCH_IMPORT_FIXTURE
                + aName;
     }
 
+    wxString issue26128DataFile( const wxString& aName ) const
+    {
+        return wxString::FromUTF8( KI_TEST::GetEeschemaTestDataDir()
+                                   + "/plugins/altium/issue26128/" )
+               + aName;
+    }
+
     wxString issue16903DataFile( const wxString& aName ) const
     {
         return wxString::FromUTF8( KI_TEST::GetEeschemaTestDataDir()
@@ -1432,6 +1439,48 @@ BOOST_AUTO_TEST_CASE( Issue26131_NetLabelsJoinAcrossSheets )
     BOOST_REQUIRE( pinNets.count( wxT( "C26P.2" ) ) );
     BOOST_CHECK_EQUAL( pinNets[wxT( "JP10C.52" )], wxT( "LCD_XM" ) );
     BOOST_CHECK_EQUAL( pinNets[wxT( "C26P.2" )], wxT( "LCD_XM" ) );
+}
+
+
+// https://gitlab.com/kicad/code/kicad/-/issues/26128
+// Altium's standard sheet styles are its own sizes: its "A3" is 1550 x 1110 in 10 mil units,
+// not ISO A3, and the drawing fills it. The title block carries the document's own date, here
+// its DocumentDate parameter, and the template's =CurrentDate shows that date rather than the
+// day the import is opened.
+BOOST_AUTO_TEST_CASE( Issue26128_AltiumSheetSizeAndDate )
+{
+    SCH_IO_ALTIUM plugin;
+
+    SCH_SHEET* rootSheet = plugin.LoadSchematicFile( issue26128DataFile( wxT( "sheet_template.SchDoc" ) ),
+                                                     &m_schematic );
+    BOOST_REQUIRE( rootSheet );
+
+    SCH_SCREEN* screen = rootSheet->GetScreen();
+    BOOST_REQUIRE( screen );
+
+    const PAGE_INFO& page = screen->GetPageSettings();
+    BOOST_CHECK( page.GetType() == PAGE_SIZE_TYPE::User );
+    BOOST_CHECK_EQUAL( page.GetWidthMils(), 15500 );
+    BOOST_CHECK_EQUAL( page.GetHeightMils(), 11100 );
+
+    // Altium's y is flipped about the sheet's own height
+    std::vector<SCH_LINE*> wires;
+
+    for( SCH_ITEM* item : screen->Items().OfType( SCH_LINE_T ) )
+        wires.push_back( static_cast<SCH_LINE*>( item ) );
+
+    BOOST_REQUIRE_EQUAL( wires.size(), 1 );
+    BOOST_CHECK_EQUAL( wires.front()->GetStartPoint().y, schIUScale.MilsToIU( 11100 - 10000 ) );
+
+    BOOST_CHECK_EQUAL( screen->GetTitleBlock().GetDate(), wxT( "4/22/2024" ) );
+
+    std::vector<SCH_TEXT*> texts;
+
+    for( SCH_ITEM* item : screen->Items().OfType( SCH_TEXT_T ) )
+        texts.push_back( static_cast<SCH_TEXT*>( item ) );
+
+    BOOST_REQUIRE_EQUAL( texts.size(), 1 );
+    BOOST_CHECK_EQUAL( texts.front()->GetText(), wxT( "${ISSUE_DATE}" ) );
 }
 
 
