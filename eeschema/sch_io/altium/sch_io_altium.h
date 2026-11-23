@@ -37,6 +37,7 @@ class SYMBOL;
 class SCH_SYMBOL;
 class SCH_SHEET;
 class EDA_TEXT;
+class SCH_DIRECTIVE_LABEL;
 class TITLE_BLOCK;
 
 class ALTIUM_COMPOUND_FILE;
@@ -233,6 +234,23 @@ private:
     void ParseLibDesignator( const std::map<wxString, wxString>& aProperties, std::vector<LIB_SYMBOL*>& aSymbols  = nullsym, std::vector<int>& aFontSize = nullint );
     void ParseBusEntry( const std::map<wxString, wxString>& aProperties );
     void ParseParameter( const std::map<wxString, wxString>& aProperties );
+
+    /**
+     * Import a Parameter Set directive as a net class flag. Its ClassName parameter, a later
+     * record, becomes the flag's Netclass field and a net class in the project.
+     */
+    void ParseParameterSet( int aIndex, const std::map<wxString, wxString>& aProperties );
+
+    /**
+     * Give a parameter set's flag the net class named by its ClassName parameter, adding the
+     * class to the project at the end of the import.
+     *
+     * @return false if \a aElem does not belong to a parameter set.
+     */
+    bool AddParameterSetParameter( const ASCH_PARAMETER& aElem );
+
+    /// Remove the flags of the sheet's parameter sets that name no net class.
+    void FinishParameterSets();
     void ParseLibParameter( const std::map<wxString, wxString>& aProperties, std::vector<LIB_SYMBOL*>& aSymbol  = nullsym, std::vector<int>& aFontSize = nullint );
     void ParseImplementationList( int aIndex, const std::map<wxString, wxString>& aProperties );
     void ParseImplementation( const std::map<wxString, wxString>& aProperties, std::vector<LIB_SYMBOL*>& aSymbol  = nullsym );
@@ -270,6 +288,15 @@ private:
     std::unique_ptr<ASCH_SHEET>        m_altiumSheet;
     std::map<int, SCH_SYMBOL*>         m_symbols;
     std::map<int, SCH_SHEET*>          m_sheets;
+    /// A parameter set's flag, and the circle and "i" drawn beside it to look like Altium's
+    struct PARAMETER_SET_ITEMS
+    {
+        SCH_DIRECTIVE_LABEL*   flag = nullptr;
+        std::vector<SCH_ITEM*> decorations;
+    };
+
+    std::map<int, PARAMETER_SET_ITEMS>  m_parameterSets;          // the current sheet's, by record index
+    std::set<wxString>                  m_parameterSetNetClasses; // net classes they name
     std::map<int, LIB_SYMBOL*>         m_libSymbols;        // every symbol has its unique lib_symbol
 
     std::map<wxString, LIB_SYMBOL*>    m_powerSymbols;
