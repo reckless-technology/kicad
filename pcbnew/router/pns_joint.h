@@ -76,6 +76,7 @@ public:
         m_locked = false;
     }
 
+    JOINT& operator=( const JOINT& aOther ) = default;
     JOINT( const JOINT& aB ) :
         ITEM( JOINT_T )
     {

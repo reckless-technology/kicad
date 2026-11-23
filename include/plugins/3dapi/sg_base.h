@@ -98,6 +98,7 @@ public:
     void SetVector( double aXVal, double aYVal, double aZVal );
     void SetVector( const SGVECTOR& aVector );
 
+    SGVECTOR( const SGVECTOR& aOther ) = default;
     SGVECTOR& operator=( const SGVECTOR& source ) noexcept;
 };
 

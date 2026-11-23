@@ -38,6 +38,7 @@ public:
 
     PCB_FIELD( const PCB_TEXT& aText, FIELD_T aFieldId, const wxString& aName = wxEmptyString );
 
+    PCB_FIELD& operator=( const PCB_FIELD& aOther ) = default;
     PCB_FIELD( const PCB_FIELD& aField );
 
     void Serialize( google::protobuf::Any &aContainer ) const override;

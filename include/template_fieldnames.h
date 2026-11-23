@@ -129,6 +129,7 @@ struct KICOMMON_API TEMPLATE_FIELDNAME
     {
     }
 
+    TEMPLATE_FIELDNAME& operator=( const TEMPLATE_FIELDNAME& aOther ) = default;
     TEMPLATE_FIELDNAME( const TEMPLATE_FIELDNAME& ref )
     {
         m_Name = ref.m_Name;

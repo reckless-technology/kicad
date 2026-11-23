@@ -88,6 +88,7 @@ public:
         m_radius( 0 )
     {}
 
+    SHAPE_RECT& operator=( const SHAPE_RECT& aOther ) = default;
     SHAPE_RECT( const SHAPE_RECT& aOther ) :
         SHAPE( SH_RECT ),
         m_p0( aOther.m_p0 ),

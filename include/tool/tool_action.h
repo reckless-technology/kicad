@@ -82,6 +82,7 @@ public:
         m_groupID = ++groupIDs;
     };
 
+    TOOL_ACTION_GROUP& operator=( const TOOL_ACTION_GROUP& aOther ) = default;
     TOOL_ACTION_GROUP( const TOOL_ACTION_GROUP& aOther )
     {
         // Ensure a copy of a group is exactly the same as this one to get
