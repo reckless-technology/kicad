@@ -359,6 +359,24 @@ bool SCH_IO_ALTIUM::CanReadLibrary( const wxString& aFileName ) const
 }
 
 
+int SCH_IO_ALTIUM::pinTextSize() const
+{
+    if( !m_altiumSheet || m_altiumSheet->fonts.empty() )
+        return 0;
+
+    int fontId = m_altiumSheet->systemFontId;
+
+    if( fontId <= 0 || fontId > static_cast<int>( m_altiumSheet->fonts.size() ) )
+        fontId = 1;
+
+    // The size the system font's text would take, not its face: KiCad draws pins in its default font
+    EDA_TEXT sized( schIUScale );
+    SetTextFont( &sized, fontId );
+
+    return sized.GetTextHeight();
+}
+
+
 void SCH_IO_ALTIUM::fixupSymbolPinNameNumbers( SYMBOL* aSymbol )
 {
     std::vector<SCH_PIN*> pins;
@@ -381,18 +399,26 @@ void SCH_IO_ALTIUM::fixupSymbolPinNameNumbers( SYMBOL* aSymbol )
             numbers_visible = true;
     }
 
+    // Hidden pin text keeps the system font's size where there is one
+    int pinSize = pinTextSize();
+
     if( !names_visible )
     {
         for( SCH_PIN* pin : pins )
-            pin->SetNameTextSize( schIUScale.MilsToIU( DEFAULT_PINNAME_SIZE ) );
+            pin->SetNameTextSize( pinSize > 0 ? pinSize : schIUScale.MilsToIU( DEFAULT_PINNAME_SIZE ) );
 
         aSymbol->SetShowPinNames( false );
+    }
+    else
+    {
+        // Altium prints a pin name 70 mil inside the body's edge
+        aSymbol->SetPinNameOffset( schIUScale.MilsToIU( 70 ) );
     }
 
     if( !numbers_visible )
     {
         for( SCH_PIN* pin : pins )
-            pin->SetNumberTextSize( schIUScale.MilsToIU( DEFAULT_PINNUM_SIZE ) );
+            pin->SetNumberTextSize( pinSize > 0 ? pinSize : schIUScale.MilsToIU( DEFAULT_PINNUM_SIZE ) );
 
         aSymbol->SetShowPinNumbers( false );
     }
@@ -3004,6 +3030,13 @@ void SCH_IO_ALTIUM::ParsePin( const std::map<wxString, wxString>& aProperties,
 
     if( elem.hidden )
         pin->SetVisible( false );
+
+    // Altium draws a placed symbol's pin names and numbers in the sheet's system font
+    if( schSymbol && pinTextSize() > 0 )
+    {
+        pin->SetNameTextSize( pinTextSize() );
+        pin->SetNumberTextSize( pinTextSize() );
+    }
 
     if( !elem.showDesignator )
         pin->SetNumberTextSize( 0 );
