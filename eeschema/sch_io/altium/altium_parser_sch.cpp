@@ -356,11 +356,13 @@ ASCH_TEXT_FRAME::ASCH_TEXT_FRAME( const std::map<wxString, wxString>& aProps ) :
     ShowBorder = ALTIUM_PROPS_UTILS::ReadBool( aProps, "SHOWBORDER", false );
     TextMargin = ReadKiCadUnitFrac( aProps, "TEXTMARGIN" );
 
-    AreaColor = ALTIUM_PROPS_UTILS::ReadInt( aProps, "AREACOLOR", 0 );
+    AreaColor = ALTIUM_PROPS_UTILS::ReadInt( aProps, "AREACOLOR", 0xFFFFFF ); // Altium's white
     BorderColor = ALTIUM_PROPS_UTILS::ReadInt( aProps, "COLOR", 0 );
     TextColor = ALTIUM_PROPS_UTILS::ReadInt( aProps, "TEXTCOLOR", 0 );
 
-    BorderWidth = ReadKiCadUnitFrac( aProps, "LINEWIDTH" );
+    // One of Altium's four line widths, Smallest, Small, Medium and Large, not a length
+    static const int widthsMils[4] = { 1, 10, 30, 50 };
+    BorderWidth = schIUScale.MilsToIU( widthsMils[std::clamp( ALTIUM_PROPS_UTILS::ReadInt( aProps, "LINEWIDTH", 0 ), 0, 3 )] );
     isSolid = ALTIUM_PROPS_UTILS::ReadBool( aProps, "ISSOLID", false );
 
     Alignment = ReadEnum<ASCH_TEXT_FRAME_ALIGNMENT>( aProps, "ALIGNMENT", 1, 3,
