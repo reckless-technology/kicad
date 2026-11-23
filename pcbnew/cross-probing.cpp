@@ -63,6 +63,7 @@
 #include <project_pcb.h>
 #include <footprint_import_reconciler.h>
 #include <import_local_footprint_libs.h>
+#include <import_design_rules.h>
 #include <import_net_reconciler.h>
 #include <import_proj_properties.h>
 #include <netlist_reader/pcb_netlist.h>
@@ -814,6 +815,10 @@ void PCB_EDIT_FRAME::KiwayMailIn( KIWAY_MAIL_EVENT& mail )
 
         IMPORT_RECONCILE_RESULT result = ReconcileImportedBoard( *GetBoard(), netlist,
                                                                  WXLOG_REPORTER::GetInstance() );
+
+        // the rules the import wrote name the nets as the source design did
+        RenameNetsInDesignRulesFile( wxFileName( GetBoard()->GetDesignRulesPath() ), result.m_nets.m_renames,
+                                     WXLOG_REPORTER::GetInstance() );
 
         if( result.BoardChanged() )
             OnModify();

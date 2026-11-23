@@ -25,6 +25,7 @@
 #include <project/net_settings.h>
 #include <board_connected_item.h>
 #include <footprint.h>
+#include <pad.h>
 #include <import_net_names.h>
 #include <import_net_reconciler.h>
 #include <netlist_reader/pcb_netlist.h>
@@ -149,6 +150,42 @@ BOOST_AUTO_TEST_CASE( ReferencesTakeTheSchematicSpelling )
     BOOST_CHECK_EQUAL( ReconcileImportedReferences( *board, netlist ), 1 );
     BOOST_CHECK_EQUAL( lowered->GetReference(), wxS( "Q6" ) );
     BOOST_CHECK_EQUAL( named->GetReference(), wxS( "UNKQ3" ) );
+}
+
+// What names a net besides the board, such as the imported rules, must follow the renaming, so it is reported
+BOOST_AUTO_TEST_CASE( ReconcileReportsTheRenamesItMade )
+{
+    const wxString original = wxS( "Net-(Q6-Pad2)" );
+    const wxString renamed = wxS( "Net-(Q6-B)" );
+
+    NETLIST                       netlist;
+    std::map<wxString, COMPONENT*> components;
+
+    // the schematic names each net as the board does, except the one it calls by its transistor's pin
+    for( FOOTPRINT* footprint : board->Footprints() )
+    {
+        COMPONENT* component = new COMPONENT( LIB_ID(), footprint->GetReference(), wxS( "V" ), KIID_PATH(), {} );
+        netlist.AddComponent( component );
+        components[footprint->GetReference()] = component;
+
+        for( PAD* pad : footprint->Pads() )
+        {
+            if( pad->GetNetCode() <= 0 )
+                continue;
+
+            component->AddNet( pad->GetNumber(), pad->GetNetname() == original ? renamed : pad->GetNetname(),
+                               wxEmptyString, wxEmptyString );
+        }
+    }
+
+    WX_STRING_REPORTER   reporter;
+    NET_RECONCILE_RESULT result = ReconcileImportedNetNames( *board, netlist, reporter );
+
+    BOOST_CHECK_EQUAL( result.m_renamed, 1 );
+
+    const std::map<wxString, wxString> expected = { { original, renamed } };
+    BOOST_CHECK( result.m_renames == expected );
+    BOOST_CHECK( board->FindNet( renamed ) );
 }
 
 BOOST_AUTO_TEST_CASE( InvalidMappingsLeaveEveryNetUnchanged )
