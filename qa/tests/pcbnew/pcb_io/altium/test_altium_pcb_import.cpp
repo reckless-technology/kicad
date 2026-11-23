@@ -2010,4 +2010,33 @@ BOOST_AUTO_TEST_CASE( RedundantTracksAreDropped )
 }
 
 
+/**
+ * An Altium hatched polygon whose tracks are as wide as its grid has no gap: Altium pours it
+ * solid.  Imported as a hatch with a zero gap, KiCad's filler would draw an endless grid.
+ */
+BOOST_AUTO_TEST_CASE( HatchWithoutGapIsSolid )
+{
+    std::string dataPath = KI_TEST::GetPcbnewTestDataDir()
+                           + "plugins/altium/hatch_gap_zero/hatch_gap_zero.PcbDoc";
+
+    std::unique_ptr<BOARD> board = m_altiumPlugin.LoadBoard( dataPath );
+    BOOST_REQUIRE( board );
+
+    BOOST_REQUIRE_EQUAL( board->Zones().size(), 2 );
+
+    for( ZONE* zone : board->Zones() )
+    {
+        if( zone->GetNetname() == wxT( "VCC" ) )
+        {
+            BOOST_CHECK( zone->GetFillMode() == ZONE_FILL_MODE::POLYGONS );
+        }
+        else
+        {
+            BOOST_CHECK( zone->GetFillMode() == ZONE_FILL_MODE::HATCH_PATTERN );
+            BOOST_CHECK_EQUAL( zone->GetHatchGap(), pcbIUScale.mmToIU( 0.508 ) );
+        }
+    }
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()
