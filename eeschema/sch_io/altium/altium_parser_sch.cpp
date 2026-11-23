@@ -643,6 +643,10 @@ ASCH_SHEET_ENTRY::ASCH_SHEET_ENTRY( const std::map<wxString, wxString>& aProps )
 
     iotype = ReadEnum<ASCH_PORT_IOTYPE>( aProps, "IOTYPE", 0, 3, ASCH_PORT_IOTYPE::UNSPECIFIED );
     style = ReadEnum<ASCH_PORT_STYLE>( aProps, "STYLE", 0, 7, ASCH_PORT_STYLE::NONE_HORIZONTAL );
+
+    // Sheet entries give their font as TEXTFONTID
+    fontId = ALTIUM_PROPS_UTILS::ReadInt( aProps, "TEXTFONTID", ALTIUM_PROPS_UTILS::ReadInt( aProps, "FONTID", 0 ) );
+    textColor = ALTIUM_PROPS_UTILS::ReadInt( aProps, "TEXTCOLOR", 0x80 ); // Altium's dark red
 }
 
 

@@ -644,6 +644,9 @@ struct ASCH_SHEET_ENTRY : ASCH_OWNER_INTERFACE
     wxString name;
     wxString harnessType;
 
+    int fontId;
+    int textColor;
+
     explicit ASCH_SHEET_ENTRY( const std::map<wxString, wxString>& aProps );
 };
 

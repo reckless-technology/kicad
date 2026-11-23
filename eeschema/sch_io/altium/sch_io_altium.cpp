@@ -5022,6 +5022,8 @@ void SCH_IO_ALTIUM::ParseSheetEntry( const std::map<wxString, wxString>& aProper
 
     sheetPin->SetText( pinName );
     sheetPin->SetShape( LABEL_FLAG_SHAPE::L_UNSPECIFIED );
+    SetTextFont( sheetPin, elem.fontId );
+    sheetPin->SetTextColor( GetColorFromInt( elem.textColor ) );
     //sheetPin->SetSpinStyle( getSpinStyle( term.OrientAngle, false ) );
     //sheetPin->SetPosition( getKiCadPoint( term.Position ) );
 
