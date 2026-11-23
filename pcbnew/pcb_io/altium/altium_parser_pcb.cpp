@@ -651,6 +651,32 @@ ABOARD6::ABOARD6( ALTIUM_BINARY_PARSER& aReader )
 
     altium_parse_polygons( props, board_vertices, &discardedVertices );
 
+    // The layer cache of newer files says how far each internal plane stops short of the edge
+    for( int ii = 1; ii < 1000; ii++ )
+    {
+        const wxString cache = wxString::Format( wxT( "V9_CACHE_LAYER%d_" ), ii );
+
+        if( !props.contains( cache + wxT( "LAYERID" ) ) )
+            break;
+
+        if( !props.contains( cache + wxT( "PULLBACKDISTANCE" ) ) )
+            continue;
+
+        // V7 numbers the internal planes from 0x01010001
+        const int v7PlaneBase = 0x01010000;
+        const int layerId = ALTIUM_PROPS_UTILS::ReadInt( props, cache + wxT( "LAYERID" ), 0 );
+        const int plane = layerId - v7PlaneBase;
+
+        if( plane >= 1 && plane <= 16 )
+        {
+            ALTIUM_LAYER layer = static_cast<ALTIUM_LAYER>(
+                    static_cast<int>( ALTIUM_LAYER::INTERNAL_PLANE_1 ) + plane - 1 );
+
+            planePullbacks[layer] = ALTIUM_PROPS_UTILS::ReadKicadUnit(
+                    props, cache + wxT( "PULLBACKDISTANCE" ), wxT( "20mil" ) );
+        }
+    }
+
     if( aReader.HasParsingError() )
         THROW_IO_ERROR( wxT( "Board6 stream was not parsed correctly!" ) );
 }
