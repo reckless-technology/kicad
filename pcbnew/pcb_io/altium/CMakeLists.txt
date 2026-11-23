@@ -2,6 +2,7 @@
 # Sources for the pcbnew PLUGIN called ALTIUM_DESIGNER_PLUGIN, ALTIUM_CIRCUIT_STUDIO_PLUGIN and ALTIUM_CIRCUIT_MAKER_PLUGIN
 
 set( ALTIUM2PCBNEW_SRCS
+    altium_design_rules.cpp
     altium_parser_pcb.cpp
     altium_pcb.cpp
     altium_pcb_compound_file.cpp

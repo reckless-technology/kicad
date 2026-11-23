@@ -110,7 +110,9 @@ void PCB_IO_SOLIDWORKS::loadBoard( const wxString& aFileName, BOARD& aBoard, boo
     };
     // clang-format on
 
-    LoadAltiumBoard( aFileName, m_board, mapping, m_props, aProject,
-                     m_progressReporter, m_layer_mapping_handler, m_reporter,
-                     m_zonesToFill );
+    wxString designRules = LoadAltiumBoard( aFileName, m_board, mapping, m_props, aProject, m_progressReporter,
+                                            m_layer_mapping_handler, m_reporter, m_zonesToFill, aIsNewLoad );
+
+    // Appending to a board keeps that board's own rules
+    m_importedDesignRules = aIsNewLoad ? designRules : wxString();
 }

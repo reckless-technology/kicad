@@ -43,11 +43,20 @@ void ApplyAltiumProjectVariantsToBoard( BOARD* aBoard,
                                         const std::vector<ALTIUM_PROJECT_VARIANT>& aVariants );
 
 
-void LoadAltiumBoard( const wxString& aFileName, BOARD* aBoard,
-                      const std::map<ALTIUM_PCB_DIR, std::string>& aMapping,
-                      const std::map<std::string, UTF8>* aProperties, PROJECT* aProject,
-                      PROGRESS_REPORTER* aProgressReporter, LAYER_MAPPING_HANDLER& aLayerMappingHandler,
-                      REPORTER* aReporter, std::vector<ZONE*>& aZonesToFill );
+/**
+ * Load an Altium board file of any of the Altium flavours into @p aBoard.
+ *
+ * On a new load the component classes the translated rules test for are added to the project's
+ * component class assignments, where KiCad keeps them.
+ *
+ * @return the board's design rules translated into a KiCad custom rules file, or an empty string
+ *         when it has none KiCad can express.
+ */
+wxString LoadAltiumBoard( const wxString& aFileName, BOARD* aBoard,
+                          const std::map<ALTIUM_PCB_DIR, std::string>& aMapping,
+                          const std::map<std::string, UTF8>* aProperties, PROJECT* aProject,
+                          PROGRESS_REPORTER* aProgressReporter, LAYER_MAPPING_HANDLER& aLayerMappingHandler,
+                          REPORTER* aReporter, std::vector<ZONE*>& aZonesToFill, bool aIsNewLoad = true );
 
 
 class PCB_IO_ALTIUM_DESIGNER : public PCB_IO, public LAYER_MAPPABLE_PLUGIN
@@ -101,9 +110,13 @@ public:
     static std::map<wxString, PCB_LAYER_ID> DefaultLayerMappingCallback(
             const std::vector<INPUT_LAYER_DESC>& aInputLayerDescriptionVector );
 
+    wxString GetImportedDesignRules() const override { return m_importedDesignRules; }
+
 protected:
     void loadBoard( const wxString& aFileName, BOARD& aBoard, bool aIsNewLoad,
                     const std::map<std::string, UTF8>* aProperties, PROJECT* aProject = nullptr ) override;
+
+    wxString m_importedDesignRules; ///< the most recent board's Altium rules, as KiCad rules
 
 private:
     struct ALTIUM_FILE_CACHE

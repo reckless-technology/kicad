@@ -51,9 +51,13 @@ public:
     PCB_IO_ALTIUM_CIRCUIT_MAKER();
     ~PCB_IO_ALTIUM_CIRCUIT_MAKER();
 
+    wxString GetImportedDesignRules() const override { return m_importedDesignRules; }
+
 protected:
     void loadBoard( const wxString& aFileName, BOARD& aBoard, bool aIsNewLoad,
                     const std::map<std::string, UTF8>* aProperties, PROJECT* aProject = nullptr ) override;
+
+    wxString m_importedDesignRules; ///< the most recent board's Altium rules, as KiCad rules
 };
 
 #endif // PCB_IO_ALTIUM_CIRCUIT_MAKER_H_
