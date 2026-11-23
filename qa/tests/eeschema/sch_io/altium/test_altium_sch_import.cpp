@@ -31,6 +31,8 @@
 #include <project.h>
 #include <project/net_settings.h>
 #include <project/project_file.h>
+#include <lib_symbol.h>
+#include <sch_pin.h>
 #include <sch_shape.h>
 #include <sch_text.h>
 #include <schematic.h>
@@ -119,6 +121,13 @@ struct ALTIUM_SCH_IMPORT_FIXTURE
     {
         return wxString::FromUTF8( KI_TEST::GetEeschemaTestDataDir()
                                    + "/plugins/altium/text_placement/" )
+               + aName;
+    }
+
+    wxString pinTextDataFile( const wxString& aName ) const
+    {
+        return wxString::FromUTF8( KI_TEST::GetEeschemaTestDataDir()
+                                   + "/plugins/altium/pin_text/" )
                + aName;
     }
 
@@ -1035,6 +1044,58 @@ BOOST_AUTO_TEST_CASE( AltiumTextPlacement )
     BOOST_CHECK( reference->GetDrawRotation() == ANGLE_HORIZONTAL );
     BOOST_CHECK_EQUAL( reference->GetEffectiveHorizJustify(), GR_TEXT_H_ALIGN_LEFT );
     BOOST_CHECK_EQUAL( reference->GetEffectiveVertJustify(), GR_TEXT_V_ALIGN_CENTER );
+}
+
+
+// Altium draws pin names and numbers in the sheet's system font, here font 2, 12 point Arial, and
+// a pin name 70 mil inside the body's edge. A pin whose name and number Altium hides keeps them
+// hidden.
+BOOST_AUTO_TEST_CASE( AltiumPinText )
+{
+    SCH_IO_ALTIUM plugin;
+
+    SCH_SHEET* rootSheet = plugin.LoadSchematicFile( pinTextDataFile( wxT( "pin_text.SchDoc" ) ), &m_schematic );
+    BOOST_REQUIRE( rootSheet );
+
+    std::vector<SCH_SYMBOL*> symbols;
+
+    for( SCH_ITEM* item : rootSheet->GetScreen()->Items().OfType( SCH_SYMBOL_T ) )
+        symbols.push_back( static_cast<SCH_SYMBOL*>( item ) );
+
+    BOOST_REQUIRE_EQUAL( symbols.size(), 1 );
+
+    LIB_SYMBOL* libSymbol = symbols.front()->GetLibSymbolRef().get();
+    BOOST_REQUIRE( libSymbol );
+    BOOST_CHECK_EQUAL( libSymbol->GetPinNameOffset(), schIUScale.MilsToIU( 70 ) );
+
+    int size = schIUScale.MilsToIU( 120 ) / 2;
+    KIFONT::FONT* font = KIFONT::FONT::GetFont( wxT( "Arial" ), false, false );
+
+    if( font && font->IsOutline() )
+        size = KiROUND( static_cast<KIFONT::OUTLINE_FONT*>( font )->GetTextSizeForAscentPlusDescent( schIUScale.MilsToIU( 120 ) ) );
+
+    int pins = 0;
+
+    for( SCH_PIN* pin : libSymbol->GetGraphicalPins( 0, 0 ) )
+    {
+        BOOST_TEST_CONTEXT( pin->GetNumber() )
+        {
+            if( pin->GetNumber() == wxT( "3" ) )
+            {
+                BOOST_CHECK_EQUAL( pin->GetNameTextSize(), 0 );
+                BOOST_CHECK_EQUAL( pin->GetNumberTextSize(), 0 );
+            }
+            else
+            {
+                BOOST_CHECK_EQUAL( pin->GetNameTextSize(), size );
+                BOOST_CHECK_EQUAL( pin->GetNumberTextSize(), size );
+            }
+        }
+
+        pins++;
+    }
+
+    BOOST_CHECK_EQUAL( pins, 3 );
 }
 
 
