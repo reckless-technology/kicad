@@ -291,7 +291,7 @@ ASCH_OWNER_INTERFACE::ASCH_OWNER_INTERFACE( const std::map<wxString, wxString>& 
 
 ASCH_FILL_INTERFACE::ASCH_FILL_INTERFACE( const std::map<wxString, wxString>& aProps )
 {
-    AreaColor = ALTIUM_PROPS_UTILS::ReadInt( aProps, "AREACOLOR", 0 );
+    AreaColor = ALTIUM_PROPS_UTILS::ReadInt( aProps, "AREACOLOR", 0xFFFFFF ); // Altium's white
     IsSolid   = ALTIUM_PROPS_UTILS::ReadBool( aProps, "ISSOLID", false );
     IsTransparent = ALTIUM_PROPS_UTILS::ReadBool( aProps, "TRANSPARENT", false );
 }
@@ -299,14 +299,14 @@ ASCH_FILL_INTERFACE::ASCH_FILL_INTERFACE( const std::map<wxString, wxString>& aP
 
 ASCH_BORDER_INTERFACE::ASCH_BORDER_INTERFACE( const std::map<wxString, wxString>& aProps )
 {
-    LineWidth = ReadKiCadUnitFrac( aProps, "LINEWIDTH" );
+    // Altium's line widths are a choice of four, Smallest, Small, Medium and Large, not a length.
+    // Smallest is a hairline; KiCad has none, so it is drawn 1 mil wide.
+    static const int widthsMils[4] = { 1, 10, 30, 50 };
+    int              width = ALTIUM_PROPS_UTILS::ReadInt( aProps, "LINEWIDTH", 0 );
 
-    // Altium line width 0 means hairline.  Since KiCad doesn't have a hairline, we
-    // represent it as a 1 mil line.
-    if( LineWidth == 0 )
-        LineWidth = schIUScale.MilsToIU( 1 );
+    LineWidth = schIUScale.MilsToIU( widthsMils[std::clamp( width, 0, 3 )] );
 
-    Color = ALTIUM_PROPS_UTILS::ReadInt( aProps, "COLOR", 0 );
+    Color = ALTIUM_PROPS_UTILS::ReadInt( aProps, "COLOR", 0xFF0000 ); // Altium's blue
 }
 
 
