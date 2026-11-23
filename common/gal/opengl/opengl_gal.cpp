@@ -3532,7 +3532,7 @@ void CALLBACK VertexCallback( GLvoid* aVertexPtr, void* aData )
 }
 
 
-void CALLBACK CombineCallback( GLdouble coords[3], GLdouble* vertex_data[4], GLfloat weight[4],
+void CALLBACK CombineCallback( GLdouble coords[3], GLdouble* vertex_data [[maybe_unused]][4], GLfloat weight [[maybe_unused]][4],
                                GLdouble** dataOut, void* aData )
 {
     GLdouble*               vertex = new GLdouble[3];

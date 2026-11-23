@@ -317,7 +317,7 @@ public:
      */
     virtual void DrawPolyline( const std::deque<VECTOR2D>& aPointList [[maybe_unused]] ) {};
     virtual void DrawPolyline( const std::vector<VECTOR2D>& aPointList [[maybe_unused]] ) {};
-    virtual void DrawPolyline( const VECTOR2D aPointList[], int aListSize [[maybe_unused]] ) {};
+    virtual void DrawPolyline( const VECTOR2D aPointList [[maybe_unused]][], int aListSize [[maybe_unused]] ) {};
     virtual void DrawPolyline( const SHAPE_LINE_CHAIN& aLineChain [[maybe_unused]] ) {};
 
     /**
@@ -455,7 +455,7 @@ public:
      * @param aPointList is the list of the polygon points.
      */
     virtual void DrawPolygon( const std::deque<VECTOR2D>& aPointList [[maybe_unused]] ) {};
-    virtual void DrawPolygon( const VECTOR2D aPointList[], int aListSize [[maybe_unused]] ) {};
+    virtual void DrawPolygon( const VECTOR2D aPointList [[maybe_unused]][], int aListSize [[maybe_unused]] ) {};
     virtual void DrawPolygon( const SHAPE_POLY_SET& aPolySet [[maybe_unused]],
                               bool aStrokeTriangulation [[maybe_unused]] = false ) {};
     virtual void DrawPolygon( const SHAPE_LINE_CHAIN& aPolySet [[maybe_unused]] ) {};
