@@ -76,10 +76,12 @@
 #include <wx/dir.h>
 #include <wx/mstream.h>
 #include <wx/zstream.h>
+#include <wx/ffile.h>
 #include <wx/wfstream.h>
 #include <magic_enum.hpp>
 #include "sch_io_altium.h"
 #include <import_proj_properties.h>
+#include "altium_protel2_schlib.h"
 
 
 // Harness port object itself does not contain color information about itself
@@ -309,7 +311,7 @@ bool SCH_IO_ALTIUM::CanReadLibrary( const wxString& aFileName ) const
     if( !SCH_IO::CanReadLibrary( aFileName ) )
         return false;
 
-    return checkFileHeader( aFileName );
+    return checkFileHeader( aFileName ) || ALTIUM_PROTEL2_SCHLIB::IsProtel2SchLib( aFileName );
 }
 
 
@@ -7578,6 +7580,91 @@ SCH_IO_ALTIUM::ParseLibFile( const ALTIUM_COMPOUND_FILE& aAltiumLibFile )
 }
 
 
+LIB_SYMBOL* SCH_IO_ALTIUM::ParseLibRecords( const wxString&                                  aName,
+                                            const std::vector<std::map<wxString, wxString>>& aRecords,
+                                            std::vector<int>&                                aFontSizes )
+{
+    std::vector<LIB_SYMBOL*> symbols = ParseLibComponent( aRecords.at( 0 ) );
+
+    for( size_t i = 1; i < aRecords.size(); i++ )
+    {
+        const std::map<wxString, wxString>& properties = aRecords[i];
+        int                                 recordId = ALTIUM_PROPS_UTILS::ReadInt( properties, "RECORD", 0 );
+
+        switch( static_cast<ALTIUM_SCH_RECORD>( recordId ) )
+        {
+        case ALTIUM_SCH_RECORD::PIN: ParsePin( properties, symbols ); break;
+        case ALTIUM_SCH_RECORD::POLYLINE: ParsePolyline( properties, symbols ); break;
+        case ALTIUM_SCH_RECORD::POLYGON: ParsePolygon( properties, symbols ); break;
+        case ALTIUM_SCH_RECORD::ELLIPSE: ParseEllipse( properties, symbols ); break;
+        case ALTIUM_SCH_RECORD::ARC: ParseArc( properties, symbols ); break;
+        case ALTIUM_SCH_RECORD::ELLIPTICAL_ARC: ParseEllipticalArc( properties, symbols ); break;
+        case ALTIUM_SCH_RECORD::LINE: ParseLine( properties, symbols ); break;
+        case ALTIUM_SCH_RECORD::RECTANGLE: ParseRectangle( properties, symbols ); break;
+        case ALTIUM_SCH_RECORD::DESIGNATOR: ParseLibDesignator( properties, symbols, aFontSizes ); break;
+        case ALTIUM_SCH_RECORD::PARAMETER: ParseLibParameter( properties, symbols, aFontSizes ); break;
+        case ALTIUM_SCH_RECORD::IMPLEMENTATION: ParseImplementation( properties, symbols ); break;
+
+        default:
+            m_errorMessages.emplace(
+                    wxString::Format( _( "Unknown or unexpected record id %d found in %s." ), recordId, aName ),
+                    RPT_SEVERITY_ERROR );
+            break;
+        }
+    }
+
+    LIB_SYMBOL* symbol = symbols[0];
+    symbol->FixupDrawItems();
+    fixupSymbolPinNameNumbers( symbol );
+
+    SCH_FIELD& valField = symbol->GetValueField();
+
+    if( valField.GetText().IsEmpty() )
+        valField.SetText( aName );
+
+    symbol->SetName( aName );
+    return symbol;
+}
+
+
+CASE_INSENSITIVE_MAP<LIB_SYMBOL*> SCH_IO_ALTIUM::ParseProtel2LibFile( const wxString& aLibraryPath )
+{
+    wxFFile file( aLibraryPath, wxT( "rb" ) );
+
+    if( !file.IsOpened() )
+        THROW_IO_ERROR( wxString::Format( _( "Cannot open '%s'." ), aLibraryPath ) );
+
+    std::vector<uint8_t> data( file.Length() );
+
+    if( !data.empty() && file.Read( data.data(), data.size() ) != data.size() )
+        THROW_IO_ERROR( wxString::Format( _( "Cannot read '%s'." ), aLibraryPath ) );
+
+    ALTIUM_PROTEL2_SCHLIB             library( data );
+    CASE_INSENSITIVE_MAP<LIB_SYMBOL*> ret;
+    std::vector<int>                  fontSizes;
+
+    for( const ALTIUM_PROTEL2_SYMBOL& entry : library.GetSymbols() )
+    {
+        if( m_reporter )
+        {
+            m_reporter->Report( wxString::Format( _( "Converting symbol '%s'" ), entry.m_Name ), RPT_SEVERITY_ACTION );
+        }
+
+        ret[entry.m_Name] = ParseLibRecords( entry.m_Name, entry.m_Records, fontSizes );
+    }
+
+    if( m_reporter )
+    {
+        for( const auto& [msg, severity] : m_errorMessages )
+            m_reporter->Report( msg, severity );
+    }
+
+    m_errorMessages.clear();
+
+    return ret;
+}
+
+
 long long SCH_IO_ALTIUM::getLibraryTimestamp( const wxString& aLibraryPath ) const
 {
     wxFileName fn( aLibraryPath );
@@ -7610,6 +7697,22 @@ void SCH_IO_ALTIUM::ensureLoadedLibrary( const wxString& aLibraryPath,
 
     try
     {
+        if( ALTIUM_PROTEL2_SCHLIB::IsProtel2SchLib( aLibraryPath ) )
+        {
+            // The format before Altium's compound files
+            m_isIntLib = false;
+
+            CASE_INSENSITIVE_MAP<LIB_SYMBOL*> parsed = ParseProtel2LibFile( aLibraryPath );
+
+            // a library that changed on disk replaces the symbols read before
+            for( auto& [name, symbol] : m_libCache[aLibraryPath] )
+                delete symbol;
+
+            m_libCache[aLibraryPath] = std::move( parsed );
+            m_timestamps[aLibraryPath] = getLibraryTimestamp( aLibraryPath );
+            return;
+        }
+
         if( aLibraryPath.Lower().EndsWith( wxS( ".schlib" ) ) )
         {
             m_isIntLib = false;
