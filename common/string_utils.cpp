@@ -1617,6 +1617,11 @@ std::string FormatDouble2Str( double aValue )
         buf = fmt::format( "{:.10g}", aValue );
     }
 
+    // A negative zero, or a negative value too small to show, is zero: a file that says "-0" differs from
+    // one that says "0" when nothing it describes does
+    if( buf == "-0" )
+        buf = "0";
+
     return buf;
 }
 
