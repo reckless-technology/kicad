@@ -61,6 +61,10 @@
 #include <font/font.h>
 #include <font/fontconfig.h>
 #include <font/outline_font.h>
+#include <bitmap_base.h>
+#include <drawing_sheet/ds_data_item.h>
+#include <drawing_sheet/ds_data_model.h>
+#include <embedded_files.h>
 #include <reporter.h>
 #include <geometry/ellipse.h>
 #include <geometry/shape_utils.h>
@@ -552,6 +556,8 @@ SCH_SHEET* SCH_IO_ALTIUM::LoadSchematicFile( const wxString& aFileName, SCHEMATI
     // Importer may be reused so reset per-import state or freed pointers leak into the new hierarchy
     m_parsingFiles.clear();
     m_loadedScreens.clear();
+    m_drawingSheets.clear();
+    m_sheetParameters.clear();
     m_missingScreens.clear();
     m_projectDocuments.clear();
     m_sheetFiles.clear();
@@ -717,10 +723,11 @@ SCH_SHEET* SCH_IO_ALTIUM::LoadSchematicFile( const wxString& aFileName, SCHEMATI
 
     m_errorMessages.clear();
 
+    std::map<wxString, wxString> projectParameters;
+
     if( aProperties && aProperties->count( "project_file" ) )
     {
-        std::map<wxString, wxString> projectParameters =
-                ParseAltiumProjectParameters( aProperties->at( "project_file" ) );
+        projectParameters = ParseAltiumProjectParameters( aProperties->at( "project_file" ) );
 
         ApplyAltiumProjectParametersToProject( &m_schematic->Project(), projectParameters );
 
@@ -751,6 +758,11 @@ SCH_SHEET* SCH_IO_ALTIUM::LoadSchematicFile( const wxString& aFileName, SCHEMATI
             }
         }
     }
+
+    FillTitleBlocks( projectParameters );
+
+    if( !aAppendToMe )
+        EmbedDrawingSheet();
 
     // anything still undefined has no value, which Altium shows as nothing, and a sheet parameter that
     // Altium leaves as "*" is undefined unless the project gives it a value
@@ -2217,6 +2229,7 @@ void SCH_IO_ALTIUM::ParseAltiumSch( const wxString& aFileName )
 
     FinishParameterSets();
     AddAutomaticJunctions();
+    FinishDrawingSheet();
 
     SCH_SCREEN* currentScreen = getCurrentScreen();
     wxCHECK( currentScreen, /* void */ );
@@ -2797,6 +2810,10 @@ void SCH_IO_ALTIUM::ParseRecord( int index, std::map<wxString, wxString>& proper
     int               recordId = ALTIUM_PROPS_UTILS::ReadInt( properties, "RECORD", -1 );
     ALTIUM_SCH_RECORD record   = static_cast<ALTIUM_SCH_RECORD>( recordId );
 
+    // The sheet's template is drawn by its drawing sheet
+    if( AddTemplateRecord( record, properties ) )
+        return;
+
     // see: https://github.com/vadmium/python-altium/blob/master/format.md
     switch( record )
     {
@@ -3169,6 +3186,9 @@ void SCH_IO_ALTIUM::ParseTemplate( int aIndex, const std::map<wxString, wxString
         baseName = wxS( "Template" );
 
     m_altiumTemplates.insert( { aIndex, altiumTemplate } );
+
+    if( m_drawingSheetTemplate.IsEmpty() )
+        m_drawingSheetTemplate = altiumTemplate.filename;
     // No need to create a symbol - graphics is put on the sheet
 }
 
@@ -6070,6 +6090,484 @@ void SCH_IO_ALTIUM::FinishParameterSets()
 }
 
 
+// Altium's special strings as the drawing sheet's text variables. A sheet's own values go in its
+// title block: its title, revision, date and company fields, and its comments for the rest
+static const std::map<wxString, wxString> drawingSheetVariables = {
+    { "TITLE",                   "TITLE"               },
+    { "REVISION",                "REVISION"            },
+    { "DATE",                    "ISSUE_DATE"          },
+    { "CURRENTDATE",             "ISSUE_DATE"          },  // the document's date, not today's
+    { "CURRENTTIME",             "CURRENT_TIME_LOCALE" },
+    { "ORGANIZATION",            "COMPANY"             },
+    { "COMPANYNAME",             "COMPANY"             },
+    { "DOCUMENTNUMBER",          "COMMENT1"            },
+    { "ADDRESS1",                "COMMENT2"            },
+    { "ADDRESS2",                "COMMENT3"            },
+    { "ADDRESS3",                "COMMENT4"            },
+    { "ADDRESS4",                "COMMENT5"            },
+    { "AUTHOR",                  "COMMENT6"            },
+    { "DRAWNBY",                 "COMMENT6"            },
+    { "CHECKEDBY",               "COMMENT7"            },
+    { "APPROVEDBY",              "COMMENT8"            },
+    { "ENGINEER",                "COMMENT9"            },
+    { "SHEETNUMBER",             "#"                   },
+    { "SHEETTOTAL",              "##"                  },
+    { "DOCUMENTNAME",            "FILENAME"            },
+    { "DOCUMENTFULLPATHANDNAME", "FILEPATH"            },
+    { "PROJECTNAME",             "PROJECTNAME"         },
+};
+
+
+// The title block field each parameter fills, in order of precedence: 0 the title, -1 the
+// revision, -2 the company, and 1 to 9 a comment
+static const std::vector<std::pair<wxString, int>> titleBlockSlots = {
+    { "TITLE", 0 },       { "REVISION", -1 },   { "ORGANIZATION", -2 }, { "DOCUMENTNUMBER", 1 },
+    { "ADDRESS1", 2 },    { "ADDRESS2", 3 },    { "ADDRESS3", 4 },      { "ADDRESS4", 5 },
+    { "AUTHOR", 6 },      { "DRAWNBY", 6 },     { "CHECKEDBY", 7 },     { "APPROVEDBY", 8 },
+    { "ENGINEER", 9 },
+};
+
+
+// Altium's line widths (smallest, small, medium and large) in mm
+static double altiumLineWidthMM( const std::map<wxString, wxString>& aProperties )
+{
+    static const double widths[] = { 0.0254, 0.254, 0.762, 1.27 };
+
+    return widths[std::clamp( ALTIUM_PROPS_UTILS::ReadInt( aProperties, "LINEWIDTH", 0 ), 0, 3 )];
+}
+
+
+void SCH_IO_ALTIUM::StartDrawingSheet()
+{
+    m_drawingSheet = std::make_unique<DS_DATA_MODEL>();
+    m_drawingSheet->SetGenerator( wxS( "altium_import" ) );
+    m_drawingSheetTemplate.clear();
+
+    // Everything is placed from the page's top left corner, where the drawing sheet's origin is
+    m_drawingSheet->SetLeftMargin( 0 );
+    m_drawingSheet->SetRightMargin( 0 );
+    m_drawingSheet->SetTopMargin( 0 );
+    m_drawingSheet->SetBottomMargin( 0 );
+
+    if( !m_altiumSheet || !m_altiumSheet->borderOn )
+        return;
+
+    SCH_SCREEN* screen = getCurrentScreen();
+    wxCHECK( screen, /* void */ );
+
+    // The sheet in Altium's units of 10 mil, its y upwards from the bottom
+    const PAGE_INFO& page = screen->GetPageSettings();
+    const double     width = page.GetWidthMils() / 10.0;
+    const double     height = page.GetHeightMils() / 10.0;
+    const double     flipHeight = schIUScale.IUTomm( m_sheetOffset.y );
+    const double     unit = 0.254;
+
+    int    columns = m_altiumSheet->customXZones;
+    int    rows = m_altiumSheet->customYZones;
+    double margin = m_altiumSheet->customMarginWidth;
+
+    if( !m_altiumSheet->useCustomSheet )
+    {
+        // Zones of Altium's standard sheets, by style (columns, rows)
+        static const std::pair<int, int> standardZones[] = {
+            { 6, 4 },   { 8, 4 },   { 12, 8 },  { 16, 8 },  { 24, 16 }, { 6, 4 },
+            { 8, 4 },   { 12, 8 },  { 16, 8 },  { 24, 16 }, { 24, 16 }, { 8, 4 },
+            { 8, 4 },   { 6, 4 },   { 8, 4 },   { 12, 8 },  { 16, 8 },  { 24, 16 },
+        };
+
+        int style = std::clamp( static_cast<int>( m_altiumSheet->sheetSize ), 0, 17 );
+        std::tie( columns, rows ) = standardZones[style];
+
+        if( m_altiumSheet->sheetOrientation == ASCH_SHEET_WORKSPACEORIENTATION::PORTRAIT )
+            std::swap( columns, rows );
+
+        margin = 20;
+    }
+
+    auto addItem = [&]( DS_DATA_ITEM::DS_ITEM_TYPE aType, double aX1, double aY1, double aX2,
+                        double aY2, double aLineWidth )
+    {
+        DS_DATA_ITEM* item = new DS_DATA_ITEM( aType );
+        item->SetStart( aX1 * unit, flipHeight - aY1 * unit, LT_CORNER );
+        item->SetEnd( aX2 * unit, flipHeight - aY2 * unit, LT_CORNER );
+        item->m_LineWidth = aLineWidth;
+        m_drawingSheet->Append( item );
+    };
+
+    auto addZoneText = [&]( const wxString& aText, double aX, double aY )
+    {
+        VECTOR2I anchor( schIUScale.mmToIU( aX * unit ), schIUScale.mmToIU( flipHeight - aY * unit ) );
+
+        AddDrawingSheetText( aText, anchor, m_altiumSheet->systemFontId,
+                             ASCH_LABEL_JUSTIFICATION::CENTER_CENTER,
+                             ASCH_RECORD_ORIENTATION::RIGHTWARDS, 0 );
+    };
+
+    addItem( DS_DATA_ITEM::DS_RECT, 0, 0, width, height, 0.042 );
+    addItem( DS_DATA_ITEM::DS_RECT, margin, margin, width - margin, height - margin, 0.042 );
+
+    for( int k = 0; k < columns; k++ )
+    {
+        double x0 = k * width / columns;
+        double x1 = ( k + 1 ) * width / columns;
+
+        if( k )
+        {
+            addItem( DS_DATA_ITEM::DS_SEGMENT, x0, height, x0, height - margin, 0.025 );
+            addItem( DS_DATA_ITEM::DS_SEGMENT, x0, 0, x0, margin, 0.025 );
+        }
+
+        for( double y : { height - margin / 2, margin / 2 } )
+            addZoneText( wxString::Format( wxS( "%d" ), k + 1 ), ( x0 + x1 ) / 2, y );
+    }
+
+    for( int k = 0; k < rows; k++ )
+    {
+        double y0 = height - k * height / rows;
+        double y1 = height - ( k + 1 ) * height / rows;
+
+        if( k )
+        {
+            addItem( DS_DATA_ITEM::DS_SEGMENT, 0, y0, margin, y0, 0.025 );
+            addItem( DS_DATA_ITEM::DS_SEGMENT, width, y0, width - margin, y0, 0.025 );
+        }
+
+        wxString label = k < 26 ? wxString( wxUniChar( 'A' + k ) ) : wxString::Format( wxS( "%d" ), k + 1 );
+
+        for( double x : { margin / 2, width - margin / 2 } )
+            addZoneText( label, x, ( y0 + y1 ) / 2 );
+    }
+}
+
+
+void SCH_IO_ALTIUM::AddDrawingSheetText( const wxString& aText, const VECTOR2I& aAnchor, int aFontId,
+                                         ASCH_LABEL_JUSTIFICATION aJustification,
+                                         ASCH_RECORD_ORIENTATION aOrientation, int aColor )
+{
+    SCH_TEXT text( aAnchor, aText );
+    SetTextFont( &text, aFontId );
+
+    VECTOR2I position = aAnchor;
+    AltiumTextPosition( TEXT_KIND::SHEET_FIELD, aAnchor, aFontId, aJustification, aOrientation, position );
+
+    // KiCad never draws text upside down: Altium's 180 and 270 degree text is drawn upright in
+    // the same cell, anchored on the opposite side
+    int  justification = std::max( 0, static_cast<int>( aJustification ) );
+    int  horizontal = justification % 3;
+    int  vertical = std::min( justification / 3, 2 );
+    bool upsideDown = aOrientation == ASCH_RECORD_ORIENTATION::LEFTWARDS
+                      || aOrientation == ASCH_RECORD_ORIENTATION::DOWNWARDS;
+    bool upwards = aOrientation == ASCH_RECORD_ORIENTATION::UPWARDS
+                   || aOrientation == ASCH_RECORD_ORIENTATION::DOWNWARDS;
+
+    if( upsideDown )
+    {
+        horizontal = 2 - horizontal;
+        vertical = 2 - vertical;
+    }
+
+    static const GR_TEXT_H_ALIGN_T hAligns[] = { GR_TEXT_H_ALIGN_LEFT, GR_TEXT_H_ALIGN_CENTER,
+                                                 GR_TEXT_H_ALIGN_RIGHT };
+    static const GR_TEXT_V_ALIGN_T vAligns[] = { GR_TEXT_V_ALIGN_BOTTOM, GR_TEXT_V_ALIGN_CENTER,
+                                                 GR_TEXT_V_ALIGN_TOP };
+
+    DS_DATA_ITEM_TEXT* item = new DS_DATA_ITEM_TEXT( aText );
+    item->SetStart( schIUScale.IUTomm( position.x ), schIUScale.IUTomm( position.y ), LT_CORNER );
+    item->m_Hjustify = hAligns[horizontal];
+    item->m_Vjustify = vAligns[vertical];
+    item->m_Orient = upwards ? 90.0 : 0.0;
+    item->m_Font = text.GetFont();
+    item->m_TextSize = VECTOR2D( schIUScale.IUTomm( text.GetTextWidth() ),
+                                 schIUScale.IUTomm( text.GetTextHeight() ) );
+    item->m_Bold = text.IsBold();
+    item->m_Italic = text.IsItalic();
+    item->m_TextColor = GetColorFromInt( aColor );
+    m_drawingSheet->Append( item );
+}
+
+
+bool SCH_IO_ALTIUM::AddTemplateRecord( ALTIUM_SCH_RECORD aRecord,
+                                       const std::map<wxString, wxString>& aProperties )
+{
+    if( !m_drawingSheet )
+        return false;
+
+    int ownerIndex = ALTIUM_PROPS_UTILS::ReadInt( aProperties, "OWNERINDEX", ALTIUM_COMPONENT_NONE );
+
+    if( m_altiumTemplates.find( ownerIndex ) == m_altiumTemplates.end() )
+        return false;
+
+    const double unit = 1.0 / schIUScale.IU_PER_MM;   // mm per IU
+
+    auto addItem = [&]( DS_DATA_ITEM::DS_ITEM_TYPE aType, const VECTOR2I& aStart, const VECTOR2I& aEnd )
+    {
+        VECTOR2I start = aStart + m_sheetOffset;
+        VECTOR2I end = aEnd + m_sheetOffset;
+
+        DS_DATA_ITEM* item = new DS_DATA_ITEM( aType );
+        item->SetStart( start.x * unit, start.y * unit, LT_CORNER );
+        item->SetEnd( end.x * unit, end.y * unit, LT_CORNER );
+        item->m_LineWidth = altiumLineWidthMM( aProperties );
+        m_drawingSheet->Append( item );
+    };
+
+    switch( aRecord )
+    {
+    case ALTIUM_SCH_RECORD::LABEL:
+    {
+        ASCH_LABEL elem( aProperties );
+
+        if( elem.text.IsEmpty() )
+            return true;
+
+        std::set<wxString> unmapped;
+        wxString text = AltiumSchSpecialStringsToKiCadVariables( elem.text, drawingSheetVariables, &unmapped );
+
+        // a name outside the map is Altium's own, KiCad cannot resolve it
+        m_sheetSpecialStrings.insert( unmapped.begin(), unmapped.end() );
+
+        AddDrawingSheetText( text, elem.location + m_sheetOffset, elem.fontId, elem.justification,
+                             elem.orientation, ALTIUM_PROPS_UTILS::ReadInt( aProperties, "COLOR", 0 ) );
+        return true;
+    }
+
+    case ALTIUM_SCH_RECORD::POLYLINE:
+    {
+        ASCH_POLYLINE elem( aProperties );
+
+        for( size_t i = 1; i < elem.Points.size(); i++ )
+            addItem( DS_DATA_ITEM::DS_SEGMENT, elem.Points[i - 1], elem.Points[i] );
+
+        return true;
+    }
+
+    case ALTIUM_SCH_RECORD::LINE:
+    {
+        ASCH_LINE elem( aProperties );
+        addItem( DS_DATA_ITEM::DS_SEGMENT, elem.point1, elem.point2 );
+        return true;
+    }
+
+    case ALTIUM_SCH_RECORD::RECTANGLE:
+    {
+        ASCH_RECTANGLE elem( aProperties );
+        addItem( DS_DATA_ITEM::DS_RECT, elem.BottomLeft, elem.TopRight );
+        return true;
+    }
+
+    case ALTIUM_SCH_RECORD::IMAGE:
+    {
+        ASCH_IMAGE               elem( aProperties );
+        const ASCH_STORAGE_FILE* storageFile = elem.embedimage ? GetFileFromStorage( elem.filename ) : nullptr;
+
+        // A linked image is not in the file; leave it on the sheet, where it is reported
+        if( !storageFile )
+            return false;
+
+        wxMemoryInputStream  fileStream( storageFile->data.data(), storageFile->data.size() );
+        wxZlibInputStream    zlibInputStream( fileStream );
+        wxMemoryOutputStream decompressed;
+        decompressed.Write( zlibInputStream );
+
+        wxImage image;
+
+        {
+            wxLogNull           noLog;
+            wxMemoryInputStream imageStream( decompressed );
+
+            if( !image.LoadFile( imageStream ) )
+                return false;
+        }
+
+        // Store it as a PNG of 300 pixels per inch, scaled to Altium's frame
+        constexpr int ppi = 300;
+        image.SetOption( wxIMAGE_OPTION_RESOLUTIONUNIT, wxIMAGE_RESOLUTION_INCHES );
+        image.SetOption( wxIMAGE_OPTION_RESOLUTIONX, ppi );
+        image.SetOption( wxIMAGE_OPTION_RESOLUTIONY, ppi );
+
+        wxMemoryOutputStream png;
+
+        if( !image.SaveFile( png, wxBITMAP_TYPE_PNG ) )
+            return false;
+
+        wxMemoryBuffer buffer;
+        buffer.AppendData( png.GetOutputStreamBuffer()->GetBufferStart(), png.GetSize() );
+
+        auto bitmap = std::make_unique<BITMAP_BASE>();
+
+        if( !bitmap->ReadImageFile( buffer ) )
+            return false;
+
+        double widthMM = std::abs( elem.corner.x - elem.location.x ) * unit;
+        bitmap->SetScale( widthMM / ( image.GetWidth() * 25.4 / ppi ) );
+
+        VECTOR2I center = ( elem.location + elem.corner ) / 2 + m_sheetOffset;
+
+        DS_DATA_ITEM_BITMAP* item = new DS_DATA_ITEM_BITMAP( bitmap.release() );
+        item->SetStart( center.x * unit, center.y * unit, LT_CORNER );
+        m_drawingSheet->Append( item );
+        return true;
+    }
+
+    default:
+        return false;
+    }
+}
+
+
+void SCH_IO_ALTIUM::FinishDrawingSheet()
+{
+    if( !m_drawingSheet )
+        return;
+
+    std::unique_ptr<DS_DATA_MODEL> drawingSheet = std::move( m_drawingSheet );
+
+    if( drawingSheet->GetCount() == 0 )
+        return;
+
+    wxString content;
+    drawingSheet->SaveInString( &content );
+
+    // the drawing sheet items do not own their images
+    for( DS_DATA_ITEM* item : drawingSheet->GetItems() )
+    {
+        if( item->GetType() == DS_DATA_ITEM::DS_BITMAP )
+            delete static_cast<DS_DATA_ITEM_BITMAP*>( item )->m_ImageBitmap;
+    }
+
+    // Named after the sheet's template
+    wxString name;
+
+    if( !m_drawingSheetTemplate.IsEmpty() )
+    {
+        name = m_drawingSheetTemplate.AfterLast( '\\' ).AfterLast( '/' );
+
+        for( const char* extension : { ".schdot", ".dot", ".tmp" } )
+        {
+            if( name.Lower().EndsWith( extension ) )
+                name = name.Left( name.length() - strlen( extension ) );
+        }
+
+        // Protel's temporary name for a template it embedded
+        if( name.length() > 3 && name.StartsWith( wxS( "Pro" ) )
+            && name.Mid( 3 ).find_first_not_of( wxS( "0123456789ABCDEF" ) ) == wxString::npos )
+        {
+            name = wxS( "protel-" ) + name;
+        }
+    }
+
+    if( name.IsEmpty() )
+        name = wxS( "altium" );
+
+    for( size_t i = 0; i < name.length(); i++ )
+    {
+        wxUniChar c = name[i];
+
+        if( !wxIsalnum( c ) && c != '_' && c != '.' && c != '-' )
+            name[i] = '_';
+    }
+
+    DRAWING_SHEET_USE& use = m_drawingSheets[content];
+
+    if( use.sheets == 0 )
+    {
+        use.name = name + wxS( ".kicad_wks" );
+        use.order = static_cast<int>( m_drawingSheets.size() );
+    }
+
+    use.sheets++;
+}
+
+
+void SCH_IO_ALTIUM::EmbedDrawingSheet()
+{
+    if( m_drawingSheets.empty() )
+        return;
+
+    auto commonest = std::max_element( m_drawingSheets.begin(), m_drawingSheets.end(),
+                                       []( const auto& a, const auto& b )
+                                       {
+                                           if( a.second.sheets != b.second.sheets )
+                                               return a.second.sheets < b.second.sheets;
+
+                                           return a.second.order > b.second.order;
+                                       } );
+
+    const wxString& content = commonest->first;
+    const wxString& name = commonest->second.name;
+
+    if( m_drawingSheets.size() > 1 && m_reporter )
+    {
+        m_reporter->Report( wxString::Format( _( "The sheets use %zu different drawing sheets; a KiCad "
+                                                 "project has one, so all use '%s'." ),
+                                              m_drawingSheets.size(), name ),
+                            RPT_SEVERITY_WARNING );
+    }
+
+    auto     file = std::make_shared<EMBEDDED_FILES::EMBEDDED_FILE>();
+    wxScopedCharBuffer utf8 = content.utf8_str();
+
+    file->name = name;
+    file->type = EMBEDDED_FILES::EMBEDDED_FILE::FILE_TYPE::WORKSHEET;
+    file->decompressedData.assign( utf8.data(), utf8.data() + utf8.length() );
+
+    if( EMBEDDED_FILES::CompressAndEncode( *file ) != EMBEDDED_FILES::RETURN_CODE::OK )
+    {
+        m_errorMessages.emplace( _( "Could not embed the drawing sheet." ), RPT_SEVERITY_ERROR );
+        return;
+    }
+
+    file->is_valid = true;
+    m_schematic->GetEmbeddedFiles()->AddFile( file );
+    m_schematic->Settings().m_SchDrawingSheetFileName = file->GetLink();
+    m_drawingSheets.clear();
+}
+
+
+void SCH_IO_ALTIUM::FillTitleBlocks( const std::map<wxString, wxString>& aProjectParameters )
+{
+    for( auto& [screen, sheetParameters] : m_sheetParameters )
+    {
+        std::map<wxString, wxString> parameters;
+
+        for( const auto& [name, value] : aProjectParameters )
+        {
+            if( !value.IsEmpty() && value != wxS( "*" ) )
+                parameters[name] = value;
+        }
+
+        for( const auto& [name, value] : sheetParameters )
+            parameters[name] = value;
+
+        TITLE_BLOCK      titleBlock = screen->GetTitleBlock();
+        std::set<int>    filled;
+
+        for( const auto& [name, slot] : titleBlockSlots )
+        {
+            auto it = parameters.find( name );
+
+            if( it == parameters.end() || it->second.IsEmpty() || filled.count( slot ) )
+                continue;
+
+            filled.insert( slot );
+
+            if( slot == 0 )
+                titleBlock.SetTitle( it->second );
+            else if( slot == -1 )
+                titleBlock.SetRevision( it->second );
+            else if( slot == -2 )
+                titleBlock.SetCompany( it->second );
+            else
+                titleBlock.SetComment( slot - 1, it->second );
+        }
+
+        screen->SetTitleBlock( titleBlock );
+    }
+
+    m_sheetParameters.clear();
+}
+
+
 void SCH_IO_ALTIUM::ParseNetLabel( const std::map<wxString, wxString>& aProperties )
 {
     ASCH_NET_LABEL elem( aProperties );
@@ -6318,6 +6816,8 @@ void SCH_IO_ALTIUM::ParseSheet( const std::map<wxString, wxString>& aProperties 
     const int pageHeight = pageInfo.GetHeightIU( schIUScale.IU_PER_MILS );
 
     m_sheetOffset = { 0, ( pageHeight / gridPitch ) * gridPitch };
+
+    StartDrawingSheet();
 }
 
 
@@ -6561,6 +7061,9 @@ void SCH_IO_ALTIUM::ParseParameter( const std::map<wxString, wxString>& aPropert
 
             return;
         }
+
+        if( SCH_SCREEN* screen = getCurrentScreen() )
+            m_sheetParameters[screen][paramName] = kicadText;
 
         if( paramName == "SHEETNUMBER" )
         {
