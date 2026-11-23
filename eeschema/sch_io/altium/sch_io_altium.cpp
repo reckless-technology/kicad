@@ -1918,6 +1918,30 @@ bool SCH_IO_ALTIUM::AltiumTextPosition( TEXT_KIND aKind, const VECTOR2I& aAnchor
 }
 
 
+void SetFieldPositioning( SCH_FIELD* aField, ASCH_LABEL_JUSTIFICATION aJustification,
+                          ASCH_RECORD_ORIENTATION aOrientation );
+
+
+void SCH_IO_ALTIUM::StyleLibraryText( EDA_TEXT* aText, TEXT_KIND aKind, const VECTOR2I& aLocation, int aFontId,
+                                      ASCH_LABEL_JUSTIFICATION aJustification,
+                                      ASCH_RECORD_ORIENTATION aOrientation,
+                                      const std::map<wxString, wxString>& aProperties ) const
+{
+    SetTextFont( aText, aFontId );
+    aText->SetTextColor( AltiumTextColor( aProperties ) );
+
+    if( aKind == TEXT_KIND::SYMBOL_FIELD )
+        SetFieldPositioning( static_cast<SCH_FIELD*>( aText ), aJustification, aOrientation );
+    else if( aOrientation == ASCH_RECORD_ORIENTATION::LEFTWARDS || aOrientation == ASCH_RECORD_ORIENTATION::DOWNWARDS )
+        aText->SetVertJustify( EDA_TEXT::MapVertJustify( -aText->GetVertJustify() ) );
+
+    VECTOR2I position;
+
+    if( AltiumTextPosition( aKind, aLocation, aFontId, aJustification, aOrientation, position ) )
+        aText->SetTextPos( position );
+}
+
+
 void SCH_IO_ALTIUM::ParseAltiumSch( const wxString& aFileName )
 {
     // Load path may be different from the project path.
@@ -2978,8 +3002,8 @@ void SCH_IO_ALTIUM::ParsePin( const std::map<wxString, wxString>& aProperties,
     if( elem.hidden )
         pin->SetVisible( false );
 
-    // Altium draws a placed symbol's pin names and numbers in the sheet's system font
-    if( schSymbol && pinTextSize() > 0 )
+    // Altium draws pin names and numbers in the sheet's system font, or a library's first font
+    if( pinTextSize() > 0 )
     {
         pin->SetNameTextSize( pinTextSize() );
         pin->SetNumberTextSize( pinTextSize() );
@@ -3406,9 +3430,38 @@ void SCH_IO_ALTIUM::ParseLabel( const std::map<wxString, wxString>& aProperties,
 
         size_t fontId = elem.fontId;
 
-        if( m_altiumSheet && fontId > 0 && fontId <= m_altiumSheet->fonts.size() )
+        if( m_altiumSheet )
         {
             SetTextFont( textItem, elem.fontId );
+            textItem->SetTextColor( AltiumTextColor( aProperties ) );
+
+            // Where the symbol is neither turned nor mirrored, also the anchor that puts the glyphs
+            // where Altium draws them
+            bool unturned = true;
+
+            if( schsym )
+            {
+                const auto& altiumSymIt = m_altiumComponents.find( elem.ownerindex );
+
+                unturned = altiumSymIt != m_altiumComponents.end() && altiumSymIt->second.orientation == 0
+                           && !altiumSymIt->second.isMirrored;
+            }
+
+            VECTOR2I anchor = schsym ? elem.location + m_sheetOffset : elem.location;
+            VECTOR2I position;
+
+            if( unturned
+                && AltiumTextPosition( TEXT_KIND::FREE_TEXT, anchor, elem.fontId, elem.justification,
+                                       elem.orientation, position ) )
+            {
+                if( elem.orientation == ASCH_RECORD_ORIENTATION::LEFTWARDS
+                    || elem.orientation == ASCH_RECORD_ORIENTATION::DOWNWARDS )
+                {
+                    textItem->SetVertJustify( EDA_TEXT::MapVertJustify( -textItem->GetVertJustify() ) );
+                }
+
+                textItem->SetPosition( schsym ? GetRelativePosition( position, schsym ) : position );
+            }
         }
         else if( fontId > 0 && fontId <= aFontSizes.size() )
         {
@@ -6221,7 +6274,12 @@ void SCH_IO_ALTIUM::ParseLibDesignator( const std::map<wxString, wxString>& aPro
         refField.SetPosition( elem.location );
         SetTextPositioning( &refField, elem.justification, elem.orientation );
 
-        if( elem.fontId > 0 && elem.fontId <= static_cast<int>( aFontSizes.size() ) )
+        if( m_altiumSheet )
+        {
+            StyleLibraryText( &refField, TEXT_KIND::SYMBOL_FIELD, elem.location, elem.fontId, elem.justification,
+                              elem.orientation, aProperties );
+        }
+        else if( elem.fontId > 0 && elem.fontId <= static_cast<int>( aFontSizes.size() ) )
         {
             int size = aFontSizes[elem.fontId - 1];
             refField.SetTextSize( { size, size } );
@@ -6438,7 +6496,12 @@ void SCH_IO_ALTIUM::ParseLibParameter( const std::map<wxString, wxString>& aProp
         SetTextPositioning( field, elem.justification, elem.orientation );
         field->SetVisible( !elem.isHidden );
 
-        if( elem.fontId > 0 && elem.fontId <= static_cast<int>( aFontSizes.size() ) )
+        if( m_altiumSheet )
+        {
+            StyleLibraryText( field, TEXT_KIND::SYMBOL_FIELD, elem.location, elem.fontId, elem.justification,
+                              elem.orientation, aProperties );
+        }
+        else if( elem.fontId > 0 && elem.fontId <= static_cast<int>( aFontSizes.size() ) )
         {
             int size = aFontSizes[elem.fontId - 1];
             field->SetTextSize( { size, size } );
@@ -6565,6 +6628,21 @@ SCH_IO_ALTIUM::ParseLibFile( const ALTIUM_COMPOUND_FILE& aAltiumLibFile )
         int y_frac;
         int len_frac;
     };
+
+    // The library's font table stands in for a sheet's while its symbols are parsed
+    struct SHEET_RESTORER
+    {
+        std::unique_ptr<ASCH_SHEET>& m_sheet;
+        std::unique_ptr<ASCH_SHEET>  m_saved;
+
+        explicit SHEET_RESTORER( std::unique_ptr<ASCH_SHEET>& aSheet ) :
+                m_sheet( aSheet ),
+                m_saved( std::move( aSheet ) )
+        {
+        }
+
+        ~SHEET_RESTORER() { m_sheet = std::move( m_saved ); }
+    } restorer( m_altiumSheet );
 
     ParseLibHeader( aAltiumLibFile, fontSizes );
 
@@ -6740,8 +6818,9 @@ SCH_IO_ALTIUM::ParseLibFile( const ALTIUM_COMPOUND_FILE& aAltiumLibFile )
         if( reader.GetRemainingBytes() != 0 )
             THROW_IO_ERROR( wxT( "stream is not fully parsed" ) );
 
+        // A filled body keeps Altium's area colour; KiCad draws fills behind the symbol's other
+        // items whatever their colour, so it need not become the theme's body background
         LIB_SYMBOL* symbol = symbols[0];
-        symbol->FixupDrawItems();
         fixupSymbolPinNameNumbers( symbol );
 
         SCH_FIELD& valField = symbol->GetValueField();
@@ -6860,6 +6939,13 @@ void SCH_IO_ALTIUM::ParseLibHeader( const ALTIUM_COMPOUND_FILE& aAltiumSchFile,
 
     if( libtype.CmpNoCase( "Protel for Windows - Schematic Library Editor Binary File Version 5.0" ) )
         THROW_IO_ERROR( _( "Expected Altium Schematic Library file version 5.0" ) );
+
+    // A library's header carries a font table as a sheet's does; Altium draws a library's pins in
+    // its first font, as it would a sheet's system font
+    std::map<wxString, wxString> fontTable = properties;
+    fontTable[wxS( "RECORD" )] = wxString::Format( wxS( "%d" ), static_cast<int>( ALTIUM_SCH_RECORD::SHEET ) );
+    fontTable.erase( wxS( "SYSTEMFONT" ) );
+    m_altiumSheet = std::make_unique<ASCH_SHEET>( fontTable );
 
     for( auto& [key, value] : properties )
     {
