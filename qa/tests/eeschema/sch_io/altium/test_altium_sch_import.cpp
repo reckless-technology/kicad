@@ -966,7 +966,7 @@ BOOST_AUTO_TEST_CASE( AltiumTextPlacement )
     for( SCH_ITEM* item : screen->Items().OfType( SCH_TEXT_T ) )
         texts[static_cast<SCH_TEXT*>( item )->GetText()] = static_cast<SCH_TEXT*>( item );
 
-    BOOST_REQUIRE_EQUAL( texts.size(), 3 );
+    BOOST_REQUIRE_EQUAL( texts.size(), 4 );
 
     SCH_TEXT* bottomLeft = texts.at( wxT( "BOTTOM LEFT" ) );
     BOOST_CHECK_EQUAL( bottomLeft->GetPosition(),
@@ -989,6 +989,27 @@ BOOST_AUTO_TEST_CASE( AltiumTextPlacement )
     BOOST_CHECK( upsideDown->GetTextAngle() == ANGLE_HORIZONTAL );
     BOOST_CHECK_EQUAL( upsideDown->GetHorizJustify(), GR_TEXT_H_ALIGN_RIGHT );
     BOOST_CHECK_EQUAL( upsideDown->GetVertJustify(), GR_TEXT_V_ALIGN_TOP );
+
+    // Bold Cambria Math, a face with no bold weight, is drawn in Cambria's bold, sized by Cambria
+    // Math's cell and squeezed to the width of Altium's synthetic bold
+    SCH_TEXT* bold = texts.at( wxT( "GAIN" ) );
+    BOOST_CHECK_EQUAL( bold->GetFontName(), wxT( "Cambria" ) );
+    BOOST_CHECK( bold->IsBold() );
+
+    {
+        auto outline = []( const wxString& aFace, bool aBold )
+        {
+            return static_cast<KIFONT::OUTLINE_FONT*>( KIFONT::FONT::GetFont( aFace, aBold, false ) );
+        };
+
+        const int    cell = schIUScale.MilsToIU( 120 );
+        const int    size = KiROUND( outline( wxT( "Cambria Math" ), true )->GetTextSizeForAscentPlusDescent( cell ) );
+        const double wanted = outline( wxT( "Cambria Math" ), false )->GetAdvanceInEms( wxT( "GAIN" ) ) + 0.0111 * 4;
+        const double have = outline( wxT( "Cambria" ), true )->GetAdvanceInEms( wxT( "GAIN" ) );
+
+        BOOST_CHECK_EQUAL( bold->GetTextHeight(), size );
+        BOOST_CHECK_EQUAL( bold->GetTextWidth(), KiROUND( size * wanted / have ) );
+    }
 
     // A right-justified net label reads towards its anchor, which stays on the wire
     std::vector<SCH_LABEL*> labels;
