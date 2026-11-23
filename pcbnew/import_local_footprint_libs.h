@@ -29,15 +29,17 @@ class REPORTER;
 /**
  * Register the footprint libraries a source project names in the project footprint library table.
  *
- * A library inside @p aSourceProjectDir is copied into the project and referenced relative to it; any
- * other library keeps its absolute path.  A nickname the table already holds is left alone.
+ * A library inside @p aSourceProjectDir in another tool's format is converted into a KiCad library in
+ * the project and registered as that; one that cannot be converted, or is a KiCad library already, is
+ * copied into the project.  Either is referenced relative to the project; any other library keeps its
+ * absolute path.  A nickname the table already holds is left alone.
  *
  * Shared by the project manager's import mail handler and the `kicad-cli import` job.
  *
  * @param[in] aProject is the project whose table receives the rows.
  * @param[in] aSourceProjectDir is the directory of the source project.
  * @param[in] aLibraries are the absolute paths of the libraries to register.
- * @param[in] aReporter receives table save errors.
+ * @param[in] aReporter receives conversion and table save errors.
  * @return the nicknames of the rows that were added.
  */
 std::vector<wxString> RegisterLocalFootprintLibraries( PROJECT& aProject, const wxString& aSourceProjectDir,

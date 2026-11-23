@@ -31,6 +31,7 @@
 #include <project_sch.h>
 #include <reporter.h>
 #include <sch_io/sch_io_mgr.h>
+#include <wildcards_and_files_ext.h>
 
 
 std::vector<wxString> RegisterLocalSymbolLibraries( PROJECT& aProject, const wxString& aSourceProjectDir,
@@ -76,7 +77,19 @@ std::vector<wxString> RegisterLocalSymbolLibraries( PROJECT& aProject, const wxS
                                     && !relFn.IsAbsolute() && !relFn.GetFullPath().StartsWith( wxS( ".." ) );
         wxString   libTableUri;
 
-        if( isProjectLocal )
+        // A project-local library in another tool's format is converted into a KiCad library in
+        // the new project, which then needs neither that format nor the source's files
+        wxFileName kicadFn( projectPath, fn.GetName(), FILEEXT::KiCadSymbolLibFileExtension );
+
+        if( isProjectLocal && type != SCH_IO_MGR::SCH_KICAD && fn.FileExists()
+            && ( kicadFn.FileExists()
+                 || SCH_IO_MGR::ConvertLibrary( nullptr, fn.GetFullPath(), kicadFn.GetFullPath(),
+                                                &aReporter ) ) )
+        {
+            type = SCH_IO_MGR::SCH_KICAD;
+            libTableUri = wxS( "${KIPRJMOD}/" ) + kicadFn.GetFullName();
+        }
+        else if( isProjectLocal )
         {
             // Copy a project-local library into the KiCad project directory and reference it
             // with a project-relative path so the sym-lib-table stays portable.
