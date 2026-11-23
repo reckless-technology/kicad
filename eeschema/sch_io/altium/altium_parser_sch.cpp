@@ -762,7 +762,12 @@ ASCH_WIRE::ASCH_WIRE( const std::map<wxString, wxString>& aProps ) :
                              -ReadKiCadUnitFrac( aProps, "Y" + si ) );
     }
 
-    lineWidth = ReadKiCadUnitFrac( aProps, "LINEWIDTH" );
+    // Altium's line widths are a choice of four, not a length
+    static const int widthsMils[4] = { 1, 10, 30, 50 };
+    int              width = ALTIUM_PROPS_UTILS::ReadInt( aProps, "LINEWIDTH", 1 );
+
+    lineWidth = schIUScale.MilsToIU( widthsMils[std::clamp( width, 0, 3 )] );
+    color = ALTIUM_PROPS_UTILS::ReadInt( aProps, "COLOR", 0x800000 ); // Altium's dark blue
 }
 
 
