@@ -42,6 +42,7 @@
 #include <pcb_dimension.h>
 
 #include <future>
+#include <map>
 #include <optional>
 #include <set>
 
@@ -104,6 +105,20 @@ private:
 
     void testKnockoutTextAgainstZone( BOARD_ITEM* aText, NETINFO_ITEM** aInheritedNet, ZONE* aZone );
 
+    /**
+     * Find the NPTH holes without a net that are drilled wholly through copper of a pad of their
+     * own footprint, and the net of that copper on each layer, into m_coveredHoleNets.
+     */
+    void collectCoveredHoles();
+
+    /**
+     * The net \a aItem is tested as on \a aLayer: its own, except that an NPTH hole without a net
+     * drilled wholly through a pad of its own footprint takes that pad's net on that pad's layers.
+     * Items of the same net are not tested against each other's holes, and the hole is inside
+     * that pad's copper, so it is the pad, not the hole, that other copper must clear.
+     */
+    int effectiveNetCode( const BOARD_ITEM* aItem, PCB_LAYER_ID aLayer ) const;
+
     int sub_e( int aClearance )
     {
         return std::max( 0, aClearance - m_drcEpsilon );
@@ -112,6 +127,9 @@ private:
 private:
     int            m_drcEpsilon;
     DRC_ZONE_INDEX m_zoneIndex;
+
+    /// NPTH holes without a net drilled through own-footprint copper, by layer: that copper's net
+    std::map<std::pair<const PAD*, PCB_LAYER_ID>, int> m_coveredHoleNets;
 };
 
 
@@ -134,6 +152,14 @@ bool DRC_TEST_PROVIDER_COPPER_CLEARANCE::Run()
     } zoneIndexGuard{ m_zoneIndex };
 
     m_zoneIndex.Build( m_board->m_DRCCopperZonesByLayer );
+
+    struct COVERED_HOLES_GUARD
+    {
+        ~COVERED_HOLES_GUARD() { holes.clear(); }
+        std::map<std::pair<const PAD*, PCB_LAYER_ID>, int>& holes;
+    } coveredHolesGuard{ m_coveredHoleNets };
+
+    collectCoveredHoles();
 
     if( !m_drcEngine->IsErrorLimitExceeded( DRCE_CLEARANCE ) )
     {
@@ -411,7 +437,7 @@ void DRC_TEST_PROVIDER_COPPER_CLEARANCE::testItemAgainstZone( BOARD_ITEM* aItem,
 
     if( aZone->GetNetCode() && aItem->IsConnected() )
     {
-        if( aZone->GetNetCode() == static_cast<BOARD_CONNECTED_ITEM*>( aItem )->GetNetCode() )
+        if( aZone->GetNetCode() == effectiveNetCode( aItem, aLayer ) )
             return;
     }
 
@@ -657,9 +683,7 @@ void DRC_TEST_PROVIDER_COPPER_CLEARANCE::testTrackClearances()
                             // Filter:
                             [&]( BOARD_ITEM* other ) -> bool
                             {
-                                if( other->IsConnected()
-                                        && static_cast<BOARD_CONNECTED_ITEM*>( other )->GetNetCode()
-                                                   == track->GetNetCode() )
+                                if( other->IsConnected() && effectiveNetCode( other, layer ) == track->GetNetCode() )
                                 {
                                     return false;
                                 }
@@ -746,6 +770,79 @@ void DRC_TEST_PROVIDER_COPPER_CLEARANCE::testTrackClearances()
 }
 
 
+/**
+ * A non-plated hole drilled entirely inside copper of a pad of its own footprint, such as a ring
+ * around a mounting hole, is how the footprint is made rather than a clearance violation: the
+ * hole is not plated, so it connects that copper to nothing.  Not being numbered, the hole cannot
+ * share the copper's pad number or keep its net, so this is the only thing that ties them.
+ */
+static bool isHoleUnderOwnCopper( const PAD* aHole, const PAD* aCopper, PCB_LAYER_ID aLayer )
+{
+    if( aHole->GetAttribute() != PAD_ATTRIB::NPTH || !aHole->HasHole() )
+        return false;
+
+    if( !aHole->GetParentFootprint() || aHole->GetParentFootprint() != aCopper->GetParentFootprint() )
+        return false;
+
+    if( !aCopper->IsOnLayer( aLayer ) || !aCopper->FlashLayer( aLayer ) )
+        return false;
+
+    SHAPE_POLY_SET hole;
+    SHAPE_POLY_SET copper;
+
+    aHole->TransformHoleToPolygon( hole, 0, ARC_HIGH_DEF, ERROR_OUTSIDE );
+    aCopper->TransformShapeToPolygon( copper, aLayer, 0, ARC_HIGH_DEF, ERROR_INSIDE );
+
+    hole.BooleanSubtract( copper );
+    return hole.IsEmpty();
+}
+
+
+void DRC_TEST_PROVIDER_COPPER_CLEARANCE::collectCoveredHoles()
+{
+    m_coveredHoleNets.clear();
+
+    LSET boardCopperLayers = LSET::AllCuMask( m_board->GetCopperLayerCount() );
+
+    for( FOOTPRINT* footprint : m_board->Footprints() )
+    {
+        for( PAD* hole : footprint->Pads() )
+        {
+            if( hole->GetAttribute() != PAD_ATTRIB::NPTH || !hole->HasHole() || hole->GetNetCode() != 0 )
+                continue;
+
+            for( PAD* copper : footprint->Pads() )
+            {
+                if( copper == hole || copper->GetNetCode() == 0 )
+                    continue;
+
+                for( PCB_LAYER_ID layer : LSET( copper->GetLayerSet() & boardCopperLayers ) )
+                {
+                    if( !m_coveredHoleNets.contains( { hole, layer } ) && isHoleUnderOwnCopper( hole, copper, layer ) )
+                    {
+                        m_coveredHoleNets[{ hole, layer }] = copper->GetNetCode();
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+int DRC_TEST_PROVIDER_COPPER_CLEARANCE::effectiveNetCode( const BOARD_ITEM* aItem, PCB_LAYER_ID aLayer ) const
+{
+    if( aItem->Type() == PCB_PAD_T && !m_coveredHoleNets.empty() )
+    {
+        auto it = m_coveredHoleNets.find( { static_cast<const PAD*>( aItem ), aLayer } );
+
+        if( it != m_coveredHoleNets.end() )
+            return it->second;
+    }
+
+    return aItem->IsConnected() ? static_cast<const BOARD_CONNECTED_ITEM*>( aItem )->GetNetCode() : 0;
+}
+
+
 bool DRC_TEST_PROVIDER_COPPER_CLEARANCE::testPadAgainstItem( PAD* pad, const std::shared_ptr<SHAPE>& padShape,
                                                              PCB_LAYER_ID aLayer, BOARD_ITEM* other,
                                                              SHAPE* aPreparedOther )
@@ -770,6 +867,12 @@ bool DRC_TEST_PROVIDER_COPPER_CLEARANCE::testPadAgainstItem( PAD* pad, const std
 
             if( pad->SameLogicalPadAs( otherPad ) )
                 testHoles = false;
+
+            if( isHoleUnderOwnCopper( pad, otherPad, aLayer )
+                || isHoleUnderOwnCopper( otherPad, pad, aLayer ) )
+            {
+                testHoles = false;
+            }
         }
 
         if( other->Type() == PCB_SHAPE_T && padGroupIdx >= 0 )
@@ -808,8 +911,11 @@ bool DRC_TEST_PROVIDER_COPPER_CLEARANCE::testPadAgainstItem( PAD* pad, const std
     int padNet = pad->GetNetCode();
     int otherNet = otherCItem ? otherCItem->GetNetCode() : 0;
 
-    // Other objects of the same (defined) net get a waiver on clearance and hole tests
-    if( otherNet && otherNet == padNet )
+    // Other objects of the same (defined) net get a waiver on clearance and hole tests.  An NPTH
+    // hole drilled through a pad of its own footprint is of that pad's net here.
+    int otherTestedNet = otherCItem ? effectiveNetCode( other, aLayer ) : 0;
+
+    if( otherTestedNet && otherTestedNet == effectiveNetCode( pad, aLayer ) )
     {
         testClearance = testShorting = false;
         testHoles = false;
@@ -1125,9 +1231,7 @@ void DRC_TEST_PROVIDER_COPPER_CLEARANCE::testGraphicClearances()
                             int graphicNet = graphic->IsConnected()
                                     ? static_cast<BOARD_CONNECTED_ITEM*>( graphic )->GetNetCode()
                                     : 0;
-                            int otherNet = other->IsConnected()
-                                    ? static_cast<BOARD_CONNECTED_ITEM*>( other )->GetNetCode()
-                                    : 0;
+                            int otherNet = other->IsConnected() ? effectiveNetCode( other, layer ) : 0;
 
                             if( graphicNet && graphicNet == otherNet )
                                 return false;
