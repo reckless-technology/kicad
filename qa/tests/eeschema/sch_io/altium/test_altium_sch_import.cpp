@@ -115,6 +115,13 @@ struct ALTIUM_SCH_IMPORT_FIXTURE
                + aName;
     }
 
+    wxString textPlacementDataFile( const wxString& aName ) const
+    {
+        return wxString::FromUTF8( KI_TEST::GetEeschemaTestDataDir()
+                                   + "/plugins/altium/text_placement/" )
+               + aName;
+    }
+
     wxString issue16903DataFile( const wxString& aName ) const
     {
         return wxString::FromUTF8( KI_TEST::GetEeschemaTestDataDir()
@@ -759,10 +766,38 @@ BOOST_AUTO_TEST_CASE( Issue26009_ParameterSetsAsNetClassFlags )
         VECTOR2I   textPosition;
     };
 
-    // The flag on the upper wire points up (Altium orientation 1), the other right (0)
+    // Texts are drawn in the sheet's system font, 10 point Times New Roman, and moved off Altium's
+    // anchor so their glyphs land where Altium draws them (see AltiumTextPlacement)
+    auto placed =
+            []( const VECTOR2I& aAnchor, bool aField, int aVertical ) -> VECTOR2I
+            {
+                KIFONT::FONT* font = KIFONT::FONT::GetFont( wxT( "Times New Roman" ), false, false );
+
+                if( !font || !font->IsOutline() )
+                    return aAnchor;
+
+                double ascent = 0.0;
+                double descent = 0.0;
+                static_cast<KIFONT::OUTLINE_FONT*>( font )->GetAscentAndDescent( ascent, descent );
+
+                const double cell = schIUScale.MilsToIU( 100 );
+                const double em = cell / ( ascent + descent );
+                const double size = em / 1.4;
+                const double faceHeight = 1.4 * ( ascent + descent );
+                const double edge[3] = { -0.17, 0.415, 1.0 };
+                const double beta = aField ? 0.415 + 0.33 * faceHeight * ( aVertical - 1 )
+                                           : edge[aVertical] - 0.4 * ( faceHeight - 1.0 )
+                                                     - schIUScale.mmToIU( 0.25 ) / size;
+                const double up = em * descent - cell * aVertical / 2.0 + beta * size;
+
+                return VECTOR2I( aAnchor.x, KiROUND( aAnchor.y - up ) );
+            };
+
+    // The flag on the upper wire points up (Altium orientation 1), its text bottom centre above
+    // it; the other points right (0), its text centre left beside it
     std::map<wxString, EXPECTED> expected = {
-        { wxT( "HT" ), { altiumPoint( 200, 400 ), SPIN_STYLE::RIGHT, altiumPoint( 200, 420 ) } },
-        { wxT( "H" ), { altiumPoint( 300, 200 ), SPIN_STYLE::UP, altiumPoint( 320, 200 ) } },
+        { wxT( "HT" ), { altiumPoint( 200, 400 ), SPIN_STYLE::RIGHT, placed( altiumPoint( 200, 420 ), true, 0 ) } },
+        { wxT( "H" ), { altiumPoint( 300, 200 ), SPIN_STYLE::UP, placed( altiumPoint( 320, 200 ), true, 1 ) } },
     };
 
     std::map<wxString, SCH_DIRECTIVE_LABEL*> flags;
@@ -815,7 +850,14 @@ BOOST_AUTO_TEST_CASE( Issue26009_ParameterSetsAsNetClassFlags )
     const std::set<std::pair<int, int>> centers = { { htCenter.x, htCenter.y }, { hCenter.x, hCenter.y } };
 
     BOOST_CHECK( circles == centers );
-    BOOST_CHECK( infos == centers );
+
+    // The "i" is centred in its circle, placed as free text
+    const VECTOR2I htInfo = placed( htCenter, false, 1 );
+    const VECTOR2I hInfo = placed( hCenter, false, 1 );
+
+    const std::set<std::pair<int, int>> infoPositions = { { htInfo.x, htInfo.y }, { hInfo.x, hInfo.y } };
+
+    BOOST_CHECK( infos == infoPositions );
 
     for( const auto& [name, want] : expected )
     {
@@ -846,6 +888,132 @@ BOOST_AUTO_TEST_CASE( Issue26009_ParameterSetsAsNetClassFlags )
     }
 
     BOOST_CHECK_EQUAL( netSettings->GetNetclasses().size(), 2 );
+}
+
+
+// Altium anchors a text at a corner, edge or centre of the cell from the font's descender line to
+// its ascender line. KiCad draws the baseline a distance from its anchor that depends on the kind
+// of text, its vertical justification and the face's height (measured on plotted KiCad text).
+// The importer must move each anchor so the glyphs land where Altium draws them, draw upside
+// down text upright in the same cell, and turn a right-justified net label to read towards its
+// anchor.
+BOOST_AUTO_TEST_CASE( AltiumTextPlacement )
+{
+    SCH_IO_ALTIUM plugin;
+
+    SCH_SHEET* rootSheet = plugin.LoadSchematicFile( textPlacementDataFile( wxT( "placement.SchDoc" ) ),
+                                                     &m_schematic );
+    BOOST_REQUIRE( rootSheet );
+
+    SCH_SCREEN* screen = rootSheet->GetScreen();
+    BOOST_REQUIRE( screen );
+
+    const int gridPitch = m_schematic.Settings().m_ConnectionGridSize;
+    const int pageHeight = screen->GetPageSettings().GetHeightIU( schIUScale.IU_PER_MILS );
+    const int flipY = ( pageHeight / gridPitch ) * gridPitch;
+
+    auto altiumPoint =
+            [&]( int aX, int aY )
+            {
+                return VECTOR2D( schIUScale.MilsToIU( aX * 10 ), flipY - schIUScale.MilsToIU( aY * 10 ) );
+            };
+
+    // The rule, restated: how far the baseline sits above Altium's anchor and below KiCad's
+    auto expectedAnchor =
+            []( bool aField, const VECTOR2D& aAltiumAnchor, const wxString& aFace, int aPoints, int aVertical,
+                bool aReadsUp ) -> VECTOR2I
+            {
+                KIFONT::FONT* font = KIFONT::FONT::GetFont( aFace, false, false );
+                BOOST_REQUIRE( font && font->IsOutline() );
+
+                double ascent = 0.0;
+                double descent = 0.0;
+                static_cast<KIFONT::OUTLINE_FONT*>( font )->GetAscentAndDescent( ascent, descent );
+
+                const double cell = schIUScale.MilsToIU( aPoints * 10 );
+                const double em = cell / ( ascent + descent );
+                const double size = em / 1.4;
+                const double faceHeight = 1.4 * ( ascent + descent );
+                const double baselineUp = em * descent - cell * aVertical / 2.0;
+                const double edge[3] = { -0.17, 0.415, 1.0 };
+                const double beta = aField ? 0.415 + 0.33 * faceHeight * ( aVertical - 1 )
+                                           : edge[aVertical] - 0.4 * ( faceHeight - 1.0 )
+                                                     - schIUScale.mmToIU( 0.25 ) / size;
+                const double up = baselineUp + beta * size;
+
+                VECTOR2D anchor = aAltiumAnchor;
+
+                if( aReadsUp )
+                {
+                    anchor.x -= up;
+
+                    if( !aField )
+                    {
+                        anchor.x -= schIUScale.mmToIU( 0.25 );
+                        anchor.y += schIUScale.mmToIU( 0.25 );
+                    }
+                }
+                else
+                {
+                    anchor.y -= up;
+                }
+
+                return VECTOR2I( KiROUND( anchor.x ), KiROUND( anchor.y ) );
+            };
+
+    std::map<wxString, SCH_TEXT*> texts;
+
+    for( SCH_ITEM* item : screen->Items().OfType( SCH_TEXT_T ) )
+        texts[static_cast<SCH_TEXT*>( item )->GetText()] = static_cast<SCH_TEXT*>( item );
+
+    BOOST_REQUIRE_EQUAL( texts.size(), 3 );
+
+    SCH_TEXT* bottomLeft = texts.at( wxT( "BOTTOM LEFT" ) );
+    BOOST_CHECK_EQUAL( bottomLeft->GetPosition(),
+                       expectedAnchor( false, altiumPoint( 100, 700 ), wxT( "Arial" ), 12, 0, false ) );
+    BOOST_CHECK( bottomLeft->GetTextAngle() == ANGLE_HORIZONTAL );
+    BOOST_CHECK_EQUAL( bottomLeft->GetHorizJustify(), GR_TEXT_H_ALIGN_LEFT );
+    BOOST_CHECK_EQUAL( bottomLeft->GetVertJustify(), GR_TEXT_V_ALIGN_BOTTOM );
+
+    SCH_TEXT* topCentreUp = texts.at( wxT( "TOP CENTRE UP" ) );
+    BOOST_CHECK_EQUAL( topCentreUp->GetPosition(),
+                       expectedAnchor( false, altiumPoint( 300, 700 ), wxT( "Arial" ), 12, 2, true ) );
+    BOOST_CHECK( topCentreUp->GetTextAngle() == ANGLE_VERTICAL );
+    BOOST_CHECK_EQUAL( topCentreUp->GetHorizJustify(), GR_TEXT_H_ALIGN_CENTER );
+    BOOST_CHECK_EQUAL( topCentreUp->GetVertJustify(), GR_TEXT_V_ALIGN_TOP );
+
+    // Altium's bottom left of upside-down text is the top right of the same cell drawn upright
+    SCH_TEXT* upsideDown = texts.at( wxT( "UPSIDE DOWN" ) );
+    BOOST_CHECK_EQUAL( upsideDown->GetPosition(),
+                       expectedAnchor( false, altiumPoint( 500, 700 ), wxT( "Times New Roman" ), 10, 2, false ) );
+    BOOST_CHECK( upsideDown->GetTextAngle() == ANGLE_HORIZONTAL );
+    BOOST_CHECK_EQUAL( upsideDown->GetHorizJustify(), GR_TEXT_H_ALIGN_RIGHT );
+    BOOST_CHECK_EQUAL( upsideDown->GetVertJustify(), GR_TEXT_V_ALIGN_TOP );
+
+    // A right-justified net label reads towards its anchor, which stays on the wire
+    std::vector<SCH_LABEL*> labels;
+
+    for( SCH_ITEM* item : screen->Items().OfType( SCH_LABEL_T ) )
+        labels.push_back( static_cast<SCH_LABEL*>( item ) );
+
+    BOOST_REQUIRE_EQUAL( labels.size(), 1 );
+    BOOST_CHECK_EQUAL( VECTOR2D( labels.front()->GetPosition() ), altiumPoint( 300, 500 ) );
+    BOOST_CHECK( labels.front()->GetSpinStyle() == SPIN_STYLE::LEFT );
+
+    // The designator of a symbol turned a quarter turn: a field, centre left, horizontal
+    std::vector<SCH_SYMBOL*> symbols;
+
+    for( SCH_ITEM* item : screen->Items().OfType( SCH_SYMBOL_T ) )
+        symbols.push_back( static_cast<SCH_SYMBOL*>( item ) );
+
+    BOOST_REQUIRE_EQUAL( symbols.size(), 1 );
+
+    SCH_FIELD* reference = symbols.front()->GetField( FIELD_T::REFERENCE );
+    BOOST_CHECK_EQUAL( reference->GetPosition(),
+                       expectedAnchor( true, altiumPoint( 630, 330 ), wxT( "Arial" ), 12, 1, false ) );
+    BOOST_CHECK( reference->GetDrawRotation() == ANGLE_HORIZONTAL );
+    BOOST_CHECK_EQUAL( reference->GetEffectiveHorizJustify(), GR_TEXT_H_ALIGN_LEFT );
+    BOOST_CHECK_EQUAL( reference->GetEffectiveVertJustify(), GR_TEXT_V_ALIGN_CENTER );
 }
 
 

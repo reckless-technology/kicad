@@ -925,6 +925,37 @@ SCH_SHEET* SCH_IO_ALTIUM::LoadSchematicFile( const wxString& aFileName, SCHEMATI
     if( minBusWidth < std::numeric_limits<int>::max() )
         netSettings->GetDefaultNetclass()->SetBusWidth( minBusWidth );
 
+    // Altium draws a net label with its descender line on the wire. KiCad draws a label's
+    // baseline the text offset above it, less the descent and the pen, so set the offset that puts
+    // the commonest label font's descender on the wire
+    if( !m_netLabelFonts.empty() )
+    {
+        auto commonest = std::max_element( m_netLabelFonts.begin(), m_netLabelFonts.end(),
+                                           []( const auto& a, const auto& b )
+                                           {
+                                               return a.second < b.second;
+                                           } );
+
+        const auto& [face, bold, italic] = commonest->first;
+        KIFONT::FONT* kifont = face.IsEmpty() ? nullptr : KIFONT::FONT::GetFont( face, bold, italic );
+
+        if( kifont && kifont->IsOutline() )
+        {
+            double ascent = 0.0;
+            double descent = 0.0;
+            static_cast<KIFONT::OUTLINE_FONT*>( kifont )->GetAscentAndDescent( ascent, descent );
+
+            // in text sizes: the descent, the stroke font's own offset of 0.17, and half the pen
+            double descentInSizes = KIFONT::OUTLINE_FONT::GetEmHeightPerTextSize() * descent;
+            double pen = bold ? 0.2 : 0.125;
+            double ratio = std::max( 0.0, descentInSizes - 0.17 - pen );
+
+            m_schematic->Settings().m_TextOffsetRatio = std::round( ratio * 10000.0 ) / 10000.0;
+        }
+
+        m_netLabelFonts.clear();
+    }
+
     // Net classes named by parameter sets. Settings left unset are the Default class's, and the
     // board's import or rules may give the class its own
     for( const wxString& className : m_parameterSetNetClasses )
@@ -1723,25 +1754,131 @@ void SCH_IO_ALTIUM::SetTextFont( EDA_TEXT* aText, int aFontId ) const
         aFontId = 1;
 
     const ASCH_SHEET_FONT& font = m_altiumSheet->fonts.at( aFontId - 1 );
-    KIFONT::FONT*          kifont = nullptr;
+
+    SetTextFont( aText, font.FontName, font.Size, font.Bold, font.Italic );
+}
+
+
+void SCH_IO_ALTIUM::SetTextFont( EDA_TEXT* aText, const wxString& aFace, int aCellHeight, bool aBold,
+                                 bool aItalic )
+{
+    KIFONT::FONT* kifont = nullptr;
 
     // Missing faces are substituted by fontconfig; the Altium name is kept for the file
-    if( !font.FontName.IsEmpty() )
-        kifont = KIFONT::FONT::GetFont( font.FontName, font.Bold, font.Italic );
+    if( !aFace.IsEmpty() )
+        kifont = KIFONT::FONT::GetFont( aFace, aBold, aItalic );
 
-    int size = font.Size / 2;
+    int size = aCellHeight / 2;
 
     if( kifont && kifont->IsOutline() )
     {
         aText->SetFont( kifont );
-        size = KiROUND( static_cast<KIFONT::OUTLINE_FONT*>( kifont )->GetTextSizeForAscentPlusDescent( font.Size ) );
+        size = KiROUND( static_cast<KIFONT::OUTLINE_FONT*>( kifont )->GetTextSizeForAscentPlusDescent( aCellHeight ) );
     }
 
     aText->SetTextSize( { size, size } );
 
     // Must come after SetTextSize()
-    aText->SetBold( font.Bold );
-    aText->SetItalic( font.Italic );
+    aText->SetBold( aBold );
+    aText->SetItalic( aItalic );
+}
+
+
+bool SCH_IO_ALTIUM::AltiumTextPosition( TEXT_KIND aKind, const VECTOR2I& aAnchor, int aFontId,
+                                        ASCH_LABEL_JUSTIFICATION aJustification,
+                                        ASCH_RECORD_ORIENTATION aOrientation, VECTOR2I& aPosition ) const
+{
+    if( !m_altiumSheet || m_altiumSheet->fonts.empty() )
+        return false;
+
+    if( aFontId <= 0 || aFontId > static_cast<int>( m_altiumSheet->fonts.size() ) )
+        aFontId = 1;
+
+    const ASCH_SHEET_FONT& font = m_altiumSheet->fonts.at( aFontId - 1 );
+
+    return AltiumTextPosition( aKind, aAnchor, font.FontName, font.Size, font.Bold, font.Italic, aJustification,
+                               aOrientation, aPosition );
+}
+
+
+bool SCH_IO_ALTIUM::AltiumTextPosition( TEXT_KIND aKind, const VECTOR2I& aAnchor, const wxString& aFace,
+                                        int aCellHeight, bool aBold, bool aItalic,
+                                        ASCH_LABEL_JUSTIFICATION aJustification,
+                                        ASCH_RECORD_ORIENTATION aOrientation, VECTOR2I& aPosition )
+{
+    if( aFace.IsEmpty() )
+        return false;
+
+    KIFONT::FONT* kifont = KIFONT::FONT::GetFont( aFace, aBold, aItalic );
+
+    if( !kifont || !kifont->IsOutline() )
+        return false;
+
+    double ascent = 0.0;
+    double descent = 0.0;
+    static_cast<KIFONT::OUTLINE_FONT*>( kifont )->GetAscentAndDescent( ascent, descent );
+
+    const double emPerSize = KIFONT::OUTLINE_FONT::GetEmHeightPerTextSize();
+    const double cell = aCellHeight;                    // descender line to ascender line
+    const double em = cell / ( ascent + descent );
+    const double size = em / emPerSize;                 // the size SetTextFont() gives
+    const double faceHeight = emPerSize * ( ascent + descent );   // in text sizes
+
+    // KiCad never draws text upside down, so Altium's 180 and 270 degree text is drawn upright
+    // in the same cell, its anchor on the opposite side
+    int  justification = static_cast<int>( aJustification );
+    int  vertical = std::min( justification / 3, 2 );   // 0 bottom, 1 centre, 2 top
+    bool upsideDown = aOrientation == ASCH_RECORD_ORIENTATION::LEFTWARDS
+                      || aOrientation == ASCH_RECORD_ORIENTATION::DOWNWARDS;
+
+    if( upsideDown )
+        vertical = 2 - vertical;
+
+    // The baseline's distance above the anchor, along the glyphs' up direction
+    double baselineUp = em * descent - cell * vertical / 2.0;
+
+    // ... and how far below its anchor KiCad draws the baseline, in text sizes
+    static const double edgeBeta[3] = { -0.17, 0.415, 1.0 };
+    double              beta = edgeBeta[vertical];
+    const double        textConstant = schIUScale.mmToIU( 0.25 );
+
+    switch( aKind )
+    {
+    case TEXT_KIND::SYMBOL_FIELD:
+        beta = 0.415 + 0.33 * faceHeight * ( vertical - 1 );
+        break;
+
+    case TEXT_KIND::FREE_TEXT:
+        beta += -0.4 * ( faceHeight - 1.0 ) - textConstant / size;
+        break;
+
+    case TEXT_KIND::SHEET_FIELD:
+        break;
+    }
+
+    const double offsetUp = baselineUp + beta * size;
+    VECTOR2D     position( aAnchor );
+
+    if( aOrientation == ASCH_RECORD_ORIENTATION::UPWARDS || aOrientation == ASCH_RECORD_ORIENTATION::DOWNWARDS )
+    {
+        // Text reading upwards has its tops towards -x
+        position.x -= offsetUp;
+
+        // KiCad raises free text by a fixed amount towards the top of the page even when the
+        // text is turned; undo that
+        if( aKind == TEXT_KIND::FREE_TEXT )
+        {
+            position.x -= textConstant;
+            position.y += textConstant;
+        }
+    }
+    else
+    {
+        position.y -= offsetUp;
+    }
+
+    aPosition = VECTOR2I( KiROUND( position.x ), KiROUND( position.y ) );
+    return true;
 }
 
 
@@ -3145,6 +3282,21 @@ void SCH_IO_ALTIUM::ParseLabel( const std::map<wxString, wxString>& aProperties,
         SetTextPositioning( textItem, elem.justification, elem.orientation );
         SetTextFont( textItem, elem.fontId );
         textItem->SetTextColor( AltiumTextColor( aProperties ) );
+
+        VECTOR2I position;
+
+        if( AltiumTextPosition( TEXT_KIND::FREE_TEXT, elem.location + m_sheetOffset, elem.fontId,
+                                elem.justification, elem.orientation, position ) )
+        {
+            // Text Altium turns upside down is drawn upright in the same cell
+            if( elem.orientation == ASCH_RECORD_ORIENTATION::LEFTWARDS
+                || elem.orientation == ASCH_RECORD_ORIENTATION::DOWNWARDS )
+            {
+                textItem->SetVertJustify( EDA_TEXT::MapVertJustify( -textItem->GetVertJustify() ) );
+            }
+
+            textItem->SetPosition( position );
+        }
 
         textItem->SetFlags( IS_NEW );
 
@@ -5175,6 +5327,38 @@ void SCH_IO_ALTIUM::ParsePowerPort( const std::map<wxString, wxString>& aPropert
         break;
     }
 
+    // Altium draws the net name a fixed distance beyond the port's end, in 10 mil units, at the
+    // edge or corner facing the port
+    struct NAME_PLACE
+    {
+        int                      dx;
+        int                      dy;
+        ASCH_LABEL_JUSTIFICATION justification;
+    };
+
+    static const std::map<ASCH_RECORD_ORIENTATION, NAME_PLACE> namePlaces = {
+        { ASCH_RECORD_ORIENTATION::RIGHTWARDS, { 12, 0, ASCH_LABEL_JUSTIFICATION::CENTER_LEFT } },
+        { ASCH_RECORD_ORIENTATION::UPWARDS, { 0, 10, ASCH_LABEL_JUSTIFICATION::BOTTOM_CENTER } },
+        { ASCH_RECORD_ORIENTATION::LEFTWARDS, { -12, 0, ASCH_LABEL_JUSTIFICATION::CENTER_RIGHT } },
+        { ASCH_RECORD_ORIENTATION::DOWNWARDS, { 0, -10, ASCH_LABEL_JUSTIFICATION::TOP_CENTER } },
+    };
+
+    if( auto it = namePlaces.find( elem.orientation ); it != namePlaces.end() && valueField->IsVisible() )
+    {
+        const NAME_PLACE& place = it->second;
+        VECTOR2I          anchor = elem.location + m_sheetOffset
+                          + VECTOR2I( schIUScale.MilsToIU( place.dx * 10 ), -schIUScale.MilsToIU( place.dy * 10 ) );
+        VECTOR2I          position;
+
+        if( AltiumTextPosition( TEXT_KIND::SYMBOL_FIELD, anchor, elem.fontId, place.justification,
+                                ASCH_RECORD_ORIENTATION::RIGHTWARDS, position ) )
+        {
+            valueField->SetPosition( anchor );
+            SetFieldPositioning( valueField, place.justification, ASCH_RECORD_ORIENTATION::RIGHTWARDS );
+            valueField->SetPosition( position );
+        }
+    }
+
     screen->Append( symbol );
 }
 
@@ -5433,6 +5617,10 @@ void SCH_IO_ALTIUM::ParseParameterSet( int aIndex, const std::map<wxString, wxSt
     flag->SetSpinStyle( spin );
     flag->SetTextColor( color );
 
+    // Altium draws directives in the sheet's system font
+    const int systemFontId = m_altiumSheet ? m_altiumSheet->systemFontId : 1;
+    SetTextFont( flag, systemFontId );
+
     SCH_FIELD field( flag, FIELD_T::USER, wxT( "Netclass" ) );
     field.SetPosition( textPosition );
     field.SetTextAngle( ANGLE_HORIZONTAL );
@@ -5440,6 +5628,25 @@ void SCH_IO_ALTIUM::ParseParameterSet( int aIndex, const std::map<wxString, wxSt
     field.SetVertJustify( vJustify );
     field.SetTextColor( color );
     field.SetVisible( true );
+    SetTextFont( &field, systemFontId );
+
+    // The text's Altium justification: the edge facing the flag, centred on the stem
+    static const std::map<ASCH_RECORD_ORIENTATION, ASCH_LABEL_JUSTIFICATION> textJustifications = {
+        { ASCH_RECORD_ORIENTATION::RIGHTWARDS, ASCH_LABEL_JUSTIFICATION::CENTER_LEFT },
+        { ASCH_RECORD_ORIENTATION::UPWARDS, ASCH_LABEL_JUSTIFICATION::BOTTOM_CENTER },
+        { ASCH_RECORD_ORIENTATION::LEFTWARDS, ASCH_LABEL_JUSTIFICATION::CENTER_RIGHT },
+        { ASCH_RECORD_ORIENTATION::DOWNWARDS, ASCH_LABEL_JUSTIFICATION::TOP_CENTER },
+    };
+
+    VECTOR2I placed;
+
+    if( auto it = textJustifications.find( elem.orientation ); it != textJustifications.end()
+        && AltiumTextPosition( TEXT_KIND::SYMBOL_FIELD, textPosition, systemFontId, it->second,
+                               ASCH_RECORD_ORIENTATION::RIGHTWARDS, placed ) )
+    {
+        field.SetPosition( placed );
+    }
+
     flag->AddField( field );
 
     flag->SetFlags( IS_NEW );
@@ -5460,6 +5667,16 @@ void SCH_IO_ALTIUM::ParseParameterSet( int aIndex, const std::map<wxString, wxSt
     info->SetHorizJustify( GR_TEXT_H_ALIGN_CENTER );
     info->SetVertJustify( GR_TEXT_V_ALIGN_CENTER );
     info->SetTextColor( color );
+
+    // Altium draws the "i" in 10 point Times New Roman whatever the sheet's fonts
+    const int infoCell = schIUScale.MilsToIU( 100 );
+    SetTextFont( info, wxT( "Times New Roman" ), infoCell, false, false );
+
+    if( AltiumTextPosition( TEXT_KIND::FREE_TEXT, center, wxT( "Times New Roman" ), infoCell, false, false,
+                            ASCH_LABEL_JUSTIFICATION::CENTER_CENTER, ASCH_RECORD_ORIENTATION::RIGHTWARDS, placed ) )
+    {
+        info->SetPosition( placed );
+    }
     info->SetFlags( IS_NEW );
     screen->Append( info );
 
@@ -5542,6 +5759,24 @@ void SCH_IO_ALTIUM::ParseNetLabel( const std::map<wxString, wxString>& aProperti
     SetTextPositioning( label, elem.justification, elem.orientation );
     SetTextFont( label, elem.fontId );
     label->SetTextColor( AltiumTextColor( aProperties ) );
+
+    if( m_altiumSheet && !m_altiumSheet->fonts.empty() )
+    {
+        int fontId = elem.fontId > 0 && elem.fontId <= static_cast<int>( m_altiumSheet->fonts.size() ) ? elem.fontId : 1;
+        const ASCH_SHEET_FONT& font = m_altiumSheet->fonts.at( fontId - 1 );
+        m_netLabelFonts[{ font.FontName, font.Bold, font.Italic }]++;
+    }
+
+    // The label reads away from its anchor in Altium's direction, or towards it when Altium
+    // right-justifies it; KiCad draws it upright either way
+    static const SPIN_STYLE spins[4] = { SPIN_STYLE::RIGHT, SPIN_STYLE::UP, SPIN_STYLE::LEFT,
+                                         SPIN_STYLE::BOTTOM };
+
+    int quarterTurns = static_cast<int>( elem.orientation );
+    int hJustification = static_cast<int>( elem.justification ) % 3;
+
+    if( quarterTurns >= 0 && quarterTurns < 4 && elem.justification != ASCH_LABEL_JUSTIFICATION::UNKNOWN )
+        label->SetSpinStyle( spins[( quarterTurns + ( hJustification == 2 ? 2 : 0 ) ) % 4] );
 
     label->SetFlags( IS_NEW );
     screen->Append( label );
@@ -5821,6 +6056,20 @@ void SCH_IO_ALTIUM::ParseSheetName( const std::map<wxString, wxString>& aPropert
     SetTextPositioning( sheetNameField, ASCH_LABEL_JUSTIFICATION::BOTTOM_LEFT, elem.orientation );
     SetTextFont( sheetNameField, elem.fontId );
     sheetNameField->SetTextColor( AltiumTextColor( aProperties ) );
+
+    VECTOR2I position;
+
+    if( AltiumTextPosition( TEXT_KIND::SHEET_FIELD, elem.location + m_sheetOffset, elem.fontId,
+                            ASCH_LABEL_JUSTIFICATION::BOTTOM_LEFT, elem.orientation, position ) )
+    {
+        if( elem.orientation == ASCH_RECORD_ORIENTATION::LEFTWARDS
+            || elem.orientation == ASCH_RECORD_ORIENTATION::DOWNWARDS )
+        {
+            sheetNameField->SetVertJustify( EDA_TEXT::MapVertJustify( -sheetNameField->GetVertJustify() ) );
+        }
+
+        sheetNameField->SetPosition( position );
+    }
 }
 
 
@@ -5847,6 +6096,20 @@ void SCH_IO_ALTIUM::ParseFileName( const std::map<wxString, wxString>& aProperti
     SetTextPositioning( filenameField, ASCH_LABEL_JUSTIFICATION::BOTTOM_LEFT, elem.orientation );
     SetTextFont( filenameField, elem.fontId );
     filenameField->SetTextColor( AltiumTextColor( aProperties ) );
+
+    VECTOR2I position;
+
+    if( AltiumTextPosition( TEXT_KIND::SHEET_FIELD, elem.location + m_sheetOffset, elem.fontId,
+                            ASCH_LABEL_JUSTIFICATION::BOTTOM_LEFT, elem.orientation, position ) )
+    {
+        if( elem.orientation == ASCH_RECORD_ORIENTATION::LEFTWARDS
+            || elem.orientation == ASCH_RECORD_ORIENTATION::DOWNWARDS )
+        {
+            filenameField->SetVertJustify( EDA_TEXT::MapVertJustify( -filenameField->GetVertJustify() ) );
+        }
+
+        filenameField->SetPosition( position );
+    }
 }
 
 
@@ -5888,6 +6151,14 @@ void SCH_IO_ALTIUM::ParseDesignator( const std::map<wxString, wxString>& aProper
     SetTextFont( field, elem.fontId );
     field->SetTextColor( AltiumTextColor( aProperties ) );
     SetFieldPositioning( field, elem.justification, elem.orientation );
+
+    VECTOR2I position;
+
+    if( AltiumTextPosition( TEXT_KIND::SYMBOL_FIELD, elem.location + m_sheetOffset, elem.fontId,
+                            elem.justification, elem.orientation, position ) )
+    {
+        field->SetPosition( position );
+    }
 }
 
 
@@ -6048,6 +6319,14 @@ void SCH_IO_ALTIUM::ParseParameter( const std::map<wxString, wxString>& aPropert
         SetTextFont( field, elem.fontId );
         field->SetTextColor( AltiumTextColor( aProperties ) );
         SetFieldPositioning( field, elem.justification, elem.orientation );
+
+        VECTOR2I position;
+
+        if( AltiumTextPosition( TEXT_KIND::SYMBOL_FIELD, elem.location + m_sheetOffset, elem.fontId,
+                                elem.justification, elem.orientation, position ) )
+        {
+            field->SetPosition( position );
+        }
     }
 }
 

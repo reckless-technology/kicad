@@ -830,6 +830,8 @@ struct ASCH_SHEET : ASCH_OWNER_INTERFACE
     ASCH_SHEET_SIZE                 sheetSize;
     ASCH_SHEET_WORKSPACEORIENTATION sheetOrientation;
 
+    int systemFontId; ///< the font Altium draws pins and directives in
+
     explicit ASCH_SHEET( const std::map<wxString, wxString>& aProps );
 };
 
