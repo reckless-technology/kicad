@@ -520,9 +520,8 @@ public:
 };
 
 
-EVAL_VISITOR::EVAL_VISITOR( VAR_CALLBACK aVariableCallback, ERROR_COLLECTOR& aErrorCollector ) :
+EVAL_VISITOR::EVAL_VISITOR( VAR_CALLBACK aVariableCallback ) :
         m_variableCallback( std::move( aVariableCallback ) ),
-        m_errors( aErrorCollector ),
         m_gen( m_rd() )
 {
 }
@@ -1128,8 +1127,7 @@ RESULT<VALUE> EVAL_VISITOR::evaluateFunction( const FUNC_DATA& aFunc ) const
 std::pair<std::string, bool> DOC_PROCESSOR::Process( const DOC& aDoc, VAR_CALLBACK aVariableCallback )
 {
     std::string     result;
-    ERROR_COLLECTOR localErrors = ERROR_COLLECTOR{};
-    EVAL_VISITOR    evaluator{ std::move( aVariableCallback ), localErrors };
+    EVAL_VISITOR    evaluator{ std::move( aVariableCallback ) };
     bool            hadErrors = aDoc.HasErrors();
 
     for( const std::unique_ptr<NODE>& node : aDoc.GetNodes() )
@@ -1166,7 +1164,7 @@ std::pair<std::string, bool> DOC_PROCESSOR::Process( const DOC& aDoc, VAR_CALLBA
         }
     }
 
-    return { std::move( result ), hadErrors || localErrors.HasErrors() };
+    return { std::move( result ), hadErrors };
 }
 
 

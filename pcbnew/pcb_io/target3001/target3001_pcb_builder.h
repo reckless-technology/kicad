@@ -59,7 +59,7 @@ class ZONE;
 class TARGET3001_PCB_BUILDER
 {
 public:
-    TARGET3001_PCB_BUILDER( BOARD* aBoard, const TARGET3001::PROJECT& aProject, REPORTER* aReporter );
+    TARGET3001_PCB_BUILDER( BOARD* aBoard, const TARGET3001::PROJECT& aProject );
 
     void Build();
 
@@ -153,7 +153,6 @@ private:
 
     BOARD*                     m_board;
     const TARGET3001::PROJECT& m_project;
-    REPORTER*                  m_reporter;
 
     std::map<int, PCB_LAYER_ID>              m_layerMap;
     std::vector<int>                         m_copperStack;     ///< TARGET layers, top to bottom

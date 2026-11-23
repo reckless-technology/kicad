@@ -106,8 +106,7 @@ SCH_SHEET* SCH_IO_DIPTRACE::LoadSchematicFile( const wxString& aFileName,
         rootSheet->SetScreen( screen );
     }
 
-    DIPTRACE::SCH_PARSER parser( aFileName, aSchematic, rootSheet,
-                                 m_progressReporter, m_reporter );
+    DIPTRACE::SCH_PARSER parser( aFileName, aSchematic, rootSheet, m_reporter );
     parser.Parse();
 
     // The parser creates the final top-level sheet set after installing the initial content root,

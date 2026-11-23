@@ -153,11 +153,9 @@ int padFillGap( const PAD& aPad, PCB_LAYER_ID aLayer, const SHAPE_POLY_SET& aFil
 } // namespace
 
 
-TARGET3001_PCB_BUILDER::TARGET3001_PCB_BUILDER( BOARD* aBoard, const TARGET3001::PROJECT& aProject,
-                                                REPORTER* aReporter ) :
+TARGET3001_PCB_BUILDER::TARGET3001_PCB_BUILDER( BOARD* aBoard, const TARGET3001::PROJECT& aProject ) :
         m_board( aBoard ),
-        m_project( aProject ),
-        m_reporter( aReporter )
+        m_project( aProject )
 {
 }
 

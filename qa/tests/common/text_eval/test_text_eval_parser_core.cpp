@@ -224,9 +224,8 @@ BOOST_AUTO_TEST_CASE( NodeCreation )
  */
 BOOST_AUTO_TEST_CASE( EvaluationVisitor )
 {
-    ERROR_COLLECTOR errors;
     auto varResolver = CreateTestVariableResolver();
-    calc_parser::EVAL_VISITOR evaluator( varResolver, errors );
+    calc_parser::EVAL_VISITOR evaluator( varResolver );
 
     // Test number evaluation
     {
@@ -297,9 +296,8 @@ BOOST_AUTO_TEST_CASE( EvaluationVisitor )
  */
 BOOST_AUTO_TEST_CASE( FunctionEvaluation )
 {
-    ERROR_COLLECTOR errors;
     auto varResolver = CreateTestVariableResolver();
-    calc_parser::EVAL_VISITOR evaluator( varResolver, errors );
+    calc_parser::EVAL_VISITOR evaluator( varResolver );
 
     // Test abs function
     {

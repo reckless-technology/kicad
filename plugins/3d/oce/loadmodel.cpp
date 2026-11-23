@@ -378,9 +378,10 @@ void getTag( const TDF_Label& aLabel, std::string& aTag )
     NCollection_List<int> tagList;
     TDF_Tool::TagList( aLabel, tagList );
 
-    for( const int& tag : tagList )
+    // OCCT's own iterator: its STL adapter derives from the deprecated std::iterator
+    for( NCollection_List<int>::Iterator tagIt( tagList ); tagIt.More(); tagIt.Next() )
     {
-        ostr << tag;
+        ostr << tagIt.Value();
         ostr << ":";
     }
 
