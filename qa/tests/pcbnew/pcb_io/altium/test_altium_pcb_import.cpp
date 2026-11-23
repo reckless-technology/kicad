@@ -2109,4 +2109,35 @@ BOOST_AUTO_TEST_CASE( InternalPlanesArePoured )
 }
 
 
+/**
+ * A forward slash is part of an Altium footprint name (SPDT/TOGGLE/PCB) and is kept, escaped in the
+ * library id as the library importer names that footprint; only a Windows path is cut to its last
+ * part.
+ */
+BOOST_AUTO_TEST_CASE( FootprintNameKeepsSlashes )
+{
+    std::string dataPath = KI_TEST::GetPcbnewTestDataDir()
+                           + "plugins/altium/footprint_name_slash/footprint_name_slash.PcbDoc";
+
+    std::unique_ptr<BOARD> board = m_altiumPlugin.LoadBoard( dataPath );
+    BOOST_REQUIRE( board );
+
+    std::set<wxString> names;
+
+    for( FOOTPRINT* footprint : board->Footprints() )
+        names.insert( footprint->GetFPID().GetUniStringLibItemName() );
+
+    // the whole name, however the library id spells its slashes
+    BOOST_CHECK( std::any_of( names.begin(), names.end(),
+                              []( const wxString& aName )
+                              {
+                                  return aName.StartsWith( wxT( "SPDT" ) )
+                                         && aName.Contains( wxT( "TOGGLE" ) )
+                                         && aName.EndsWith( wxT( "PCB" ) );
+                              } ) );
+    BOOST_CHECK( names.count( wxT( "SOT23" ) ) );
+    BOOST_CHECK( !names.count( wxT( "PCB" ) ) );
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()
