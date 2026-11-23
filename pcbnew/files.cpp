@@ -430,31 +430,8 @@ bool PCB_EDIT_FRAME::SaveBoard( bool aSaveAs, bool aSaveCopy )
 
 int PCB_EDIT_FRAME::inferLegacyEdgeClearance( BOARD* aBoard, bool aShowUserMsg )
 {
-    PCB_LAYER_COLLECTOR collector;
-
-    collector.SetLayerId( Edge_Cuts );
-    collector.Collect( aBoard, GENERAL_COLLECTOR::AllBoardItems );
-
-    int  edgeWidth = -1;
     bool mixed = false;
-
-    for( int i = 0; i < collector.GetCount(); i++ )
-    {
-        if( collector[i]->Type() == PCB_SHAPE_T )
-        {
-            int itemWidth = static_cast<PCB_SHAPE*>( collector[i] )->GetWidth();
-
-            if( edgeWidth != -1 && edgeWidth != itemWidth )
-            {
-                mixed = true;
-                edgeWidth = std::max( edgeWidth, itemWidth );
-            }
-            else
-            {
-                edgeWidth = itemWidth;
-            }
-        }
-    }
+    int  edgeClearance = BOARD_LOADER::InferLegacyEdgeClearance( *aBoard, &mixed );
 
     if( mixed && aShowUserMsg )
     {
@@ -467,7 +444,7 @@ int PCB_EDIT_FRAME::inferLegacyEdgeClearance( BOARD* aBoard, bool aShowUserMsg )
                                "of the board boundary on the Edge Cuts layer." ) );
     }
 
-    return std::max( 0, edgeWidth / 2 );
+    return edgeClearance;
 }
 
 

@@ -4335,6 +4335,11 @@ int PCBNEW_JOBS_HANDLER::JobImport( JOB* aJob )
         }
         board->SetProject( projectPtr, job->m_isPartOfMultiBoardProject );
 
+        // A board whose format predates the copper edge clearance setting keeps its copper clear of
+        // the edge by its outline's width, as the board editor infers when it loads one
+        if( board->m_LegacyDesignSettingsLoaded && !board->m_LegacyCopperEdgeClearanceLoaded )
+            board->GetDesignSettings().m_CopperEdgeClearance = BOARD_LOADER::InferLegacyEdgeClearance( *board );
+
         // an importer has no zone filler of its own, so the zones it leaves unfilled are filled here
         if( !pi->GetZonesToFill().empty() )
         {
@@ -4394,6 +4399,12 @@ int PCBNEW_JOBS_HANDLER::JobImport( JOB* aJob )
         }
 
         // Save as KiCad format
+
+        // as the board editor and the board loader do before they save a board
+        board->BuildConnectivity();
+        board->SynchronizeNetsAndNetClasses( false );
+        board->SynchronizeProperties();
+        RefreshGeneratedTables( *board );
 
         IO_RELEASER<PCB_IO> kicadPlugin( PCB_IO_MGR::FindPlugin( PCB_IO_MGR::KICAD_SEXP ) );
         kicadPlugin->SaveBoard( outputPath, *board );
