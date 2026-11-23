@@ -1178,7 +1178,8 @@ BOOST_AUTO_TEST_CASE( InvertedTrueTypeTextImportsAsKnockout )
  * from its own rasterizer and may store a different box width (and stroke width) for the two
  * copies, so anchoring the imported KiCad text to that per-record box width pushed the copper and
  * mask copies apart.  Verify that every copper-layer free string that has a matching soldermask
- * free string (same text, mirroring and rotation) is imported to the same position.
+ * free string (same text, mirroring and rotation) is imported with its ink centred on the same
+ * point.
  */
 BOOST_AUTO_TEST_CASE( CopperAndMaskTextCoincide )
 {
@@ -1209,9 +1210,7 @@ BOOST_AUTO_TEST_CASE( CopperAndMaskTextCoincide )
     BOOST_REQUIRE_MESSAGE( !maskTexts.empty(), "Board must contain soldermask-layer text" );
 
     // A copper string and a mask string are the same logical label when they share text, rotation
-    // and mirroring.  KiCad's IU tolerance for "coincident" is tight; before the fix the gap was
-    // 50000-75000 IU (0.05-0.075 mm).
-    const int tolerance = 1000; // 1 micron
+    // and mirroring.  Before the fix the gap was 50000-75000 IU (0.05-0.075 mm).
 
     int matchedPairs = 0;
 
@@ -1235,10 +1234,18 @@ BOOST_AUTO_TEST_CASE( CopperAndMaskTextCoincide )
 
             matchedPairs++;
 
+            // The copies' strokes differ, so their inks differ in width and their anchors with
+            // them; what Altium keeps common, and so must the import, is the centre of the ink.
+            // KiCad's stroke glyphs do not grow quite evenly with the pen, so within 20 microns.
+            const int inkTolerance = 20000;
+
+            VECTOR2I inkDelta = copper->GetEffectiveTextShape()->BBox().Centre()
+                                - mask->GetEffectiveTextShape()->BBox().Centre();
+
             BOOST_CHECK_MESSAGE(
-                    std::abs( delta.x ) <= tolerance && std::abs( delta.y ) <= tolerance,
+                    std::abs( inkDelta.x ) <= inkTolerance && std::abs( inkDelta.y ) <= inkTolerance,
                     wxString::Format( "Copper/mask copies of '%s' diverge by (%d, %d) IU",
-                                      copper->GetText(), delta.x, delta.y ) );
+                                      copper->GetText(), inkDelta.x, inkDelta.y ) );
         }
     }
 

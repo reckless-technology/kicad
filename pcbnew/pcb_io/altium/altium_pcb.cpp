@@ -7262,8 +7262,157 @@ void ALTIUM_PCB::HelperSetTextboxAlignmentAndPos( const ATEXT6& aElem, PCB_TEXTB
 }
 
 
+namespace
+{
+/**
+ * Glyph advances of Altium's stroke fonts, in units of the text height, fitted by least squares
+ * to the stored text boxes of 58 boards (ink width = box width - stroke width; 427 sans-serif and
+ * 201 default strings, median error 1.0 % and 0.2 %), and checked against Altium's own Gerbers.
+ * A character not in a table takes the table's fallback advance.
+ */
+struct ALTIUM_STROKE_ADVANCES
+{
+    std::map<wxUniChar, double> advance;
+    double                      gap;      ///< taken off a run's sum: the last advance's trailing space
+    double                      fallback;
+    std::map<wxUniChar, double> lastGlyph; ///< added when the character ends the run
+};
+
+
+const ALTIUM_STROKE_ADVANCES& altiumStrokeAdvances( ATEXT6::STROKE_FONT_TYPE aFont )
+{
+    static const ALTIUM_STROKE_ADVANCES sansserif{
+        { { ' ', 0.786 }, { '+', 0.915 }, { '-', 0.901 }, { '.', 0.257 }, { '/', 0.711 },
+          { '0', 0.906 }, { '1', 0.679 }, { '2', 0.909 }, { '3', 0.93 }, { '4', 0.976 },
+          { '5', 0.901 }, { '6', 0.897 }, { '7', 0.946 }, { '8', 0.944 }, { '9', 0.9 },
+          { 'A', 0.957 }, { 'B', 0.95 }, { 'C', 1.009 }, { 'D', 0.9 }, { 'E', 0.762 },
+          { 'F', 0.74 }, { 'G', 0.899 }, { 'H', 0.972 }, { 'I', 0.188 }, { 'K', 0.844 },
+          { 'L', 0.706 }, { 'M', 1.096 }, { 'N', 0.984 }, { 'O', 0.991 }, { 'P', 0.886 },
+          { 'R', 0.897 }, { 'S', 0.88 }, { 'T', 0.809 }, { 'U', 0.985 }, { 'V', 0.889 },
+          { 'W', 1.159 }, { 'X', 0.901 }, { 'Y', 0.96 }, { '_', 0.899 }, { 'k', 0.668 },
+          { 'n', 0.795 }, { 'u', 0.831 } },
+        0.107, 0.9,
+        { { '+', 0.248 }, { '1', -0.179 }, { 'S', 0.092 }, { 'T', 0.166 }, { 'W', 0.078 } } };
+
+    static const ALTIUM_STROKE_ADVANCES default_{
+        { { ' ', 1.024 }, { '(', 0.811 }, { ')', 0.811 }, { '+', 0.957 }, { '-', 0.956 },
+          { '.', 0.778 }, { '/', 1.018 }, { '0', 0.997 }, { '1', 0.821 }, { '2', 0.994 },
+          { '3', 1.003 }, { '4', 1.004 }, { '5', 0.987 }, { '6', 1.001 }, { '7', 1.002 },
+          { '8', 0.997 }, { '9', 1.007 }, { 'A', 1.011 }, { 'B', 1.004 }, { 'C', 0.992 },
+          { 'D', 1.009 }, { 'E', 1.0 }, { 'F', 0.996 }, { 'G', 0.96 }, { 'H', 1.033 },
+          { 'I', 0.844 }, { 'J', 1.026 }, { 'K', 0.998 }, { 'L', 0.996 }, { 'M', 1.005 },
+          { 'N', 0.993 }, { 'O', 1.04 }, { 'P', 0.998 }, { 'R', 0.99 }, { 'S', 0.996 },
+          { 'T', 1.013 }, { 'U', 1.032 }, { 'V', 0.986 }, { 'W', 1.06 }, { 'X', 0.944 },
+          { '_', 0.961 }, { 'a', 1.003 }, { 'b', 0.991 }, { 'c', 1.08 }, { 'd', 1.035 },
+          { 'e', 1.046 }, { 'h', 0.944 }, { 'i', 0.844 }, { 'k', 0.901 }, { 'l', 0.785 },
+          { 'm', 1.007 }, { 'n', 1.009 }, { 'o', 0.903 }, { 'p', 1.005 }, { 'r', 0.942 },
+          { 's', 1.048 }, { 't', 0.825 }, { 'u', 1.015 }, { 'x', 0.787 }, { 'y', 1.042 },
+          { 'z', 1.046 } },
+        0.172, 0.998,
+        {  } };
+
+    return aFont == ATEXT6::STROKE_FONT_TYPE::DEFAULT ? default_ : sansserif;
+}
+} // namespace
+
+
+bool ALTIUM_PCB::HelperPlaceStrokeTextOnAltiumInk( const ATEXT6& aElem, EDA_TEXT* aText )
+{
+    if( aElem.fonttype != ALTIUM_TEXT_TYPE::STROKE || aElem.isFrame || aElem.height == 0 )
+        return false;
+
+    if( aText->GetFont() && !aText->GetFont()->IsStroke() )
+        return false;
+
+    const wxString shown = aText->GetShownText( FOR_CANVAS );
+
+    if( shown.IsEmpty() || shown.Contains( wxT( "\n" ) ) )
+        return false;
+
+    const double height = aElem.height;
+    const double stroke = aElem.strokewidth;
+
+    // Altium's ink: its stored box is exact where it has one; otherwise its fonts' advances
+    double inkWidth = 0.0;
+
+    if( aElem.textbox_rect_width > 0 )
+    {
+        inkWidth = static_cast<double>( aElem.textbox_rect_width ) - stroke;
+    }
+    else if( aElem.strokefonttype == ATEXT6::STROKE_FONT_TYPE::SERIF )
+    {
+        inkWidth = 0.0; // no measured advances: keep KiCad's glyph widths, place the start only
+    }
+    else
+    {
+        const ALTIUM_STROKE_ADVANCES& font = altiumStrokeAdvances( aElem.strokefonttype );
+        double                        sum = -font.gap;
+
+        for( wxUniChar c : shown )
+        {
+            auto it = font.advance.find( c );
+            sum += it != font.advance.end() ? it->second : font.fallback;
+        }
+
+        if( auto it = font.lastGlyph.find( shown.Last() ); it != font.lastGlyph.end() )
+            sum += it->second;
+
+        inkWidth = sum * height;
+    }
+
+    // KiCad's own glyph run for this text: upright, left and bottom justified at the origin
+    aText->SetMirrored( false );
+    aText->SetTextAngle( ANGLE_0 );
+    aText->SetHorizJustify( GR_TEXT_H_ALIGN_LEFT );
+    aText->SetVertJustify( GR_TEXT_V_ALIGN_BOTTOM );
+    aText->SetTextPos( VECTOR2I( 0, 0 ) );
+    aText->SetTextSize( VECTOR2I( aElem.height, aElem.height ) );
+
+    // KiCad's ink is its centre lines widened by its own pen, which need not be Altium's stroke.
+    // Copies of one string with different strokes (a copper label and its mask opening) are each
+    // placed on their own ink, so their inks, like Altium's, share a centre but not an anchor.
+    BOX2I  run = aText->GetEffectiveTextShape()->BBox();
+    double pen = aText->GetEffectiveTextPenWidth();
+    double runLeft = run.GetLeft();
+    double centreWidth = run.GetWidth() - pen;
+
+    aText->SetMirrored( aElem.isMirrored );
+
+    if( centreWidth <= 0 )
+        return false;
+
+    // Scale the glyph width so the centre lines run as far as Altium's; a run whose estimate
+    // is far out keeps a plausible width rather than an absurd one
+    double scale = 1.0;
+
+    if( inkWidth > stroke )
+        scale = std::clamp( ( inkWidth - stroke ) / centreWidth, 0.5, 1.35 );
+
+    // Altium's centre lines start at the origin (its ink half a stroke before), and its baseline
+    // is at the origin; KiCad's bottom justified stroke text has its baseline 0.1302 of the size
+    // above the anchor
+    const double alongRun = -( runLeft + pen / 2.0 ) * scale;
+    const double down = 0.1302 * height;
+    const double sign = aElem.isMirrored ? -1.0 : 1.0;
+    const double theta = DEG2RAD( aElem.rotation );
+
+    VECTOR2I anchor( KiROUND( aElem.position.x + std::cos( theta ) * sign * alongRun
+                              + std::sin( theta ) * down ),
+                     KiROUND( aElem.position.y - std::sin( theta ) * sign * alongRun
+                              + std::cos( theta ) * down ) );
+
+    aText->SetTextSize( VECTOR2I( KiROUND( height * scale ), aElem.height ) );
+    aText->SetTextPos( anchor );
+    aText->SetTextAngle( EDA_ANGLE( aElem.rotation, DEGREES_T ) );
+    return true;
+}
+
+
 void ALTIUM_PCB::HelperSetTextAlignmentAndPos( const ATEXT6& aElem, EDA_TEXT* aText )
 {
+    if( HelperPlaceStrokeTextOnAltiumInk( aElem, aText ) )
+        return;
+
     VECTOR2I kposition = aElem.position;
 
     int margin = aElem.isOffsetBorder ? aElem.text_offset_width : aElem.margin_border_width;

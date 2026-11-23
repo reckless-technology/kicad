@@ -415,6 +415,16 @@ private:
     void HelperSetTextboxAlignmentAndPos( const ATEXT6& aElem, PCB_TEXTBOX* aPcbTextbox );
     void HelperSetTextAlignmentAndPos( const ATEXT6& aElem, EDA_TEXT* aEdaText );
 
+    /**
+     * Place a free Altium stroke text where Altium draws its ink: left and bottom justified at
+     * the text's origin, which is where Altium's glyph run starts and its baseline lies, with the
+     * glyphs widened or narrowed so the run is as long as Altium's.  Altium's run length is its
+     * stored box where it has one, and otherwise comes from its stroke fonts' glyph advances.
+     *
+     * @return false, leaving \a aEdaText alone, when the text is not one this can place.
+     */
+    bool HelperPlaceStrokeTextOnAltiumInk( const ATEXT6& aElem, EDA_TEXT* aEdaText );
+
     std::vector<std::pair<PCB_LAYER_ID, int>>
     HelperGetSolderAndPasteMaskExpansions( const ALTIUM_RECORD aType, const int aPrimitiveIndex,
                                            const ALTIUM_LAYER aAltiumLayer );
