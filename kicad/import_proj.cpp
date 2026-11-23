@@ -49,6 +49,7 @@
 #include <project_sch.h>
 #include <project_pcb.h>
 
+#include <io/altium/altium_outjob.h>
 #include <io/easyedapro/easyedapro_import_utils.h>
 #include <io/easyedapro/easyedapro_parser.h>
 #include <io/easyedapro/easyedapro_v3_parser.h>
@@ -365,6 +366,8 @@ void IMPORT_PROJ_HELPER::AltiumProjectHandler()
     std::set<wxString> sch_libs;
     std::set<wxString> pcb_libs;
 
+    std::vector<wxString> outJobs;
+
     wxString pcb_file;
     int      pcb_file_type = PCB_IO_MGR::ALTIUM_DESIGNER;
 
@@ -434,6 +437,9 @@ void IMPORT_PROJ_HELPER::AltiumProjectHandler()
 
         if( !fname.GetExt().CmpNoCase( "SCHLIB" ) )
             sch_libs.insert( fname.GetFullPath() );
+
+        if( !fname.GetExt().CmpNoCase( "OUTJOB" ) && fname.FileExists() )
+            outJobs.push_back( fname.GetFullPath() );
     }
 
     addLocalLibraries( sch_libs, FRAME_SCH );
@@ -460,6 +466,61 @@ void IMPORT_PROJ_HELPER::AltiumProjectHandler()
 
     if( !pcb_file.empty() )
         doImport( pcb_file, FRAME_PCB_EDITOR, pcb_file_type );
+
+    importAltiumOutJobs( outJobs );
+}
+
+
+std::set<wxString> IMPORT_PROJ_HELPER::importedCopperLayers()
+{
+    if( !m_importedFrames.count( FRAME_PCB_EDITOR ) )
+        return { wxT( "F.Cu" ), wxT( "B.Cu" ) };
+
+    std::string payload;
+    m_frame->Kiway().ExpressMail( FRAME_PCB_EDITOR, MAIL_PCB_GET_COPPER_LAYERS, payload, m_frame );
+
+    std::set<wxString> layers;
+    wxStringTokenizer  tokenizer( From_UTF8( payload ), wxT( "\n" ), wxTOKEN_STRTOK );
+
+    while( tokenizer.HasMoreTokens() )
+        layers.insert( tokenizer.GetNextToken() );
+
+    return layers;
+}
+
+
+void IMPORT_PROJ_HELPER::importAltiumOutJobs( const std::vector<wxString>& aOutJobs )
+{
+    if( aOutJobs.empty() )
+        return;
+
+    const wxString     projectName = m_TargetProj.GetName();
+    std::set<wxString> copperLayers = importedCopperLayers();
+
+    for( const wxString& outJobPath : aOutJobs )
+    {
+        wxString stem = projectName;
+
+        if( aOutJobs.size() > 1 )
+            stem += wxT( "-" ) + wxFileName( outJobPath ).GetName();
+
+        wxFileName jobsetFile( m_TargetProj.GetPath(), stem, FILEEXT::KiCadJobSetFileExtension );
+
+        try
+        {
+            ALTIUM_OUTJOB outJob = ALTIUM_OUTJOB::FromFile( outJobPath, projectName, copperLayers );
+
+            // An output job KiCad can make nothing of would leave an empty jobset
+            if( outJob.HasJobs() && !jobsetFile.FileExists() )
+                outJob.SaveJobset( jobsetFile.GetFullPath() );
+        }
+        catch( const IO_ERROR& error )
+        {
+            DisplayErrorMessage( m_frame,
+                                 wxString::Format( _( "The Altium output job '%s' was not converted." ), outJobPath ),
+                                 error.What() );
+        }
+    }
 }
 
 
