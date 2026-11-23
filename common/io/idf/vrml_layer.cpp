@@ -139,7 +139,7 @@ static void CALLBACK vrml_tess_err( GLenum errorID, void* user_data )
 
 
 static void CALLBACK vrml_tess_combine( GLdouble coords[3], VERTEX_3D* vertex_data[4],
-                                        GLfloat weight[4], void** outData, void* user_data )
+                                        GLfloat weight [[maybe_unused]][4], void** outData, void* user_data )
 {
     VRML_LAYER* lp = (VRML_LAYER*) user_data;
 
