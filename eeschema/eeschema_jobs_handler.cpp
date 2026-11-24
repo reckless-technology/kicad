@@ -2762,11 +2762,12 @@ int EESCHEMA_JOBS_HANDLER::JobImport( JOB* aJob )
         SCH_SCREENS screens( schematic->Root() );
 
         std::unordered_map<SCH_SCREEN*, wxString> filenameMap;
-        filenameMap[schematic->RootScreen()] = outputFn.GetFullPath();
+        wxString                                  errorMsg;
 
-        wxString errorMsg;
-
-        if( !PrepareSaveAsFiles( *schematic, screens, inputFn, outputFn, /*aSaveCopy*/ true,
+        // Moved, not copied: the root screen is already renamed to the output, so the sub-sheet
+        // screens are renamed beside it too, and each sheet's file name is then made relative to its
+        // moved parent. A save-copy here left them named at the input, so the root linked back there.
+        if( !PrepareSaveAsFiles( *schematic, screens, inputFn, outputFn, /*aSaveCopy*/ false,
                                  /*aCopySubsheets*/ true, /*aIncludeExternSheets*/ true,
                                  filenameMap, errorMsg ) )
         {
@@ -2774,14 +2775,17 @@ int EESCHEMA_JOBS_HANDLER::JobImport( JOB* aJob )
             return CLI::EXIT_CODES::ERR_UNKNOWN;
         }
 
-        // PrepareSaveAsFiles seeds an entry (empty for sheets it does not relocate) for every
-        // screen; empty paths are skipped.
         IO_RELEASER<SCH_IO> kicadPi( SCH_IO_MGR::FindPlugin( SCH_IO_MGR::SCH_KICAD ) );
 
         for( size_t i = 0; i < screens.GetCount(); i++ )
         {
             SCH_SCREEN* screen = screens.GetScreen( i );
-            wxString    path = filenameMap[screen];
+
+            // the virtual root's screen only holds the top-level sheets and has no file of its own
+            if( screen == schematic->Root().GetScreen() )
+                continue;
+
+            wxString path = screen->GetFileName();
 
             if( path.IsEmpty() )
                 continue;
