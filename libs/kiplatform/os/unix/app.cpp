@@ -36,8 +36,9 @@
  * Function to attach to the glib logger to eat the output it gives so we don't
  * get the message spam on the terminal from wxWidget's abuse of the GTK API.
  */
-static GLogWriterOutput nullLogWriter( GLogLevelFlags log_level, const GLogField* fields,
-                                       gsize n_fields, gpointer user_data )
+static GLogWriterOutput nullLogWriter( GLogLevelFlags   log_level [[maybe_unused]],
+                                       const GLogField* fields [[maybe_unused]], gsize n_fields [[maybe_unused]],
+                                       gpointer user_data [[maybe_unused]] )
 {
     return G_LOG_WRITER_HANDLED;
 }
@@ -61,12 +62,12 @@ bool KIPLATFORM::APP::Init()
 }
 
 
-void KIPLATFORM::APP::EnableDarkMode( bool aForce )
+void KIPLATFORM::APP::EnableDarkMode( bool aForce [[maybe_unused]] )
 {
 }
 
 
-bool KIPLATFORM::APP::AttachConsole( bool aTryAlloc )
+bool KIPLATFORM::APP::AttachConsole( bool aTryAlloc [[maybe_unused]] )
 {
     // Not implemented on this platform
     return true;
@@ -80,7 +81,7 @@ bool KIPLATFORM::APP::IsOperatingSystemUnsupported()
 }
 
 
-bool KIPLATFORM::APP::RegisterApplicationRestart( const wxString& aCommandLine )
+bool KIPLATFORM::APP::RegisterApplicationRestart( const wxString& aCommandLine [[maybe_unused]] )
 {
     // Not implemented on this platform
     return true;
@@ -100,12 +101,13 @@ bool KIPLATFORM::APP::SupportsShutdownBlockReason()
 }
 
 
-void KIPLATFORM::APP::RemoveShutdownBlockReason( wxWindow* aWindow )
+void KIPLATFORM::APP::RemoveShutdownBlockReason( wxWindow* aWindow [[maybe_unused]] )
 {
 }
 
 
-void KIPLATFORM::APP::SetShutdownBlockReason( wxWindow* aWindow, const wxString& aReason )
+void KIPLATFORM::APP::SetShutdownBlockReason( wxWindow*       aWindow [[maybe_unused]],
+                                              const wxString& aReason [[maybe_unused]] )
 {
 }
 
@@ -115,7 +117,7 @@ void KIPLATFORM::APP::ForceTimerMessagesToBeCreatedIfNecessary()
 }
 
 
-void KIPLATFORM::APP::AddDynamicLibrarySearchPath( const wxString& aPath )
+void KIPLATFORM::APP::AddDynamicLibrarySearchPath( const wxString& aPath [[maybe_unused]] )
 {
 }
 

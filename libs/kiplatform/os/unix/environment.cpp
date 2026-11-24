@@ -86,7 +86,7 @@ bool KIPLATFORM::ENV::MoveToTrash( const wxString& aPath, wxString& aError )
 }
 
 
-bool KIPLATFORM::ENV::IsNetworkPath( const wxString& aPath )
+bool KIPLATFORM::ENV::IsNetworkPath( const wxString& aPath [[maybe_unused]] )
 {
     // placeholder, we "nerf" behavior if its a network path so return false by default
     return false;
@@ -251,7 +251,7 @@ bool KIPLATFORM::ENV::GetSystemProxyConfig( const wxString& aURL, PROXY_CONFIG& 
 }
 
 
-bool KIPLATFORM::ENV::VerifyFileSignature( const wxString& aPath )
+bool KIPLATFORM::ENV::VerifyFileSignature( const wxString& aPath [[maybe_unused]] )
 {
     return true;
 }
@@ -263,8 +263,9 @@ wxString KIPLATFORM::ENV::GetAppUserModelId()
 }
 
 
-void KIPLATFORM::ENV::SetAppDetailsForWindow( wxWindow* aWindow, const wxString& aRelaunchCommand,
-                                              const wxString& aRelaunchDisplayName )
+void KIPLATFORM::ENV::SetAppDetailsForWindow( wxWindow*       aWindow [[maybe_unused]],
+                                              const wxString& aRelaunchCommand [[maybe_unused]],
+                                              const wxString& aRelaunchDisplayName [[maybe_unused]] )
 {
 }
 
@@ -275,6 +276,6 @@ wxString KIPLATFORM::ENV::GetCommandLineStr()
 }
 
 
-void KIPLATFORM::ENV::AddToRecentDocs( const wxString& aPath )
+void KIPLATFORM::ENV::AddToRecentDocs( const wxString& aPath [[maybe_unused]] )
 {
 }

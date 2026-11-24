@@ -28,17 +28,17 @@ namespace KIPLATFORM {
     {
     }
 
-    bool SYSINFO::GetMemoryInfo( MEMORY_INFO& aMemoryInfo )
+    bool SYSINFO::GetMemoryInfo( MEMORY_INFO& aMemoryInfo [[maybe_unused]] )
     {
         return false;
     }
 
-    bool SYSINFO::GetCPUInfo( std::vector<CPU_INFO>& aCpuInfos )
+    bool SYSINFO::GetCPUInfo( std::vector<CPU_INFO>& aCpuInfos [[maybe_unused]] )
     {
         return false;
     }
 
-    bool SYSINFO::GetGPUInfo( std::vector<GPU_INFO>& aGpuInfos )
+    bool SYSINFO::GetGPUInfo( std::vector<GPU_INFO>& aGpuInfos [[maybe_unused]] )
     {
         return false;
     }

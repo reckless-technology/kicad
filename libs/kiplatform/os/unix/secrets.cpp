@@ -27,15 +27,20 @@ namespace KIPLATFORM
 {
     namespace SECRETS
     {
-        static const SecretSchema schema =
-        {
-            "org.kicad.kicad", SECRET_SCHEMA_NONE,
-            {
-                { "service", SECRET_SCHEMA_ATTRIBUTE_STRING },
-                { "key", SECRET_SCHEMA_ATTRIBUTE_STRING },
-                { nullptr, SECRET_SCHEMA_ATTRIBUTE_STRING }
-            }
-        };
+        static const SecretSchema schema = { "org.kicad.kicad",
+                                             SECRET_SCHEMA_NONE,
+                                             { { "service", SECRET_SCHEMA_ATTRIBUTE_STRING },
+                                               { "key", SECRET_SCHEMA_ATTRIBUTE_STRING },
+                                               { nullptr, SECRET_SCHEMA_ATTRIBUTE_STRING } },
+                                             // libsecret's private reserved fields
+                                             0,
+                                             nullptr,
+                                             nullptr,
+                                             nullptr,
+                                             nullptr,
+                                             nullptr,
+                                             nullptr,
+                                             nullptr };
 
         bool StoreSecret( const wxString& aService, const wxString& aKey, const wxString& aSecret )
         {
@@ -67,7 +72,7 @@ namespace KIPLATFORM
             return true;
         }
 
-        static void storeFinished( GObject* aSource, GAsyncResult* aResult, gpointer aDone )
+        static void storeFinished( GObject* aSource [[maybe_unused]], GAsyncResult* aResult, gpointer aDone )
         {
             std::unique_ptr<std::function<void( bool )>> done( static_cast<std::function<void( bool )>*>( aDone ) );
             bool                                         stored = secret_password_store_finish( aResult, nullptr );
@@ -121,7 +126,7 @@ namespace KIPLATFORM
             return true;
         }
 
-        static void lookupFinished( GObject* aSource, GAsyncResult* aResult, gpointer aDone )
+        static void lookupFinished( GObject* aSource [[maybe_unused]], GAsyncResult* aResult, gpointer aDone )
         {
             using DONE = std::function<void( bool, const wxString& )>;
 
