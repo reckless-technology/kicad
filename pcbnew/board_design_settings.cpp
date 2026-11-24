@@ -26,6 +26,8 @@
 #include <board_design_settings.h>
 #include <board_design_settings_defaults.h>
 #include <magic_enum.hpp>
+#include <font/font.h>
+#include <font/kicad_font_name.h>
 #include <pcb_dimension.h>
 #include <pcb_track.h>
 #include <layer_ids.h>
@@ -85,6 +87,7 @@ BOARD_DESIGN_SETTINGS::BOARD_DESIGN_SETTINGS( JSON_SETTINGS* aParent, const std:
                                                pcbIUScale.mmToIU( DEFAULT_SILK_TEXT_SIZE ) );
     m_TextThickness[ LAYER_CLASS_SILK ] = pcbIUScale.mmToIU( DEFAULT_SILK_TEXT_WIDTH );
     m_TextItalic[ LAYER_CLASS_SILK ] = false;
+    m_TextFont[LAYER_CLASS_SILK].clear();
     m_TextUpright[ LAYER_CLASS_SILK ] = false;
 
     m_LineThickness[ LAYER_CLASS_COPPER ] = pcbIUScale.mmToIU( DEFAULT_COPPER_LINE_WIDTH );
@@ -92,6 +95,7 @@ BOARD_DESIGN_SETTINGS::BOARD_DESIGN_SETTINGS( JSON_SETTINGS* aParent, const std:
                                                  pcbIUScale.mmToIU( DEFAULT_COPPER_TEXT_SIZE ) );
     m_TextThickness[ LAYER_CLASS_COPPER ] = pcbIUScale.mmToIU( DEFAULT_COPPER_TEXT_WIDTH );
     m_TextItalic[ LAYER_CLASS_COPPER ] = false;
+    m_TextFont[LAYER_CLASS_COPPER].clear();
     m_TextUpright[ LAYER_CLASS_COPPER ] = false;
 
     // Edges & Courtyards; text properties aren't used but better to have them holding
@@ -101,6 +105,7 @@ BOARD_DESIGN_SETTINGS::BOARD_DESIGN_SETTINGS( JSON_SETTINGS* aParent, const std:
                                                 pcbIUScale.mmToIU( DEFAULT_TEXT_SIZE ) );
     m_TextThickness[ LAYER_CLASS_EDGES ] = pcbIUScale.mmToIU( DEFAULT_TEXT_WIDTH );
     m_TextItalic[ LAYER_CLASS_EDGES ] = false;
+    m_TextFont[LAYER_CLASS_EDGES].clear();
     m_TextUpright[ LAYER_CLASS_EDGES ] = false;
 
     m_LineThickness[ LAYER_CLASS_COURTYARD ] = pcbIUScale.mmToIU( DEFAULT_COURTYARD_WIDTH );
@@ -108,6 +113,7 @@ BOARD_DESIGN_SETTINGS::BOARD_DESIGN_SETTINGS( JSON_SETTINGS* aParent, const std:
                                                     pcbIUScale.mmToIU( DEFAULT_TEXT_SIZE ) );
     m_TextThickness[ LAYER_CLASS_COURTYARD ] = pcbIUScale.mmToIU( DEFAULT_TEXT_WIDTH );
     m_TextItalic[ LAYER_CLASS_COURTYARD ] = false;
+    m_TextFont[LAYER_CLASS_COURTYARD].clear();
     m_TextUpright[ LAYER_CLASS_COURTYARD ] = false;
 
     m_LineThickness[ LAYER_CLASS_FAB ] = pcbIUScale.mmToIU( DEFAULT_LINE_WIDTH );
@@ -115,6 +121,7 @@ BOARD_DESIGN_SETTINGS::BOARD_DESIGN_SETTINGS( JSON_SETTINGS* aParent, const std:
                                             pcbIUScale.mmToIU( DEFAULT_TEXT_SIZE ) );
     m_TextThickness[ LAYER_CLASS_FAB ] = pcbIUScale.mmToIU( DEFAULT_TEXT_WIDTH );
     m_TextItalic[ LAYER_CLASS_FAB ] = false;
+    m_TextFont[LAYER_CLASS_FAB].clear();
     m_TextUpright[ LAYER_CLASS_FAB ] = false;
 
     m_LineThickness[ LAYER_CLASS_OTHERS ] = pcbIUScale.mmToIU( DEFAULT_LINE_WIDTH );
@@ -122,6 +129,7 @@ BOARD_DESIGN_SETTINGS::BOARD_DESIGN_SETTINGS( JSON_SETTINGS* aParent, const std:
                                                  pcbIUScale.mmToIU( DEFAULT_TEXT_SIZE ) );
     m_TextThickness[ LAYER_CLASS_OTHERS ] = pcbIUScale.mmToIU( DEFAULT_TEXT_WIDTH );
     m_TextItalic[ LAYER_CLASS_OTHERS ] = false;
+    m_TextFont[LAYER_CLASS_OTHERS].clear();
     m_TextUpright[ LAYER_CLASS_OTHERS ] = false;
 
     m_StyleFPFields = false;
@@ -890,6 +898,9 @@ BOARD_DESIGN_SETTINGS::BOARD_DESIGN_SETTINGS( JSON_SETTINGS* aParent, const std:
     m_params.emplace_back( new PARAM<bool>( "defaults.silk_text_italic",
             &m_TextItalic[LAYER_CLASS_SILK], false ) );
 
+    m_params.emplace_back(
+            new PARAM<wxString>( "defaults.silk_text_font", &m_TextFont[LAYER_CLASS_SILK], wxEmptyString ) );
+
     m_params.emplace_back( new PARAM<bool>( "defaults.silk_text_upright",
             &m_TextUpright[ LAYER_CLASS_SILK ], true ) );
 
@@ -911,6 +922,9 @@ BOARD_DESIGN_SETTINGS::BOARD_DESIGN_SETTINGS( JSON_SETTINGS* aParent, const std:
 
     m_params.emplace_back( new PARAM<bool>( "defaults.copper_text_italic",
             &m_TextItalic[LAYER_CLASS_COPPER], false ) );
+
+    m_params.emplace_back(
+            new PARAM<wxString>( "defaults.copper_text_font", &m_TextFont[LAYER_CLASS_COPPER], wxEmptyString ) );
 
     m_params.emplace_back( new PARAM<bool>( "defaults.copper_text_upright",
             &m_TextUpright[LAYER_CLASS_COPPER], true ) );
@@ -942,6 +956,9 @@ BOARD_DESIGN_SETTINGS::BOARD_DESIGN_SETTINGS( JSON_SETTINGS* aParent, const std:
     m_params.emplace_back( new PARAM<bool>( "defaults.fab_text_italic",
             &m_TextItalic[LAYER_CLASS_FAB], false ) );
 
+    m_params.emplace_back(
+            new PARAM<wxString>( "defaults.fab_text_font", &m_TextFont[LAYER_CLASS_FAB], wxEmptyString ) );
+
     m_params.emplace_back( new PARAM<bool>( "defaults.fab_text_upright",
             &m_TextUpright[LAYER_CLASS_FAB], true ) );
 
@@ -963,6 +980,9 @@ BOARD_DESIGN_SETTINGS::BOARD_DESIGN_SETTINGS( JSON_SETTINGS* aParent, const std:
 
     m_params.emplace_back( new PARAM<bool>( "defaults.other_text_italic",
             &m_TextItalic[LAYER_CLASS_OTHERS], false ) );
+
+    m_params.emplace_back(
+            new PARAM<wxString>( "defaults.other_text_font", &m_TextFont[LAYER_CLASS_OTHERS], wxEmptyString ) );
 
     m_params.emplace_back( new PARAM<bool>( "defaults.other_text_upright",
             &m_TextUpright[LAYER_CLASS_OTHERS], true ) );
@@ -1269,6 +1289,8 @@ void BOARD_DESIGN_SETTINGS::initFromOther( const BOARD_DESIGN_SETTINGS& aOther )
     std::copy( std::begin( aOther.m_TextItalic ), std::end( aOther.m_TextItalic ),
                std::begin( m_TextItalic ) );
 
+    std::copy( std::begin( aOther.m_TextFont ), std::end( aOther.m_TextFont ), std::begin( m_TextFont ) );
+
     std::copy( std::begin( aOther.m_TextUpright ), std::end( aOther.m_TextUpright ),
                std::begin( m_TextUpright ) );
 
@@ -1379,6 +1401,9 @@ bool BOARD_DESIGN_SETTINGS::operator==( const BOARD_DESIGN_SETTINGS& aOther ) co
 
     if( !std::equal( std::begin( m_TextItalic ), std::end( m_TextItalic ),
                      std::begin( aOther.m_TextItalic ) ) )
+        return false;
+
+    if( !std::equal( std::begin( m_TextFont ), std::end( m_TextFont ), std::begin( aOther.m_TextFont ) ) )
         return false;
 
     if( !std::equal( std::begin( m_TextUpright ), std::end( m_TextUpright ),
@@ -2109,6 +2134,25 @@ int BOARD_DESIGN_SETTINGS::GetTextThickness( PCB_LAYER_ID aLayer ) const
 bool BOARD_DESIGN_SETTINGS::GetTextItalic( PCB_LAYER_ID aLayer ) const
 {
     return m_TextItalic[ GetLayerClass( aLayer ) ];
+}
+
+
+wxString BOARD_DESIGN_SETTINGS::GetTextFontName( PCB_LAYER_ID aLayer ) const
+{
+    return m_TextFont[GetLayerClass( aLayer )];
+}
+
+
+KIFONT::FONT* BOARD_DESIGN_SETTINGS::GetTextFont( PCB_LAYER_ID aLayer, bool aBold, bool aItalic,
+                                                  const std::vector<wxString>* aEmbeddedFonts ) const
+{
+    const wxString& name = m_TextFont[GetLayerClass( aLayer )];
+
+    // Not set, or the stroke font: text with no font of its own is drawn in the stroke font
+    if( name.IsEmpty() || name == KICAD_FONT_NAME )
+        return nullptr;
+
+    return KIFONT::FONT::GetFont( name, aBold, aItalic, aEmbeddedFonts );
 }
 
 

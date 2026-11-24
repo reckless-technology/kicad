@@ -39,6 +39,11 @@
 #include <router/pns_meander.h>
 
 
+namespace KIFONT
+{
+class FONT;
+}
+
 class DRC_ENGINE;
 class NET_SETTINGS;
 class NETCLASS;
@@ -617,6 +622,25 @@ public:
     int GetTextThickness( PCB_LAYER_ID aLayer ) const;
 
     bool GetTextItalic( PCB_LAYER_ID aLayer ) const;
+
+    /**
+     * Return the name of the default font face from the layer class for the given layer.
+     *
+     * It is empty when the user has chosen none, in which case existing text keeps its own face. An explicit
+     * #KICAD_FONT_NAME is the stroke font.
+     */
+    wxString GetTextFontName( PCB_LAYER_ID aLayer ) const;
+
+    /**
+     * Return the default font from the layer class for the given layer.
+     *
+     * @param aEmbeddedFonts is the board's embedded font files, if it has any, so a font that is not
+     *                       installed is still found.
+     * @return the font, or nullptr when none is set or the stroke font is chosen (a new item then carries no
+     *         font of its own).
+     */
+    KIFONT::FONT* GetTextFont( PCB_LAYER_ID aLayer, bool aBold, bool aItalic,
+                               const std::vector<wxString>* aEmbeddedFonts = nullptr ) const;
     bool GetTextUpright( PCB_LAYER_ID aLayer ) const;
 
     int GetLayerClass( PCB_LAYER_ID aLayer ) const;
@@ -730,6 +754,7 @@ public:
     VECTOR2I          m_TextSize[LAYER_CLASS_COUNT];
     int               m_TextThickness[ LAYER_CLASS_COUNT ];
     bool              m_TextItalic[ LAYER_CLASS_COUNT ];
+    wxString m_TextFont[LAYER_CLASS_COUNT]; ///< Font face; empty is not set, #KICAD_FONT_NAME is the stroke font
     bool              m_TextUpright[ LAYER_CLASS_COUNT ];
 
     // Default values for dimension objects

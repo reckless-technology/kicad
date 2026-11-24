@@ -3747,6 +3747,13 @@ std::set<KIFONT::OUTLINE_FONT*> BOARD::GetFonts() const
         }
     }
 
+    // Footprint fields and text take the board's default font too, so their fonts travel with the board
+    for( FOOTPRINT* footprint : Footprints() )
+    {
+        std::set<KIFONT::OUTLINE_FONT*> footprintFonts = footprint->GetFonts();
+        fonts.insert( footprintFonts.begin(), footprintFonts.end() );
+    }
+
     return fonts;
 }
 

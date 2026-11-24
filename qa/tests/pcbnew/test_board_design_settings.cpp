@@ -430,6 +430,59 @@ BOOST_AUTO_TEST_CASE( MigratedSaveDropsRenamedKeys )
 }
 
 
+// A project saved before the default font existed loads with no default font in any layer class and saves
+// the same settings plus the new keys, which hold that (empty) default
+BOOST_AUTO_TEST_CASE( ProjectWithoutDefaultFontStaysUnset )
+{
+    std::filesystem::path sourcePath = std::filesystem::path( KI_TEST::GetTestDataRootDir() ) / "common" / "git"
+                                       / "mdw_ctrl_board" / "ctrl-board.kicad_pro";
+    std::ifstream         source( sourcePath );
+    nlohmann::json        original = nlohmann::json::parse( source );
+
+    BOOST_REQUIRE( !original["board"]["design_settings"]["defaults"].contains( "silk_text_font" ) );
+
+    nlohmann::json saved = SaveCtrlBoard(
+            []( nlohmann::json& )
+            {
+            } );
+
+    nlohmann::json defaults = saved["board"]["design_settings"]["defaults"];
+
+    for( const char* layerClass : { "silk", "copper", "fab", "other" } )
+    {
+        std::string key = std::string( layerClass ) + "_text_font";
+
+        BOOST_REQUIRE( defaults.contains( key ) );
+        BOOST_CHECK_EQUAL( defaults.value( key, "x" ), "" );
+        defaults.erase( key );
+    }
+
+    // Everything else in the defaults is as it was
+    BOOST_CHECK( defaults == original["board"]["design_settings"]["defaults"] );
+}
+
+
+// A face chosen for a layer class is saved and loaded back, per class
+BOOST_AUTO_TEST_CASE( DefaultFontRoundTrip )
+{
+    nlohmann::json saved = SaveCtrlBoard(
+            []( nlohmann::json& aDoc )
+            {
+                nlohmann::json& defaults = aDoc["board"]["design_settings"]["defaults"];
+
+                defaults["silk_text_font"] = "Monaspace Xenon";
+                defaults["fab_text_font"] = "KiCad Font";
+            } );
+
+    const nlohmann::json& defaults = saved["board"]["design_settings"]["defaults"];
+
+    BOOST_CHECK_EQUAL( defaults.value( "silk_text_font", "" ), "Monaspace Xenon" );
+    BOOST_CHECK_EQUAL( defaults.value( "fab_text_font", "" ), "KiCad Font" );
+    BOOST_CHECK_EQUAL( defaults.value( "copper_text_font", "x" ), "" );
+    BOOST_CHECK_EQUAL( defaults.value( "other_text_font", "x" ), "" );
+}
+
+
 // Keys converted at load time outside a migration keep their value under the current key only
 BOOST_AUTO_TEST_CASE( LoadTimeConvertedKeysDropOnSave )
 {

@@ -27,6 +27,9 @@
 #include <eda_text.h>
 
 #include <kidialog.h>
+#include <font/fontconfig.h>
+#include <font/kicad_font_name.h>
+#include <pgm_base.h>
 
 
 // Columns of layer classes grid
@@ -37,7 +40,8 @@ enum
     COL_TEXT_HEIGHT,
     COL_TEXT_THICKNESS,
     COL_TEXT_ITALIC,
-    COL_TEXT_UPRIGHT
+    COL_TEXT_UPRIGHT,
+    COL_TEXT_FONT
 };
 
 enum
@@ -131,6 +135,21 @@ bool PANEL_SETUP_TEXT_AND_GRAPHICS::TransferDataToWindow()
 #define DISABLE_CELL( row, col ) \
     m_grid->SetReadOnly( row, col ); m_grid->SetCellBackgroundColour( row, col, disabledColour );
 
+    // Not set first (existing text keeps its face), then the stroke font, then every installed family
+    const wxString notSet = _( "(not set)" );
+
+    std::vector<std::string> families;
+    Fontconfig()->ListFonts( families, std::string( Pgm().GetLanguageTag().utf8_str() ) );
+
+    wxArrayString fontNames;
+
+    for( const std::string& family : families )
+        fontNames.Add( wxString::FromUTF8( family ) );
+
+    fontNames.Sort();
+    fontNames.Insert( KICAD_FONT_NAME, 0 );
+    fontNames.Insert( notSet, 0 );
+
     for( int i = 0; i < ROW_COUNT; ++i )
     {
         SET_MILS_CELL( i, COL_LINE_THICKNESS, m_BrdSettings->m_LineThickness[ i ] );
@@ -142,6 +161,7 @@ bool PANEL_SETUP_TEXT_AND_GRAPHICS::TransferDataToWindow()
             DISABLE_CELL( i, COL_TEXT_THICKNESS );
             DISABLE_CELL( i, COL_TEXT_ITALIC );
             DISABLE_CELL( i, COL_TEXT_UPRIGHT );
+            DISABLE_CELL( i, COL_TEXT_FONT );
         }
         else
         {
@@ -164,6 +184,14 @@ bool PANEL_SETUP_TEXT_AND_GRAPHICS::TransferDataToWindow()
             attr->SetReadOnly();    // not really; we delegate interactivity to GRID_TRICKS
             attr->SetAlignment( wxALIGN_CENTER, wxALIGN_CENTER );
             m_grid->SetAttr( i, COL_TEXT_UPRIGHT, attr );
+
+            m_grid->SetCellValue( i, COL_TEXT_FONT,
+                                  m_BrdSettings->m_TextFont[i].IsEmpty() ? notSet : m_BrdSettings->m_TextFont[i] );
+
+            // Allow other names so a face that is not installed here, but is named by the board, is kept
+            attr = new wxGridCellAttr;
+            attr->SetEditor( new wxGridCellChoiceEditor( fontNames, true ) );
+            m_grid->SetAttr( i, COL_TEXT_FONT, attr );
         }
     }
 
@@ -271,6 +299,10 @@ bool PANEL_SETUP_TEXT_AND_GRAPHICS::TransferDataFromWindow()
                 wxGridCellBoolEditor::IsTrueValue( m_grid->GetCellValue( i, COL_TEXT_ITALIC ) );
         m_BrdSettings->m_TextUpright[ i ] =
                 wxGridCellBoolEditor::IsTrueValue( m_grid->GetCellValue( i, COL_TEXT_UPRIGHT ) );
+
+        wxString fontName = m_grid->GetCellValue( i, COL_TEXT_FONT ).Trim().Trim( false );
+
+        m_BrdSettings->m_TextFont[i] = fontName == _( "(not set)" ) ? wxString() : fontName;
     }
 
     if( errorsMsg.IsEmpty() )
