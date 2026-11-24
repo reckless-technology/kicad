@@ -273,18 +273,13 @@ void FOOTPRINT_UTILS::CheckShortingPads(
                     }
                     else
                     {
-                        std::shared_ptr<SHAPE> holeA =
-                                pad->GetEffectiveHoleShape( UNDEFINED_LAYER, HOLE_TO_HOLE_CONSTRAINT );
-                        std::shared_ptr<SHAPE> holeB =
-                                other->GetEffectiveHoleShape( UNDEFINED_LAYER, HOLE_TO_HOLE_CONSTRAINT );
+                        // Both are drilled holes, never rectangular, so both are segments
+                        std::shared_ptr<SHAPE_SEGMENT> holeA = std::static_pointer_cast<SHAPE_SEGMENT>(
+                                pad->GetEffectiveHoleShape( UNDEFINED_LAYER, HOLE_TO_HOLE_CONSTRAINT ) );
+                        std::shared_ptr<SHAPE_SEGMENT> holeB = std::static_pointer_cast<SHAPE_SEGMENT>(
+                                other->GetEffectiveHoleShape( UNDEFINED_LAYER, HOLE_TO_HOLE_CONSTRAINT ) );
 
-                        // A hole is tested by its axis, which for a rectangular hole is its center
-                        bool collide =
-                                holeB->Type() == SH_SEGMENT
-                                        ? holeA->Collide( static_cast<SHAPE_SEGMENT*>( holeB.get() )->GetSeg(), 0 )
-                                        : holeA->Collide( holeB->Centre(), 0 );
-
-                        if( collide )
+                        if( holeA->Collide( holeB->GetSeg(), 0 ) )
                             aErrorHandler( pad, other, DRCE_DRILLED_HOLES_TOO_CLOSE, pos );
                     }
                 }

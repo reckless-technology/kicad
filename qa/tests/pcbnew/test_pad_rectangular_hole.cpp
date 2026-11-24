@@ -494,6 +494,22 @@ BOOST_AUTO_TEST_CASE( UnplatedRectangularHoleMakesNoMaskBridge )
 }
 
 
+// A routed hole is not a drilled one, even when it is square, so the drilled-hole checks (the
+// router's hole to hole, the footprint checker's, press-fit) leave it alone as they do a slot
+BOOST_AUTO_TEST_CASE( RectangularHoleIsNotDrilled )
+{
+    BOARD board;
+    PAD*  pad = addHolePad( board, VECTOR2I( 0, 0 ), PAD_DRILL_SHAPE::RECTANGLE, VECTOR2I( mm( 1 ), mm( 1 ) ),
+                            PAD_ATTRIB::PTH, PAD_SHAPE::RECTANGLE, VECTOR2I( mm( 2 ), mm( 2 ) ) );
+
+    BOOST_CHECK( pad->HasHole() );
+    BOOST_CHECK( !pad->HasDrilledHole() );
+
+    pad->SetDrillShape( PAD_DRILL_SHAPE::CIRCLE );
+    BOOST_CHECK( pad->HasDrilledHole() );
+}
+
+
 // ODB++ drill layers hold round hits and straight slots, whose symbols each need a tool. A
 // rectangular hole is neither, so it is left off them and goes to the rout layer as its outline.
 BOOST_AUTO_TEST_CASE( OdbDrillLayersAgreeWithTheirTools )
