@@ -82,18 +82,16 @@ BOOST_DATA_TEST_CASE( GeneratorLoading, boost::unit_test::data::make( GeneratorL
 {
     const auto doBoardTest = [&]( const BOARD& aBoard )
     {
-        for( const GENERATOR_LOAD_TEST_CASE& testCase : testCase.m_generatorCases )
+        for( const GENERATOR_LOAD_TEST_CASE& generatorCase : testCase.m_generatorCases )
         {
-            BOOST_TEST_MESSAGE(
-                    "Checking for generator with UUID: " << testCase.m_searchUuid.AsString() );
+            BOOST_TEST_MESSAGE( "Checking for generator with UUID: " << generatorCase.m_searchUuid.AsString() );
 
-            const auto& generator =
-                    static_cast<PCB_GENERATOR&>( KI_TEST::RequireBoardItemWithTypeAndId(
-                            aBoard, PCB_GENERATOR_T, testCase.m_searchUuid ) );
+            const auto& generator = static_cast<PCB_GENERATOR&>(
+                    KI_TEST::RequireBoardItemWithTypeAndId( aBoard, PCB_GENERATOR_T, generatorCase.m_searchUuid ) );
 
-            BOOST_CHECK_EQUAL( generator.IsLocked(), testCase.m_expectedLocked );
-            BOOST_CHECK_EQUAL( generator.GetName(), testCase.m_expectedName );
-            BOOST_CHECK_EQUAL( generator.GetItems().size(), testCase.m_expectedMemberCount );
+            BOOST_CHECK_EQUAL( generator.IsLocked(), generatorCase.m_expectedLocked );
+            BOOST_CHECK_EQUAL( generator.GetName(), generatorCase.m_expectedName );
+            BOOST_CHECK_EQUAL( generator.GetItems().size(), generatorCase.m_expectedMemberCount );
         }
     };
 

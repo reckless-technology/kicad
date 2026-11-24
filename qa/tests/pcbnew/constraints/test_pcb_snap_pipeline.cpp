@@ -731,10 +731,10 @@ BOOST_FIXTURE_TEST_CASE( AlignmentGuideSurvivesPresentationReset, PCB_SNAP_FIXTU
                                            return aGuide.style == SNAP_GUIDE_STYLE::SNAP_LINE;
                                        } );
     BOOST_REQUIRE( guideIt != result.guides.end() );
-    const SNAP_LINE_MANAGER& manager = helper->SnapManager().GetSnapLineManager();
-    BOOST_REQUIRE( manager.GetSnapLineOrigin() );
-    BOOST_CHECK( manager.HasCompleteSnapLine() );
-    BOOST_CHECK_EQUAL( *manager.GetSnapLineOrigin(), guideIt->start );
+    const SNAP_LINE_MANAGER& snapLines = helper->SnapManager().GetSnapLineManager();
+    BOOST_REQUIRE( snapLines.GetSnapLineOrigin() );
+    BOOST_CHECK( snapLines.HasCompleteSnapLine() );
+    BOOST_CHECK_EQUAL( *snapLines.GetSnapLineOrigin(), guideIt->start );
 }
 
 
