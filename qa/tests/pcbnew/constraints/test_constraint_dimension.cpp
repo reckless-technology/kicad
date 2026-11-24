@@ -1316,7 +1316,7 @@ BOOST_AUTO_TEST_CASE( SetValueModeTransitions )
     BOOST_REQUIRE( DimensionCanDrive( &board, dim ) );
 
     // Driven to Driving creates the self driving length with the seeded value
-    MODE_STAGING    toDriving{ .board = board };
+    MODE_STAGING    toDriving{ .board = board, .modified = {}, .added = {}, .removed = {} };
     PCB_CONSTRAINT* driving =
             SetDimensionValueMode( &board, dim, DIM_VALUE_MODE::DRIVING, 12 * MM, std::nullopt,
                                    toDriving.modify(), toDriving.add(), toDriving.remove() );
@@ -1332,7 +1332,7 @@ BOOST_AUTO_TEST_CASE( SetValueModeTransitions )
     BOOST_CHECK( toDriving.removed.empty() );
 
     // Driving to Arbitrary retires the driving length and installs custom text
-    MODE_STAGING toArbitrary{ .board = board };
+    MODE_STAGING    toArbitrary{ .board = board, .modified = {}, .added = {}, .removed = {} };
     PCB_CONSTRAINT* result =
             SetDimensionValueMode( &board, dim, DIM_VALUE_MODE::ARBITRARY, std::nullopt,
                                    wxString( wxS( "REF" ) ), toArbitrary.modify(), toArbitrary.add(),
@@ -1345,7 +1345,7 @@ BOOST_AUTO_TEST_CASE( SetValueModeTransitions )
     BOOST_CHECK_EQUAL( toArbitrary.removed.size(), 1 );
 
     // Arbitrary to Driven just clears the override bindings stay
-    MODE_STAGING toDriven{ .board = board };
+    MODE_STAGING toDriven{ .board = board, .modified = {}, .added = {}, .removed = {} };
     SetDimensionValueMode( &board, dim, DIM_VALUE_MODE::DRIVEN, std::nullopt, std::nullopt,
                            toDriven.modify(), toDriven.add(), toDriven.remove() );
 
@@ -1363,7 +1363,7 @@ BOOST_AUTO_TEST_CASE( SetValueModeDrivingRejections )
     BOARD            board;
     PCB_DIM_ALIGNED* unbound = addAlignedDim( board, { 0, 0 }, { 10 * MM, 0 } );
 
-    MODE_STAGING staging{ .board = board };
+    MODE_STAGING staging{ .board = board, .modified = {}, .added = {}, .removed = {} };
 
     BOOST_CHECK( !SetDimensionValueMode( &board, unbound, DIM_VALUE_MODE::DRIVING, 12 * MM,
                                          std::nullopt, staging.modify(), staging.add(),
@@ -1417,7 +1417,7 @@ BOOST_AUTO_TEST_CASE( SetValueModeDrivingResolvesGeometry )
     bindEndpoint( board, dim->m_Uuid, CONSTRAINT_ANCHOR::END,
                   { rect->m_Uuid, CONSTRAINT_ANCHOR::VERTEX, 1 } );
 
-    MODE_STAGING    staging{ .board = board };
+    MODE_STAGING    staging{ .board = board, .modified = {}, .added = {}, .removed = {} };
     PCB_CONSTRAINT* driving =
             SetDimensionValueMode( &board, dim, DIM_VALUE_MODE::DRIVING, 15 * MM, std::nullopt,
                                    staging.modify(), staging.add(), staging.remove() );
@@ -1496,7 +1496,7 @@ BOOST_AUTO_TEST_CASE( ValueModePropertySurface )
     // Driving gates the value to a positive length and shows the constraint value
     dim->ChangeValueMode( DIM_VALUE_MODE::DRIVEN );
 
-    MODE_STAGING staging{ .board = board };
+    MODE_STAGING staging{ .board = board, .modified = {}, .added = {}, .removed = {} };
     SetDimensionValueMode( &board, dim, DIM_VALUE_MODE::DRIVING, 12 * MM, std::nullopt,
                            staging.modify(), staging.add(), staging.remove() );
 
