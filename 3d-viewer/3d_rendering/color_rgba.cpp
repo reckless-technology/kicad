@@ -28,19 +28,19 @@
 
 COLOR_RGBA::COLOR_RGBA( const SFVEC3F& aColor )
 {
-    r = (unsigned int) glm::clamp( (int) ( aColor.r * 255 ), 0, 255 );
-    g = (unsigned int) glm::clamp( (int) ( aColor.g * 255 ), 0, 255 );
-    b = (unsigned int) glm::clamp( (int) ( aColor.b * 255 ), 0, 255 );
+    r = (unsigned char) glm::clamp( (int) ( aColor.r * 255 ), 0, 255 );
+    g = (unsigned char) glm::clamp( (int) ( aColor.g * 255 ), 0, 255 );
+    b = (unsigned char) glm::clamp( (int) ( aColor.b * 255 ), 0, 255 );
     a = 255;
 }
 
 
 COLOR_RGBA::COLOR_RGBA( const SFVEC4F& aColor )
 {
-    r = (unsigned int) glm::clamp( (int) ( aColor.r * 255 ), 0, 255 );
-    g = (unsigned int) glm::clamp( (int) ( aColor.g * 255 ), 0, 255 );
-    b = (unsigned int) glm::clamp( (int) ( aColor.b * 255 ), 0, 255 );
-    a = (unsigned int) glm::clamp( (int) ( aColor.a * 255 ), 0, 255 );
+    r = (unsigned char) glm::clamp( (int) ( aColor.r * 255 ), 0, 255 );
+    g = (unsigned char) glm::clamp( (int) ( aColor.g * 255 ), 0, 255 );
+    b = (unsigned char) glm::clamp( (int) ( aColor.b * 255 ), 0, 255 );
+    a = (unsigned char) glm::clamp( (int) ( aColor.a * 255 ), 0, 255 );
 }
 
 
@@ -57,7 +57,8 @@ COLOR_RGBA BlendColor( const COLOR_RGBA& aC1, const COLOR_RGBA& aC2 )
     const unsigned int b = aC1.b + aC2.b;
     const unsigned int a = aC1.a + aC2.a;
 
-    return COLOR_RGBA( ( r >> 1 ), ( g >> 1 ), ( b >> 1 ), ( a >> 1 ) );
+    return COLOR_RGBA( static_cast<unsigned char>( r >> 1 ), static_cast<unsigned char>( g >> 1 ),
+                       static_cast<unsigned char>( b >> 1 ), static_cast<unsigned char>( a >> 1 ) );
 }
 
 
@@ -68,7 +69,8 @@ COLOR_RGBA BlendColor( const COLOR_RGBA& aC1, const COLOR_RGBA& aC2, const COLOR
     const unsigned int b = aC1.b + aC2.b + aC3.b;
     const unsigned int a = aC1.a + aC2.a + aC3.a;
 
-    return COLOR_RGBA( ( r / 3 ), ( g / 3 ), ( b / 3 ), ( a / 3 ) );
+    return COLOR_RGBA( static_cast<unsigned char>( r / 3 ), static_cast<unsigned char>( g / 3 ),
+                       static_cast<unsigned char>( b / 3 ), static_cast<unsigned char>( a / 3 ) );
 }
 
 
@@ -80,5 +82,6 @@ COLOR_RGBA BlendColor( const COLOR_RGBA& aC1, const COLOR_RGBA& aC2, const COLOR
     const unsigned int b = aC1.b + aC2.b + aC3.b + aC4.b;
     const unsigned int a = aC1.a + aC2.a + aC3.a + aC4.a;
 
-    return COLOR_RGBA( ( r >> 2 ), ( g >> 2 ), ( b >> 2 ), ( a >> 2 ) );
+    return COLOR_RGBA( static_cast<unsigned char>( r >> 2 ), static_cast<unsigned char>( g >> 2 ),
+                       static_cast<unsigned char>( b >> 2 ), static_cast<unsigned char>( a >> 2 ) );
 }

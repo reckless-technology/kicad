@@ -114,7 +114,7 @@ namespace SEXPR
         }
         else if( m_type == SEXPR_TYPE::SEXPR_TYPE_ATOM_INTEGER )
         {
-            return static_cast< SEXPR_INTEGER const * >(this)->m_value;
+            return static_cast<double>( static_cast<SEXPR_INTEGER const*>( this )->m_value );
         }
         else
         {

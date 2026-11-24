@@ -233,9 +233,12 @@ public:
     constexpr const Vec GetCenter() const { return Centre(); }
 
     /**
-     * @return the width or height, whichever is greater.
+     * @return the width or height, whichever is greater, rounded and clamped to the range of int.
      */
-    constexpr int GetSizeMax() const { return ( m_Size.x > m_Size.y ) ? m_Size.x : m_Size.y; }
+    constexpr int GetSizeMax() const
+    {
+        return KiROUND<size_type, int>( ( m_Size.x > m_Size.y ) ? m_Size.x : m_Size.y );
+    }
 
     constexpr void SetOrigin( const Vec& pos )
     {

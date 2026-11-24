@@ -68,11 +68,11 @@ ESERIES_VALUES::ESERIES_VALUES( int aESeries )
         baseSeriesSkipValue = 1 << ( ESERIES::E192 - aESeries );
     }
 
-    unsigned int decadeBaseLen = baseSeries->size();
+    size_t decadeBaseLen = baseSeries->size();
 
     reserve( decadeBaseLen / baseSeriesSkipValue );
 
-    for( unsigned int idx = 0; idx < decadeBaseLen; idx += baseSeriesSkipValue )
+    for( size_t idx = 0; idx < decadeBaseLen; idx += baseSeriesSkipValue )
     {
         emplace_back( ( *baseSeries )[idx] );
     }
@@ -86,7 +86,7 @@ ESERIES_IN_DECADE::ESERIES_IN_DECADE( int aESeries, int aDecadeExponent )
     ESERIES::ESERIES_VALUES seriesValues( aESeries );
 
     uint16_t     decadeBase = seriesValues[0];
-    unsigned int decadeBaseLen = seriesValues.size();
+    size_t       decadeBaseLen = seriesValues.size();
     double       decadeMultiplier = std::pow( 10, aDecadeExponent );
 
     reserve( decadeBaseLen );
