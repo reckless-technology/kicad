@@ -73,6 +73,10 @@ struct SCOPED_PGM_BACKUP_SETTINGS
             .enabled = true,
             .format = BACKUP_FORMAT::INCREMENTAL,
             .location = BACKUP_LOCATION::PROJECT_DIR,
+            .backup_on_autosave = false,
+            .limit_total_files = 0,
+            .limit_daily_files = 0,
+            .min_interval = 0,
             .limit_total_size = COMMON_SETTINGS::AUTO_BACKUP::UNLIMITED_SIZE,
         };
 

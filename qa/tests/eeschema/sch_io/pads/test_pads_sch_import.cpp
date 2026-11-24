@@ -1734,10 +1734,10 @@ BOOST_AUTO_TEST_CASE( BinarySymbolsAndSheets )
     worksheet.name.text = wxS( "CI_WORKSHEET" );
     worksheet.name.source = worksheet.source;
     const std::array<std::pair<wxString, SOURCE_POINT>, 4> worksheetMarkers = {
-        std::pair{ wxS( "TOP_LEFT" ), SOURCE_POINT{ .x = model.sheets.front().pageSize.x, .y = 0 } },
-        std::pair{ wxS( "TOP_RIGHT" ), SOURCE_POINT{ .x = 0, .y = 0 } },
+        std::pair{ wxS( "TOP_LEFT" ), SOURCE_POINT{ .x = model.sheets.front().pageSize.x, .y = 0, .source = {} } },
+        std::pair{ wxS( "TOP_RIGHT" ), SOURCE_POINT{ .x = 0, .y = 0, .source = {} } },
         std::pair{ wxS( "BOTTOM_LEFT" ), model.sheets.front().pageSize },
-        std::pair{ wxS( "BOTTOM_RIGHT" ), SOURCE_POINT{ .x = 0, .y = model.sheets.front().pageSize.y } }
+        std::pair{ wxS( "BOTTOM_RIGHT" ), SOURCE_POINT{ .x = 0, .y = model.sheets.front().pageSize.y, .source = {} } }
     };
 
     for( const auto& [text, position] : worksheetMarkers )
@@ -2406,7 +2406,7 @@ BOOST_AUTO_TEST_CASE( BinaryMultiSheetHierarchy )
         sheet.id = SHEET_ID( static_cast<uint32_t>( sourceIndex + 1 ) );
         sheet.index = sourceIndex;
         sheet.name.text = wxString::Format( wxS( "[%zu]SOURCE_ORDER" ), sourceIndex + 1 );
-        sheet.pageSize = { .x = 34000, .y = 22000 };
+        sheet.pageSize = { .x = 34000, .y = 22000, .source = {} };
         orderedModel.sheets.push_back( std::move( sheet ) );
     }
 
@@ -2638,7 +2638,7 @@ BOOST_AUTO_TEST_CASE( BinaryConnectivityAndGraphics )
     for( uint8_t variant = 0; variant < 3; ++variant )
     {
         MODEL_LABEL label = groundTemplate;
-        label.position = { .x = 1000 + 500 * variant, .y = 1000 };
+        label.position = { .x = 1000 + 500 * variant, .y = 1000, .source = {} };
         label.symbolVariant = variant;
         label.text.text = wxString::Format( wxS( "TEST_GND_%u" ), variant );
         connectivity.labels.push_back( std::move( label ) );
@@ -2647,7 +2647,7 @@ BOOST_AUTO_TEST_CASE( BinaryConnectivityAndGraphics )
     for( uint8_t variant = 0; variant < 5; ++variant )
     {
         MODEL_LABEL label = powerTemplate;
-        label.position = { .x = 1000 + 500 * variant, .y = 2000 };
+        label.position = { .x = 1000 + 500 * variant, .y = 2000, .source = {} };
         label.symbolVariant = variant;
         label.text.text = wxString::Format( wxS( "TEST_PWR_%u" ), variant );
         connectivity.labels.push_back( std::move( label ) );

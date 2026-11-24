@@ -100,15 +100,15 @@ BOOST_AUTO_TEST_CASE( ParseAndConstruct )
     };
 
     std::vector<TESTCASE> cases = {
-        { .filename = "sym-lib-table", .expected_rows = 224 },
-        { .filename = "fp-lib-table", .expected_rows = 146 },
-        { .filename = "nested-symbols", .expected_rows = 6 },
-        { .filename = "nested-disabled", .expected_rows = 4 },
-        { .filename = "nested-hidden", .expected_rows = 4 },
-        { .filename = "cycle", .expected_rows = 2 },
-        { .filename = "sym-hand-edited", .expected_rows = 2, .check_formatted = false },
-        { .filename = "corrupted", .expected_error = "Syntax error at line 6, column 9" },
-        { .filename = "truncated", .expected_error = "Syntax error at line 11, column 1" }
+        { .filename = "sym-lib-table", .expected_error = {}, .expected_rows = 224 },
+        { .filename = "fp-lib-table", .expected_error = {}, .expected_rows = 146 },
+        { .filename = "nested-symbols", .expected_error = {}, .expected_rows = 6 },
+        { .filename = "nested-disabled", .expected_error = {}, .expected_rows = 4 },
+        { .filename = "nested-hidden", .expected_error = {}, .expected_rows = 4 },
+        { .filename = "cycle", .expected_error = {}, .expected_rows = 2 },
+        { .filename = "sym-hand-edited", .expected_error = {}, .expected_rows = 2, .check_formatted = false },
+        { .filename = "corrupted", .expected_error = "Syntax error at line 6, column 9", .expected_rows = 0 },
+        { .filename = "truncated", .expected_error = "Syntax error at line 11, column 1", .expected_rows = 0 }
     };
 
     wxFileName fn( KI_TEST::GetTestDataRootDir(), wxEmptyString );
