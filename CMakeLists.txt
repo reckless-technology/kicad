@@ -38,6 +38,31 @@ if (POLICY CMP0156)
   cmake_policy(SET CMP0156 NEW)
 endif (POLICY CMP0156)
 
+#  macOS: compile against the SDK the configure searched.  With CMAKE_OSX_SYSROOT empty, CMake 4 finds frameworks in
+#  the SDK `xcrun --show-sdk-path` names at configure time, but the compile lines carry no -isysroot, so the compiler
+#  picks its own default SDK at build time.  A Command Line Tools update can move that default, leaving the cached
+#  -F paths outside the sysroot: clang then treats those SDK headers as ordinary headers, and their deprecations fail
+#  a KICAD_WERROR build.  Caching the same xcrun path here, before project(), puts one SDK on every compile line and
+#  in every find.  It runs only on a macOS host building for macOS (APPLE is not set until project()); an SDK
+#  given with -DCMAKE_OSX_SYSROOT or SDKROOT wins, as xcrun honors SDKROOT.
+if( CMAKE_HOST_APPLE AND NOT CMAKE_OSX_SYSROOT
+    AND ( NOT DEFINED CMAKE_SYSTEM_NAME OR CMAKE_SYSTEM_NAME STREQUAL "Darwin" ) )
+    execute_process( COMMAND xcrun --show-sdk-path
+                     OUTPUT_VARIABLE _kicad_default_sdk_path
+                     OUTPUT_STRIP_TRAILING_WHITESPACE
+                     RESULT_VARIABLE _kicad_xcrun_result
+                     ERROR_QUIET )
+
+    if( _kicad_xcrun_result EQUAL 0 AND IS_DIRECTORY "${_kicad_default_sdk_path}" )
+        set( CMAKE_OSX_SYSROOT "${_kicad_default_sdk_path}" CACHE PATH
+             "The macOS SDK to build against; defaults to the one xcrun names at the first configure" FORCE )
+        message( STATUS "macOS SDK: ${CMAKE_OSX_SYSROOT}" )
+    endif()
+
+    unset( _kicad_default_sdk_path )
+    unset( _kicad_xcrun_result )
+endif()
+
 # Default to CMAKE_BUILD_TYPE = Release unless overridden on command line
 # http://www.cmake.org/pipermail/cmake/2008-September/023808.html
 if( DEFINED CMAKE_BUILD_TYPE )
