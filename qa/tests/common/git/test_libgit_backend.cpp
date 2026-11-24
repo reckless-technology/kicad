@@ -1521,7 +1521,8 @@ BOOST_AUTO_TEST_CASE( AbandonOperation_ClearsInterruptedMerge )
         BOOST_REQUIRE_EQUAL( git_annotated_commit_lookup( &sideCommit, repo, &side ), GIT_OK );
 
         const git_annotated_commit* heads[1] = { sideCommit };
-        git_checkout_options        checkoutOpts = GIT_CHECKOUT_OPTIONS_INIT;
+        git_checkout_options        checkoutOpts;
+        BOOST_REQUIRE_EQUAL( git_checkout_options_init( &checkoutOpts, GIT_CHECKOUT_OPTIONS_VERSION ), GIT_OK );
         checkoutOpts.checkout_strategy = GIT_CHECKOUT_SAFE | GIT_CHECKOUT_ALLOW_CONFLICTS;
 
         BOOST_REQUIRE_EQUAL( git_merge( repo, heads, 1, nullptr, &checkoutOpts ), GIT_OK );
@@ -1596,7 +1597,8 @@ BOOST_AUTO_TEST_CASE( AbandonOperation_KeepsWorkTheOperationDidNotTouch )
         BOOST_REQUIRE_EQUAL( git_annotated_commit_lookup( &sideCommit, repo, &side ), GIT_OK );
 
         const git_annotated_commit* heads[1] = { sideCommit };
-        git_checkout_options        checkoutOpts = GIT_CHECKOUT_OPTIONS_INIT;
+        git_checkout_options        checkoutOpts;
+        BOOST_REQUIRE_EQUAL( git_checkout_options_init( &checkoutOpts, GIT_CHECKOUT_OPTIONS_VERSION ), GIT_OK );
         checkoutOpts.checkout_strategy = GIT_CHECKOUT_SAFE | GIT_CHECKOUT_ALLOW_CONFLICTS;
 
         BOOST_REQUIRE_EQUAL( git_merge( repo, heads, 1, nullptr, &checkoutOpts ), GIT_OK );

@@ -79,6 +79,8 @@ static const wxCmdLineEntryDesc g_cmdLineDesc[] = {
             "v",
             "verbose",
             _( "print parsing information" ).mb_str(),
+            wxCMD_LINE_VAL_NONE,
+            0,
     },
     {
             wxCMD_LINE_PARAM,
@@ -88,7 +90,7 @@ static const wxCmdLineEntryDesc g_cmdLineDesc[] = {
             wxCMD_LINE_VAL_STRING,
             wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_PARAM_MULTIPLE,
     },
-    { wxCMD_LINE_NONE }
+    wxCMD_LINE_DESC_END
 };
 
 

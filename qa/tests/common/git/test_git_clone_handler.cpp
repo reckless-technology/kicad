@@ -61,7 +61,8 @@ BOOST_FIXTURE_TEST_CASE( CloneLeavesWorkTreeClean, KI_TEST::GIT_TEST_FIXTURE )
         KI_TEST::CommitAllGitFiles( source.get(), wxS( "Import ctrl-board" ) );
 
         git_repository*   bare = nullptr;
-        git_clone_options options = GIT_CLONE_OPTIONS_INIT;
+        git_clone_options options;
+        BOOST_REQUIRE_EQUAL( git_clone_options_init( &options, GIT_CLONE_OPTIONS_VERSION ), GIT_OK );
         options.bare = 1;
 
         BOOST_REQUIRE_EQUAL( git_clone( &bare, wxFileSystem::FileNameToURL( wxFileName( sourcePath ) ).utf8_str(),
@@ -79,7 +80,8 @@ BOOST_FIXTURE_TEST_CASE( CloneLeavesWorkTreeClean, KI_TEST::GIT_TEST_FIXTURE )
     BOOST_REQUIRE( handler.PerformClone() );
     BOOST_REQUIRE( common.GetRepo() );
 
-    git_status_options statusOptions = GIT_STATUS_OPTIONS_INIT;
+    git_status_options statusOptions;
+    BOOST_REQUIRE_EQUAL( git_status_options_init( &statusOptions, GIT_STATUS_OPTIONS_VERSION ), GIT_OK );
     statusOptions.show = GIT_STATUS_SHOW_INDEX_AND_WORKDIR;
     statusOptions.flags = GIT_STATUS_OPT_INCLUDE_UNTRACKED | GIT_STATUS_OPT_RECURSE_UNTRACKED_DIRS;
 
