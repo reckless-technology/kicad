@@ -82,7 +82,7 @@ void PANEL_VIA_SIZE::ThemeChanged()
 }
 
 
-void PANEL_VIA_SIZE::OnViaEpsilonR_Button( wxCommandEvent& event )
+void PANEL_VIA_SIZE::OnViaEpsilonR_Button( wxCommandEvent& event [[maybe_unused]] )
 {
     //Shows a list of current relative dielectric constant(Er) and select a value.
     wxArrayString list = StandardRelativeDielectricConstantList();
@@ -95,7 +95,7 @@ void PANEL_VIA_SIZE::OnViaEpsilonR_Button( wxCommandEvent& event )
 }
 
 
-void PANEL_VIA_SIZE::OnViaRho_Button( wxCommandEvent& event )
+void PANEL_VIA_SIZE::OnViaRho_Button( wxCommandEvent& event [[maybe_unused]] )
 {
     wxArrayString list = StandardResistivityList();
 
@@ -108,7 +108,7 @@ void PANEL_VIA_SIZE::OnViaRho_Button( wxCommandEvent& event )
 }
 
 
-void PANEL_VIA_SIZE::onUpdateViaCalcErrorText( wxUpdateUIEvent& event )
+void PANEL_VIA_SIZE::onUpdateViaCalcErrorText( wxUpdateUIEvent& event [[maybe_unused]] )
 {
     // Update the Error message if a via has a external diameter
     // bigger than the clearance area diameter
@@ -122,7 +122,7 @@ void PANEL_VIA_SIZE::onUpdateViaCalcErrorText( wxUpdateUIEvent& event )
 }
 
 
-void PANEL_VIA_SIZE::OnViaResetButtonClick( wxCommandEvent& event )
+void PANEL_VIA_SIZE::OnViaResetButtonClick( wxCommandEvent& event [[maybe_unused]] )
 {
     #define DEFAULT_UNIT_SEL_MM 0
     #define DEFAULT_UNIT_SEL_OHM 0
@@ -197,7 +197,7 @@ void PANEL_VIA_SIZE::SaveSettings( PCB_CALCULATOR_SETTINGS* aCfg )
 }
 
 
-void PANEL_VIA_SIZE::OnViaCalculate( wxCommandEvent& event )
+void PANEL_VIA_SIZE::OnViaCalculate( wxCommandEvent& event [[maybe_unused]] )
 {
     // Load parameters
     double finishedHoleDia     = std::abs( DoubleFromString( m_textCtrlHoleDia->GetValue() ) );

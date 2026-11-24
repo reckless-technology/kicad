@@ -130,9 +130,9 @@ public:
     {
     }
 
-    void Reset( RESET_REASON aReason ) override {}
+    void Reset( RESET_REASON aReason [[maybe_unused]] ) override {}
 
-    int ArmMenu( const TOOL_EVENT& aEvent )
+    int ArmMenu( const TOOL_EVENT& aEvent [[maybe_unused]] )
     {
         Activate();
         SetContextMenu( &m_menu, CMENU_NOW );

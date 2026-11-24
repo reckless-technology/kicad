@@ -112,12 +112,12 @@ void PANEL_ESERIES_DISPLAY::ThemeChanged()
 }
 
 
-void PANEL_ESERIES_DISPLAY::SaveSettings( PCB_CALCULATOR_SETTINGS* aCfg )
+void PANEL_ESERIES_DISPLAY::SaveSettings( PCB_CALCULATOR_SETTINGS* aCfg [[maybe_unused]] )
 {
 }
 
 
-void PANEL_ESERIES_DISPLAY::LoadSettings( PCB_CALCULATOR_SETTINGS* aCfg )
+void PANEL_ESERIES_DISPLAY::LoadSettings( PCB_CALCULATOR_SETTINGS* aCfg [[maybe_unused]] )
 {
 }
 

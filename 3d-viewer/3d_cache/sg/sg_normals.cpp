@@ -82,7 +82,7 @@ bool SGNORMALS::SetParent( SGNODE* aParent, bool notify )
 }
 
 
-SGNODE* SGNORMALS::FindNode( const char* aNodeName, const SGNODE* aCaller ) noexcept
+SGNODE* SGNORMALS::FindNode( const char* aNodeName, const SGNODE* aCaller [[maybe_unused]] ) noexcept
 {
     if( nullptr == aNodeName || 0 == aNodeName[0] )
         return nullptr;
@@ -94,19 +94,19 @@ SGNODE* SGNORMALS::FindNode( const char* aNodeName, const SGNODE* aCaller ) noex
 }
 
 
-void SGNORMALS::unlinkChildNode( const SGNODE* aCaller ) noexcept
+void SGNORMALS::unlinkChildNode( const SGNODE* aCaller [[maybe_unused]] ) noexcept
 {
     wxCHECK( false, /* void */ );
 }
 
 
-void SGNORMALS::unlinkRefNode( const SGNODE* aCaller ) noexcept
+void SGNORMALS::unlinkRefNode( const SGNODE* aCaller [[maybe_unused]] ) noexcept
 {
     wxCHECK( false, /* void */ );
 }
 
 
-bool SGNORMALS::AddRefNode( SGNODE* aNode ) noexcept
+bool SGNORMALS::AddRefNode( SGNODE* aNode [[maybe_unused]] ) noexcept
 {
     wxCHECK( false, false );
 
@@ -114,7 +114,7 @@ bool SGNORMALS::AddRefNode( SGNODE* aNode ) noexcept
 }
 
 
-bool SGNORMALS::AddChildNode( SGNODE* aNode ) noexcept
+bool SGNORMALS::AddChildNode( SGNODE* aNode [[maybe_unused]] ) noexcept
 {
     wxCHECK( false, false );
 
@@ -272,7 +272,7 @@ bool SGNORMALS::WriteCache( std::ostream& aFile, SGNODE* parentNode )
 }
 
 
-bool SGNORMALS::ReadCache( std::istream& aFile, SGNODE* parentNode )
+bool SGNORMALS::ReadCache( std::istream& aFile, SGNODE* parentNode [[maybe_unused]] )
 {
     wxCHECK( norms.empty(), false );
 

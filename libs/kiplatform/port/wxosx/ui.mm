@@ -77,7 +77,7 @@ void KIPLATFORM::UI::GetInfoBarColours( wxColour& aFGColour, wxColour& aBGColour
 }
 
 
-wxWindow* KIPLATFORM::UI::CreateCanvasOverlay( wxWindow* aCanvas )
+wxWindow* KIPLATFORM::UI::CreateCanvasOverlay( wxWindow* aCanvas [[maybe_unused]] )
 {
     return nullptr;
 }
@@ -90,7 +90,7 @@ void KIPLATFORM::UI::ForceFocus( wxWindow* aWindow )
 }
 
 
-bool KIPLATFORM::UI::IsWindowActive( wxWindow* aWindow )
+bool KIPLATFORM::UI::IsWindowActive( wxWindow* aWindow [[maybe_unused]] )
 {
     // Just always return true
     return true;
@@ -115,7 +115,7 @@ bool KIPLATFORM::UI::ActivateWithoutPresenting( wxWindow* aWindow )
 }
 
 
-void KIPLATFORM::UI::StabilizeWindowPosition( wxWindow* aWindow )
+void KIPLATFORM::UI::StabilizeWindowPosition( wxWindow* aWindow [[maybe_unused]] )
 {
     // Not needed on this platform
 }
@@ -177,13 +177,13 @@ bool KIPLATFORM::UI::IsStockCursorOk( wxStockCursor aCursor )
 }
 
 
-void KIPLATFORM::UI::LargeChoiceBoxHack( wxChoice* aChoice )
+void KIPLATFORM::UI::LargeChoiceBoxHack( wxChoice* aChoice [[maybe_unused]] )
 {
     // Not implemented
 }
 
 
-void KIPLATFORM::UI::EllipsizeChoiceBox( wxChoice* aChoice )
+void KIPLATFORM::UI::EllipsizeChoiceBox( wxChoice* aChoice [[maybe_unused]] )
 {
     // Not implemented
 }
@@ -225,7 +225,7 @@ wxSize KIPLATFORM::UI::GetUnobscuredSize( const wxWindow* aWindow )
 }
 
 
-void KIPLATFORM::UI::SetOverlayScrolling( const wxWindow* aWindow, bool overlay )
+void KIPLATFORM::UI::SetOverlayScrolling( const wxWindow* aWindow [[maybe_unused]], bool overlay [[maybe_unused]] )
 {
     // Not implemented
 }
@@ -273,17 +273,17 @@ bool KIPLATFORM::UI::WarpPointer( wxWindow* aWindow, int aX, int aY )
 }
 
 
-void KIPLATFORM::UI::ImmControl( wxWindow* aWindow, bool aEnable )
+void KIPLATFORM::UI::ImmControl( wxWindow* aWindow [[maybe_unused]], bool aEnable [[maybe_unused]] )
 {
 }
 
 
-void KIPLATFORM::UI::ImeNotifyCancelComposition( wxWindow* aWindow )
+void KIPLATFORM::UI::ImeNotifyCancelComposition( wxWindow* aWindow [[maybe_unused]] )
 {
 }
 
 
-bool KIPLATFORM::UI::InfiniteDragPrepareWindow( wxWindow* aWindow )
+bool KIPLATFORM::UI::InfiniteDragPrepareWindow( wxWindow* aWindow [[maybe_unused]] )
 {
     return true;
 }
@@ -314,7 +314,7 @@ void KIPLATFORM::UI::ReleaseChildWindow( wxNonOwnedWindow* aWindow )
 }
 
 
-void KIPLATFORM::UI::AllowNetworkFileSystems( wxDialog* aDialog )
+void KIPLATFORM::UI::AllowNetworkFileSystems( wxDialog* aDialog [[maybe_unused]] )
 {
     // Not needed on macOS - file dialogs show network filesystems by default
 }
@@ -326,13 +326,13 @@ int KIPLATFORM::UI::GetColumnWidth( const wxDataViewColumn* aColumn )
 }
 
 
-void KIPLATFORM::UI::CancelPendingScroll( wxDataViewCtrl* aCtrl )
+void KIPLATFORM::UI::CancelPendingScroll( wxDataViewCtrl* aCtrl [[maybe_unused]] )
 {
     // Not needed on this platform; the native control does not race on model resets.
 }
 
 
-void KIPLATFORM::UI::SetWMClass( wxWindow* aWindow, const wxString& aClass )
+void KIPLATFORM::UI::SetWMClass( wxWindow* aWindow [[maybe_unused]], const wxString& aClass [[maybe_unused]] )
 {
     // Not applicable on macOS; the bundle identifier provides the application identity.
 }
@@ -352,19 +352,19 @@ void KIPLATFORM::UI::GetNativeWindowHandles( wxWindow* aWindow, void** aHandle, 
 }
 
 
-void KIPLATFORM::UI::PrepareForExternalRendering( wxWindow* aWindow )
+void KIPLATFORM::UI::PrepareForExternalRendering( wxWindow* aWindow [[maybe_unused]] )
 {
     // macOS composites Metal layers natively
 }
 
 
-void KIPLATFORM::UI::KeepAboveExternalRendering( wxWindow* aChild )
+void KIPLATFORM::UI::KeepAboveExternalRendering( wxWindow* aChild [[maybe_unused]] )
 {
     // Child views are composited above the Metal layer of their parent
 }
 
 
-void KIPLATFORM::UI::RebindOnRealize( wxWindow* aWindow )
+void KIPLATFORM::UI::RebindOnRealize( wxWindow* aWindow [[maybe_unused]] )
 {
     // An NSView keeps its identity when reparented
 }

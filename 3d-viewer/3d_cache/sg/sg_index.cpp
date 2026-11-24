@@ -75,7 +75,7 @@ bool SGINDEX::SetParent( SGNODE* aParent, bool notify )
 }
 
 
-SGNODE* SGINDEX::FindNode(const char *aNodeName, const SGNODE *aCaller) noexcept
+SGNODE* SGINDEX::FindNode(const char *aNodeName, const SGNODE *aCaller [[maybe_unused]]) noexcept
 {
     if( nullptr == aNodeName || 0 == aNodeName[0] )
         return nullptr;
@@ -87,21 +87,21 @@ SGNODE* SGINDEX::FindNode(const char *aNodeName, const SGNODE *aCaller) noexcept
 }
 
 
-void SGINDEX::unlinkChildNode( const SGNODE* aCaller ) noexcept
+void SGINDEX::unlinkChildNode( const SGNODE* aCaller [[maybe_unused]] ) noexcept
 {
     // Node should have no children or refs.
     wxCHECK( false, /* void */ );
 }
 
 
-void SGINDEX::unlinkRefNode( const SGNODE* aCaller ) noexcept
+void SGINDEX::unlinkRefNode( const SGNODE* aCaller [[maybe_unused]] ) noexcept
 {
     // Node should have no children or refs.
     wxCHECK( false, /* void */ );
 }
 
 
-bool SGINDEX::AddRefNode( SGNODE* aNode ) noexcept
+bool SGINDEX::AddRefNode( SGNODE* aNode [[maybe_unused]] ) noexcept
 {
     // Node should have no children or refs.
     wxCHECK( false, false );
@@ -110,7 +110,7 @@ bool SGINDEX::AddRefNode( SGNODE* aNode ) noexcept
 }
 
 
-bool SGINDEX::AddChildNode( SGNODE* aNode ) noexcept
+bool SGINDEX::AddChildNode( SGNODE* aNode [[maybe_unused]] ) noexcept
 {
     // Node should have no children or refs.
     wxCHECK( false, false );
@@ -164,7 +164,7 @@ void SGINDEX::ReNameNodes( void )
 }
 
 
-bool SGINDEX::WriteVRML( std::ostream& aFile, bool aReuseFlag )
+bool SGINDEX::WriteVRML( std::ostream& aFile, bool aReuseFlag [[maybe_unused]] )
 {
     if( index.empty() )
         return false;
@@ -300,7 +300,7 @@ bool SGINDEX::WriteCache( std::ostream& aFile, SGNODE* parentNode )
 }
 
 
-bool SGINDEX::ReadCache( std::istream& aFile, SGNODE* parentNode )
+bool SGINDEX::ReadCache( std::istream& aFile, SGNODE* parentNode [[maybe_unused]] )
 {
     wxCHECK( index.empty(), false );
 

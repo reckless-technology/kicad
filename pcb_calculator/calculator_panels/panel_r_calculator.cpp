@@ -88,17 +88,17 @@ void PANEL_R_CALCULATOR::ThemeChanged()
 }
 
 
-void PANEL_R_CALCULATOR::SaveSettings( PCB_CALCULATOR_SETTINGS* aCfg )
+void PANEL_R_CALCULATOR::SaveSettings( PCB_CALCULATOR_SETTINGS* aCfg [[maybe_unused]] )
 {
 }
 
 
-void PANEL_R_CALCULATOR::LoadSettings( PCB_CALCULATOR_SETTINGS* aCfg )
+void PANEL_R_CALCULATOR::LoadSettings( PCB_CALCULATOR_SETTINGS* aCfg [[maybe_unused]] )
 {
 }
 
 
-void PANEL_R_CALCULATOR::OnCalculateESeries( wxCommandEvent& event )
+void PANEL_R_CALCULATOR::OnCalculateESeries( wxCommandEvent& event [[maybe_unused]] )
 {
     double reqr = 1000 * DoubleFromString( m_ResRequired->GetValue() );
 

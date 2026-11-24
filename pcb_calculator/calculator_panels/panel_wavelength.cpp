@@ -76,7 +76,7 @@ void PANEL_WAVELENGTH::LoadSettings( PCB_CALCULATOR_SETTINGS* aCfg )
     update( m_frequency );
 }
 
-void PANEL_WAVELENGTH::updateUnits( wxCommandEvent& aEvent )
+void PANEL_WAVELENGTH::updateUnits( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     update( m_frequency );
 }
@@ -130,7 +130,7 @@ void PANEL_WAVELENGTH::update( double aFrequency )
     m_updatingUI = false;
 }
 
-void PANEL_WAVELENGTH::OnFrequencyChange( wxCommandEvent& event )
+void PANEL_WAVELENGTH::OnFrequencyChange( wxCommandEvent& event [[maybe_unused]] )
 {
     double value;
 
@@ -151,7 +151,7 @@ void PANEL_WAVELENGTH::OnFrequencyChange( wxCommandEvent& event )
     }
 }
 
-void PANEL_WAVELENGTH::OnPeriodChange( wxCommandEvent& event )
+void PANEL_WAVELENGTH::OnPeriodChange( wxCommandEvent& event [[maybe_unused]] )
 {
     double value;
 
@@ -172,7 +172,7 @@ void PANEL_WAVELENGTH::OnPeriodChange( wxCommandEvent& event )
     }
 }
 
-void PANEL_WAVELENGTH::OnWavelengthVacuumChange( wxCommandEvent& event )
+void PANEL_WAVELENGTH::OnWavelengthVacuumChange( wxCommandEvent& event [[maybe_unused]] )
 {
     if( m_updatingUI )
     {
@@ -194,7 +194,7 @@ void PANEL_WAVELENGTH::OnWavelengthVacuumChange( wxCommandEvent& event )
 };
 
 
-void PANEL_WAVELENGTH::OnWavelengthMediumChange( wxCommandEvent& event )
+void PANEL_WAVELENGTH::OnWavelengthMediumChange( wxCommandEvent& event [[maybe_unused]] )
 {
     if( m_updatingUI )
     {
@@ -215,7 +215,7 @@ void PANEL_WAVELENGTH::OnWavelengthMediumChange( wxCommandEvent& event )
     }
 };
 
-void PANEL_WAVELENGTH::OnPermittivityChange( wxCommandEvent& event )
+void PANEL_WAVELENGTH::OnPermittivityChange( wxCommandEvent& event [[maybe_unused]] )
 {
     double   value;
     wxString input = m_permittivityCtrl->GetValue();
@@ -230,7 +230,7 @@ void PANEL_WAVELENGTH::OnPermittivityChange( wxCommandEvent& event )
     }
 }
 
-void PANEL_WAVELENGTH::OnPermeabilityChange( wxCommandEvent& event )
+void PANEL_WAVELENGTH::OnPermeabilityChange( wxCommandEvent& event [[maybe_unused]] )
 {
     double   value;
     wxString input = m_permeabilityCtrl->GetValue();
@@ -245,7 +245,7 @@ void PANEL_WAVELENGTH::OnPermeabilityChange( wxCommandEvent& event )
     }
 }
 
-void PANEL_WAVELENGTH::OnButtonPermittivity( wxCommandEvent& event )
+void PANEL_WAVELENGTH::OnButtonPermittivity( wxCommandEvent& event [[maybe_unused]] )
 {
     wxArrayString list = StandardRelativeDielectricConstantList();
     list.Add( "" ); // Add an empty line for no selection

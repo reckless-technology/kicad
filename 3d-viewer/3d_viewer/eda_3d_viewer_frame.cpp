@@ -256,47 +256,47 @@ void EDA_3D_VIEWER_FRAME::setupUIConditions()
 #define GridSizeCheck( x ) ACTION_CONDITIONS().Check( cond.GridSize( x ) )
 
     auto raytracing =
-            [this]( const SELECTION& aSel )
+            [this]( const SELECTION& aSel [[maybe_unused]] )
             {
                 return m_boardAdapter.m_Cfg->m_Render.engine != RENDER_ENGINE::OPENGL;
             };
     auto showMissingModels =
-            [this]( const SELECTION& aSel )
+            [this]( const SELECTION& aSel [[maybe_unused]] )
             {
                 return m_boardAdapter.ShowMissingModels();
             };
     auto showTH =
-            [this]( const SELECTION& aSel )
+            [this]( const SELECTION& aSel [[maybe_unused]] )
             {
                 return m_boardAdapter.m_Cfg->m_Render.show_footprints_normal;
             };
     auto showSMD =
-            [this]( const SELECTION& aSel )
+            [this]( const SELECTION& aSel [[maybe_unused]] )
             {
                 return m_boardAdapter.m_Cfg->m_Render.show_footprints_insert;
             };
     auto showVirtual =
-            [this]( const SELECTION& aSel )
+            [this]( const SELECTION& aSel [[maybe_unused]] )
             {
                 return m_boardAdapter.m_Cfg->m_Render.show_footprints_virtual;
             };
     auto show_NotInPosfile =
-            [this]( const SELECTION& aSel )
+            [this]( const SELECTION& aSel [[maybe_unused]] )
             {
                 return m_boardAdapter.m_Cfg->m_Render.show_footprints_not_in_posfile;
             };
     auto show_DNP =
-            [this]( const SELECTION& aSel )
+            [this]( const SELECTION& aSel [[maybe_unused]] )
             {
                 return m_boardAdapter.m_Cfg->m_Render.show_footprints_dnp;
             };
     auto showBBoxes =
-            [this]( const SELECTION& aSel )
+            [this]( const SELECTION& aSel [[maybe_unused]] )
             {
                 return m_boardAdapter.m_Cfg->m_Render.show_model_bbox;
             };
     auto showNavig =
-            [this]( const SELECTION& aSel )
+            [this]( const SELECTION& aSel [[maybe_unused]] )
             {
                 return m_boardAdapter.m_Cfg->m_Render.show_navigator;
             };
@@ -307,7 +307,7 @@ void EDA_3D_VIEWER_FRAME::setupUIConditions()
             };
 
     auto appearances =
-            [this]( const SELECTION& aSel )
+            [this]( const SELECTION& aSel [[maybe_unused]] )
             {
                 return m_boardAdapter.m_Cfg->m_AuiPanels.show_layer_manager;
             };
@@ -474,7 +474,7 @@ void EDA_3D_VIEWER_FRAME::refreshRender()
 }
 
 
-void EDA_3D_VIEWER_FRAME::Exit3DFrame( wxCommandEvent &event )
+void EDA_3D_VIEWER_FRAME::Exit3DFrame( wxCommandEvent &event [[maybe_unused]] )
 {
     wxLogTrace( m_logTrace, wxT( "EDA_3D_VIEWER_FRAME::Exit3DFrame" ) );
 
@@ -528,7 +528,7 @@ void EDA_3D_VIEWER_FRAME::Process_Special_Functions( wxCommandEvent &event )
 }
 
 
-void EDA_3D_VIEWER_FRAME::onDisableRayTracing( wxCommandEvent& aEvent )
+void EDA_3D_VIEWER_FRAME::onDisableRayTracing( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     wxLogTrace( m_logTrace, wxT( "EDA_3D_VIEWER_FRAME::%s disabling ray tracing." ), __WXFUNCTION__ );
 
@@ -613,7 +613,7 @@ void EDA_3D_VIEWER_FRAME::LoadSettings( APP_SETTINGS_BASE *aCfg )
 }
 
 
-void EDA_3D_VIEWER_FRAME::SaveSettings( APP_SETTINGS_BASE *aCfg )
+void EDA_3D_VIEWER_FRAME::SaveSettings( APP_SETTINGS_BASE *aCfg [[maybe_unused]] )
 {
     EDA_BASE_FRAME::SaveSettings( GetAppSettings<EDA_3D_VIEWER_SETTINGS>( "3d_viewer" ) );
 

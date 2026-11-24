@@ -99,7 +99,7 @@ public:
     virtual ~MOCK_RULE_RESOLVER() {}
 
     virtual int Clearance( const PNS::ITEM* aA, const PNS::ITEM* aB,
-                           bool aUseClearanceEpsilon = true ) override
+                           bool aUseClearanceEpsilon [[maybe_unused]] = true ) override
     {
         PNS::CONSTRAINT constraint;
         int             rv = 0;
@@ -184,27 +184,27 @@ public:
 
     bool HasUserDefinedPhysicalConstraint() override { return m_hasUserPhysicalRules; }
 
-    virtual PNS::NET_HANDLE DpCoupledNet( PNS::NET_HANDLE aNet ) override { return nullptr; }
-    virtual int DpNetPolarity( PNS::NET_HANDLE aNet ) override { return -1; }
+    virtual PNS::NET_HANDLE DpCoupledNet( PNS::NET_HANDLE aNet [[maybe_unused]] ) override { return nullptr; }
+    virtual int DpNetPolarity( PNS::NET_HANDLE aNet [[maybe_unused]] ) override { return -1; }
 
-    virtual bool DpNetPair( const PNS::ITEM* aItem, PNS::NET_HANDLE& aNetP,
-                            PNS::NET_HANDLE& aNetN ) override
+    virtual bool DpNetPair( const PNS::ITEM* aItem [[maybe_unused]], PNS::NET_HANDLE& aNetP [[maybe_unused]],
+                            PNS::NET_HANDLE& aNetN [[maybe_unused]] ) override
     {
         return false;
     }
 
-    virtual int NetCode( PNS::NET_HANDLE aNet ) override
+    virtual int NetCode( PNS::NET_HANDLE aNet [[maybe_unused]] ) override
     {
         return -1;
     }
 
-    virtual wxString NetName( PNS::NET_HANDLE aNet ) override
+    virtual wxString NetName( PNS::NET_HANDLE aNet [[maybe_unused]] ) override
     {
         return wxEmptyString;
     }
 
     virtual bool QueryConstraint( PNS::CONSTRAINT_TYPE aType, const PNS::ITEM* aItemA,
-                                  const PNS::ITEM* aItemB, int aLayer,
+                                  const PNS::ITEM* aItemB, int aLayer [[maybe_unused]],
                                   PNS::CONSTRAINT* aConstraint ) override
     {
         ITEM_KEY key;
@@ -282,19 +282,19 @@ public:
         }
     };
 
-    bool IsInNetTie( const PNS::ITEM* aA ) override { return false; }
+    bool IsInNetTie( const PNS::ITEM* aA [[maybe_unused]] ) override { return false; }
 
-    bool IsNetTieExclusion( const PNS::ITEM* aItem, const VECTOR2I& aCollisionPos,
-                            const PNS::ITEM* aCollidingItem ) override
+    bool IsNetTieExclusion( const PNS::ITEM* aItem [[maybe_unused]], const VECTOR2I& aCollisionPos [[maybe_unused]],
+                            const PNS::ITEM* aCollidingItem [[maybe_unused]] ) override
     {
         return false;
     }
 
-    bool IsDrilledHole( const PNS::ITEM* aItem ) override { return false; }
+    bool IsDrilledHole( const PNS::ITEM* aItem [[maybe_unused]] ) override { return false; }
 
-    bool IsNonPlatedSlot( const PNS::ITEM* aItem ) override { return false; }
+    bool IsNonPlatedSlot( const PNS::ITEM* aItem [[maybe_unused]] ) override { return false; }
 
-    bool IsKeepout( const PNS::ITEM* aObstacle, const PNS::ITEM* aItem, bool* aEnforce ) override
+    bool IsKeepout( const PNS::ITEM* aObstacle [[maybe_unused]], const PNS::ITEM* aItem [[maybe_unused]], bool* aEnforce [[maybe_unused]] ) override
     {
         return false;
     }
@@ -334,9 +334,9 @@ public:
 
     ~MOCK_PNS_KICAD_IFACE() override {}
 
-    void HideItem( PNS::ITEM* aItem ) override {};
-    void DisplayItem( const PNS::ITEM* aItem, int aClearance, bool aEdit = false,
-                      int aFlags = 0 ) override {};
+    void HideItem( PNS::ITEM* aItem [[maybe_unused]] ) override {};
+    void DisplayItem( const PNS::ITEM* aItem [[maybe_unused]], int aClearance [[maybe_unused]], bool aEdit [[maybe_unused]] = false,
+                      int aFlags [[maybe_unused]] = 0 ) override {};
     PNS::RULE_RESOLVER* GetRuleResolver() override;
 
     bool TestInheritTrackWidth( PNS::ITEM* aItem, int* aInheritedWidth,
@@ -2189,7 +2189,7 @@ public:
         aWorld->Add( std::move( via ) );
     }
 
-    void DisplayItem( const PNS::ITEM* aItem, int aClearance, bool aEdit = false, int aFlags = 0 ) override
+    void DisplayItem( const PNS::ITEM* aItem, int aClearance [[maybe_unused]], bool aEdit [[maybe_unused]] = false, int aFlags [[maybe_unused]] = 0 ) override
     {
         if( !aItem->OfKind( PNS::ITEM::VIA_T ) )
             return;

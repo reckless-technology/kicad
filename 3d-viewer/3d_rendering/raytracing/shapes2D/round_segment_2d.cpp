@@ -113,7 +113,7 @@ bool ROUND_SEGMENT_2D::Intersects( const BBOX_2D& aBBox ) const
 }
 
 
-bool ROUND_SEGMENT_2D::Overlaps( const BBOX_2D& aBBox ) const
+bool ROUND_SEGMENT_2D::Overlaps( const BBOX_2D& aBBox [[maybe_unused]] ) const
 {
     // NOT IMPLEMENTED
     return false;

@@ -534,7 +534,7 @@ void PANEL_PREVIEW_3D_MODEL::onAlignKey( wxKeyEvent& aEvent )
 }
 
 
-void PANEL_PREVIEW_3D_MODEL::onAlign( wxCommandEvent& aEvent )
+void PANEL_PREVIEW_3D_MODEL::onAlign( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( m_alignState == ALIGN_STATE::PICK_MODEL || m_alignState == ALIGN_STATE::PICK_FOOTPRINT )
     {
@@ -923,7 +923,7 @@ void PANEL_PREVIEW_3D_MODEL::stopAlignmentAnimation()
 }
 
 
-void PANEL_PREVIEW_3D_MODEL::onAlignAnimation( wxTimerEvent& aEvent )
+void PANEL_PREVIEW_3D_MODEL::onAlignAnimation( wxTimerEvent& aEvent [[maybe_unused]] )
 {
     tickAlignmentAnimation();
 }
@@ -1054,7 +1054,7 @@ void PANEL_PREVIEW_3D_MODEL::SetExtrusionTransformMode( PCB_3D_BODY* aBody )
 }
 
 
-void PANEL_PREVIEW_3D_MODEL::updateOrientation( wxCommandEvent &event )
+void PANEL_PREVIEW_3D_MODEL::updateOrientation( wxCommandEvent &event [[maybe_unused]] )
 {
     if( m_extrudedBody )
     {
@@ -1128,7 +1128,7 @@ void PANEL_PREVIEW_3D_MODEL::updateOrientation( wxCommandEvent &event )
 }
 
 
-void PANEL_PREVIEW_3D_MODEL::onOpacitySlider( wxCommandEvent& event )
+void PANEL_PREVIEW_3D_MODEL::onOpacitySlider( wxCommandEvent& event [[maybe_unused]] )
 {
     if( m_parentModelList && m_selected >= 0 && m_selected < (int) m_parentModelList->size() )
     {
@@ -1144,7 +1144,7 @@ void PANEL_PREVIEW_3D_MODEL::onOpacitySlider( wxCommandEvent& event )
 }
 
 
-void PANEL_PREVIEW_3D_MODEL::setBodyStyleView( wxCommandEvent& event )
+void PANEL_PREVIEW_3D_MODEL::setBodyStyleView( wxCommandEvent& event [[maybe_unused]] )
 {
     cancelAlignment();
 
@@ -1162,7 +1162,7 @@ void PANEL_PREVIEW_3D_MODEL::setBodyStyleView( wxCommandEvent& event )
 }
 
 
-void PANEL_PREVIEW_3D_MODEL::View3DSettings( wxCommandEvent& event )
+void PANEL_PREVIEW_3D_MODEL::View3DSettings( wxCommandEvent& event [[maybe_unused]] )
 {
     BOARD_DESIGN_SETTINGS bds = m_dummyBoard->GetDesignSettings();
     int                   thickness = bds.GetBoardThickness();

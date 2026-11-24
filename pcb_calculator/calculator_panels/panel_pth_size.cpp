@@ -349,13 +349,13 @@ PANEL_PTH_SIZE::~PANEL_PTH_SIZE()
 }
 
 
-void PANEL_PTH_SIZE::LoadSettings( PCB_CALCULATOR_SETTINGS* aCfg )
+void PANEL_PTH_SIZE::LoadSettings( PCB_CALCULATOR_SETTINGS* aCfg [[maybe_unused]] )
 {
     // No persisted settings yet; the panel starts from its default values.
 }
 
 
-void PANEL_PTH_SIZE::SaveSettings( PCB_CALCULATOR_SETTINGS* aCfg )
+void PANEL_PTH_SIZE::SaveSettings( PCB_CALCULATOR_SETTINGS* aCfg [[maybe_unused]] )
 {
     // No persisted settings yet.
 }
@@ -386,7 +386,7 @@ void PANEL_PTH_SIZE::OnControlsChanged( wxCommandEvent& aEvent )
 }
 
 
-void PANEL_PTH_SIZE::OnValueChanged( wxCommandEvent& aEvent )
+void PANEL_PTH_SIZE::OnValueChanged( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     recalculate();
 }
@@ -579,13 +579,13 @@ void PANEL_PTH_SIZE::refreshPreview()
 }
 
 
-void PANEL_PTH_SIZE::OnPreviewSettingCb( wxCommandEvent& aEvent )
+void PANEL_PTH_SIZE::OnPreviewSettingCb( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     refreshPreview();
 }
 
 
-void PANEL_PTH_SIZE::OnCopyReportText( wxCommandEvent& aEvent )
+void PANEL_PTH_SIZE::OnCopyReportText( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( wxTheClipboard->Open() )
     {

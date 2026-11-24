@@ -51,7 +51,7 @@ RING_2D::RING_2D( const SFVEC2F& aCenter, float aInnerRadius, float aOuterRadius
 }
 
 
-bool RING_2D::Overlaps( const BBOX_2D& aBBox ) const
+bool RING_2D::Overlaps( const BBOX_2D& aBBox [[maybe_unused]] ) const
 {
     // NOT IMPLEMENTED, why?
     return false;
@@ -141,7 +141,7 @@ bool RING_2D::Intersect( const RAYSEG2D& aSegRay, float* aOutT, SFVEC2F* aNormal
 }
 
 
-INTERSECTION_RESULT RING_2D::IsBBoxInside( const BBOX_2D& aBBox ) const
+INTERSECTION_RESULT RING_2D::IsBBoxInside( const BBOX_2D& aBBox [[maybe_unused]] ) const
 {
     return INTERSECTION_RESULT::MISSES;
 }

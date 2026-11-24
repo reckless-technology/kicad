@@ -133,7 +133,7 @@ void PANEL_CABLE_SIZE::buildCableList()
 }
 
 
-void PANEL_CABLE_SIZE::OnUpdateUnit( wxCommandEvent& aEvent )
+void PANEL_CABLE_SIZE::OnUpdateUnit( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     printAll();
 }
@@ -196,7 +196,7 @@ void PANEL_CABLE_SIZE::LoadSettings( PCB_CALCULATOR_SETTINGS* aCfg )
 }
 
 
-void PANEL_CABLE_SIZE::onUpdateCurrentDensity( wxScrollEvent& aEvent )
+void PANEL_CABLE_SIZE::onUpdateCurrentDensity( wxScrollEvent& aEvent [[maybe_unused]] )
 {
     m_amp_by_mm2 = m_slCurrentDensity->GetValue();
 
@@ -205,7 +205,7 @@ void PANEL_CABLE_SIZE::onUpdateCurrentDensity( wxScrollEvent& aEvent )
 }
 
 
-void PANEL_CABLE_SIZE::OnCableSizeChange( wxCommandEvent& aEvent )
+void PANEL_CABLE_SIZE::OnCableSizeChange( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( !m_updatingUI )
     {
@@ -221,7 +221,7 @@ void PANEL_CABLE_SIZE::OnCableSizeChange( wxCommandEvent& aEvent )
 }
 
 
-void PANEL_CABLE_SIZE::OnConductorResistivityChange( wxCommandEvent& aEvent )
+void PANEL_CABLE_SIZE::OnConductorResistivityChange( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( !m_updatingUI )
     {
@@ -250,7 +250,7 @@ void PANEL_CABLE_SIZE::OnConductorResistivity_Button( wxCommandEvent& event )
     OnConductorResistivityChange( event );
 }
 
-void PANEL_CABLE_SIZE::OnConductorThermCoefChange( wxCommandEvent& aEvent )
+void PANEL_CABLE_SIZE::OnConductorThermCoefChange( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( !m_updatingUI )
     {
@@ -274,7 +274,7 @@ void PANEL_CABLE_SIZE::OnConductorThermCoefChange_Button( wxCommandEvent& event 
     OnConductorThermCoefChange( event );
 }
 
-void PANEL_CABLE_SIZE::OnDiameterChange( wxCommandEvent& aEvent )
+void PANEL_CABLE_SIZE::OnDiameterChange( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( !m_updatingUI )
     {
@@ -291,7 +291,7 @@ void PANEL_CABLE_SIZE::OnDiameterChange( wxCommandEvent& aEvent )
 }
 
 
-void PANEL_CABLE_SIZE::OnLinResistanceChange( wxCommandEvent& aEvent )
+void PANEL_CABLE_SIZE::OnLinResistanceChange( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( !m_updatingUI )
     {
@@ -309,7 +309,7 @@ void PANEL_CABLE_SIZE::OnLinResistanceChange( wxCommandEvent& aEvent )
 }
 
 
-void PANEL_CABLE_SIZE::OnAreaChange( wxCommandEvent& aEvent )
+void PANEL_CABLE_SIZE::OnAreaChange( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( !m_updatingUI )
     {
@@ -326,7 +326,7 @@ void PANEL_CABLE_SIZE::OnAreaChange( wxCommandEvent& aEvent )
 }
 
 
-void PANEL_CABLE_SIZE::OnFrequencyChange( wxCommandEvent& aEvent )
+void PANEL_CABLE_SIZE::OnFrequencyChange( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( !m_updatingUI )
     {
@@ -344,7 +344,7 @@ void PANEL_CABLE_SIZE::OnFrequencyChange( wxCommandEvent& aEvent )
 }
 
 
-void PANEL_CABLE_SIZE::OnAmpacityChange( wxCommandEvent& aEvent )
+void PANEL_CABLE_SIZE::OnAmpacityChange( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( !m_updatingUI )
     {
@@ -361,7 +361,7 @@ void PANEL_CABLE_SIZE::OnAmpacityChange( wxCommandEvent& aEvent )
     }
 }
 
-void PANEL_CABLE_SIZE::OnConductorTempChange( wxCommandEvent& aEvent )
+void PANEL_CABLE_SIZE::OnConductorTempChange( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( !m_updatingUI )
     {
@@ -376,7 +376,7 @@ void PANEL_CABLE_SIZE::OnConductorTempChange( wxCommandEvent& aEvent )
 }
 
 
-void PANEL_CABLE_SIZE::OnCurrentChange( wxCommandEvent& aEvent )
+void PANEL_CABLE_SIZE::OnCurrentChange( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( !m_updatingUI )
     {
@@ -393,7 +393,7 @@ void PANEL_CABLE_SIZE::OnCurrentChange( wxCommandEvent& aEvent )
 }
 
 
-void PANEL_CABLE_SIZE::OnLengthChange( wxCommandEvent& aEvent )
+void PANEL_CABLE_SIZE::OnLengthChange( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( !m_updatingUI )
     {
@@ -410,7 +410,7 @@ void PANEL_CABLE_SIZE::OnLengthChange( wxCommandEvent& aEvent )
 }
 
 
-void PANEL_CABLE_SIZE::OnResistanceDcChange( wxCommandEvent& aEvent )
+void PANEL_CABLE_SIZE::OnResistanceDcChange( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( !m_updatingUI )
     {
@@ -427,7 +427,7 @@ void PANEL_CABLE_SIZE::OnResistanceDcChange( wxCommandEvent& aEvent )
 }
 
 
-void PANEL_CABLE_SIZE::OnVDropChange( wxCommandEvent& aEvent )
+void PANEL_CABLE_SIZE::OnVDropChange( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( !m_updatingUI )
     {
@@ -445,7 +445,7 @@ void PANEL_CABLE_SIZE::OnVDropChange( wxCommandEvent& aEvent )
 }
 
 
-void PANEL_CABLE_SIZE::OnPowerChange( wxCommandEvent& aEvent )
+void PANEL_CABLE_SIZE::OnPowerChange( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( !m_updatingUI )
     {

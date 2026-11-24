@@ -48,7 +48,7 @@ FILLED_CIRCLE_2D::FILLED_CIRCLE_2D( const SFVEC2F& aCenter, float aRadius,
 }
 
 
-bool FILLED_CIRCLE_2D::Overlaps( const BBOX_2D& aBBox ) const
+bool FILLED_CIRCLE_2D::Overlaps( const BBOX_2D& aBBox [[maybe_unused]] ) const
 {
     // NOT IMPLEMENTED, why?
     return false;

@@ -47,7 +47,7 @@
 #include <string>
 
 
-wxString GL_UTILS::DetectGLBackend( wxGLCanvas* aCanvas )
+wxString GL_UTILS::DetectGLBackend( wxGLCanvas* aCanvas [[maybe_unused]] )
 {
     wxString backend;
 
@@ -75,7 +75,7 @@ wxString GL_UTILS::DetectGLBackend( wxGLCanvas* aCanvas )
 }
 
 #if !wxCHECK_VERSION( 3, 3, 3 )
-int GL_UTILS::SetSwapInterval( wxGLCanvas* aCanvas, int aVal )
+int GL_UTILS::SetSwapInterval( wxGLCanvas* aCanvas [[maybe_unused]], int aVal [[maybe_unused]] )
 {
 #if defined( __WXGTK__ ) && wxCHECK_VERSION( 3, 3, 2 )
     // On Wayland the canvas uses EGL, where wxGLCanvasEGL::SwapBuffers() forces the swap interval

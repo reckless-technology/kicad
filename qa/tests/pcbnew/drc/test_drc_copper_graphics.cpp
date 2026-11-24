@@ -115,8 +115,8 @@ BOOST_FIXTURE_TEST_CASE( DRCCopperGraphicsTest, DRC_COPPER_GRAPHICS_TEST_FIXTURE
     bds.m_DRCSeverities[ DRCE_UNMIRRORED_TEXT_ON_BACK_LAYER ] = SEVERITY::RPT_SEVERITY_IGNORE;
 
     bds.m_DRCEngine->SetViolationHandler(
-            [&]( const std::shared_ptr<DRC_ITEM>& aItem, const VECTOR2I& aPos, int aLayer,
-                 const std::function<void( PCB_MARKER* )>& aPathGenerator )
+            [&]( const std::shared_ptr<DRC_ITEM>& aItem, const VECTOR2I& aPos, int aLayer [[maybe_unused]],
+                 const std::function<void( PCB_MARKER* )>& aPathGenerator [[maybe_unused]] )
             {
                 PCB_MARKER temp( aItem, aPos );
 

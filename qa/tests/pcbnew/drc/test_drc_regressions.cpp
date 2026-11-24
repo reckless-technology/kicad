@@ -92,8 +92,8 @@ BOOST_FIXTURE_TEST_CASE( DRCFalsePositiveRegressions, DRC_REGRESSION_TEST_FIXTUR
         bds.m_DRCSeverities[ DRCE_LIB_FOOTPRINT_MISMATCH ] = SEVERITY::RPT_SEVERITY_IGNORE;
 
         bds.m_DRCEngine->SetViolationHandler(
-                [&]( const std::shared_ptr<DRC_ITEM>& aItem, const VECTOR2I& aPos, int aLayer,
-                     const std::function<void( PCB_MARKER* )>& aPathGenerator )
+                [&]( const std::shared_ptr<DRC_ITEM>& aItem, const VECTOR2I& aPos [[maybe_unused]], int aLayer [[maybe_unused]],
+                     const std::function<void( PCB_MARKER* )>& aPathGenerator [[maybe_unused]] )
                 {
                     if( bds.GetSeverity( aItem->GetErrorCode() ) == SEVERITY::RPT_SEVERITY_ERROR )
                         violations.push_back( *aItem );
@@ -183,8 +183,8 @@ BOOST_FIXTURE_TEST_CASE( DRCFalseNegativeRegressions, DRC_REGRESSION_TEST_FIXTUR
             bds.m_DRCSeverities[test] = severity;
 
         bds.m_DRCEngine->SetViolationHandler(
-                [&]( const std::shared_ptr<DRC_ITEM>& aItem, const VECTOR2I& aPos, int aLayer,
-                     const std::function<void( PCB_MARKER* )>& aPathGenerator )
+                [&]( const std::shared_ptr<DRC_ITEM>& aItem, const VECTOR2I& aPos, int aLayer [[maybe_unused]],
+                     const std::function<void( PCB_MARKER* )>& aPathGenerator [[maybe_unused]] )
                 {
                     markers.emplace_back( PCB_MARKER( aItem, aPos ) );
 
@@ -254,8 +254,8 @@ BOOST_FIXTURE_TEST_CASE( DRCZoneFalsePositiveRegressions, DRC_REGRESSION_TEST_FI
         bds.m_DRCSeverities[ DRCE_STARVED_THERMAL ] = SEVERITY::RPT_SEVERITY_ERROR;
 
         bds.m_DRCEngine->SetViolationHandler(
-                [&]( const std::shared_ptr<DRC_ITEM>& aItem, const VECTOR2I& aPos, int aLayer,
-                     const std::function<void( PCB_MARKER* )>& aPathGenerator )
+                [&]( const std::shared_ptr<DRC_ITEM>& aItem, const VECTOR2I& aPos [[maybe_unused]], int aLayer [[maybe_unused]],
+                     const std::function<void( PCB_MARKER* )>& aPathGenerator [[maybe_unused]] )
                 {
                     if( bds.GetSeverity( aItem->GetErrorCode() ) == SEVERITY::RPT_SEVERITY_ERROR )
                         violations.push_back( *aItem );

@@ -216,7 +216,7 @@ bool DIALOG_EXPORT_3D_IMAGE::TransferDataFromWindow()
 }
 
 
-void DIALOG_EXPORT_3D_IMAGE::OnLockToggle( wxCommandEvent& aEvent )
+void DIALOG_EXPORT_3D_IMAGE::OnLockToggle( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     m_lockAspectRatio = !m_lockAspectRatio;
 
@@ -225,7 +225,7 @@ void DIALOG_EXPORT_3D_IMAGE::OnLockToggle( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_EXPORT_3D_IMAGE::OnWidthChange( wxSpinDoubleEvent& aEvent )
+void DIALOG_EXPORT_3D_IMAGE::OnWidthChange( wxSpinDoubleEvent& aEvent [[maybe_unused]] )
 {
     if( m_lockAspectRatio )
     {
@@ -248,7 +248,7 @@ void DIALOG_EXPORT_3D_IMAGE::OnWidthChange( wxSpinDoubleEvent& aEvent )
 }
 
 
-void DIALOG_EXPORT_3D_IMAGE::OnHeightChange( wxSpinDoubleEvent& aEvent )
+void DIALOG_EXPORT_3D_IMAGE::OnHeightChange( wxSpinDoubleEvent& aEvent [[maybe_unused]] )
 {
     if( m_lockAspectRatio )
     {
@@ -271,19 +271,19 @@ void DIALOG_EXPORT_3D_IMAGE::OnHeightChange( wxSpinDoubleEvent& aEvent )
 }
 
 
-void DIALOG_EXPORT_3D_IMAGE::OnXResolutionChange( wxSpinDoubleEvent& aEvent )
+void DIALOG_EXPORT_3D_IMAGE::OnXResolutionChange( wxSpinDoubleEvent& aEvent [[maybe_unused]] )
 {
     UpdatePixelSize();
 }
 
 
-void DIALOG_EXPORT_3D_IMAGE::OnYResolutionChange( wxSpinDoubleEvent& aEvent )
+void DIALOG_EXPORT_3D_IMAGE::OnYResolutionChange( wxSpinDoubleEvent& aEvent [[maybe_unused]] )
 {
     UpdatePixelSize();
 }
 
 
-void DIALOG_EXPORT_3D_IMAGE::OnSizeUnitChange( wxCommandEvent& aEvent )
+void DIALOG_EXPORT_3D_IMAGE::OnSizeUnitChange( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     SIZE_UNITS oldUnits = m_sizeUnits;
     m_sizeUnits = static_cast<SIZE_UNITS>( m_choiceSizeUnits->GetSelection() );
@@ -292,7 +292,7 @@ void DIALOG_EXPORT_3D_IMAGE::OnSizeUnitChange( wxCommandEvent& aEvent )
 }
 
 
-void DIALOG_EXPORT_3D_IMAGE::OnResolutionUnitChange( wxCommandEvent& aEvent )
+void DIALOG_EXPORT_3D_IMAGE::OnResolutionUnitChange( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     RESOLUTION_UNITS oldUnits = m_resolutionUnits;
     m_resolutionUnits = static_cast<RESOLUTION_UNITS>( m_choiceResolutionUnits->GetSelection() );

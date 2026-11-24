@@ -62,7 +62,7 @@ bool LAYER_ITEM_2D::Intersects( const BBOX_2D& aBBox ) const
 }
 
 
-bool LAYER_ITEM_2D::Overlaps( const BBOX_2D& aBBox ) const
+bool LAYER_ITEM_2D::Overlaps( const BBOX_2D& aBBox [[maybe_unused]] ) const
 {
     // NOT IMPLEMENTED, why?
     return false;
@@ -147,7 +147,7 @@ bool LAYER_ITEM_2D::Intersect( const RAYSEG2D& aSegRay, float* aOutT, SFVEC2F* a
 }
 
 
-INTERSECTION_RESULT LAYER_ITEM_2D::IsBBoxInside( const BBOX_2D& aBBox ) const
+INTERSECTION_RESULT LAYER_ITEM_2D::IsBBoxInside( const BBOX_2D& aBBox [[maybe_unused]] ) const
 {
 
     // !TODO:

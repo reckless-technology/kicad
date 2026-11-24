@@ -117,7 +117,7 @@ static BOARD_MIN_SIZE_VALUES clist[BRDCLASS_COUNT] =
 };
 
 
-void PANEL_BOARD_CLASS::OnBoardClassesUnitsSelection( wxCommandEvent& event )
+void PANEL_BOARD_CLASS::OnBoardClassesUnitsSelection( wxCommandEvent& event [[maybe_unused]] )
 {
     BoardClassesUpdateData( m_BoardClassesUnitsSelector->GetUnitScale() );
 }

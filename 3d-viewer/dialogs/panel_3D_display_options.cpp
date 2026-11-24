@@ -31,7 +31,7 @@ PANEL_3D_DISPLAY_OPTIONS::PANEL_3D_DISPLAY_OPTIONS( wxWindow* aParent ) :
 }
 
 
-void PANEL_3D_DISPLAY_OPTIONS::OnCheckEnableAnimation( wxCommandEvent& event )
+void PANEL_3D_DISPLAY_OPTIONS::OnCheckEnableAnimation( wxCommandEvent& event [[maybe_unused]] )
 {
     m_staticAnimationSpeed->Enable( m_checkBoxEnableAnimation->GetValue() );
     m_sliderAnimationSpeed->Enable( m_checkBoxEnableAnimation->GetValue() );

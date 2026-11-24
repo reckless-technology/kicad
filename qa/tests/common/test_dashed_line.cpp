@@ -44,7 +44,7 @@ class COUNTING_GAL : public GAL
 public:
     COUNTING_GAL( GAL_DISPLAY_OPTIONS& aOptions ) : GAL( aOptions ) {}
 
-    void DrawLine( const VECTOR2D& aStartPoint, const VECTOR2D& aEndPoint ) override
+    void DrawLine( const VECTOR2D& aStartPoint [[maybe_unused]], const VECTOR2D& aEndPoint [[maybe_unused]] ) override
     {
         m_lineCount++;
     }

@@ -81,8 +81,8 @@ BOOST_FIXTURE_TEST_CASE( DRCTrackToPadBridgeTest, DRC_TRACK_TO_PAD_BRIDGE_FIXTUR
     bds.m_DRCSeverities[ DRCE_SILK_CLEARANCE ] = SEVERITY::RPT_SEVERITY_IGNORE;
 
     bds.m_DRCEngine->SetViolationHandler(
-            [&]( const std::shared_ptr<DRC_ITEM>& aItem, const VECTOR2I& aPos, int aLayer,
-                 const std::function<void( PCB_MARKER* )>& aPathGenerator )
+            [&]( const std::shared_ptr<DRC_ITEM>& aItem, const VECTOR2I& aPos [[maybe_unused]], int aLayer [[maybe_unused]],
+                 const std::function<void( PCB_MARKER* )>& aPathGenerator [[maybe_unused]] )
             {
                 if( aItem->GetErrorCode() == DRCE_SOLDERMASK_BRIDGE )
                     violations.push_back( *aItem );

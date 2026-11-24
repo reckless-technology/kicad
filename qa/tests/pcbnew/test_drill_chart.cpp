@@ -865,7 +865,7 @@ BOOST_AUTO_TEST_CASE( ChartIsVisitedOnceWhenBothTypesAreScanned )
     int hits = 0;
 
     INSPECTOR_FUNC inspector =
-            [&hits]( EDA_ITEM* aItem, void* aTestData )
+            [&hits]( EDA_ITEM* aItem, void* aTestData [[maybe_unused]] )
             {
                 if( aItem->Type() == PCB_DRILL_CHART_T )
                     hits++;

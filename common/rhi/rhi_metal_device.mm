@@ -1390,7 +1390,7 @@ void RHI_METAL_DEVICE::BindGroup( uint32_t groupIndex, RHI_BindGroupHandle group
 
 
 void RHI_METAL_DEVICE::EncodeBindGroup( id<MTLRenderCommandEncoder> encoder,
-                                         uint32_t groupIndex,
+                                         uint32_t groupIndex [[maybe_unused]],
                                          RHI_BindGroupHandle group )
 {
     auto bgIt = m_bindGroups.find( RhiHandleIndex( group ) );

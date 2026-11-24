@@ -282,7 +282,7 @@ wxSize APPEARANCE_CONTROLS_3D::GetBestSize() const
 }
 
 
-void APPEARANCE_CONTROLS_3D::OnLayerContextMenu( wxContextMenuEvent& aEvent )
+void APPEARANCE_CONTROLS_3D::OnLayerContextMenu( wxContextMenuEvent& aEvent [[maybe_unused]] )
 {
     wxMenu menu;
 
@@ -357,20 +357,20 @@ void APPEARANCE_CONTROLS_3D::applyLayerSpacing()
 }
 
 
-void APPEARANCE_CONTROLS_3D::OnLayerScaleChange( wxSpinDoubleEvent& aEvent )
+void APPEARANCE_CONTROLS_3D::OnLayerScaleChange( wxSpinDoubleEvent& aEvent [[maybe_unused]] )
 {
     applyLayerSpacing();
 }
 
 
-void APPEARANCE_CONTROLS_3D::OnResetLayerSpacing( wxCommandEvent& aEvent )
+void APPEARANCE_CONTROLS_3D::OnResetLayerSpacing( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     m_layerScaleCtrl->SetValue( 1.0 );
     applyLayerSpacing();
 }
 
 
-void APPEARANCE_CONTROLS_3D::OnRedrawTriggerTimer( wxTimerEvent& aEvent )
+void APPEARANCE_CONTROLS_3D::OnRedrawTriggerTimer( wxTimerEvent& aEvent [[maybe_unused]] )
 {
     m_frame->NewDisplay( true );
 }
@@ -967,7 +967,7 @@ void APPEARANCE_CONTROLS_3D::updateLayerPresetWidget( const wxString& aName )
 }
 
 
-void APPEARANCE_CONTROLS_3D::onLayerPresetChanged( wxCommandEvent& aEvent )
+void APPEARANCE_CONTROLS_3D::onLayerPresetChanged( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     EDA_3D_VIEWER_SETTINGS*   cfg = m_frame->GetAdapter().m_Cfg;
     int                       count = m_cbLayerPresets->GetCount();
@@ -1136,7 +1136,7 @@ void APPEARANCE_CONTROLS_3D::rebuildViewportsWidget()
 }
 
 
-void APPEARANCE_CONTROLS_3D::onViewportChanged( wxCommandEvent& aEvent )
+void APPEARANCE_CONTROLS_3D::onViewportChanged( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     int count = m_cbViewports->GetCount();
     int index = m_cbViewports->GetSelection();
@@ -1243,7 +1243,7 @@ void APPEARANCE_CONTROLS_3D::onViewportChanged( wxCommandEvent& aEvent )
 }
 
 
-void APPEARANCE_CONTROLS_3D::onUpdateViewportsCb( wxUpdateUIEvent& aEvent )
+void APPEARANCE_CONTROLS_3D::onUpdateViewportsCb( wxUpdateUIEvent& aEvent [[maybe_unused]] )
 {
     int count = m_cbViewports->GetCount();
     int index = m_cbViewports->GetSelection();

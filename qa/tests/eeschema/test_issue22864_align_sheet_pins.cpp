@@ -58,7 +58,7 @@ public:
     {
     }
 
-    VECTOR2D GetGridSize( GRID_HELPER_GRIDS aGrid ) const override
+    VECTOR2D GetGridSize( GRID_HELPER_GRIDS aGrid [[maybe_unused]] ) const override
     {
         return m_gridSize;
     }
@@ -144,7 +144,7 @@ struct ISSUE22864_FIXTURE
         };
 
         callbacks.m_getConnectedDragItems =
-                [&]( SCH_ITEM* aItem, const VECTOR2I& aPoint, EDA_ITEMS& aList )
+                [&]( SCH_ITEM* aItem [[maybe_unused]], const VECTOR2I& aPoint, EDA_ITEMS& aList )
                 {
                     auto it = positionToWires.find( aPoint );
 
@@ -290,7 +290,7 @@ struct ISSUE22864_FIXTURE
         };
 
         callbacks.m_getConnectedDragItems =
-                [&]( SCH_ITEM* aItem, const VECTOR2I& aPoint, EDA_ITEMS& aList )
+                [&]( SCH_ITEM* aItem [[maybe_unused]], const VECTOR2I& aPoint, EDA_ITEMS& aList )
                 {
                     auto it = positionToWires.find( aPoint );
 
@@ -730,7 +730,7 @@ BOOST_FIXTURE_TEST_CASE( VerifyPinWireYCoordinateMatch, ISSUE22864_FIXTURE )
     };
 
     callbacks.m_getConnectedDragItems =
-            [&]( SCH_ITEM* aItem, const VECTOR2I& aPoint, EDA_ITEMS& aList )
+            [&]( SCH_ITEM* aItem [[maybe_unused]], const VECTOR2I& aPoint, EDA_ITEMS& aList )
             {
                 auto it = positionToWires.find( aPoint );
 

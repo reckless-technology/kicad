@@ -68,7 +68,7 @@ bool POLYGON_4PT_2D::Intersects( const BBOX_2D& aBBox ) const
 }
 
 
-bool POLYGON_4PT_2D::Overlaps( const BBOX_2D& aBBox ) const
+bool POLYGON_4PT_2D::Overlaps( const BBOX_2D& aBBox [[maybe_unused]] ) const
 {
     // NOT IMPLEMENTED
     return true;
@@ -113,7 +113,7 @@ bool POLYGON_4PT_2D::Intersect( const RAYSEG2D& aSegRay, float* aOutT, SFVEC2F* 
 }
 
 
-INTERSECTION_RESULT POLYGON_4PT_2D::IsBBoxInside( const BBOX_2D& aBBox ) const
+INTERSECTION_RESULT POLYGON_4PT_2D::IsBBoxInside( const BBOX_2D& aBBox [[maybe_unused]] ) const
 {
     // !TODO:
 

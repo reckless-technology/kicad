@@ -67,7 +67,7 @@ public:
     {
     }
 
-    void OnTerminate( int aPid, int aStatus ) override
+    void OnTerminate( int aPid [[maybe_unused]], int aStatus ) override
     {
         wxString output;
         wxString error;

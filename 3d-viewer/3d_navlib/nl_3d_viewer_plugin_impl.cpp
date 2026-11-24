@@ -399,13 +399,13 @@ long NL_3D_VIEWER_PLUGIN_IMPL::SetViewExtents( const navlib::box_t& extents )
 }
 
 
-long NL_3D_VIEWER_PLUGIN_IMPL::SetViewFOV( double fov )
+long NL_3D_VIEWER_PLUGIN_IMPL::SetViewFOV( double fov [[maybe_unused]] )
 {
     return navlib::make_result_code( navlib::navlib_errc::function_not_supported );
 }
 
 
-long NL_3D_VIEWER_PLUGIN_IMPL::SetViewFrustum( const navlib::frustum_t& frustum )
+long NL_3D_VIEWER_PLUGIN_IMPL::SetViewFrustum( const navlib::frustum_t& frustum [[maybe_unused]] )
 {
     return navlib::make_result_code( navlib::navlib_errc::permission_denied );
 }
@@ -422,13 +422,13 @@ long NL_3D_VIEWER_PLUGIN_IMPL::GetModelExtents( navlib::box_t& extents ) const
 }
 
 
-long NL_3D_VIEWER_PLUGIN_IMPL::GetSelectionExtents( navlib::box_t& extents ) const
+long NL_3D_VIEWER_PLUGIN_IMPL::GetSelectionExtents( navlib::box_t& extents [[maybe_unused]] ) const
 {
     return navlib::make_result_code( navlib::navlib_errc::no_data_available );
 }
 
 
-long NL_3D_VIEWER_PLUGIN_IMPL::GetSelectionTransform( navlib::matrix_t& transform ) const
+long NL_3D_VIEWER_PLUGIN_IMPL::GetSelectionTransform( navlib::matrix_t& transform [[maybe_unused]] ) const
 {
     return navlib::make_result_code( navlib::navlib_errc::no_data_available );
 }
@@ -442,7 +442,7 @@ long NL_3D_VIEWER_PLUGIN_IMPL::GetIsSelectionEmpty( navlib::bool_t& empty ) cons
 }
 
 
-long NL_3D_VIEWER_PLUGIN_IMPL::SetSelectionTransform( const navlib::matrix_t& matrix )
+long NL_3D_VIEWER_PLUGIN_IMPL::SetSelectionTransform( const navlib::matrix_t& matrix [[maybe_unused]] )
 {
     return navlib::make_result_code( navlib::navlib_errc::invalid_operation );
 }
@@ -521,7 +521,7 @@ long NL_3D_VIEWER_PLUGIN_IMPL::GetHitLookAt( navlib::point_t& position ) const
 }
 
 
-long NL_3D_VIEWER_PLUGIN_IMPL::SetHitAperture( double aperture )
+long NL_3D_VIEWER_PLUGIN_IMPL::SetHitAperture( double aperture [[maybe_unused]] )
 {
     return navlib::make_result_code( navlib::navlib_errc::function_not_supported );
 }
@@ -543,7 +543,7 @@ long NL_3D_VIEWER_PLUGIN_IMPL::SetHitLookFrom( const navlib::point_t& eye )
 }
 
 
-long NL_3D_VIEWER_PLUGIN_IMPL::SetHitSelectionOnly( bool onlySelection )
+long NL_3D_VIEWER_PLUGIN_IMPL::SetHitSelectionOnly( bool onlySelection [[maybe_unused]] )
 {
     return navlib::make_result_code( navlib::navlib_errc::function_not_supported );
 }
@@ -604,7 +604,7 @@ long NL_3D_VIEWER_PLUGIN_IMPL::SetActiveCommand( std::string commandId )
 }
 
 
-long NL_3D_VIEWER_PLUGIN_IMPL::SetSettingsChanged( long change )
+long NL_3D_VIEWER_PLUGIN_IMPL::SetSettingsChanged( long change [[maybe_unused]] )
 {
     return 0;
 }
@@ -633,7 +633,7 @@ long NL_3D_VIEWER_PLUGIN_IMPL::SetTransaction( long value )
 }
 
 
-long NL_3D_VIEWER_PLUGIN_IMPL::SetCameraTarget( const navlib::point_t& position )
+long NL_3D_VIEWER_PLUGIN_IMPL::SetCameraTarget( const navlib::point_t& position [[maybe_unused]] )
 {
     return navlib::make_result_code( navlib::navlib_errc::function_not_supported );
 }

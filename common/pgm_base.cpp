@@ -349,7 +349,7 @@ void PGM_BASE::HideSplash()
 }
 
 
-wxString PGM_BASE::DesktopAppIdForProgram( const wxString& aPgmName )
+wxString PGM_BASE::DesktopAppIdForProgram( const wxString& aPgmName [[maybe_unused]] )
 {
 #if defined( __WXGTK__ ) && defined( KICAD_DESKTOP_APP_NAME )
     // The prefix varies by build (regular, Flatpak, Nightly) and is supplied by CMake. The main

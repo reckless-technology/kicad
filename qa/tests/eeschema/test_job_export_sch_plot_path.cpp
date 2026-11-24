@@ -70,7 +70,7 @@ class NO_FACE_KIWAY : public KIWAY
 public:
     NO_FACE_KIWAY() : KIWAY( KFCTL_STANDALONE ) {}
 
-    KIFACE* KiFACE( FACE_T aFaceId, bool doLoad = true ) override { return nullptr; }
+    KIFACE* KiFACE( FACE_T aFaceId [[maybe_unused]], bool doLoad [[maybe_unused]] = true ) override { return nullptr; }
 };
 
 

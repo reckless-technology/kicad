@@ -156,7 +156,7 @@ PCB_CALCULATOR_FRAME::~PCB_CALCULATOR_FRAME()
 }
 
 
-void PCB_CALCULATOR_FRAME::OnExit( wxCommandEvent& aEvent )
+void PCB_CALCULATOR_FRAME::OnExit( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     Close( false );
 }
@@ -355,7 +355,7 @@ void PCB_CALCULATOR_FRAME::onThemeChanged( wxSysColourChangedEvent& aEvent )
 }
 
 
-void PCB_CALCULATOR_FRAME::OnUpdateUI( wxUpdateUIEvent& event )
+void PCB_CALCULATOR_FRAME::OnUpdateUI( wxUpdateUIEvent& event [[maybe_unused]] )
 {
     if( m_treebook->GetSelection() != m_lastNotebookPage )
     {

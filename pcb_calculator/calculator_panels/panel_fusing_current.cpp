@@ -74,7 +74,7 @@ void PANEL_FUSING_CURRENT::ThemeChanged()
 }
 
 
-void PANEL_FUSING_CURRENT::m_onCalculateClick( wxCommandEvent& event )
+void PANEL_FUSING_CURRENT::m_onCalculateClick( wxCommandEvent& event [[maybe_unused]] )
 {
     double Tm, Ta, I, W, T, time;
     bool   valid_Tm, valid_Ta, valid_I, valid_W, valid_T, valid_time;

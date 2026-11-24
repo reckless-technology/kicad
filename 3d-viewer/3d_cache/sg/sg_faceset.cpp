@@ -594,7 +594,7 @@ bool SGFACESET::WriteCache( std::ostream& aFile, SGNODE* parentNode )
 }
 
 
-bool SGFACESET::ReadCache( std::istream& aFile, SGNODE* parentNode )
+bool SGFACESET::ReadCache( std::istream& aFile, SGNODE* parentNode [[maybe_unused]] )
 {
     if( m_Coords || m_RCoords || m_CoordIndices || m_Colors || m_RColors || m_Normals
       || m_RNormals )

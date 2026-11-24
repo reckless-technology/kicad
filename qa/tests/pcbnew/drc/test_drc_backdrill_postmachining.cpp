@@ -241,8 +241,8 @@ struct BACKDRILL_TEST_FIXTURE
         BOARD_DESIGN_SETTINGS& bds = m_board->GetDesignSettings();
 
         bds.m_DRCEngine->SetViolationHandler(
-                [&]( const std::shared_ptr<DRC_ITEM>& aItem, const VECTOR2I& aPos, int aLayer,
-                     const std::function<void( PCB_MARKER* )>& aPathGenerator )
+                [&]( const std::shared_ptr<DRC_ITEM>& aItem, const VECTOR2I& aPos [[maybe_unused]], int aLayer [[maybe_unused]],
+                     const std::function<void( PCB_MARKER* )>& aPathGenerator [[maybe_unused]] )
                 {
                     if( aItem->GetErrorCode() == aErrorCode )
                         violations.push_back( *aItem );

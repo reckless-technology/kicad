@@ -91,13 +91,13 @@ wxScopedCharBuffer MakeSingleEntryMo( const char* aOrig, const char* aTranslated
 class IN_MEMORY_LOADER : public wxTranslationsLoader
 {
 public:
-    wxMsgCatalog* LoadCatalog( const wxString& aDomain, const wxString& aLang ) override
+    wxMsgCatalog* LoadCatalog( const wxString& aDomain, const wxString& aLang [[maybe_unused]] ) override
     {
         return wxMsgCatalog::CreateFromData( MakeSingleEntryMo( ORIG_STRING, TRANSLATED_STRING ),
                                              aDomain );
     }
 
-    wxArrayString GetAvailableTranslations( const wxString& aDomain ) const override
+    wxArrayString GetAvailableTranslations( const wxString& aDomain [[maybe_unused]] ) const override
     {
         wxArrayString langs;
         langs.Add( wxT( "fi" ) );

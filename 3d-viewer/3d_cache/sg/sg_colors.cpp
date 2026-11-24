@@ -81,7 +81,7 @@ bool SGCOLORS::SetParent( SGNODE* aParent, bool notify )
 }
 
 
-SGNODE* SGCOLORS::FindNode(const char* aNodeName, const SGNODE *aCaller) noexcept
+SGNODE* SGCOLORS::FindNode(const char* aNodeName, const SGNODE *aCaller [[maybe_unused]]) noexcept
 {
     if( nullptr == aNodeName || 0 == aNodeName[0] )
         return nullptr;
@@ -277,7 +277,7 @@ bool SGCOLORS::WriteCache( std::ostream& aFile, SGNODE* parentNode )
 }
 
 
-bool SGCOLORS::ReadCache( std::istream& aFile, SGNODE* parentNode )
+bool SGCOLORS::ReadCache( std::istream& aFile, SGNODE* parentNode [[maybe_unused]] )
 {
     wxCHECK( colors.empty(), false );
 

@@ -68,8 +68,8 @@ BOOST_FIXTURE_TEST_CASE( DRCTextVarIssue24442, DRC_TEXT_VAR_TEST_FIXTURE )
     std::vector<wxString> warningMessages;
 
     bds.m_DRCEngine->SetViolationHandler(
-            [&]( const std::shared_ptr<DRC_ITEM>& aItem, const VECTOR2I& aPos, int aLayer,
-                 const std::function<void( PCB_MARKER* )>& aPathGenerator )
+            [&]( const std::shared_ptr<DRC_ITEM>& aItem, const VECTOR2I& aPos [[maybe_unused]], int aLayer [[maybe_unused]],
+                 const std::function<void( PCB_MARKER* )>& aPathGenerator [[maybe_unused]] )
             {
                 if( aItem->GetErrorCode() == DRCE_GENERIC_ERROR )
                 {

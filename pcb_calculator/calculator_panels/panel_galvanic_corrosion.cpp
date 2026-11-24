@@ -288,7 +288,7 @@ void PANEL_GALVANIC_CORROSION::SaveSettings( PCB_CALCULATOR_SETTINGS* aCfg )
 }
 
 
-void PANEL_GALVANIC_CORROSION::OnNomenclatureChange( wxCommandEvent& aEvent )
+void PANEL_GALVANIC_CORROSION::OnNomenclatureChange( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     if( m_radioBtnSymbol->GetValue() )
     {
@@ -303,7 +303,7 @@ void PANEL_GALVANIC_CORROSION::OnNomenclatureChange( wxCommandEvent& aEvent )
 }
 
 
-void PANEL_GALVANIC_CORROSION::OnCorFilterChange( wxCommandEvent& aEvent )
+void PANEL_GALVANIC_CORROSION::OnCorFilterChange( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     m_corFilterValue = DoubleFromString( m_corFilterCtrl->GetValue() );
     fillTable();

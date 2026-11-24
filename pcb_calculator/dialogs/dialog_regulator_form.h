@@ -70,7 +70,7 @@ public:
     /**
      * Called when the current regulator type is changed.
      */
-    void OnRegTypeSelection( wxCommandEvent& event ) override
+    void OnRegTypeSelection( wxCommandEvent& event [[maybe_unused]] ) override
     {
         UpdateDialog();
     }

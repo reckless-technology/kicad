@@ -36,7 +36,7 @@
 #include <eda_3d_canvas.h>
 
 
-RENDER_3D_RAYTRACE_GL::RENDER_3D_RAYTRACE_GL( EDA_3D_CANVAS* aCanvas, BOARD_ADAPTER& aAdapter,
+RENDER_3D_RAYTRACE_GL::RENDER_3D_RAYTRACE_GL( EDA_3D_CANVAS* aCanvas [[maybe_unused]], BOARD_ADAPTER& aAdapter,
                                               CAMERA& aCamera ) :
     RENDER_3D_RAYTRACE_BASE( aAdapter, aCamera )
 {

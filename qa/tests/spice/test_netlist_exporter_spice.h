@@ -41,7 +41,7 @@ public:
         {}
 
         REPORTER& Report( const wxString& aText,
-                          SEVERITY aSeverity = RPT_SEVERITY_UNDEFINED ) override
+                          SEVERITY aSeverity [[maybe_unused]] = RPT_SEVERITY_UNDEFINED ) override
         {
             *m_log << aText << "\n";
 
