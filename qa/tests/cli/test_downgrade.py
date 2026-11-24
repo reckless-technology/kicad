@@ -168,14 +168,14 @@ class TestDropApproximations(unittest.TestCase):
         original = board.read_bytes()
         for target in ("9.0", "10.0"):
             with self.subTest(target=target):
-                report_path = self.root / f"rectangular-{target}.json"
+                report_path = self.root / f"rectangular-{target}.txt"
                 result = self.cli("pcb", "downgrade", board, "--target", target, "--dry-run",
-                                  "--report-json", report_path)
-                report = json.loads(report_path.read_text())
-                self.assertTrue(report["blocked"], result.stdout + result.stderr)
-                self.assertIn("Rectangular pad holes",
-                              [e["feature"] for e in report["entries"] if e["category"] == "block"])
-                self.assertIn("Rectangular pad holes", result.stdout + result.stderr)
+                                  "--report", report_path)
+                self.require_success(result)
+                self.assertIn("[block] Rectangular pad holes (4)", result.stdout + result.stderr)
+                report = report_path.read_text()
+                self.assertIn("Export is blocked", report)
+                self.assertIn("Cannot export: 4\n  Rectangular pad holes (4)", report)
                 output = self.root / f"rectangular-{target}.kicad_pcb"
                 result = self.cli("pcb", "downgrade", board, "--target", target, "--force", "--output", output)
                 self.assertNotEqual(result.returncode, 0)
