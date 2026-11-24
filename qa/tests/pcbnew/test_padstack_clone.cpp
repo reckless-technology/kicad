@@ -126,4 +126,34 @@ BOOST_AUTO_TEST_CASE( HalfTurnedPadComparison )
 }
 
 
+
+
+// A circle is the same circle whichever point of its rim marks the radius
+// fails on revert, since the library comparison then reads a half turned circle as changed
+BOOST_AUTO_TEST_CASE( CircleEndPointComparison )
+{
+    BOARD board;
+
+    auto makeFootprint = [&]( const VECTOR2I& aEnd )
+    {
+        FOOTPRINT* footprint = new FOOTPRINT( &board );
+        PCB_SHAPE* circle = new PCB_SHAPE( footprint, SHAPE_T::CIRCLE );
+
+        circle->SetLayer( F_Fab );
+        circle->SetStart( VECTOR2I( 0, 0 ) );
+        circle->SetEnd( aEnd );
+        footprint->Add( circle );
+        board.Add( footprint );
+        return footprint;
+    };
+
+    FOOTPRINT* above = makeFootprint( VECTOR2I( 0, 11000000 ) );
+    FOOTPRINT* below = makeFootprint( VECTOR2I( 0, -11000000 ) );
+    FOOTPRINT* larger = makeFootprint( VECTOR2I( 0, 12000000 ) );
+
+    BOOST_CHECK( !above->FootprintNeedsUpdate( below, BOARD_ITEM::COMPARE_FLAGS::DRC ) );
+    BOOST_CHECK( above->FootprintNeedsUpdate( larger, BOARD_ITEM::COMPARE_FLAGS::DRC ) );
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()

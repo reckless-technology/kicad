@@ -189,9 +189,17 @@ bool primitiveNeedsUpdate( const std::shared_ptr<PCB_SHAPE>& a,
     }
 
     case SHAPE_T::SEGMENT:
-    case SHAPE_T::CIRCLE:
         TEST_PT( a->GetStart(), b->GetStart(), "" );
         TEST_PT( a->GetEnd(), b->GetEnd(), "" );
+        break;
+
+    case SHAPE_T::CIRCLE:
+        // the end point only marks the radius: a half turn moves it, and the circle is the same one
+        TEST_PT( a->GetStart(), b->GetStart(), "" );
+
+        if( abs( a->GetRadius() - b->GetRadius() ) > EPSILON )
+            return true;
+
         break;
 
     case SHAPE_T::ARC:
@@ -610,10 +618,23 @@ bool shapeNeedsUpdate( const PCB_SHAPE& curr_shape, const PCB_SHAPE& ref_shape )
     }
 
     case SHAPE_T::SEGMENT:
-    case SHAPE_T::CIRCLE:
         TEST_PT( curr_shape.GetLibraryStart(), ref_shape.GetLibraryStart(), "" );
         TEST_PT( curr_shape.GetLibraryEnd(), ref_shape.GetLibraryEnd(), "" );
         break;
+
+    case SHAPE_T::CIRCLE:
+    {
+        // the end point only marks the radius: a half turn moves it, and the circle is the same one
+        TEST_PT( curr_shape.GetLibraryStart(), ref_shape.GetLibraryStart(), "" );
+
+        const double currRadius = ( curr_shape.GetLibraryEnd() - curr_shape.GetLibraryStart() ).EuclideanNorm();
+        const double refRadius = ( ref_shape.GetLibraryEnd() - ref_shape.GetLibraryStart() ).EuclideanNorm();
+
+        if( std::abs( currRadius - refRadius ) > EPSILON )
+            return true;
+
+        break;
+    }
 
     case SHAPE_T::ARC:
         TEST_PT( curr_shape.GetLibraryStart(), ref_shape.GetLibraryStart(), "" );
