@@ -42,6 +42,7 @@
 #include <json_common.h>
 #include <wx/filefn.h>
 #include <wx/filename.h>
+#include <utility>
 
 
 namespace
@@ -180,7 +181,7 @@ BOOST_DATA_TEST_CASE_F( DRC_REGRESSION_TEST_FIXTURE, DRCCopperSliver,
     BOOST_TEST_CHECKPOINT( "Clearing violation handler" );
     bds.m_DRCEngine->ClearViolationHandler();
 
-    if( violations.size() == test.second )
+    if( std::cmp_equal( violations.size(), test.second ) )
     {
         BOOST_CHECK_EQUAL( 1, 1 ); // quiet "did not check any assertions" warning
         BOOST_TEST_MESSAGE( wxString::Format( "DRC copper sliver: %s, passed", test.first ) );

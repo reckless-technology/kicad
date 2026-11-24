@@ -29,6 +29,7 @@
 #include <drc/drc_engine.h>
 #include <drc/drc_item.h>
 #include <settings/settings_manager.h>
+#include <utility>
 
 
 namespace
@@ -77,7 +78,7 @@ BOOST_FIXTURE_TEST_CASE( DRCStarvedThermal, DRC_REGRESSION_TEST_FIXTURE )
 
         bds.m_DRCEngine->RunTests( EDA_UNITS::MM, true, false );
 
-        if( violations.size() == test.second )
+        if( std::cmp_equal( violations.size(), test.second ) )
         {
             BOOST_CHECK_EQUAL( 1, 1 ); // quiet "did not check any assertions" warning
             BOOST_TEST_MESSAGE( wxString::Format( "DRC starved thermal: %s, passed", test.first ) );

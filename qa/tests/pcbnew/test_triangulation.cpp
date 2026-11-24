@@ -64,8 +64,6 @@ BOOST_DATA_TEST_CASE_F( TRIANGULATE_TEST_FIXTURE, RegressionTriangulationTests,
 {
     KI_TEST::LoadBoard( m_settingsManager, relPath, m_board );
 
-    BOARD_DESIGN_SETTINGS& bds = m_board->GetDesignSettings();
-
     for( ZONE* zone : m_board->Zones() )
     {
         if( zone->GetIsRuleArea() )
@@ -89,7 +87,7 @@ BOOST_DATA_TEST_CASE_F( TRIANGULATE_TEST_FIXTURE, RegressionTriangulationTests,
             double area = poly->Area();
             double tri_area = 0.0;
 
-            for( int ii = 0; ii < poly->TriangulatedPolyCount(); ii++ )
+            for( unsigned int ii = 0; ii < poly->TriangulatedPolyCount(); ii++ )
             {
                 const auto tri_poly = poly->TriangulatedPolygon( ii );
 

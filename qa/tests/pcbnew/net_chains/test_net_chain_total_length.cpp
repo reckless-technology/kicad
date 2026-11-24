@@ -55,10 +55,6 @@ BOOST_AUTO_TEST_CASE( SignalAggregatePlusNetEqualsPadSpacing )
     bool ok = ifaceBase.GetSignalAggregate( n1, n1, extraLen, extraDelay ); // all other nets
     BOOST_CHECK( ok );
 
-    // Enumerate tracks for diagnostics
-    int trackCount = 0;
-    for( BOARD_ITEM* bi : board->Tracks() ) if( dynamic_cast<PCB_TRACK*>( bi ) ) trackCount++;
-
     // Compute routed length for net1 summing track+pad contributions per segment
     long long net1Len = 0;
     for( BOARD_ITEM* bi : board->Tracks() )

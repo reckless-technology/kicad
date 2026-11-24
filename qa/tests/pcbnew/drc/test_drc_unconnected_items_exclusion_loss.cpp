@@ -309,8 +309,6 @@ BOOST_FIXTURE_TEST_CASE( DRCUnconnectedExclusionsLoss, DRC_EXCLUSION_SAVE_FIXTUR
         { "issue17429", 10 }, // board name stem, expected initial exclusions
     };
 
-    const int NUM_DRC_RUNS = 2;
-
     for( const std::pair<wxString, int>& test_params : tests )
     {
         FileCleaner& tempFileCleaner = m_tempFileCleaner;

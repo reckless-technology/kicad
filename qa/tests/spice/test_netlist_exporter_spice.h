@@ -239,7 +239,6 @@ public:
 
             BOOST_REQUIRE_EQUAL( vector.size(), 1 );
 
-            double maxError = abs( aRefValue * aMaxRelError );
             BOOST_CHECK_LE( abs( vector[0] - aRefValue ), aMaxRelError );
         }
     }

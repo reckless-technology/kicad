@@ -117,19 +117,6 @@ void importSession( BOARD* aBoard, const wxString& aSesPath )
     ImportSpecctraSession( aBoard, aSesPath, commit );
     commit.Push( wxT( "Import Specctra Session" ), SKIP_UNDO );
 }
-
-
-void importSession( BOARD* aBoard, const wxString& aSesPath, WX_STRING_REPORTER* aReporter,
-                    int* aSkipped )
-{
-    TOOL_MANAGER toolMgr;
-    toolMgr.SetEnvironment( aBoard, nullptr, nullptr, nullptr, nullptr );
-    toolMgr.RegisterTool( new KI_TEST::DUMMY_TOOL() );
-
-    BOARD_COMMIT commit( &toolMgr, true, false );
-    ImportSpecctraSession( aBoard, aSesPath, commit, aReporter, aSkipped );
-    commit.Push( wxT( "Import Specctra Session" ), SKIP_UNDO );
-}
 } // namespace
 
 

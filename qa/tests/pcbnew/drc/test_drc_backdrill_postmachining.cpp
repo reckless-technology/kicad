@@ -438,36 +438,22 @@ BOOST_FIXTURE_TEST_CASE( ZoneConnectivityWithBackdrill, BACKDRILL_TEST_FIXTURE )
     int netCode = GetNetCode( "TestNet" );
 
     // Create a via with backdrill
-    PCB_VIA* via = CreateBackdrilledVia( VECTOR2I( pcbIUScale.mmToIU( 50 ), pcbIUScale.mmToIU( 50 ) ),
-                                         netCode,
-                                         F_Cu, B_Cu,
-                                         F_Cu, In2_Cu,  // Backdrill removes F_Cu and In1_Cu
-                                         pcbIUScale.mmToIU( 0.5 ) );
+    CreateBackdrilledVia( VECTOR2I( pcbIUScale.mmToIU( 50 ), pcbIUScale.mmToIU( 50 ) ),
+                          netCode,
+                          F_Cu, B_Cu,
+                          F_Cu, In2_Cu,  // Backdrill removes F_Cu and In1_Cu
+                          pcbIUScale.mmToIU( 0.5 ) );
 
     // Create a zone on F_Cu (backdrilled layer) with same net
-    ZONE* zone = CreateZone( VECTOR2I( pcbIUScale.mmToIU( 40 ), pcbIUScale.mmToIU( 40 ) ),
-                             VECTOR2I( pcbIUScale.mmToIU( 60 ), pcbIUScale.mmToIU( 60 ) ),
-                             F_Cu, netCode );
+    CreateZone( VECTOR2I( pcbIUScale.mmToIU( 40 ), pcbIUScale.mmToIU( 40 ) ),
+                VECTOR2I( pcbIUScale.mmToIU( 60 ), pcbIUScale.mmToIU( 60 ) ),
+                F_Cu, netCode );
 
     FillZones();
     RebuildConnectivity();
 
     // The via should NOT be connected to the zone on F_Cu because it's backdrilled
     // This tests the connectivity algorithm update
-    auto connectivity = m_board->GetConnectivity();
-
-    // Get items connected to the via
-    std::vector<BOARD_CONNECTED_ITEM*> connectedItems = connectivity->GetConnectedItems( via, 0 );
-
-    // Check if zone is in connected items
-    bool zoneConnected = false;
-
-    for( BOARD_CONNECTED_ITEM* item : connectedItems )
-    {
-        if( item == zone )
-            zoneConnected = true;
-    }
-
     // The connectivity algorithm should have been updated to exclude zone connections
     // on backdrilled layers. This is the main test for connectivity changes.
     // Note: Zone fill also creates knockouts, but connectivity should already be updated
@@ -490,9 +476,9 @@ BOOST_FIXTURE_TEST_CASE( DRCTrackOnPostMachinedLayer, BACKDRILL_TEST_FIXTURE )
                                           pcbIUScale.mmToIU( 0.3 ) );
 
     // Create a track on F_Cu connected to the via (this should trigger DRC error)
-    PCB_TRACK* track = CreateTrack( via->GetPosition(),
-                                    VECTOR2I( pcbIUScale.mmToIU( 70 ), pcbIUScale.mmToIU( 10 ) ),
-                                    F_Cu, netCode );
+    CreateTrack( via->GetPosition(),
+                 VECTOR2I( pcbIUScale.mmToIU( 70 ), pcbIUScale.mmToIU( 10 ) ),
+                 F_Cu, netCode );
 
     RebuildConnectivity();
 
@@ -518,9 +504,9 @@ BOOST_FIXTURE_TEST_CASE( DRCTrackOnBackdrilledLayer, BACKDRILL_TEST_FIXTURE )
                                          pcbIUScale.mmToIU( 0.5 ) );
 
     // Create a track on In1_Cu connected to the via (this should trigger DRC error)
-    PCB_TRACK* track = CreateTrack( via->GetPosition(),
-                                    VECTOR2I( pcbIUScale.mmToIU( 80 ), pcbIUScale.mmToIU( 10 ) ),
-                                    In1_Cu, netCode );
+    CreateTrack( via->GetPosition(),
+                 VECTOR2I( pcbIUScale.mmToIU( 80 ), pcbIUScale.mmToIU( 10 ) ),
+                 In1_Cu, netCode );
 
     RebuildConnectivity();
 
@@ -584,9 +570,9 @@ BOOST_FIXTURE_TEST_CASE( DRCTrackOnBackdrilledPadLayer, BACKDRILL_TEST_FIXTURE )
     SetPadBackdrill( pad, F_Cu, In2_Cu, pcbIUScale.mmToIU( 1.0 ) );
 
     // Create a track on In1_Cu connected to the pad (should trigger DRC)
-    PCB_TRACK* track = CreateTrack( pad->GetPosition(),
-                                    VECTOR2I( pcbIUScale.mmToIU( 100 ), pcbIUScale.mmToIU( 10 ) ),
-                                    In1_Cu, netCode );
+    CreateTrack( pad->GetPosition(),
+                 VECTOR2I( pcbIUScale.mmToIU( 100 ), pcbIUScale.mmToIU( 10 ) ),
+                 In1_Cu, netCode );
 
     RebuildConnectivity();
 

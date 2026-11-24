@@ -36,6 +36,7 @@
 #include <pcbnew_utils/board_construction_utils.h>
 #include <pcbnew_utils/board_file_utils.h>
 #include <qa_utils/wx_utils/unit_test_utils.h>
+#include <utility>
 
 BOOST_AUTO_TEST_SUITE( GroupSaveLoad )
 
@@ -118,7 +119,7 @@ std::unique_ptr<BOARD> createBoard( const std::vector<std::vector<ItemType>>& sp
 
         PCB_GROUP* group = static_cast<PCB_GROUP*>( items[groupIdx] );
 
-        if( offset < spec.size() )
+        if( std::cmp_less( offset, spec.size() ) )
         {
             const std::vector<ItemType>& groupSpec = spec[offset];
 

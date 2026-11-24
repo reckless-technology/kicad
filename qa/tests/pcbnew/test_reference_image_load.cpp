@@ -294,7 +294,6 @@ BOOST_FIXTURE_TEST_CASE( ReferenceImagePpiScaleMigration, REFERENCE_IMAGE_BOARD_
  */
 BOOST_FIXTURE_TEST_CASE( ReferenceImageRotateTransformOrigin, REFERENCE_IMAGE_BOARD_FIXTURE )
 {
-    BOARD&               board = GetBoard();
     PCB_REFERENCE_IMAGE& image = GetImage();
 
     SetImageData( png_3780_ppm );
@@ -326,7 +325,6 @@ BOOST_FIXTURE_TEST_CASE( ReferenceImageRotateTransformOrigin, REFERENCE_IMAGE_BO
  */
 BOOST_FIXTURE_TEST_CASE( ReferenceImageStoresRotation, REFERENCE_IMAGE_BOARD_FIXTURE )
 {
-    BOARD&               board = GetBoard();
     PCB_REFERENCE_IMAGE& image = GetImage();
 
     REFERENCE_IMAGE& refImage = image.GetReferenceImage();

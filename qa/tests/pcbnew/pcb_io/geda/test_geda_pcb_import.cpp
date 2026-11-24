@@ -298,7 +298,7 @@ BOOST_AUTO_TEST_CASE( MultilayerBoardNetAssignment )
     bool foundGND = false;
     bool foundVCC = false;
 
-    for( int i = 0; i < board->GetNetCount(); i++ )
+    for( unsigned i = 0; i < board->GetNetCount(); i++ )
     {
         NETINFO_ITEM* net = board->GetNetInfo().GetNetItem( i );
 

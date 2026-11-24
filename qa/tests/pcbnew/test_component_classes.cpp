@@ -45,8 +45,7 @@ BOOST_FIXTURE_TEST_CASE( ComponentClasses, PCB_COMPONENT_CLASS_FIXTURE )
 {
     KI_TEST::LoadBoard( m_settingsManager, "component_classes", m_board );
 
-    std::vector<DRC_ITEM>  violations;
-    BOARD_DESIGN_SETTINGS& bds = m_board->GetDesignSettings();
+    std::vector<DRC_ITEM> violations;
 
     std::vector<wxString> allClasses{ "ANY",          "CAP_1",         "CAP_2",   "CLASS_1",
                                       "CLASS_2",      "CLASS_3",       "CLASS_4", "MULTI_REF",
