@@ -70,6 +70,9 @@ public:
     void              UploadTexture( RHI_TextureHandle handle, const void* data,
                                      size_t sizeBytes ) override;
 
+    void BeginUploadBatch() override;
+    void EndUploadBatch() override;
+
     RHI_ShaderHandle CreateShader( const RHI_SHADER_DESC& desc ) override;
     void             DestroyShader( RHI_ShaderHandle handle ) override;
 
@@ -307,6 +310,18 @@ private:
     }
 
     void SyncSubmittedPasses();
+
+    // Copies into Private buffers and textures go through a blit on the queue, so a pass committed
+    // before the copy reads the old contents and one committed after it reads the new. Between
+    // BeginUploadBatch() and EndUploadBatch() they share one command buffer.
+    bool                      m_uploadBatchOpen     = false;
+    id<MTLCommandBuffer>      m_uploadCommandBuffer = nil;
+    id<MTLBlitCommandEncoder> m_uploadEncoder       = nil;
+
+    template <typename ENCODE>
+    void encodeUpload( ENCODE&& aEncode );
+
+    void commitUploadBatch();
 
     // Cached at bind time to avoid per-draw hash lookups
     RHI_PipelineHandle  m_boundPipeline;
@@ -950,11 +965,12 @@ bool RHI_METAL_DEVICE::RealizeBuffer( RHI_BufferHandle handle, const RHI_BUFFER_
 
     @autoreleasepool
     {
-        // Managed keeps a CPU-visible mirror so UpdateBuffer can write through the contents pointer
-        // while Metal synchronises the GPU copy.
+        // Mappable and storage buffers are written and read through the contents pointer, so they are
+        // Shared. The rest only the GPU reads: Private, filled from a staging copy as on the Vulkan
+        // backend, which suits a discrete GPU's own memory and Apple Silicon alike.
         MTLResourceOptions options = ( desc.mappable || desc.type == RHI_BUFFER_TYPE::STORAGE )
                                              ? MTLResourceStorageModeShared
-                                             : MTLResourceStorageModeManaged;
+                                             : MTLResourceStorageModePrivate;
 
         id<MTLBuffer> mtlBuffer = [m_device newBufferWithLength:desc.sizeBytes
                                                         options:options];
@@ -1000,6 +1016,43 @@ void RHI_METAL_DEVICE::UpdateBuffer( RHI_BufferHandle handle, const void* data,
     if( !RhiRangeWithinBuffer( offset, sizeBytes, alloc.desc.sizeBytes ) )
         return;
 
+    if( [alloc.buffer storageMode] == MTLStorageModePrivate )
+    {
+        // A buffer-to-buffer blit on macOS takes offsets and sizes in whole 4-byte words. Every
+        // vertex, index and instance type the RHI uploads is built from 4-byte fields.
+        if( ( offset % 4 ) != 0 || ( sizeBytes % 4 ) != 0 )
+        {
+            wxFAIL_MSG( wxString::Format( wxS( "Metal UpdateBuffer: offset %zu and size %zu must be "
+                                               "multiples of 4" ),
+                                          offset, sizeBytes ) );
+            return;
+        }
+
+        @autoreleasepool
+        {
+            id<MTLBuffer> staging = [m_device newBufferWithBytes:data
+                                                          length:sizeBytes
+                                                         options:MTLResourceStorageModeShared];
+
+            if( !staging )
+                return;
+
+            id<MTLBuffer> target = alloc.buffer;
+
+            encodeUpload(
+                    [&]( id<MTLBlitCommandEncoder> aBlit )
+                    {
+                        [aBlit copyFromBuffer:staging
+                                 sourceOffset:0
+                                     toBuffer:target
+                            destinationOffset:offset
+                                         size:sizeBytes];
+                    } );
+        }
+
+        return;
+    }
+
     void* contents = [alloc.buffer contents];
 
     if( !contents )
@@ -1010,11 +1063,64 @@ void RHI_METAL_DEVICE::UpdateBuffer( RHI_BufferHandle handle, const void* data,
         SyncSubmittedPasses();
 
     std::memcpy( static_cast<uint8_t*>( contents ) + offset, data, sizeBytes );
+}
 
-    if( [alloc.buffer storageMode] == MTLStorageModeManaged )
+
+template <typename ENCODE>
+void RHI_METAL_DEVICE::encodeUpload( ENCODE&& aEncode )
+{
+    if( m_uploadBatchOpen )
     {
-        [alloc.buffer didModifyRange:NSMakeRange( offset, sizeBytes )];
+        if( !m_uploadEncoder )
+        {
+            m_uploadCommandBuffer = [m_commandQueue commandBuffer];
+            m_uploadEncoder = [m_uploadCommandBuffer blitCommandEncoder];
+
+            if( !m_uploadEncoder )
+            {
+                m_uploadCommandBuffer = nil;
+                return;
+            }
+        }
+
+        aEncode( m_uploadEncoder );
+        return;
     }
+
+    id<MTLCommandBuffer>      commandBuffer = [m_commandQueue commandBuffer];
+    id<MTLBlitCommandEncoder> blit = [commandBuffer blitCommandEncoder];
+
+    if( !blit )
+        return;
+
+    aEncode( blit );
+    [blit endEncoding];
+    [commandBuffer commit];
+}
+
+
+void RHI_METAL_DEVICE::commitUploadBatch()
+{
+    if( !m_uploadEncoder )
+        return;
+
+    [m_uploadEncoder endEncoding];
+    [m_uploadCommandBuffer commit];
+    m_uploadEncoder = nil;
+    m_uploadCommandBuffer = nil;
+}
+
+
+void RHI_METAL_DEVICE::BeginUploadBatch()
+{
+    m_uploadBatchOpen = true;
+}
+
+
+void RHI_METAL_DEVICE::EndUploadBatch()
+{
+    m_uploadBatchOpen = false;
+    commitUploadBatch();
 }
 
 
@@ -1072,8 +1178,9 @@ bool RHI_METAL_DEVICE::RealizeTexture( RHI_TextureHandle handle, const RHI_TEXTU
                                             height:desc.height
                                          mipmapped:NO];
 
+        // Only the GPU reads it. UploadTexture() fills it from a staging copy, as for Private buffers.
         texDesc.usage = MTLTextureUsageShaderRead;
-        texDesc.storageMode = MTLStorageModeManaged;
+        texDesc.storageMode = MTLStorageModePrivate;
 
         id<MTLTexture> mtlTex = [m_device newTextureWithDescriptor:texDesc];
 
@@ -1121,14 +1228,33 @@ void RHI_METAL_DEVICE::UploadTexture( RHI_TextureHandle handle, const void* data
     if( sizeBytes < expectedSize )
         return;
 
-    // replaceRegion writes at once, under any queued pass that still samples this texture
-    SyncSubmittedPasses();
+    @autoreleasepool
+    {
+        // Ordered on the queue, so a pass committed earlier still samples the old texels
+        id<MTLBuffer> staging = [m_device newBufferWithBytes:data
+                                                      length:expectedSize
+                                                     options:MTLResourceStorageModeShared];
 
-    MTLRegion region = MTLRegionMake2D( 0, 0, alloc.desc.width, alloc.desc.height );
-    [alloc.texture replaceRegion:region
-                     mipmapLevel:0
-                       withBytes:data
-                     bytesPerRow:bytesPerRow];
+        if( !staging )
+            return;
+
+        id<MTLTexture> target = alloc.texture;
+        MTLSize        size = MTLSizeMake( alloc.desc.width, alloc.desc.height, 1 );
+
+        encodeUpload(
+                [&]( id<MTLBlitCommandEncoder> aBlit )
+                {
+                    [aBlit copyFromBuffer:staging
+                             sourceOffset:0
+                        sourceBytesPerRow:bytesPerRow
+                      sourceBytesPerImage:expectedSize
+                               sourceSize:size
+                                toTexture:target
+                         destinationSlice:0
+                         destinationLevel:0
+                        destinationOrigin:MTLOriginMake( 0, 0, 0 )];
+                } );
+    }
 }
 
 
@@ -2363,42 +2489,36 @@ bool RHI_METAL_DEVICE::ReadbackFramebufferPixels( RHI_FramebufferHandle handle,
         if( bufferSize < requiredSize )
             return false;
 
-        // Private storage textures need a blit to a managed buffer first
+        // The CPU cannot read a Private texture, so blit it into a Shared buffer first
         if( [srcTex storageMode] == MTLStorageModePrivate )
         {
-            MTLTextureDescriptor* readDesc = [MTLTextureDescriptor
-                    texture2DDescriptorWithPixelFormat:[srcTex pixelFormat]
-                                                 width:width
-                                                height:height
-                                             mipmapped:NO];
-            readDesc.storageMode = MTLStorageModeManaged;
-            readDesc.usage = MTLTextureUsageShaderRead;
+            id<MTLBuffer> readback = [m_device newBufferWithLength:requiredSize
+                                                           options:MTLResourceStorageModeShared];
 
-            id<MTLTexture> readbackTex = [m_device newTextureWithDescriptor:readDesc];
-
-            if( !readbackTex )
+            if( !readback )
                 return false;
 
-            id<MTLCommandBuffer> cmdBuf = [m_commandQueue commandBuffer];
+            id<MTLCommandBuffer>      cmdBuf = [m_commandQueue commandBuffer];
             id<MTLBlitCommandEncoder> blit = [cmdBuf blitCommandEncoder];
 
-            [blit copyFromTexture:srcTex
-                      sourceSlice:0
-                      sourceLevel:0
-                     sourceOrigin:MTLOriginMake( 0, 0, 0 )
-                       sourceSize:MTLSizeMake( width, height, 1 )
-                        toTexture:readbackTex
-                 destinationSlice:0
-                 destinationLevel:0
-                destinationOrigin:MTLOriginMake( 0, 0, 0 )];
+            if( !blit )
+                return false;
 
-            [blit synchronizeTexture:readbackTex slice:0 level:0];
+            [blit copyFromTexture:srcTex
+                          sourceSlice:0
+                          sourceLevel:0
+                         sourceOrigin:MTLOriginMake( 0, 0, 0 )
+                           sourceSize:MTLSizeMake( width, height, 1 )
+                             toBuffer:readback
+                    destinationOffset:0
+               destinationBytesPerRow:bytesPerRow
+             destinationBytesPerImage:requiredSize];
+
             [blit endEncoding];
             [cmdBuf commit];
             [cmdBuf waitUntilCompleted];
 
-            MTLRegion region = MTLRegionMake2D( 0, 0, width, height );
-            [readbackTex getBytes:buffer bytesPerRow:bytesPerRow fromRegion:region mipmapLevel:0];
+            std::memcpy( buffer, [readback contents], requiredSize );
         }
         else
         {
