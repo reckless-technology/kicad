@@ -113,7 +113,6 @@ void RENDER_3D_OPENGL::SetCurWindowSize( const wxSize& aSize )
     if( m_windowSize != aSize )
     {
         int viewport[4];
-        int fbWidth, fbHeight;
         glGetIntegerv( GL_VIEWPORT, viewport );
 
         m_windowSize = aSize;
@@ -673,7 +672,6 @@ bool RENDER_3D_OPENGL::Redraw( bool aIsMoving )
         const PCB_LAYER_ID layer = ( PCB_LAYER_ID )( ii->first );
         bool  isSilkLayer = layer == F_SilkS || layer == B_SilkS;
         bool  isMaskLayer = layer == F_Mask || layer == B_Mask;
-        bool  isPasteLayer = layer == F_Paste || layer == B_Paste;
 
         // Mask layers are not processed here because they are a special case
         if( isMaskLayer )

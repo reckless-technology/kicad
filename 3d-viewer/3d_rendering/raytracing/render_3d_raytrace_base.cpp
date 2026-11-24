@@ -153,10 +153,10 @@ void RENDER_3D_RAYTRACE_BASE::restartRenderState()
 
 static inline void SetPixel( uint8_t* p, const COLOR_RGBA& v )
 {
-    p[0] = v.c[0];
-    p[1] = v.c[1];
-    p[2] = v.c[2];
-    p[3] = v.c[3];
+    p[0] = v.r;
+    p[1] = v.g;
+    p[2] = v.b;
+    p[3] = v.a;
 }
 
 
@@ -1416,7 +1416,6 @@ SFVEC4F RENDER_3D_RAYTRACE_BASE::shadeHit( const SFVEC4F& aBgColor, const RAY& a
     const SFVEC4F diffuseColorObj =
             SFVEC4F( aHitInfo.pHitObject->GetDiffuseColor( aHitInfo ), 1.0f );
 
-    bool  is_aa_enabled = m_boardAdapter.m_Cfg->m_Render.raytrace_anti_aliasing && !m_isPreview;
     float shadow_att_factor_sum = 0.0f;
 
     unsigned int nr_lights_that_can_cast_shadows = 0;
@@ -1648,14 +1647,6 @@ SFVEC4F RENDER_3D_RAYTRACE_BASE::shadeHit( const SFVEC4F& aBgColor, const RAY& a
 }
 
 
-static float distance( const SFVEC2UI& a, const SFVEC2UI& b )
-{
-    const float dx = (float) a.x - (float) b.x;
-    const float dy = (float) a.y - (float) b.y;
-    return hypotf( dx, dy );
-}
-
-
 void RENDER_3D_RAYTRACE_BASE::initializeBlockPositions()
 {
     m_realBufferSize = SFVEC2UI( 0 );
@@ -1704,8 +1695,8 @@ void RENDER_3D_RAYTRACE_BASE::initializeBlockPositions()
 
     // Calc block positions for regular rendering. Choose an 'inside out' style of rendering.
     m_blockPositions.clear();
-    const int blocks_x = m_realBufferSize.x / RAYPACKET_DIM;
-    const int blocks_y = m_realBufferSize.y / RAYPACKET_DIM;
+    const size_t blocks_x = m_realBufferSize.x / RAYPACKET_DIM;
+    const size_t blocks_y = m_realBufferSize.y / RAYPACKET_DIM;
     m_blockPositions.reserve( blocks_x * blocks_y );
 
     // Hilbert curve position calculation

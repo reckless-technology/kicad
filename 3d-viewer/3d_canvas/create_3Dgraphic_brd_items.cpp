@@ -934,8 +934,6 @@ void BOARD_ADAPTER::addShape( const PCB_SHAPE* aShape, CONTAINER_2D_BASE* aConta
     if( lineStyle > LINE_STYLE::FIRST_TYPE )
     {
         std::vector<SHAPE*> shapes = aShape->MakeEffectiveShapesForStroking( linewidth );
-        SFVEC2F             a3DU;
-        SFVEC2F             b3DU;
 
         const PCB_PLOT_PARAMS&     plotParams = aShape->GetBoard()->GetPlotOptions();
         KIGFX::PCB_RENDER_SETTINGS renderSettings;

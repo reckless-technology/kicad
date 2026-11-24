@@ -90,6 +90,5 @@ public:
 private:
     const OBJECT_2D*                m_objectA;
     std::vector<const OBJECT_2D*>*  m_objectB;
-    const OBJECT_2D*                m_objectC;
 };
 

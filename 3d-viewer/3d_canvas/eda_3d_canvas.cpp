@@ -697,7 +697,6 @@ void EDA_3D_CANVAS::RenderToFrameBuffer( unsigned char* buffer, int width, int h
     }
 
     wxString            err_messages;
-    int64_t             start_time = GetRunningMicroSecs();
     GL_CONTEXT_MANAGER* gl_mgr = Pgm().GetGLContextManager();
 
     if( !gl_mgr )

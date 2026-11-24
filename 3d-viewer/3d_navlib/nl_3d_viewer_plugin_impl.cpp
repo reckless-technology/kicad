@@ -81,8 +81,7 @@ NL_3D_VIEWER_PLUGIN_IMPL::NL_3D_VIEWER_PLUGIN_IMPL( EDA_3D_CANVAS* aCanvas,
                                                     const std::string& aProfileHint ) :
         NAV_3D( false, false ),
         m_canvas( aCanvas ),
-        m_capIsMoving( false ),
-        m_newWidth( 0.0 )
+        m_capIsMoving( false )
 {
     m_camera = dynamic_cast<TRACK_BALL*>( m_canvas->GetCamera() );
 
@@ -319,8 +318,6 @@ long NL_3D_VIEWER_PLUGIN_IMPL::GetIsViewPerspective( navlib::bool_t& perspective
 
 long NL_3D_VIEWER_PLUGIN_IMPL::SetCameraMatrix( const navlib::matrix_t& aCameraMatrix )
 {
-    long result = 0;
-
     glm::mat4 cam, viewMatrix;
     std::copy_n( aCameraMatrix.m, 16, glm::value_ptr( cam ) );
     viewMatrix = glm::inverse( cam );

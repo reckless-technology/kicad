@@ -310,7 +310,7 @@ void RENDER_3D_RAYTRACE_BASE::createItemsFromContainer( const BVH_CONTAINER_2D* 
             // Clip counterbore/countersink cutouts from copper layers
             // Front cutouts affect F_Cu, back cutouts affect B_Cu
             auto clipCutouts =
-                    [this, &object2d_A, &object2d_B]( const BVH_CONTAINER_2D& cutouts )
+                    [&object2d_A, &object2d_B]( const BVH_CONTAINER_2D& cutouts )
                     {
                         if( !cutouts.GetList().empty() )
                         {

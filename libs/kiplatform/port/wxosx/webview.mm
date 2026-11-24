@@ -155,7 +155,6 @@ bool LoadCookies( wxWebView* aWebView, const wxString& aSourceFile )
         std::string domain = cookieObj.value( "domain", "" );
         std::string path = cookieObj.value( "path", "/" );
         bool        secure = cookieObj.value( "secure", false );
-        bool        httpOnly = cookieObj.value( "httpOnly", false );
         int64_t     expires = cookieObj.value( "expires", 0 );
 
         NSMutableDictionary* properties = [NSMutableDictionary dictionary];
