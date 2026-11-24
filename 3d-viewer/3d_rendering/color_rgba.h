@@ -27,17 +27,12 @@
 
 #include <plugins/3dapi/xv3d_types.h>
 
-union COLOR_RGBA
+struct COLOR_RGBA
 {
-    unsigned char c[4];
-
-    struct
-    {
-        unsigned char r;
-        unsigned char g;
-        unsigned char b;
-        unsigned char a;
-    };
+    unsigned char r;
+    unsigned char g;
+    unsigned char b;
+    unsigned char a;
 
     COLOR_RGBA( const SFVEC3F& aColor );
     COLOR_RGBA( const SFVEC4F& aColor );

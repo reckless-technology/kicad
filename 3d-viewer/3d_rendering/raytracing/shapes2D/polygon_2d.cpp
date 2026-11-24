@@ -533,12 +533,6 @@ void ConvertPolygonToBlocks( const SHAPE_POLY_SET& aMainPath, CONTAINER_2D_BASE&
 
     const int topToBottom_inc = ( pathBounds.GetBottom() - pathBounds.GetTop() ) / grid_divisions.y;
 
-    // Statistics
-    unsigned int stats_n_empty_blocks       = 0;
-    unsigned int stats_n_dummy_blocks       = 0;
-    unsigned int stats_n_poly_blocks        = 0;
-    unsigned int stats_sum_size_of_polygons = 0;
-
     // Step by each block of a grid trying to extract segments and create polygon blocks
     int   topToBottom = pathBounds.GetTop();
     float blockY      = bbox.Max().y;
@@ -579,13 +573,11 @@ void ConvertPolygonToBlocks( const SHAPE_POLY_SET& aMainPath, CONTAINER_2D_BASE&
                     // then all other are inside the polygon.
                     // This is a full bbox inside, so add a dummy box
                     aDstContainer.Add( new DUMMY_BLOCK_2D( blockBox, aBoardItem ) );
-                    stats_n_dummy_blocks++;
                 }
                 else
                 {
                     // Points are outside, so this block completely missed the polygon
                     // In this case, no objects need to be added
-                    stats_n_empty_blocks++;
                 }
             }
             else
@@ -626,15 +618,12 @@ void ConvertPolygonToBlocks( const SHAPE_POLY_SET& aMainPath, CONTAINER_2D_BASE&
                     polygon_Convert( outline, solutionSegment, aBiuTo3dUnitsScale );
                     outersAndHoles.m_Outers.push_back( solutionSegment );
 
-                    stats_sum_size_of_polygons += solutionSegment.size();
-
                     for( int holeIdx = 0; holeIdx < solution.HoleCount( idx ); holeIdx++ )
                     {
                         const SHAPE_LINE_CHAIN& hole = solution.Hole( idx, holeIdx );
 
                         polygon_Convert( hole, solutionSegment, aBiuTo3dUnitsScale );
                         outersAndHoles.m_Holes.push_back( solutionSegment );
-                        stats_sum_size_of_polygons += solutionSegment.size();
                     }
                 }
 
@@ -642,7 +631,6 @@ void ConvertPolygonToBlocks( const SHAPE_POLY_SET& aMainPath, CONTAINER_2D_BASE&
                 {
                     aDstContainer.Add( new POLYGON_2D( extractedSegments, outersAndHoles,
                                                        aBoardItem ) );
-                    stats_n_poly_blocks++;
                 }
             }
 

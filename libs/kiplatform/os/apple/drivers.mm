@@ -26,7 +26,6 @@
 
 bool KIPLATFORM::DRIVERS::Valid3DConnexionDriverVersion()
 {
-    NSFileManager *fileManager = [NSFileManager defaultManager];
     NSArray *searchPaths = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSLocalDomainMask, YES);
     NSString *libraryDirectory = searchPaths.firstObject;
     NSString *frameworkPath = [libraryDirectory stringByAppendingPathComponent:@"Frameworks/3DconnexionNavlib.framework"];

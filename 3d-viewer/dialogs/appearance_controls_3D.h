@@ -63,8 +63,8 @@ public:
                 m_Spacer( false ),
                 m_Ctl_visibility( nullptr ),
                 m_Ctl_color( nullptr ),
-                m_tooltip( aTooltip ),
-                m_label( aLabel )
+                m_label( aLabel ),
+                m_tooltip( aTooltip )
         {
         }
 

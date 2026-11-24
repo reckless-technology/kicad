@@ -725,8 +725,8 @@ std::vector<ALIGN_SOLUTION> SolveAlignment( const std::vector<REGION>& aRegions,
                                    epsilon, grow ) )
                     continue;
 
-                V2     centre = bodyBox( aRegions, rotation, candidate.offset ).center();
-                double distance = ( centre - allPadBox.center() ).squaredNorm();
+                V2     bodyCentre = bodyBox( aRegions, rotation, candidate.offset ).center();
+                double distance = ( bodyCentre - allPadBox.center() ).squaredNorm();
 
                 if( distance < bestDistance )
                 {

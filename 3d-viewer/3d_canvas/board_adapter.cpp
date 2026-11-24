@@ -498,6 +498,8 @@ void BOARD_ADAPTER::InitSettings( std::shared_ptr<REPORTER> aStatusReporter,
                         m_frontMaskThickness3DU = mask_thickness * m_biuTo3Dunits;
                     else if( item->GetBrdLayerId() == B_Mask )
                         m_backMaskThickness3DU = mask_thickness * m_biuTo3Dunits;
+
+                    break;
                 }
 
                 default:

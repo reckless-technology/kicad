@@ -141,7 +141,6 @@ private:
     EDA_3D_CANVAS* m_canvas;
     TRACK_BALL*    m_camera;
     bool           m_capIsMoving;
-    double         m_newWidth;
     SFVEC3F        m_rayOrigin;
     SFVEC3F        m_rayDirection;
 
