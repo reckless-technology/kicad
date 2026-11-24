@@ -73,9 +73,6 @@ struct ZONE_FILL_TEST_FIXTURE
 };
 
 
-int delta = KiROUND( 0.006 * pcbIUScale.IU_PER_MM );
-
-
 BOOST_FIXTURE_TEST_CASE( BasicZoneFills, ZONE_FILL_TEST_FIXTURE )
 {
     KI_TEST::LoadBoard( m_settingsManager, "zone_filler", m_board );
@@ -83,6 +80,8 @@ BOOST_FIXTURE_TEST_CASE( BasicZoneFills, ZONE_FILL_TEST_FIXTURE )
     BOARD_DESIGN_SETTINGS& bds = m_board->GetDesignSettings();
 
     KI_TEST::FillZones( m_board.get() );
+
+    const int delta = KiROUND( 0.006 * pcbIUScale.IU_PER_MM );
 
     // Now that the zones are filled we're going to increase the size of -some- pads and
     // tracks so that they generate DRC errors.  The test then makes sure that those errors

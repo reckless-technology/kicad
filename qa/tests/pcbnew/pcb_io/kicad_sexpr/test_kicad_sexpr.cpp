@@ -1100,9 +1100,8 @@ BOOST_AUTO_TEST_CASE( ParseWarningDoesNotFailTheLibrary )
 
 BOOST_AUTO_TEST_CASE( LegacyModuleFileImports )
 {
-    const std::string  fpPath = KI_TEST::GetPcbnewTestDataDir() + "legacy_module/Crystal_SMD_HC49-US.kicad_mod";
-    PCB_IO_KICAD_SEXPR kicadPlugin;
-    wxString           name;
+    const std::string fpPath = KI_TEST::GetPcbnewTestDataDir() + "legacy_module/Crystal_SMD_HC49-US.kicad_mod";
+    wxString          name;
 
     BOOST_CHECK( kicadPlugin.ImportFootprint( fpPath, name ) != nullptr );
 }

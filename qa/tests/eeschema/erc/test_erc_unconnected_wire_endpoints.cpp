@@ -128,7 +128,7 @@ BOOST_FIXTURE_TEST_CASE( ERCFloatingWiresUsePublishedConnectivity, ERC_REGRESSIO
     LOCALE_IO locale;
     auto& enabled = const_cast<ADVANCED_CFG&>( ADVANCED_CFG::GetCfg() ).m_ConnectivityEngine;
     SCOPED_SET_RESET restore( enabled, enabled );
-    using GROUP = std::pair<KIID_PATH, std::vector<KIID>>;
+    using WIRE_GROUP = std::pair<KIID_PATH, std::vector<KIID>>;
 
     for( const wxString& fixture : { wxString( "erc_wire_endpoints" ), wxString( "unconnected_bus_entry_qa" ) } )
     {
@@ -153,7 +153,7 @@ BOOST_FIXTURE_TEST_CASE( ERCFloatingWiresUsePublishedConnectivity, ERC_REGRESSIO
             const auto diagnostics = [&]( bool aCanonical )
             {
                 errors.SetSeverities( RPT_SEVERITY_ERROR | RPT_SEVERITY_WARNING | RPT_SEVERITY_EXCLUSION );
-                std::multiset<GROUP> result;
+                std::multiset<WIRE_GROUP>                        result;
                 std::vector<std::pair<SCH_SCREEN*, SCH_MARKER*>> markers;
 
                 for( int i = 0; i < errors.GetCount(); ++i )

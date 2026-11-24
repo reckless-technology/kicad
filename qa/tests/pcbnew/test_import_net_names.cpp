@@ -247,45 +247,45 @@ BOOST_AUTO_TEST_CASE( ExactNetclassAssignmentsFollowRenamedNets )
     const wxString renamed = wxS( "/RENAMED_ATN_IN" );
     NETINFO_ITEM* net = board->FindNet( original );
     BOOST_REQUIRE( net );
-    auto settings = board->GetDesignSettings().m_NetSettings;
-    BOOST_REQUIRE( settings );
-    const auto assignedClass = settings->GetEffectiveNetClass( original );
+    auto netSettings = board->GetDesignSettings().m_NetSettings;
+    BOOST_REQUIRE( netSettings );
+    const auto assignedClass = netSettings->GetEffectiveNetClass( original );
     BOOST_REQUIRE_EQUAL( assignedClass->GetName(), wxString( "HV" ) );
-    BOOST_REQUIRE( settings->GetEffectiveNetClass( renamed ) == settings->GetDefaultNetclass() );
+    BOOST_REQUIRE( netSettings->GetEffectiveNetClass( renamed ) == netSettings->GetDefaultNetclass() );
     const NETCLASS* netClass = net->GetNetClass();
     std::vector<std::pair<wxString, wxString>> expectedPatterns;
 
-    for( const auto& [matcher, name] : settings->GetNetclassPatternAssignments() )
+    for( const auto& [matcher, name] : netSettings->GetNetclassPatternAssignments() )
         expectedPatterns.emplace_back( matcher->GetPattern() == original ? renamed : matcher->GetPattern(), name );
 
     WX_STRING_REPORTER reporter;
     BOOST_REQUIRE( ApplyImportedNetNameMap( *board, { { original, renamed } }, reporter ) );
     BOOST_CHECK( net->GetNetClass() == netClass );
-    BOOST_CHECK( settings->GetEffectiveNetClass( renamed ) == assignedClass );
-    BOOST_CHECK( settings->GetEffectiveNetClass( original ) == settings->GetDefaultNetclass() );
+    BOOST_CHECK( netSettings->GetEffectiveNetClass( renamed ) == assignedClass );
+    BOOST_CHECK( netSettings->GetEffectiveNetClass( original ) == netSettings->GetDefaultNetclass() );
     std::vector<std::pair<wxString, wxString>> actualPatterns;
 
-    for( const auto& [matcher, name] : settings->GetNetclassPatternAssignments() )
+    for( const auto& [matcher, name] : netSettings->GetNetclassPatternAssignments() )
         actualPatterns.emplace_back( matcher->GetPattern(), name );
 
     BOOST_CHECK( actualPatterns == expectedPatterns );
-    settings->ClearAllCaches();
-    BOOST_CHECK( settings->GetEffectiveNetClass( renamed ) == assignedClass );
+    netSettings->ClearAllCaches();
+    BOOST_CHECK( netSettings->GetEffectiveNetClass( renamed ) == assignedClass );
 }
 
 BOOST_AUTO_TEST_CASE( NetColorAssignmentsFollowRenamedNets )
 {
     const wxString original = wxS( "/ATN_IN" );
     const wxString renamed = wxS( "/RECOLOURED_ATN_IN" );
-    auto settings = board->GetDesignSettings().m_NetSettings;
-    BOOST_REQUIRE( settings );
+    auto           netSettings = board->GetDesignSettings().m_NetSettings;
+    BOOST_REQUIRE( netSettings );
     const KIGFX::COLOR4D colour( 0.25, 0.5, 0.75, 1.0 );
-    settings->SetNetColorAssignment( original, colour );
+    netSettings->SetNetColorAssignment( original, colour );
 
     WX_STRING_REPORTER reporter;
     BOOST_REQUIRE( ApplyImportedNetNameMap( *board, { { original, renamed } }, reporter ) );
 
-    const auto& colours = settings->GetNetColorAssignments();
+    const auto& colours = netSettings->GetNetColorAssignments();
     BOOST_CHECK_EQUAL( colours.count( original ), 0 );
     BOOST_REQUIRE_EQUAL( colours.count( renamed ), 1 );
     BOOST_CHECK( colours.at( renamed ) == colour );
