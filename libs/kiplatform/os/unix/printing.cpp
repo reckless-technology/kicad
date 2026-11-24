@@ -50,7 +50,8 @@ struct PrintData
     }
 };
 
-void draw_page( GtkPrintOperation* operation, GtkPrintContext* context, gint page_nr, gpointer user_data )
+void draw_page( GtkPrintOperation* operation [[maybe_unused]], GtkPrintContext* context, gint page_nr,
+                gpointer user_data )
 {
     PrintData* print_data = static_cast<PrintData*>( user_data );
 
@@ -104,7 +105,7 @@ void draw_page( GtkPrintOperation* operation, GtkPrintContext* context, gint pag
     poppler_page_render( page, cr );
 }
 
-void begin_print_callback( GtkPrintOperation* operation, GtkPrintContext* context, gpointer user_data )
+void begin_print_callback( GtkPrintOperation* operation, GtkPrintContext* context [[maybe_unused]], gpointer user_data )
 {
     PrintData* print_data = static_cast<PrintData*>( user_data );
     if( !print_data || !print_data->doc )
@@ -123,8 +124,9 @@ void begin_print_callback( GtkPrintOperation* operation, GtkPrintContext* contex
     gtk_print_operation_set_n_pages( operation, num_pages );
 }
 
-void request_page_setup_callback( GtkPrintOperation* operation, GtkPrintContext* context, gint page_nr,
-                                  GtkPageSetup* setup, gpointer user_data )
+void request_page_setup_callback( GtkPrintOperation* operation [[maybe_unused]],
+                                  GtkPrintContext* context [[maybe_unused]], gint page_nr, GtkPageSetup* setup,
+                                  gpointer user_data )
 {
     PrintData* print_data = static_cast<PrintData*>( user_data );
 

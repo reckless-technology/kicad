@@ -23,13 +23,13 @@
 #include <wx/string.h>
 
 
-KIPLATFORM::POLICY::PBOOL KIPLATFORM::POLICY::GetPolicyBool( const wxString& aKey )
+KIPLATFORM::POLICY::PBOOL KIPLATFORM::POLICY::GetPolicyBool( const wxString& aKey [[maybe_unused]] )
 {
     return PBOOL::NOT_CONFIGURED;
 }
 
 
-std::optional<std::uint32_t> KIPLATFORM::POLICY::GetPolicyEnumUInt( const wxString& aKey )
+std::optional<std::uint32_t> KIPLATFORM::POLICY::GetPolicyEnumUInt( const wxString& aKey [[maybe_unused]] )
 {
     return std::nullopt;
 }

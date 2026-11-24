@@ -170,7 +170,7 @@ public:
     }
 
 private:
-    static void onCanvasMap( GtkWidget* aWidget, gpointer aOverlay )
+    static void onCanvasMap( GtkWidget* aWidget [[maybe_unused]], gpointer aOverlay )
     {
         static_cast<CANVAS_OVERLAY*>( aOverlay )->Raise();
     }
@@ -554,19 +554,20 @@ void KIPLATFORM::UI::SetWMClass( wxWindow* aWindow, const wxString& aClass )
 }
 
 
-void KIPLATFORM::UI::ReparentModal( wxNonOwnedWindow* aWindow )
+void KIPLATFORM::UI::ReparentModal( wxNonOwnedWindow* aWindow [[maybe_unused]] )
 {
     // Not needed on this platform
 }
 
 
-void KIPLATFORM::UI::ReparentWindow( wxNonOwnedWindow* aWindow, wxTopLevelWindow* aParent )
+void KIPLATFORM::UI::ReparentWindow( wxNonOwnedWindow* aWindow [[maybe_unused]],
+                                     wxTopLevelWindow* aParent [[maybe_unused]] )
 {
     // Not needed on this platform (only relevant for macOS child window ordering)
 }
 
 
-void KIPLATFORM::UI::FixupCancelButtonCmdKeyCollision( wxWindow *aWindow )
+void KIPLATFORM::UI::FixupCancelButtonCmdKeyCollision( wxWindow* aWindow [[maybe_unused]] )
 {
     // Not needed on this platform
 }
@@ -901,7 +902,7 @@ bool KIPLATFORM::UI::WarpPointer( wxWindow* aWindow, int aX, int aY )
 }
 
 
-void KIPLATFORM::UI::ImmControl( wxWindow* aWindow, bool aEnable )
+void KIPLATFORM::UI::ImmControl( wxWindow* aWindow [[maybe_unused]], bool aEnable [[maybe_unused]] )
 {
 }
 
@@ -920,12 +921,12 @@ void KIPLATFORM::UI::ImeNotifyCancelComposition( wxWindow* aWindow )
 }
 
 
-void KIPLATFORM::UI::SetFloatLevel( wxWindow* aWindow )
+void KIPLATFORM::UI::SetFloatLevel( wxWindow* aWindow [[maybe_unused]] )
 {
 }
 
 
-void KIPLATFORM::UI::ReleaseChildWindow( wxNonOwnedWindow* aWindow )
+void KIPLATFORM::UI::ReleaseChildWindow( wxNonOwnedWindow* aWindow [[maybe_unused]] )
 {
     // Not needed on this platform
 }
@@ -993,7 +994,7 @@ static struct zwp_confined_pointer_v1*    s_wl_confined_pointer = NULL;
 static struct wl_region*                  s_wl_confinement_region = NULL;
 static bool                               s_wl_locked_flag = false;
 
-static void handle_global( void* data, struct wl_registry* registry, uint32_t name,
+static void handle_global( void* data [[maybe_unused]], struct wl_registry* registry, uint32_t name,
                            const char* interface, uint32_t version )
 {
     wxLogTrace( traceWayland, "handle_global received %s name %u version %u", interface,
@@ -1021,13 +1022,14 @@ static const struct wl_registry_listener registry_listener = {
     .global_remove = handle_global_remove,
 };
 
-static void confined_handler( void* data, struct zwp_confined_pointer_v1* zwp_confined_pointer_v1 )
+static void confined_handler( void*                           data [[maybe_unused]],
+                              struct zwp_confined_pointer_v1* zwp_confined_pointer_v1 [[maybe_unused]] )
 {
     wxLogTrace( traceWayland, wxS( "Pointer confined" ) );
 }
 
-static void unconfined_handler( void*                           data,
-                                struct zwp_confined_pointer_v1* zwp_confined_pointer_v1 )
+static void unconfined_handler( void*                           data [[maybe_unused]],
+                                struct zwp_confined_pointer_v1* zwp_confined_pointer_v1 [[maybe_unused]] )
 {
     wxLogTrace( traceWayland, wxS( "Pointer unconfined" ) );
 }
@@ -1037,13 +1039,15 @@ static const struct zwp_confined_pointer_v1_listener confined_pointer_listener =
     .unconfined = unconfined_handler
 };
 
-static void locked_handler( void* data, struct zwp_locked_pointer_v1* zwp_locked_pointer_v1 )
+static void locked_handler( void*                         data [[maybe_unused]],
+                            struct zwp_locked_pointer_v1* zwp_locked_pointer_v1 [[maybe_unused]] )
 {
     s_wl_locked_flag = true;
     wxLogTrace( traceWayland, wxS( "Pointer locked" ) );
 }
 
-static void unlocked_handler( void* data, struct zwp_locked_pointer_v1* zwp_locked_pointer_v1 )
+static void unlocked_handler( void*                         data [[maybe_unused]],
+                              struct zwp_locked_pointer_v1* zwp_locked_pointer_v1 [[maybe_unused]] )
 {
     wxLogTrace( traceWayland, wxS( "Pointer unlocked" ) );
 }

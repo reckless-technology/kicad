@@ -46,13 +46,13 @@ typedef WebKitWebContext* (*webkit_web_view_get_context_t)(WebKitWebView*);
 typedef WebKitWebsiteDataManager* (*webkit_web_context_get_website_data_manager_t)(WebKitWebContext*);
 typedef void (*webkit_website_data_manager_clear_t)(WebKitWebsiteDataManager*, WebKitWebsiteDataTypes, int64_t, void*, void*, void*);
 
-bool SaveCookies( wxWebView* aWebView, const wxString& aTargetFile )
+bool SaveCookies( wxWebView* aWebView [[maybe_unused]], const wxString& aTargetFile [[maybe_unused]] )
 {
     // Not implemented for GTK due to ABI issues with libsoup2/3
     return false;
 }
 
-bool LoadCookies( wxWebView* aWebView, const wxString& aSourceFile )
+bool LoadCookies( wxWebView* aWebView [[maybe_unused]], const wxString& aSourceFile [[maybe_unused]] )
 {
     // Not implemented for GTK due to ABI issues with libsoup2/3
     return false;
