@@ -532,13 +532,15 @@ void* any_caster( const any* any )
         // Only copy constructible types can be used for contained values
         return nullptr;
     }
-    else if( any->m_manager == &any::Manager<U>::m_manage_fn
-             || any->type().hash_code() == typeid( T ).hash_code() )
+    else
     {
-        return any::Manager<U>::do_access( any->m_storage );
-    }
+        if( any->m_manager == &any::Manager<U>::m_manage_fn || any->type().hash_code() == typeid( T ).hash_code() )
+        {
+            return any::Manager<U>::do_access( any->m_storage );
+        }
 
-    return nullptr;
+        return nullptr;
+    }
 }
 /// @endcond
 
