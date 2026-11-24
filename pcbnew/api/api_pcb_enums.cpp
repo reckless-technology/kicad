@@ -107,6 +107,7 @@ types::DrillShape ToProtoEnum( PAD_DRILL_SHAPE aValue )
     {
     case PAD_DRILL_SHAPE::CIRCLE:    return types::DrillShape::DS_CIRCLE;
     case PAD_DRILL_SHAPE::OBLONG:    return types::DrillShape::DS_OBLONG;
+    case PAD_DRILL_SHAPE::RECTANGLE: return types::DrillShape::DS_RECTANGLE;
     case PAD_DRILL_SHAPE::UNDEFINED: return types::DrillShape::DS_UNDEFINED;
     default:
         wxCHECK_MSG( false, types::DrillShape::DS_UNKNOWN,
@@ -121,6 +122,7 @@ PAD_DRILL_SHAPE FromProtoEnum( types::DrillShape aValue )
     {
     case types::DrillShape::DS_CIRCLE:      return PAD_DRILL_SHAPE::CIRCLE;
     case types::DrillShape::DS_OBLONG:      return PAD_DRILL_SHAPE::OBLONG;
+    case types::DrillShape::DS_RECTANGLE:   return PAD_DRILL_SHAPE::RECTANGLE;
     case types::DrillShape::DS_UNKNOWN:
     case types::DrillShape::DS_UNDEFINED:   return PAD_DRILL_SHAPE::UNDEFINED;
     default:

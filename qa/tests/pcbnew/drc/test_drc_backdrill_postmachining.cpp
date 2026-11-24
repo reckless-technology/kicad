@@ -402,8 +402,8 @@ BOOST_FIXTURE_TEST_CASE( ViaEffectiveShapeOnBackdrilledLayer, BACKDRILL_TEST_FIX
     via->SetWidth( PADSTACK::ALL_LAYERS, viaWidth );
 
     // The hole opens up to the backdrill on the layers the backdrill reaches
-    std::shared_ptr<SHAPE_SEGMENT> holeF = via->GetEffectiveHoleShape( F_Cu, PHYSICAL_CLEARANCE_CONSTRAINT );
-    std::shared_ptr<SHAPE_SEGMENT> holeB = via->GetEffectiveHoleShape( B_Cu, PHYSICAL_CLEARANCE_CONSTRAINT );
+    std::shared_ptr<SHAPE> holeF = via->GetEffectiveHoleShape( F_Cu, PHYSICAL_CLEARANCE_CONSTRAINT );
+    std::shared_ptr<SHAPE> holeB = via->GetEffectiveHoleShape( B_Cu, PHYSICAL_CLEARANCE_CONSTRAINT );
 
     BOOST_REQUIRE( holeF );
     BOOST_REQUIRE( holeB );
@@ -812,7 +812,7 @@ BOOST_FIXTURE_TEST_CASE( ViaHoleShapeUsesNetclassDrill, BACKDRILL_TEST_FIXTURE )
 
     BOOST_REQUIRE_EQUAL( first->GetDrillValue(), netclassDrill );
 
-    std::shared_ptr<SHAPE_SEGMENT> hole = first->GetEffectiveHoleShape( UNDEFINED_LAYER, HOLE_TO_HOLE_CONSTRAINT );
+    std::shared_ptr<SHAPE> hole = first->GetEffectiveHoleShape( UNDEFINED_LAYER, HOLE_TO_HOLE_CONSTRAINT );
 
     BOOST_REQUIRE( hole );
     BOOST_CHECK_EQUAL( hole->GetWidth(), netclassDrill );

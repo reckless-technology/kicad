@@ -311,14 +311,22 @@ void ComputeBoardStatistics( BOARD* aBoard, const BOARD_STATISTICS_OPTIONS& aOpt
                     if( !pad->HasHole() )
                         continue;
 
-                    std::shared_ptr<SHAPE_SEGMENT> hole = pad->GetEffectiveHoleShape();
+                    std::shared_ptr<SHAPE> holeShape = pad->GetEffectiveHoleShape();
 
-                    if( !hole )
+                    if( !holeShape )
                         continue;
 
-                    const SEG& seg = hole->GetSeg();
-                    double     width = hole->GetWidth();
-                    double     area = seg.Length() * width;
+                    if( holeShape->Type() != SH_SEGMENT )
+                    {
+                        const VECTOR2I drill = pad->GetDrillSize();
+                        aData.boardArea -= static_cast<double>( drill.x ) * drill.y;
+                        continue;
+                    }
+
+                    const SHAPE_SEGMENT* hole = static_cast<const SHAPE_SEGMENT*>( holeShape.get() );
+                    const SEG&           seg = hole->GetSeg();
+                    double               width = hole->GetWidth();
+                    double               area = seg.Length() * width;
 
                     area += M_PI * 0.25 * width * width;
                     aData.boardArea -= area;
@@ -722,6 +730,7 @@ wxString FormatBoardStatisticsReport( const BOARD_STATISTICS_DATA& aData, BOARD*
         {
         case PAD_DRILL_SHAPE::CIRCLE: shapeStr = _( "Round" ); break;
         case PAD_DRILL_SHAPE::OBLONG: shapeStr = _( "Slot" );  break;
+        case PAD_DRILL_SHAPE::RECTANGLE: shapeStr = _( "Rectangle" ); break;
         default:                      shapeStr = _( "???" );   break;
         }
 
@@ -883,6 +892,7 @@ wxString FormatBoardStatisticsJson( const BOARD_STATISTICS_DATA& aData, BOARD* a
         {
         case PAD_DRILL_SHAPE::CIRCLE: shapeStr = _( "Round" ); break;
         case PAD_DRILL_SHAPE::OBLONG: shapeStr = _( "Slot" ); break;
+        case PAD_DRILL_SHAPE::RECTANGLE: shapeStr = _( "Rectangle" ); break;
         default: shapeStr = _( "???" ); break;
         }
 

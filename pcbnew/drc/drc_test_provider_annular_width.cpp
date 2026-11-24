@@ -167,6 +167,13 @@ bool DRC_TEST_PROVIDER_ANNULAR_WIDTH::Run()
                     default:
                         break;
                     }
+
+                    // A rectangular hole's corners come nearest a pad that isn't itself a rectangle
+                    if( pad->GetDrillShape() == PAD_DRILL_SHAPE::RECTANGLE
+                        && pad->GetShape( aLayer ) != PAD_SHAPE::RECTANGLE )
+                    {
+                        handled = false;
+                    }
                 }
 
                 BOX2I                   padBBox = pad->GetBoundingBox( aLayer );
@@ -227,9 +234,8 @@ bool DRC_TEST_PROVIDER_ANNULAR_WIDTH::Run()
                 if( !handled || !overlappingSameNumPads.empty() )
                 {
                     // Slow (but general purpose) method.
-                    SHAPE_POLY_SET                 padOutline;
-                    std::shared_ptr<SHAPE_SEGMENT> slot = pad->GetEffectiveHoleShape( aLayer,
-                                                                                      ANNULAR_WIDTH_CONSTRAINT );
+                    SHAPE_POLY_SET         padOutline;
+                    std::shared_ptr<SHAPE> slot = pad->GetEffectiveHoleShape( aLayer, ANNULAR_WIDTH_CONSTRAINT );
 
                     pad->TransformShapeToPolygon( padOutline, aLayer, 0, pad->GetMaxError(), ERROR_INSIDE );
 

@@ -1420,12 +1420,15 @@ void BRDITEMS_PLOTTER::plotOneDrillMark( PAD_DRILL_SHAPE aDrillShape, const VECT
     drillSize.x -= getFineWidthAdj();
     drillSize.x = std::clamp( drillSize.x, 1, aPadSize.x - 1 );
 
-    if( aDrillShape == PAD_DRILL_SHAPE::OBLONG )
+    if( aDrillShape == PAD_DRILL_SHAPE::OBLONG || aDrillShape == PAD_DRILL_SHAPE::RECTANGLE )
     {
         drillSize.y -= getFineWidthAdj();
         drillSize.y = std::clamp( drillSize.y, 1, aPadSize.y - 1 );
 
-        m_plotter->FlashPadOval( aDrillPos, drillSize, aOrientation, nullptr );
+        if( aDrillShape == PAD_DRILL_SHAPE::RECTANGLE )
+            m_plotter->FlashPadRect( aDrillPos, drillSize, aOrientation, nullptr );
+        else
+            m_plotter->FlashPadOval( aDrillPos, drillSize, aOrientation, nullptr );
     }
     else
     {
@@ -1611,7 +1614,12 @@ void BRDITEMS_PLOTTER::PlotDrillSymbols( PCB_LAYER_ID aLayer ) const
                 }
 
                 // A slot's true extent is the cost driver, so it is drawn as well as marked
-                if( map->GetOutlineSlots() && op.m_IsSlot )
+                if( map->GetOutlineSlots() && op.m_IsRectangle )
+                {
+                    m_plotter->PlotPoly( RectangularHoleOutline( pos, op.m_SizeXY, op.m_Orientation ), FILL_T::NO_FILL,
+                                         profile.GetSymbolWidth(), getMetadata() );
+                }
+                else if( map->GetOutlineSlots() && op.m_IsSlot )
                 {
                     m_plotter->ThickOval( pos, op.m_SizeXY, op.m_Orientation,
                                           profile.GetSymbolWidth(), getMetadata() );

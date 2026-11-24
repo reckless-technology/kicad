@@ -472,9 +472,9 @@ std::shared_ptr<SHAPE> BOARD_ITEM::GetEffectiveShape( PCB_LAYER_ID, FLASHING, DR
 }
 
 
-std::shared_ptr<SHAPE_SEGMENT> BOARD_ITEM::GetEffectiveHoleShape( PCB_LAYER_ID, DRC_CONSTRAINT_T ) const
+std::shared_ptr<SHAPE> BOARD_ITEM::GetEffectiveHoleShape( PCB_LAYER_ID, DRC_CONSTRAINT_T ) const
 {
-    static std::shared_ptr<SHAPE_SEGMENT> slot;
+    static std::shared_ptr<SHAPE> slot;
 
     UNIMPLEMENTED_FOR( GetClass() );
 

@@ -335,7 +335,7 @@ bool DRC_TEST_PROVIDER_COURTYARD_CLEARANCE::testCourtyardClearances()
 
                         if( pad->HasHole() )
                         {
-                            std::shared_ptr<SHAPE_SEGMENT> hole = pad->GetEffectiveHoleShape();
+                            std::shared_ptr<SHAPE>         hole = pad->GetEffectiveHoleShape();
                             const SHAPE_POLY_SET&          front = fp->GetCourtyard( F_CrtYd );
                             const SHAPE_POLY_SET&          back = fp->GetCourtyard( B_CrtYd );
 

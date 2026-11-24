@@ -146,8 +146,8 @@ public:
 
         if( aItem->Type() == PCB_PAD_T && aItem->HasHole() )
         {
-            std::shared_ptr<SHAPE_SEGMENT> hole = aItem->GetEffectiveHoleShape();
-            BOX2I                          bbox = hole->BBox();
+            std::shared_ptr<SHAPE> hole = aItem->GetEffectiveHoleShape();
+            BOX2I                  bbox = hole->BBox();
 
             bbox.Inflate( aWorstClearance );
 

@@ -1132,9 +1132,9 @@ std::set<VECTOR2I> PCB_VIA_STITCH::buildPlacementCells( BOARD* aBoard ) const
                 if( !aOther->HasHole() || !holeSeen.insert( aOther ).second )
                     return;
 
-                std::shared_ptr<SHAPE_SEGMENT> hole = aOther->GetEffectiveHoleShape();
+                std::shared_ptr<SHAPE> holeShape = aOther->GetEffectiveHoleShape();
 
-                if( !hole )
+                if( !holeShape )
                     return;
 
                 int margin = viaDrill / 2
@@ -1146,6 +1146,17 @@ std::set<VECTOR2I> PCB_VIA_STITCH::buildPlacementCells( BOARD* aBoard ) const
                                        viaSize / 2 + evalConstraint( HOLE_CLEARANCE_CONSTRAINT,
                                                                      aOther, aLayer ) );
                 }
+
+                // Only a pad's rectangular hole is not a segment
+                if( holeShape->Type() != SH_SEGMENT )
+                {
+                    if( PAD* pad = dynamic_cast<PAD*>( aOther ) )
+                        pad->TransformHoleToPolygon( obstacles, margin, polyApproxError, ERROR_OUTSIDE );
+
+                    return;
+                }
+
+                const SHAPE_SEGMENT* hole = static_cast<const SHAPE_SEGMENT*>( holeShape.get() );
 
                 TransformOvalToPolygon( obstacles, hole->GetSeg().A, hole->GetSeg().B,
                                         hole->GetWidth() + 2 * margin, polyApproxError,

@@ -518,8 +518,8 @@ public:
         return m_viaType == VIATYPE::THROUGH || m_viaType == VIATYPE::BLIND || m_viaType == VIATYPE::BURIED;
     }
 
-    std::shared_ptr<SHAPE_SEGMENT> GetEffectiveHoleShape( PCB_LAYER_ID aLayer = UNDEFINED_LAYER,
-                                                          DRC_CONSTRAINT_T aUsage = NULL_CONSTRAINT ) const override;
+    std::shared_ptr<SHAPE> GetEffectiveHoleShape( PCB_LAYER_ID     aLayer = UNDEFINED_LAYER,
+                                                  DRC_CONSTRAINT_T aUsage = NULL_CONSTRAINT ) const override;
 
     MINOPTMAX<int> GetWidthConstraint( wxString* aSource = nullptr ) const override;
     MINOPTMAX<int> GetDrillConstraint( wxString* aSource = nullptr ) const;

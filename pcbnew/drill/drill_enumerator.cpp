@@ -241,6 +241,10 @@ void enumeratePad( PAD* aPad, const DRILL_QUERY& aQuery, std::vector<DRILL_OPERA
     op.m_Diameter = std::min( aPad->GetDrillSize().x, aPad->GetDrillSize().y );
 
     op.m_IsSlot = IsDrillSlot( *aPad );
+    op.m_IsRectangle = aPad->HasHole() && aPad->GetDrillShape() == PAD_DRILL_SHAPE::RECTANGLE;
+
+    if( op.m_IsRectangle )
+        op.m_Diameter = RectangularHoleRouterDiameter( aPad->GetDrillSize() );
 
     op.m_SizeXY = aPad->GetDrillSize();
     op.m_Position = aPad->GetPosition();
@@ -261,9 +265,39 @@ void enumeratePad( PAD* aPad, const DRILL_QUERY& aQuery, std::vector<DRILL_OPERA
 
 bool IsDrillSlot( const PAD& aPad )
 {
-    return aPad.HasHole()
-            && aPad.GetDrillShape() != PAD_DRILL_SHAPE::CIRCLE
-            && aPad.GetDrillSize().x != aPad.GetDrillSize().y;
+    if( !aPad.HasHole() )
+        return false;
+
+    // A rectangular hole is routed, so it is a slot even when it is square
+    if( aPad.GetDrillShape() == PAD_DRILL_SHAPE::RECTANGLE )
+        return true;
+
+    return aPad.GetDrillShape() != PAD_DRILL_SHAPE::CIRCLE && aPad.GetDrillSize().x != aPad.GetDrillSize().y;
+}
+
+
+int RectangularHoleRouterDiameter( const VECTOR2I& aHoleSize )
+{
+    return std::min( aHoleSize.x, aHoleSize.y ) / 2;
+}
+
+
+SHAPE_LINE_CHAIN RectangularHoleOutline( const VECTOR2I& aPosition, const VECTOR2I& aSize,
+                                         const EDA_ANGLE& aOrientation, int aInset )
+{
+    const VECTOR2I   half( aSize.x / 2 - aInset, aSize.y / 2 - aInset );
+    SHAPE_LINE_CHAIN outline;
+
+    outline.Append( -half.x, -half.y );
+    outline.Append( half.x, -half.y );
+    outline.Append( half.x, half.y );
+    outline.Append( -half.x, half.y );
+    outline.SetClosed( true );
+
+    outline.Rotate( aOrientation );
+    outline.Move( aPosition );
+
+    return outline;
 }
 
 

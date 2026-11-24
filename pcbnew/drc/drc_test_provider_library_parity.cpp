@@ -356,10 +356,13 @@ bool padOrientationDiffers( const PAD* a, const PAD* bLib )
         return true;
     }
 
-    // a slot turns with the pad even when the copper does not
+    // a slot or a rectangular hole turns with the pad even when the copper does not
     auto roundDrill =
             []( const PAD* aPad )
             {
+                if( aPad->GetDrillShape() == PAD_DRILL_SHAPE::RECTANGLE )
+                    return false;
+
                 return aPad->GetDrillShape() == PAD_DRILL_SHAPE::CIRCLE
                        || aPad->GetDrillSize().x == aPad->GetDrillSize().y;
             };

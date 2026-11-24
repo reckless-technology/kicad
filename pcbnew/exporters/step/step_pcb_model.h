@@ -110,6 +110,9 @@ public:
                   PCB_LAYER_ID aLayerBot, bool aVia, const VECTOR2D& aOrigin, bool aCutCopper,
                   bool aCutBody );
 
+    // add a pad's rectangular hole, as prisms of its outline (must be in final position)
+    bool AddHole( const PAD& aPad, int aPlatingThickness, const VECTOR2D& aOrigin );
+
     // add a plated hole shape (without the hole)
     bool AddBarrel( const SHAPE_SEGMENT& aShape, PCB_LAYER_ID aLayerTop, PCB_LAYER_ID aLayerBot,
                     bool aVia, const VECTOR2D& aOrigin, const wxString& aNetname );

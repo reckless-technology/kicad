@@ -52,6 +52,7 @@ struct DRILL_CHART_GROUP
     int      m_Diameter = 0;
     VECTOR2I m_SizeXY;
     bool     m_IsSlot = false;
+    bool     m_IsRectangle = false;
     bool     m_NotPlated = false;
 
     PCB_LAYER_ID   m_TopLayer = F_Cu;

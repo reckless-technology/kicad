@@ -2663,16 +2663,16 @@ int PCB_CONTROL::UpdateMessagePanel( const TOOL_EVENT& aEvent [[maybe_unused]] )
 
                 if( a->HasHole() && b->IsOnCopperLayer() )
                 {
-                    std::shared_ptr<SHAPE_SEGMENT> hole = a->GetEffectiveHoleShape();
-                    std::shared_ptr<SHAPE>         other( b->GetEffectiveShape( layer ) );
+                    std::shared_ptr<SHAPE> hole = a->GetEffectiveHoleShape();
+                    std::shared_ptr<SHAPE> other( b->GetEffectiveShape( layer ) );
 
                     actual = std::min( actual, hole->GetClearance( other.get() ) );
                 }
 
                 if( b->HasHole() && a->IsOnCopperLayer() )
                 {
-                    std::shared_ptr<SHAPE_SEGMENT> hole = b->GetEffectiveHoleShape();
-                    std::shared_ptr<SHAPE>         other( a->GetEffectiveShape( layer ) );
+                    std::shared_ptr<SHAPE> hole = b->GetEffectiveHoleShape();
+                    std::shared_ptr<SHAPE> other( a->GetEffectiveShape( layer ) );
 
                     actual = std::min( actual, hole->GetClearance( other.get() ) );
                 }

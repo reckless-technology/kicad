@@ -225,7 +225,8 @@ BOOST_FIXTURE_TEST_CASE( CreepageRotatedRectPadIssue24543, DRC_CREEPAGE_ROTATED_
                     if( p->GetAttribute() != PAD_ATTRIB::NPTH )
                         continue;
 
-                    std::shared_ptr<SHAPE_SEGMENT> hole = p->GetEffectiveHoleShape();
+                    std::shared_ptr<SHAPE_SEGMENT> hole =
+                            std::static_pointer_cast<SHAPE_SEGMENT>( p->GetEffectiveHoleShape() );
 
                     if( !hole )
                         continue;

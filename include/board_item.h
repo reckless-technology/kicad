@@ -268,8 +268,12 @@ public:
                                                       FLASHING aFlash = FLASHING::DEFAULT,
                                                       DRC_CONSTRAINT_T aUsage = NULL_CONSTRAINT ) const;
 
-    virtual std::shared_ptr<SHAPE_SEGMENT> GetEffectiveHoleShape( PCB_LAYER_ID aLayer = UNDEFINED_LAYER,
-                                                                  DRC_CONSTRAINT_T aUsage = NULL_CONSTRAINT ) const;
+    /**
+     * Return the item's hole: a SHAPE_SEGMENT for a round or oblong hole, a SHAPE_SIMPLE for a
+     * pad's rectangular hole.
+     */
+    virtual std::shared_ptr<SHAPE> GetEffectiveHoleShape( PCB_LAYER_ID     aLayer = UNDEFINED_LAYER,
+                                                          DRC_CONSTRAINT_T aUsage = NULL_CONSTRAINT ) const;
 
     /**
      * Invoke a function on all children.

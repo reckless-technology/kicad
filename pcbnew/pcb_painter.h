@@ -324,9 +324,10 @@ protected:
     virtual PAD_DRILL_SHAPE getDrillShape( const PAD* aPad ) const;
 
     /**
-     * Return hole shape for a pad (internal units).
+     * Return hole shape for a pad (internal units): a SHAPE_SEGMENT, or a SHAPE_SIMPLE for a
+     * rectangular hole.
      */
-    virtual SHAPE_SEGMENT getPadHoleShape( const PAD* aPad ) const;
+    virtual std::shared_ptr<SHAPE> getPadHoleShape( const PAD* aPad ) const;
 
     /**
      * Return drill diameter for a via (internal units).

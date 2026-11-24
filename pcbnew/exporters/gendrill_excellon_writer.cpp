@@ -356,6 +356,36 @@ int EXCELLON_WRITER::createDrillFile( FILE* aFile, const DRILL_SPAN& aSpan,
         if( diam == 0 )
             continue;
 
+        if( hole_descr.m_IsRectangle )
+        {
+            // A canned slot (G85) cannot make a rectangle, so a rectangular hole is always routed:
+            // the bit's center goes once round the hole's outline, inset by the bit's radius
+            SHAPE_LINE_CHAIN path = RectangularHoleOutline( hole_descr.m_Position, hole_descr.m_SizeXY,
+                                                            hole_descr.m_Orientation, hole_descr.m_Diameter / 2 );
+
+            writeHoleComments( hole_descr, aTagBackdrillHit );
+
+            for( int jj = 0; jj <= path.PointCount(); jj++ )
+            {
+                VECTOR2I corner = path.CPoint( jj % path.PointCount() ) - m_offset;
+
+                if( !m_mirror )
+                    corner.y *= -1;
+
+                writeCoordinates( line, sizeof( line ), corner.x * m_conversionUnits, corner.y * m_conversionUnits );
+
+                if( jj == 0 )
+                    fmt::print( m_file, "G00{}M15\n", line ); // Rapid to the first corner, tool down
+                else
+                    fmt::print( m_file, "G01{}", line ); // Linear route to the next corner
+            }
+
+            fmt::print( m_file, "{}", "M16\n" ); // Tool up (end routing)
+            fmt::print( m_file, "{}", "G05\n" ); // Select drill mode
+            holes_count++;
+            continue;
+        }
+
         /* Compute the hole coordinates: */
         xc = x0 = xf = hole_descr.m_Position.x - m_offset.x;
         yc = y0 = yf = hole_descr.m_Position.y - m_offset.y;

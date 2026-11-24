@@ -115,11 +115,9 @@ void checkPadLayer( const PAD& aPad, PCB_LAYER_ID aLayer, const UNITS_PROVIDER& 
         if( aPad.GetAttribute() == PAD_ATTRIB::PTH )
         {
             // Test if there is copper area outside hole
-            std::shared_ptr<SHAPE_SEGMENT> hole = aPad.GetEffectiveHoleShape();
-            SHAPE_POLY_SET                 holeOutline;
+            SHAPE_POLY_SET holeOutline;
 
-            TransformOvalToPolygon( holeOutline, hole->GetSeg().A, hole->GetSeg().B, hole->GetWidth(),
-                                    aPad.GetMaxError(), ERROR_OUTSIDE );
+            aPad.TransformHoleToPolygon( holeOutline, 0, aPad.GetMaxError(), ERROR_OUTSIDE );
 
             SHAPE_POLY_SET copper = padOutline;
             copper.BooleanSubtract( holeOutline );
@@ -358,8 +356,7 @@ void PAD_UTILS::CheckPad( const PAD& aPad, const UNITS_PROVIDER& aUnitsProvider,
     {
     case PAD_ATTRIB::NPTH:   // Not plated, but through hole, a hole is expected
     case PAD_ATTRIB::PTH:    // Pad through hole, a hole is also expected
-        if( drill_size.x <= 0
-            || ( drill_size.y <= 0 && aPad.GetDrillShape() == PAD_DRILL_SHAPE::OBLONG ) )
+        if( drill_size.x <= 0 || ( drill_size.y <= 0 && aPad.GetDrillShape() != PAD_DRILL_SHAPE::CIRCLE ) )
         {
             aErrorHandler( { PAD_CHECK_CODE::TH_NO_HOLE, wxEmptyString } );
         }

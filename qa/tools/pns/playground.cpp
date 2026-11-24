@@ -307,7 +307,7 @@ int playground_main_func( int, char*[] )
     andPad1ToPad2.BooleanIntersection( pad1Outline );
     andPad1ToPad2.Move( VECTOR2I( pcbIUScale.mmToIU( 20 ), 0 ) );
 
-    std::shared_ptr<SHAPE_SEGMENT> slot = pad2.GetEffectiveHoleShape();
+    std::shared_ptr<SHAPE> slot = pad2.GetEffectiveHoleShape();
 
     printf("Read %zu arcs\n", arcs.size() );
 

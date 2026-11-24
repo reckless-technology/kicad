@@ -528,7 +528,15 @@ void BOARD_ADAPTER::createPadHoleShape( const PAD* aPad, CONTAINER_2D_BASE* aDst
         return;
     }
 
-    std::shared_ptr<SHAPE_SEGMENT> slot = aPad->GetEffectiveHoleShape();
+    if( aPad->GetDrillShape() == PAD_DRILL_SHAPE::RECTANGLE )
+    {
+        SHAPE_POLY_SET hole;
+        aPad->TransformHoleToPolygon( hole, aInflateValue, aPad->GetMaxError(), ERROR_INSIDE );
+        ConvertPolygonToTriangles( hole, *aDstContainer, m_biuTo3Dunits, *aPad );
+        return;
+    }
+
+    std::shared_ptr<SHAPE_SEGMENT> slot = std::static_pointer_cast<SHAPE_SEGMENT>( aPad->GetEffectiveHoleShape() );
 
     addROUND_SEGMENT_2D( aDstContainer,
                          TO_SFVEC2F( slot->GetSeg().A ),

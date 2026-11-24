@@ -201,6 +201,9 @@ wxString operationText( const DRILL_CHART_GROUP& aGroup )
     if( aGroup.m_Kind != DRILL_OP_KIND::PRIMARY_DRILL )
         return wxT( "Backdrill" );
 
+    if( aGroup.m_IsRectangle )
+        return wxT( "Rectangle" );
+
     if( aGroup.m_IsSlot )
         return wxT( "Slot" );
 

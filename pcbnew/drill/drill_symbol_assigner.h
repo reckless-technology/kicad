@@ -73,6 +73,7 @@ struct DRILL_SYMBOL_ENTRY
     VECTOR2I                m_SizeXY;
     EDA_ANGLE               m_Orientation;
     bool                    m_IsSlot = false;
+    bool                    m_IsRectangle = false;
 };
 
 /**

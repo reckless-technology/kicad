@@ -23,6 +23,7 @@
 #include <vector>
 
 #include <drill/drill_operation.h>
+#include <geometry/shape_line_chain.h>
 
 class BOARD;
 class PAD;
@@ -54,5 +55,20 @@ std::vector<DRILL_SPAN> EnumerateDrillSpans( const BOARD& aBoard, bool aPadBackd
  * exporters.
  */
 bool IsDrillSlot( const PAD& aPad );
+
+/**
+ * The router bit for a rectangular hole: half its shorter side.
+ *
+ * A bit of at least half the shorter side clears the whole hole in one pass round the outline,
+ * leaving no core, and its corners come out rounded to half the bit, a quarter of the shorter side.
+ */
+int RectangularHoleRouterDiameter( const VECTOR2I& aHoleSize );
+
+/**
+ * The closed outline of a rectangular hole, inset by \a aInset on every side, in board
+ * coordinates.  Inset by half the router bit it is the path the bit's center follows.
+ */
+SHAPE_LINE_CHAIN RectangularHoleOutline( const VECTOR2I& aPosition, const VECTOR2I& aSize,
+                                         const EDA_ANGLE& aOrientation, int aInset = 0 );
 
 #endif // DRILL_ENUMERATOR_H

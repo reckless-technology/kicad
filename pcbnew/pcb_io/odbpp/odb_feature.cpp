@@ -44,6 +44,7 @@
 #include "geometry/shape_ellipse.h"
 #include "geometry/shape_line_chain.h"
 #include "geometry/shape_segment.h"
+#include "geometry/shape_simple.h"
 #include "geometry/shape_poly_set.h"
 #include "odb_eda_data.h"
 #include <exporters/fab_model/fab_pin.h>
@@ -113,9 +114,22 @@ void FEATURES_MANAGER::AddRoutContour( const SHAPE_LINE_CHAIN& aContour, int aCh
 
 void FEATURES_MANAGER::AddRoutSlot( const PAD& aPad, int aChain )
 {
-    std::shared_ptr<SHAPE_SEGMENT> hole = aPad.GetEffectiveHoleShape();
+    std::shared_ptr<SHAPE> holeShape = aPad.GetEffectiveHoleShape();
 
-    if( !hole || hole->GetSeg().A == hole->GetSeg().B )
+    if( !holeShape )
+        return;
+
+    if( holeShape->Type() == SH_SIMPLE )
+    {
+        // A rectangular hole is routed round its outline, like a board cutout
+        AddRoutContour( static_cast<const SHAPE_SIMPLE*>( holeShape.get() )->Vertices(), aChain,
+                        aPad.GetAttribute() == PAD_ATTRIB::PTH );
+        return;
+    }
+
+    const SHAPE_SEGMENT* hole = static_cast<const SHAPE_SEGMENT*>( holeShape.get() );
+
+    if( hole->GetSeg().A == hole->GetSeg().B )
         return;
 
     size_t first = FeatureCount();

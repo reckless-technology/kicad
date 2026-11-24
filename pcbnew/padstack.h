@@ -71,6 +71,7 @@ enum class PAD_DRILL_SHAPE
     UNDEFINED,
     CIRCLE,
     OBLONG,
+    RECTANGLE, ///< Sharp-cornered rectangle of the drill size, rotated with the pad; routed in fabrication
 };
 
 enum class PAD_DRILL_POST_MACHINING_MODE

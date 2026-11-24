@@ -231,7 +231,7 @@ bool EXPORTER_STEP::buildFootprint3DShapes( FOOTPRINT* aFootprint, const VECTOR2
     for( PAD* pad : aFootprint->Pads() )
     {
         bool castellated = pad->GetProperty() == PAD_PROP::CASTELLATED;
-        std::shared_ptr<SHAPE_SEGMENT> holeShape = pad->GetEffectiveHoleShape();
+        std::shared_ptr<SHAPE> holeShape = pad->GetEffectiveHoleShape();
 
         SHAPE_POLY_SET holePoly;
         holeShape->TransformToPolygon( holePoly, pad->GetMaxError(), ERROR_INSIDE );
@@ -249,8 +249,16 @@ bool EXPORTER_STEP::buildFootprint3DShapes( FOOTPRINT* aFootprint, const VECTOR2
         {
             int platingThickness = pad->GetAttribute() == PAD_ATTRIB::PTH ? m_platingThickness : 0;
 
-            if( m_pcbModel->AddHole( *holeShape, platingThickness, F_Cu, B_Cu, false, aOrigin, true, true ) )
+            if( pad->GetDrillShape() == PAD_DRILL_SHAPE::RECTANGLE )
+            {
+                if( m_pcbModel->AddHole( *pad, platingThickness, aOrigin ) )
+                    hasdata = true;
+            }
+            else if( m_pcbModel->AddHole( *static_cast<SHAPE_SEGMENT*>( holeShape.get() ), platingThickness, F_Cu, B_Cu,
+                                          false, aOrigin, true, true ) )
+            {
                 hasdata = true;
+            }
 
             // Use the drill shape directly. holePoly is shrunk to fit the copper barrel.
             if( m_layersToExport.Contains( F_SilkS ) || m_layersToExport.Contains( B_SilkS ) )
@@ -747,7 +755,8 @@ bool EXPORTER_STEP::buildTrack3DShape( PCB_TRACK* aTrack, const VECTOR2D& aOrigi
     {
         PCB_VIA* via = static_cast<PCB_VIA*>( aTrack );
 
-        std::shared_ptr<SHAPE_SEGMENT> holeShape = via->GetEffectiveHoleShape();
+        std::shared_ptr<SHAPE_SEGMENT> holeShape =
+                std::static_pointer_cast<SHAPE_SEGMENT>( via->GetEffectiveHoleShape() );
         SHAPE_POLY_SET                 holePoly;
         holeShape->TransformToPolygon( holePoly, via->GetMaxError(), ERROR_INSIDE );
 

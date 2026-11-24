@@ -1006,7 +1006,12 @@ bool GENDRILL_WRITER_BASE::plotDrillMarks( PLOTTER* aPlotter )
         // Always plot the drill symbol (for slots identifies the needed cutter!
         aPlotter->Marker( hole.m_Position, hole.m_Diameter, m_holeToolReferences[ii] - 1 );
 
-        if( hole.m_IsSlot )
+        if( hole.m_IsRectangle )
+        {
+            aPlotter->PlotPoly( RectangularHoleOutline( hole.m_Position, hole.m_SizeXY, hole.m_Orientation ),
+                                FILL_T::NO_FILL, getSketchOvalBestPenSize(), nullptr );
+        }
+        else if( hole.m_IsSlot )
         {
             aPlotter->ThickOval( hole.m_Position, hole.m_SizeXY, hole.m_Orientation, getSketchOvalBestPenSize(),
                                  nullptr );
