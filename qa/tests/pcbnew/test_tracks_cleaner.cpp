@@ -56,7 +56,7 @@ struct TEST_DESCRIPTION
     bool     m_DanglingTracks;
     bool     m_TracksInPads;
     bool     m_DanglingVias;
-    int      m_Expected;
+    size_t   m_Expected;
 
     friend std::ostream& operator<<( std::ostream& os, const TEST_DESCRIPTION& aDesc )
     {
