@@ -117,7 +117,8 @@ public:
 
     bool HasDrilledHole() const override
     {
-        return HasHole() && GetDrillSize().x == GetDrillSize().y;
+        // A rectangular hole is routed, even when it is square
+        return HasHole() && GetDrillSize().x == GetDrillSize().y && GetDrillShape() != PAD_DRILL_SHAPE::RECTANGLE;
     }
 
     bool IsLocked() const override;
