@@ -390,8 +390,8 @@ protected:
     }
 
 private:
-    wxLogLevelValues m_maxLevel;
-    unsigned         m_count = 0;
+    wxLogLevel m_maxLevel;
+    unsigned   m_count = 0;
 };
 
 

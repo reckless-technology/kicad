@@ -245,13 +245,15 @@ bool LoadCookies( wxWebView* aWebView, const wxString& aSourceFile )
 
     wxFileOffset len = file.Length();
 
-    if( len == 0 )
+    // Length() is wxInvalidOffset (-1) if the size can't be read
+    if( len <= 0 )
         return false;
 
-    std::string jsonStr;
-    jsonStr.resize( len );
+    const size_t size = static_cast<size_t>( len );
+    std::string  jsonStr;
+    jsonStr.resize( size );
 
-    if( file.Read( &jsonStr[0], len ) != len )
+    if( file.Read( &jsonStr[0], size ) != size )
     {
         wxLogTrace( "webview", "Failed to read cookie file" );
         return false;
