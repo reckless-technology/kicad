@@ -225,23 +225,9 @@ BOOST_AUTO_TEST_CASE( AnyCast_6 )
     int (*p3)() = any_cast<int()>(&std::as_const(a));
     BOOST_CHECK( p3 == nullptr );
 
-    try {
-        any_cast<int(&)()>(a);
-        BOOST_CHECK( false );
-    } catch (const ki::bad_any_cast&) {
-    }
-
-    try {
-        any_cast<int(&)()>(std::move(a));
-        BOOST_CHECK( false );
-    } catch (const ki::bad_any_cast&) {
-    }
-
-    try {
-        any_cast<int(&)()>(std::as_const(a));
-        BOOST_CHECK( false );
-    } catch (const ki::bad_any_cast&) {
-    }
+    BOOST_CHECK_THROW( any_cast<int ( & )()>( a ), ki::bad_any_cast );
+    BOOST_CHECK_THROW( any_cast<int ( & )()>( std::move( a ) ), ki::bad_any_cast );
+    BOOST_CHECK_THROW( any_cast<int ( & )()>( std::as_const( a ) ), ki::bad_any_cast );
 }
 
 
