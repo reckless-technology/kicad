@@ -1137,6 +1137,19 @@ endif()
 add_subdirectory( api )
 add_subdirectory( resources )
 add_subdirectory( thirdparty )
+
+# Reckless: the warning set reaches every directory of KiCad's own code added from here on, in C, C++
+# and Objective-C++. thirdparty/ above keeps its own flags. Before this, each directory appended the
+# flags itself, and the directories and Objective-C++ files that did not compiled with none.
+if( COMPILER_SUPPORTS_WARNINGS )
+    string( APPEND CMAKE_C_FLAGS " ${WARN_FLAGS_C}" )
+    string( APPEND CMAKE_CXX_FLAGS " ${WARN_FLAGS_CXX}" )
+
+    if( APPLE )
+        string( APPEND CMAKE_OBJCXX_FLAGS " ${WARN_FLAGS_CXX}" )
+    endif()
+endif()
+
 add_subdirectory( libs )
 add_subdirectory( common )
 add_subdirectory( 3d-viewer )

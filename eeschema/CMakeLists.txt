@@ -1,9 +1,3 @@
-# Add all the warnings to the files
-if( COMPILER_SUPPORTS_WARNINGS )
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${WARN_FLAGS_CXX}")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${WARN_FLAGS_C}")
-endif()
-
 if( CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang" )
     if( MSYS )
         # For some reason the big file sim/ngspice_models.cpp creates an issue when

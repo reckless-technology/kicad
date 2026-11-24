@@ -16,9 +16,4 @@
 # along with this program; if not, you may find one here:
 # http://www.gnu.org/licenses/old-licenses/gpl-3.0.html
 
-if( COMPILER_SUPPORTS_WARNINGS )
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${WARN_FLAGS_CXX}")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${WARN_FLAGS_C}")
-endif()
-
 add_subdirectory( kicad_3d_model_preview_handler )
