@@ -57,6 +57,7 @@
 #include <id.h>
 #include <kicad_curl/kicad_curl.h>
 #include <kiplatform/policy.h>
+#include <kiplatform/ui.h>
 #include <libraries/library_manager.h>
 #include <macros.h>
 #include <notifications_manager.h>
@@ -520,6 +521,13 @@ bool PGM_BASE::InitPgm( bool aHeadless, bool aIsUnitTest )
 
     if( commonSettings->m_Api.enable_server )
         m_plugin_manager->ReloadPlugins();
+
+#if defined( KICAD_HOUSE_FONTS ) && defined( __WXGTK__ )
+    // Reckless build: the interface uses the house serif, at the size the desktop chose. Every GUI program passes
+    // here before it makes a window.
+    if( !aHeadless )
+        KIPLATFORM::UI::SetInterfaceFontFamily( "Noto Serif" );
+#endif
 
     // This sets the maximum tooltip display duration to 10s (up from 5) but only affects
     // Windows as other platforms display tooltips while the mouse is not moving

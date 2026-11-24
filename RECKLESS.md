@@ -16,14 +16,17 @@ Fixes first: the Altium importer faults we met converting our own designs, each 
 (gitlab.com/kicad/code/kicad issues #26126-#26133). Each fix starts on its own `fix/*` branch from `reckless/main`
 and lands as one commit. We don't offer the changes back to KiCad unless KiCad asks for them.
 
-House fonts (#47, part): fixed-width text (the custom rules editor, text-variable fields, the scripting console) uses
-Monaspace Xenon in our installed build. On Linux the desktop entries start each program through `env` with
-`FONTCONFIG_FILE` pointing at `share/kicad/fonts/fonts.conf`, which includes the system configuration and maps
-`monospace` to Monaspace Xenon, so only KiCad's processes see it. The `KICAD_HOUSE_FONTS` option controls it, on when
-`KICAD_VERSION_EXTRA` is `reckless` and off otherwise, so a build without it is stock KiCad. Starting a program by hand
-from a shell skips the entries. The proportional font (Noto Serif) is not set this way: on X11 GTK takes it from the
-desktop's XSETTINGS, which a `settings.ini` or theme in the environment does not override, so it needs a small code
-change (#47 comment).
+House fonts (#47): our installed build uses Noto Serif for menus, dialogs and panels, and Monaspace Xenon for
+fixed-width text (the custom rules editor, text-variable fields, the scripting console). Two mechanisms, both behind
+the `KICAD_HOUSE_FONTS` option, on when `KICAD_VERSION_EXTRA` is `reckless` and off otherwise, so a build without it is
+stock KiCad:
+- Fixed-width: on Linux the desktop entries start each program through `env` with `FONTCONFIG_FILE` pointing at
+  `share/kicad/fonts/fonts.conf`, which includes the system configuration and maps `monospace` to Monaspace Xenon, so
+  only KiCad's processes see it. Starting a program by hand from a shell skips the entries.
+- Proportional: with wxGTK, `PGM_BASE::InitPgm()` calls `KIPLATFORM::UI::SetInterfaceFontFamily( "Noto Serif" )`
+  before any window exists, whatever started the program. It swaps only the family in the desktop's `gtk-font-name`,
+  keeping its size, at application priority, which holds over the desktop's XSETTINGS font. If Noto Serif is not
+  installed the desktop font is left alone.
 
 ## Keeping up with upstream
 

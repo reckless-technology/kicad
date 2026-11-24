@@ -33,6 +33,7 @@
 #include <wx/log.h>
 
 #include <gtk/gtk.h>
+#include <pango/pangocairo.h>
 #include <gdk/gdk.h>
 
 #ifdef GDK_WINDOWING_X11
@@ -52,6 +53,46 @@
 // Set WXTRACE=KICAD_WAYLAND to see logs
 const wxString traceWayland = wxS( "KICAD_WAYLAND" );
 static const wxChar traceRhi[] = wxT( "KICAD_RHI" );
+
+
+void KIPLATFORM::UI::SetInterfaceFontFamily( const char* aFamily )
+{
+    GtkSettings* settings = gtk_settings_get_default();
+
+    if( !settings )
+        return;
+
+    // Leave the desktop's font alone if the family is not installed
+    PangoFontMap* fontMap = pango_cairo_font_map_get_default();
+    PangoFontFamily** families = nullptr;
+    int               familyCount = 0;
+    bool              isInstalled = false;
+
+    pango_font_map_list_families( fontMap, &families, &familyCount );
+
+    for( int ii = 0; ii < familyCount && !isInstalled; ++ii )
+        isInstalled = g_ascii_strcasecmp( pango_font_family_get_name( families[ii] ), aFamily ) == 0;
+
+    g_free( families );
+
+    if( !isInstalled )
+        return;
+
+    gchar* currentName = nullptr;
+    g_object_get( settings, "gtk-font-name", &currentName, nullptr );
+
+    PangoFontDescription* description = pango_font_description_from_string( currentName ? currentName : "" );
+    g_free( currentName );
+
+    // Keep the desktop's size, and style if it has one
+    pango_font_description_set_family( description, aFamily );
+    gchar* newName = pango_font_description_to_string( description );
+    pango_font_description_free( description );
+
+    // g_object_set() on a GtkSettings property has application priority, above the desktop's XSETTINGS
+    g_object_set( settings, "gtk-font-name", newName, nullptr );
+    g_free( newName );
+}
 
 
 bool KIPLATFORM::UI::IsDarkTheme()
