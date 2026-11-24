@@ -87,7 +87,8 @@ BOOST_AUTO_TEST_CASE( ProjectLibraryIsConvertedToKiCad )
     std::optional<LIBRARY_TABLE_ROW*> row = ( *table )->Row( wxS( "mounting_holes" ) );
     BOOST_REQUIRE( row );
     BOOST_CHECK_EQUAL( ( *row )->Type(), SCH_IO_MGR::ShowType( SCH_IO_MGR::SCH_KICAD ) );
-    BOOST_CHECK_EQUAL( ( *row )->URI(), wxS( "${KIPRJMOD}/mounting_holes." ) + FILEEXT::KiCadSymbolLibFileExtension );
+    BOOST_CHECK_EQUAL( ( *row )->URI(),
+                       wxString( wxS( "${KIPRJMOD}/mounting_holes." ) ) + FILEEXT::KiCadSymbolLibFileExtension );
 
     // every symbol of the source library, in KiCad's format, and no copy of the source file
     wxFileName converted( project.GetProjectPath(), wxS( "mounting_holes" ), FILEEXT::KiCadSymbolLibFileExtension );

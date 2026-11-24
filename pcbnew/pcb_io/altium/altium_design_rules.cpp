@@ -257,7 +257,7 @@ struct ALTIUM_DESIGN_RULES::SCOPE_NODE
 namespace
 {
 
-enum class TOKEN_TYPE
+enum class SCOPE_TOKEN_TYPE
 {
     STRING,
     OPERATOR,
@@ -268,7 +268,7 @@ enum class TOKEN_TYPE
 
 struct SCOPE_TOKEN
 {
-    TOKEN_TYPE m_Type = TOKEN_TYPE::END;
+    SCOPE_TOKEN_TYPE m_Type = SCOPE_TOKEN_TYPE::END;
     wxString   m_Text;
 };
 
@@ -318,7 +318,7 @@ std::vector<SCOPE_TOKEN> tokenizeScope( const wxString& aScope )
                 end++;
             }
 
-            tokens.push_back( { TOKEN_TYPE::STRING, text.Mid( pos, end + 1 - pos ) } );
+            tokens.push_back( { SCOPE_TOKEN_TYPE::STRING, text.Mid( pos, end + 1 - pos ) } );
             pos = end + 1;
             continue;
         }
@@ -327,7 +327,7 @@ std::vector<SCOPE_TOKEN> tokenizeScope( const wxString& aScope )
         {
             if( text.Mid( pos, 2 ) == op )
             {
-                tokens.push_back( { TOKEN_TYPE::OPERATOR, op } );
+                tokens.push_back( { SCOPE_TOKEN_TYPE::OPERATOR, op } );
                 pos += 2;
                 ch = 0;
                 break;
@@ -339,7 +339,7 @@ std::vector<SCOPE_TOKEN> tokenizeScope( const wxString& aScope )
 
         if( isOperatorChar( ch ) )
         {
-            tokens.push_back( { TOKEN_TYPE::OPERATOR, wxString( ch ) } );
+            tokens.push_back( { SCOPE_TOKEN_TYPE::OPERATOR, wxString( ch ) } );
             pos++;
             continue;
         }
@@ -349,7 +349,7 @@ std::vector<SCOPE_TOKEN> tokenizeScope( const wxString& aScope )
         while( end < text.length() && !wxIsspace( text[end] ) && !isOperatorChar( text[end] ) && text[end] != '\'' )
             end++;
 
-        tokens.push_back( { TOKEN_TYPE::WORD, text.Mid( pos, end - pos ) } );
+        tokens.push_back( { SCOPE_TOKEN_TYPE::WORD, text.Mid( pos, end - pos ) } );
         pos = end;
     }
 
@@ -400,7 +400,7 @@ private:
 
     bool peekIs( std::initializer_list<const wchar_t*> aWords ) const
     {
-        if( peek().m_Type == TOKEN_TYPE::END )
+        if( peek().m_Type == SCOPE_TOKEN_TYPE::END )
             return false;
 
         wxString text = peek().m_Text.Lower();
@@ -473,7 +473,7 @@ private:
     {
         SCOPE_TOKEN token = take();
 
-        if( token.m_Type == TOKEN_TYPE::OPERATOR && token.m_Text == wxT( "(" ) )
+        if( token.m_Type == SCOPE_TOKEN_TYPE::OPERATOR && token.m_Text == wxT( "(" ) )
         {
             NODE node = parseOr();
 
@@ -483,17 +483,17 @@ private:
             return maybeCompare( std::move( node ) );
         }
 
-        if( token.m_Type == TOKEN_TYPE::END )
+        if( token.m_Type == SCOPE_TOKEN_TYPE::END )
             throw UNSUPPORTED( wxT( "empty scope" ) );
 
-        if( token.m_Type != TOKEN_TYPE::WORD )
+        if( token.m_Type != SCOPE_TOKEN_TYPE::WORD )
             throw UNSUPPORTED( wxT( "unexpected token '" ) + token.m_Text + wxT( "'" ) );
 
         NODE node;
         node.m_Type = NODE::TYPE::CALL;
         node.m_Function = token.m_Text.Lower();
 
-        if( peek().m_Type == TOKEN_TYPE::OPERATOR && peek().m_Text == wxT( "(" ) )
+        if( peek().m_Type == SCOPE_TOKEN_TYPE::OPERATOR && peek().m_Text == wxT( "(" ) )
         {
             take();
 
@@ -516,13 +516,13 @@ private:
             {
                 SCOPE_TOKEN arg = take();
 
-                if( arg.m_Type == TOKEN_TYPE::END )
+                if( arg.m_Type == SCOPE_TOKEN_TYPE::END )
                     throw UNSUPPORTED( wxT( "unterminated call" ) );
 
-                if( arg.m_Type == TOKEN_TYPE::OPERATOR && arg.m_Text == wxT( ")" ) )
+                if( arg.m_Type == SCOPE_TOKEN_TYPE::OPERATOR && arg.m_Text == wxT( ")" ) )
                     break;
 
-                if( arg.m_Type == TOKEN_TYPE::OPERATOR && arg.m_Text == wxT( "," ) )
+                if( arg.m_Type == SCOPE_TOKEN_TYPE::OPERATOR && arg.m_Text == wxT( "," ) )
                 {
                     node.m_Arguments.push_back( joined( current ) );
                     current.clear();
@@ -532,7 +532,7 @@ private:
 
                 wxString value = arg.m_Text;
 
-                if( arg.m_Type == TOKEN_TYPE::STRING )
+                if( arg.m_Type == SCOPE_TOKEN_TYPE::STRING )
                 {
                     value = value.Mid( 1, value.length() - 2 );
                     value.Replace( wxT( "''" ), wxT( "'" ) );
@@ -555,7 +555,7 @@ private:
         static const std::set<wxString> comparisons = { wxT( "<" ),  wxT( ">" ),  wxT( "=" ),
                                                         wxT( "<>" ), wxT( "<=" ), wxT( ">=" ) };
 
-        if( peek().m_Type != TOKEN_TYPE::END && comparisons.count( peek().m_Text ) )
+        if( peek().m_Type != SCOPE_TOKEN_TYPE::END && comparisons.count( peek().m_Text ) )
         {
             take();
             take();

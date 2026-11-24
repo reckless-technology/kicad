@@ -85,11 +85,12 @@ BOOST_AUTO_TEST_CASE( ProjectLibraryIsConvertedToKiCad )
     std::optional<LIBRARY_TABLE_ROW*> row = ( *table )->Row( wxS( "Tracks" ) );
     BOOST_REQUIRE( row );
     BOOST_CHECK_EQUAL( ( *row )->Type(), PCB_IO_MGR::ShowType( PCB_IO_MGR::KICAD_SEXP ) );
-    BOOST_CHECK_EQUAL( ( *row )->URI(), wxS( "${KIPRJMOD}/Tracks." ) + FILEEXT::KiCadFootprintLibPathExtension );
+    BOOST_CHECK_EQUAL( ( *row )->URI(),
+                       wxString( wxS( "${KIPRJMOD}/Tracks." ) ) + FILEEXT::KiCadFootprintLibPathExtension );
 
     // every footprint of the source library, in KiCad's format, and no copy of the source file
     wxFileName pretty = wxFileName::DirName( project.GetProjectPath() );
-    pretty.AppendDir( wxS( "Tracks." ) + FILEEXT::KiCadFootprintLibPathExtension );
+    pretty.AppendDir( wxString( wxS( "Tracks." ) ) + FILEEXT::KiCadFootprintLibPathExtension );
     BOOST_REQUIRE( pretty.DirExists() );
 
     wxArrayString       kicadNames;
