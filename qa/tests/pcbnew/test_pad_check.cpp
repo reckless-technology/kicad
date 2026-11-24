@@ -51,7 +51,7 @@ struct PAD_CHECK_TEST_CASE : public KI_TEST::NAMED_CASE
 
 const std::vector<PAD_CHECK_TEST_CASE> padCheckCases = {
     {
-            "inner-only SMD pad",
+            { "inner-only SMD pad" },
             PAD_ATTRIB::SMD,
             LSET( { In1_Cu, In2_Cu } ),
             {
@@ -60,75 +60,75 @@ const std::vector<PAD_CHECK_TEST_CASE> padCheckCases = {
             },
     },
     {
-            "inner-only CONN pad",
+            { "inner-only CONN pad" },
             PAD_ATTRIB::CONN,
             LSET( { In1_Cu } ),
             { PAD_CHECK_CODE::PAD_NO_OUTER_COPPER },
     },
     // The current checker reports the missing outer copper, not the mask issue itself.
     {
-            "inner-only SMD pad with front mask",
+            { "inner-only SMD pad with front mask" },
             PAD_ATTRIB::SMD,
             LSET( { In1_Cu, F_Mask } ),
             { PAD_CHECK_CODE::PAD_NO_OUTER_COPPER },
     },
     // The current checker reports the missing outer copper, not the paste issue itself.
     {
-            "inner-only SMD pad with back paste",
+            { "inner-only SMD pad with back paste" },
             PAD_ATTRIB::SMD,
             LSET( { In2_Cu, B_Paste } ),
             { PAD_CHECK_CODE::PAD_NO_OUTER_COPPER },
     },
     {
-            "aperture pad with paste",
+            { "aperture pad with paste" },
             PAD_ATTRIB::SMD,
             LSET( { F_Paste } ),
             {}, // Not expected to trigger any pad check errors
     },
     {
-            "outer and inner SMD pad",
+            { "outer and inner SMD pad" },
             PAD_ATTRIB::SMD,
             LSET( { F_Cu, In1_Cu, F_Mask, F_Paste } ),
             { PAD_CHECK_CODE::MULTIPLE_COPPER_LAYERS },
     },
     {
-            "both outer copper sides",
+            { "both outer copper sides" },
             PAD_ATTRIB::SMD,
             LSET( { F_Cu, B_Cu } ),
             { PAD_CHECK_CODE::MULTIPLE_COPPER_LAYERS },
     },
     {
-            "wrong-side mask",
+            { "wrong-side mask" },
             PAD_ATTRIB::SMD,
             LSET( { B_Cu, F_Mask } ),
             { PAD_CHECK_CODE::MASK_WRONG_SIDE },
     },
     {
-            "non-component front pad",
+            { "non-component front pad" },
             PAD_ATTRIB::NON_COMPONENT,
             LSET( { F_Cu } ),
             {},
     },
     {
-            "non-component inner pad",
+            { "non-component inner pad" },
             PAD_ATTRIB::NON_COMPONENT,
             LSET( { In2_Cu } ),
             {},
     },
     {
-            "non-component inner pad with front mask",
+            { "non-component inner pad with front mask" },
             PAD_ATTRIB::NON_COMPONENT,
             LSET( { In1_Cu, F_Mask } ),
             { PAD_CHECK_CODE::NON_COMPONENT_TECH_ON_INNER },
     },
     {
-            "non-component multiple copper layers",
+            { "non-component multiple copper layers" },
             PAD_ATTRIB::NON_COMPONENT,
             LSET( { F_Cu, In1_Cu } ),
             { PAD_CHECK_CODE::MULTIPLE_COPPER_LAYERS },
     },
     {
-            "non-component no copper",
+            { "non-component no copper" },
             PAD_ATTRIB::NON_COMPONENT,
             LSET( { F_Mask } ),
             { PAD_CHECK_CODE::NON_COMPONENT_NO_COPPER },

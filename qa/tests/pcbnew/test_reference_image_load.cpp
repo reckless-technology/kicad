@@ -69,8 +69,7 @@ struct REFERENCE_IMAGE_LOAD_BOARD_TEST_CASE: public KI_TEST::BOARD_LOAD_TEST_CAS
 
 const std::vector<REFERENCE_IMAGE_LOAD_BOARD_TEST_CASE> ReferenceImageLoading_testCases{
     {
-            "reference_images_load_save",
-            std::nullopt,
+            { "reference_images_load_save", std::nullopt },
             {
                     // From top to bottom in the board file
                     {

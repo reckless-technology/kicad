@@ -257,55 +257,55 @@ struct SEG_SEG_DISTANCE_CASE : public KI_TEST::NAMED_CASE
 // clang-format off
 static const std::vector<SEG_SEG_DISTANCE_CASE> seg_seg_dist_cases = {
     {
-        "Parallel, 10 apart",
+        { "Parallel, 10 apart" },
         { { 0, 0 }, { 10, 0 } },
         { { 0, 10 }, { 10, 10 } },
         10,
     },
     {
-        "Non-parallel, 10 apart",
+        { "Non-parallel, 10 apart" },
         { { 0, -5 }, { 10, 0 } },
         { { 0, 10 }, { 10, 10 } },
         10,
     },
     {
-        "Co-incident",
+        { "Co-incident" },
         { { 0, 0 }, { 30, 0 } },
         { { 10, 0 }, { 20, 0 } },
         0,
     },
     {
-        "Crossing",
+        { "Crossing" },
         { { 0, -10 }, { 0, 10 } },
         { { -20, 0 }, { 20, 0 } },
         0,
     },
     {
-        "T-junction",
+        { "T-junction" },
         { { 0, -10 }, { 0, 10 } },
         { { -20, 0 }, { 0, 0 } },
         0,
     },
     {
-        "T-junction (no touch)",
+        { "T-junction (no touch)" },
         { { 0, -10 }, { 0, 10 } },
         { { -20, 0 }, { -2, 0 } },
         2,
     },
     {
-        "Zero-length segment A",
+        { "Zero-length segment A" },
         { { 0, 0 }, { 0, 0 } },
         { { 10, 0 }, { 20, 0 } },
         10,
     },
     {
-        "Zero-length segment B",
+        { "Zero-length segment B" },
         { { 10, 0 }, { 20, 0 } },
         { { 0, 0 }, { 0, 0 } },
         10,
     },
     {
-        "Both zero-length",
+        { "Both zero-length" },
         { { 0, 0 }, { 0, 0 } },
         { { 10, 0 }, { 10, 0 } },
         10,
@@ -331,49 +331,49 @@ struct SEG_VECTOR_DISTANCE_CASE : public KI_TEST::NAMED_CASE
 // clang-format off
 static const std::vector<SEG_VECTOR_DISTANCE_CASE> seg_vec_dist_cases = {
     {
-        "On endpoint",
+        { "On endpoint" },
         { { 0, 0 }, { 10, 0 } },
         { 0, 0 },
         0,
     },
     {
-        "On segment",
+        { "On segment" },
         { { 0, 0 }, { 10, 0 } },
         { 3, 0 },
         0,
     },
     {
-        "At side",
+        { "At side" },
         { { 0, 0 }, { 10, 0 } },
         { 3, 2 },
         2,
     },
     {
-        "At end (collinear)",
+        { "At end (collinear)" },
         { { 0, 0 }, { 10, 0 } },
         { 12, 0 },
         2,
     },
     {
-        "At end (not collinear)",
+        { "At end (not collinear)" },
         { { 0, 0 }, { 1000, 0 } },
         { 1000 + 200, 200 },
         282, // sqrt(200^2 + 200^2) = 282.8, rounded to nearest
     },
     {
-        "Issue 18473 (inside hit with rounding error)",
+        { "Issue 18473 (inside hit with rounding error)" },
         { { 187360000, 42510000 }, { 105796472, 42510000 } },
         { 106645000, 42510000 },
           0,
     },
     {
-        "Straight line x distance",
+        { "Straight line x distance" },
         { { 187360000, 42510000 }, { 105796472, 42510000 } },
           { 197360000, 42510000 },
              10000000,
     },
     {
-        "Straight line -x distance",
+        { "Straight line -x distance" },
         { { 187360000, 42510000 }, { 105796472, 42510000 } },
           { 104796472, 42510000 },
               1000000,
@@ -404,119 +404,119 @@ struct SEG_SEG_COLLIDE_CASE : public KI_TEST::NAMED_CASE
 // clang-format off
 static const std::vector<SEG_SEG_COLLIDE_CASE> seg_seg_coll_cases = {
     {
-        "Parallel, 10 apart, 5 clear",
+        { "Parallel, 10 apart, 5 clear" },
         { { 0, 0 }, { 10, 0 } },
         { { 0, 10 }, { 10, 10 } },
         5,
         false,
     },
     {
-        "Parallel, 10 apart, 10 clear",
+        { "Parallel, 10 apart, 10 clear" },
         { { 0, 0 }, { 10, 0 } },
         { { 0, 10 }, { 10, 10 } },
         10,
         false,
     },
     {
-        "Parallel, 10 apart, 11 clear",
+        { "Parallel, 10 apart, 11 clear" },
         { { 0, 0 }, { 10, 0 } },
         { { 0, 10 }, { 10, 10 } },
         11,
         true,
     },
     {
-        "T-junction, 2 apart, 2 clear",
+        { "T-junction, 2 apart, 2 clear" },
         { { 0, -10 }, { 0, 0 } },
         { { -20, 0 }, { -2, 0 } },
         2,
         false,
     },
     {
-        "T-junction, 2 apart, 3 clear",
+        { "T-junction, 2 apart, 3 clear" },
         { { 0, -10 }, { 0, 0 } },
         { { -20, 0 }, { -2, 0 } },
         3,
         true,
     },
     {
-        "Zero-length segment A, 10 apart",
+        { "Zero-length segment A, 10 apart" },
         { { 0, 0 }, { 0, 0 } },
         { { 10, 0 }, { 20, 0 } },
         0,
         false,
     },
     {
-        "Zero-length segment A, 10 apart, 9 clear",
+        { "Zero-length segment A, 10 apart, 9 clear" },
         { { 0, 0 }, { 0, 0 } },
         { { 10, 0 }, { 20, 0 } },
         9,
         false,
     },
     {
-        "Zero-length segment A, 10 apart, 10 clear",
+        { "Zero-length segment A, 10 apart, 10 clear" },
         { { 0, 0 }, { 0, 0 } },
         { { 10, 0 }, { 20, 0 } },
         10,
         false,
     },
     {
-        "Zero-length segment A, 10 apart, 11 clear",
+        { "Zero-length segment A, 10 apart, 11 clear" },
         { { 0, 0 }, { 0, 0 } },
         { { 10, 0 }, { 20, 0 } },
         11,
         true,
     },
     {
-        "Zero-length segment B, 10 apart",
+        { "Zero-length segment B, 10 apart" },
         { { 10, 0 }, { 20, 0 } },
         { { 0, 0 }, { 0, 0 } },
         0,
         false,
     },
     {
-        "Both zero-length, same point",
+        { "Both zero-length, same point" },
         { { 5, 5 }, { 5, 5 } },
         { { 5, 5 }, { 5, 5 } },
         0,
         true,
     },
     {
-        "Both zero-length, 10 apart",
+        { "Both zero-length, 10 apart" },
         { { 0, 0 }, { 0, 0 } },
         { { 10, 0 }, { 10, 0 } },
         0,
         false,
     },
     {
-        "Zero-length on segment",
+        { "Zero-length on segment" },
         { { 5, 0 }, { 5, 0 } },
         { { 0, 0 }, { 10, 0 } },
         0,
         true,
     },
     {
-        "Zero-length near segment, x overlaps but y differs",
+        { "Zero-length near segment, x overlaps but y differs" },
         { { 5, 5 }, { 5, 5 } },
         { { 0, 0 }, { 10, 0 } },
         0,
         false,
     },
     {
-        "Zero-length near segment, x overlaps but y differs, 4 clear",
+        { "Zero-length near segment, x overlaps but y differs, 4 clear" },
         { { 5, 5 }, { 5, 5 } },
         { { 0, 0 }, { 10, 0 } },
         4,
         false,
     },
     {
-        "Zero-length near segment, x overlaps but y differs, 5 clear",
+        { "Zero-length near segment, x overlaps but y differs, 5 clear" },
         { { 5, 5 }, { 5, 5 } },
         { { 0, 0 }, { 10, 0 } },
         5,
         false,
     },
     {
-        "Zero-length near segment, x overlaps but y differs, 6 clear",
+        { "Zero-length near segment, x overlaps but y differs, 6 clear" },
         { { 5, 5 }, { 5, 5 } },
         { { 0, 0 }, { 10, 0 } },
         6,
@@ -549,31 +549,31 @@ struct SEG_SEG_BOOLEAN_CASE : public KI_TEST::NAMED_CASE
  */
 static const std::vector<SEG_SEG_BOOLEAN_CASE> seg_vec_collinear_cases = {
     {
-        "coincident",
+        { "coincident" },
         { { 0, 0 }, { 10, 0 } },
         { { 0, 0 }, { 10, 0 } },
         true,
     },
     {
-        "end-to-end",
+        { "end-to-end" },
         { { 0, 0 }, { 10, 0 } },
         { { 10, 0 }, { 20, 0 } },
         true,
     },
     {
-        "In segment",
+        { "In segment" },
         { { 0, 0 }, { 10, 0 } },
         { { 4, 0 }, { 7, 0 } },
         true,
     },
     {
-        "At side, parallel",
+        { "At side, parallel" },
         { { 0, 0 }, { 10, 0 } },
         { { 4, 1 }, { 7, 1 } },
         false,
     },
     {
-        "crossing",
+        { "crossing" },
         { { 0, 0 }, { 10, 0 } },
         { { 5, -5 }, { 5, 5 } },
         false,
@@ -594,31 +594,31 @@ BOOST_DATA_TEST_CASE( SegSegCollinear, boost::unit_test::data::make( seg_vec_col
  */
 static const std::vector<SEG_SEG_BOOLEAN_CASE> seg_vec_parallel_cases = {
     {
-        "coincident",
+        { "coincident" },
         { { 0, 0 }, { 10, 0 } },
         { { 0, 0 }, { 10, 0 } },
         true,
     },
     {
-        "end-to-end",
+        { "end-to-end" },
         { { 0, 0 }, { 10, 0 } },
         { { 10, 0 }, { 20, 0 } },
         true,
     },
     {
-        "In segment",
+        { "In segment" },
         { { 0, 0 }, { 10, 0 } },
         { { 4, 0 }, { 7, 0 } },
         true,
     },
     {
-        "At side, parallel",
+        { "At side, parallel" },
         { { 0, 0 }, { 10, 0 } },
         { { 4, 1 }, { 7, 1 } },
         true,
     },
     {
-        "crossing",
+        { "crossing" },
         { { 0, 0 }, { 10, 0 } },
         { { 5, -5 }, { 5, 5 } },
         false,
@@ -639,55 +639,55 @@ BOOST_DATA_TEST_CASE( SegSegParallel, boost::unit_test::data::make( seg_vec_para
  */
 static const std::vector<SEG_SEG_BOOLEAN_CASE> seg_vec_perpendicular_cases = {
     {
-        "coincident",
+        { "coincident" },
         { { 0, 0 }, { 10, 0 } },
         { { 0, 0 }, { 10, 0 } },
         false,
     },
     {
-        "end-to-end",
+        { "end-to-end" },
         { { 0, 0 }, { 10, 0 } },
         { { 10, 0 }, { 20, 0 } },
         false,
     },
     {
-        "In segment",
+        { "In segment" },
         { { 0, 0 }, { 10, 0 } },
         { { 4, 0 }, { 7, 0 } },
         false,
     },
     {
-        "At side, parallel",
+        { "At side, parallel" },
         { { 0, 0 }, { 10, 0 } },
         { { 4, 1 }, { 7, 1 } },
         false,
     },
     {
-        "crossing 45 deg",
+        { "crossing 45 deg" },
         { { 0, 0 }, { 10, 0 } },
         { { 0, 0 }, { 5, 5 } },
         false,
     },
     {
-        "very nearly perpendicular",
+        { "very nearly perpendicular" },
         { { 0, 0 }, { 10, 0 } },
         { { 0, 0 }, { 1, 10 } },
         true, //allow error margin of 1 IU
     },
     {
-        "not really perpendicular",
+        { "not really perpendicular" },
         { { 0, 0 }, { 10, 0 } },
         { { 0, 0 }, { 3, 10 } },
         false,
     },
     {
-        "perpendicular",
+        { "perpendicular" },
         { { 0, 0 }, { 10, 0 } },
         { { 0, 0 }, { 0, 10 } },
         true,
     },
     {
-        "perpendicular not intersecting",
+        { "perpendicular not intersecting" },
         { { 0, 0 }, { 10, 0 } },
         { { 15, 5 }, { 15, 10 } },
         true,
@@ -719,32 +719,32 @@ struct SEG_VEC_CASE : public KI_TEST::NAMED_CASE
  */
 static const std::vector<SEG_VEC_CASE> segment_and_point_cases = {
     {
-        "Horizontal: point on edge of seg",
+        { "Horizontal: point on edge of seg" },
         { { 0, 0 }, { 10, 0 } },
         { 0, 0 },
     },
     {
-        "Horizontal: point in middle of seg",
+        { "Horizontal: point in middle of seg" },
         { { 0, 0 }, { 10, 0 } },
         { 5, 0 },
     },
     {
-        "Horizontal: point outside seg",
+        { "Horizontal: point outside seg" },
         { { 0, 0 }, { 10, 0 } },
         { 20, 20 },
     },
     {
-        "Vertical: point on edge of seg",
+        { "Vertical: point on edge of seg" },
         { { 0, 0 }, { 0, 10 } },
         { 0, 0 },
     },
     {
-        "Vertical: point in middle of seg",
+        { "Vertical: point in middle of seg" },
         { { 0, 0 }, { 0, 10 } },
         { 0, 5 },
     },
     {
-        "Vertical: point outside seg",
+        { "Vertical: point outside seg" },
         { { 0, 0 }, { 0, 10 } },
         { 20, 20 },
     },
@@ -846,21 +846,21 @@ struct SEG_SEG_INTERSECT_CASE : public KI_TEST::NAMED_CASE
 static const std::vector<SEG_SEG_INTERSECT_CASE> seg_intersect_cases = {
     // Basic crossing cases
     {
-        "Crossing at origin",
+        { "Crossing at origin" },
         { { -10, 0 }, { 10, 0 } },
         { { 0, -10 }, { 0, 10 } },
         false, false, true,
         { 0, 0 }
     },
     {
-        "Crossing at (5,5)",
+        { "Crossing at (5,5)" },
         { { 0, 5 }, { 10, 5 } },
         { { 5, 0 }, { 5, 10 } },
         false, false, true,
         { 5, 5 }
     },
     {
-        "T-junction intersection",
+        { "T-junction intersection" },
         { { 0, 0 }, { 10, 0 } },
         { { 5, -5 }, { 5, 0 } },
         false, false, true,
@@ -869,21 +869,21 @@ static const std::vector<SEG_SEG_INTERSECT_CASE> seg_intersect_cases = {
 
     // Non-intersecting cases
     {
-        "Parallel segments",
+        { "Parallel segments" },
         { { 0, 0 }, { 10, 0 } },
         { { 0, 5 }, { 10, 5 } },
         false, false, false,
         { 0, 0 }
     },
     {
-        "Separated segments",
+        { "Separated segments" },
         { { 0, 0 }, { 5, 0 } },
         { { 10, 0 }, { 15, 0 } },
         false, false, false,
         { 0, 0 }
     },
     {
-        "Lines would intersect, but segments don't",
+        { "Lines would intersect, but segments don't" },
         { { 0, 0 }, { 2, 0 } },
         { { 5, -5 }, { 5, 5 } },
         false, false, false,
@@ -892,21 +892,21 @@ static const std::vector<SEG_SEG_INTERSECT_CASE> seg_intersect_cases = {
 
     // Endpoint intersection cases
     {
-        "Endpoint touching - should intersect",
+        { "Endpoint touching - should intersect" },
         { { 0, 0 }, { 10, 0 } },
         { { 10, 0 }, { 20, 0 } },
         false, false, true,
         { 10, 0 }
     },
     {
-        "Endpoint touching - ignore endpoints",
+        { "Endpoint touching - ignore endpoints" },
         { { 0, 0 }, { 10, 0 } },
         { { 10, 0 }, { 20, 0 } },
         true, false, false,
         { 0, 0 }
     },
     {
-        "Endpoint touching at angle",
+        { "Endpoint touching at angle" },
         { { 0, 0 }, { 10, 0 } },
         { { 10, 0 }, { 15, 5 } },
         false, false, true,
@@ -915,35 +915,35 @@ static const std::vector<SEG_SEG_INTERSECT_CASE> seg_intersect_cases = {
 
     // Collinear cases
     {
-        "Collinear overlapping segments",
+        { "Collinear overlapping segments" },
         { { 0, 0 }, { 10, 0 } },
         { { 5, 0 }, { 15, 0 } },
         false, false, true,
         { 7, 0 }  // Midpoint of overlap [5,10]
     },
     {
-        "Collinear non-overlapping segments",
+        { "Collinear non-overlapping segments" },
         { { 0, 0 }, { 5, 0 } },
         { { 10, 0 }, { 15, 0 } },
         false, false, false,
         { 0, 0 }
     },
     {
-        "Collinear touching at endpoint",
+        { "Collinear touching at endpoint" },
         { { 0, 0 }, { 10, 0 } },
         { { 10, 0 }, { 20, 0 } },
         false, false, true,
         { 10, 0 }
     },
     {
-        "Collinear contained segment",
+        { "Collinear contained segment" },
         { { 0, 0 }, { 20, 0 } },
         { { 5, 0 }, { 15, 0 } },
         false, false, true,
         { 10, 0 }  // Midpoint of contained segment
     },
     {
-        "Collinear vertical overlapping",
+        { "Collinear vertical overlapping" },
         { { 5, 0 }, { 5, 10 } },
         { { 5, 5 }, { 5, 15 } },
         false, false, true,
@@ -952,21 +952,21 @@ static const std::vector<SEG_SEG_INTERSECT_CASE> seg_intersect_cases = {
 
     // Line mode cases (infinite lines)
     {
-        "Lines intersect, segments don't",
+        { "Lines intersect, segments don't" },
         { { 0, 0 }, { 2, 0 } },
         { { 5, -5 }, { 5, 5 } },
         false, true, true,
         { 5, 0 }
     },
     {
-        "Parallel lines (infinite)",
+        { "Parallel lines (infinite)" },
         { { 0, 0 }, { 10, 0 } },
         { { 0, 5 }, { 10, 5 } },
         false, true, false,
         { 0, 0 }
     },
     {
-        "Collinear lines (infinite)",
+        { "Collinear lines (infinite)" },
         { { 0, 0 }, { 10, 0 } },
         { { 20, 0 }, { 30, 0 } },
         false, true, true,
@@ -975,21 +975,21 @@ static const std::vector<SEG_SEG_INTERSECT_CASE> seg_intersect_cases = {
 
     // Edge cases
     {
-        "Zero-length segment intersection",
+        { "Zero-length segment intersection" },
         { { 5, 5 }, { 5, 5 } },
         { { 0, 5 }, { 10, 5 } },
         false, false, true,
         { 5, 5 }
     },
     {
-        "Both zero-length, same point",
+        { "Both zero-length, same point" },
         { { 5, 5 }, { 5, 5 } },
         { { 5, 5 }, { 5, 5 } },
         false, false, true,
         { 5, 5 }
     },
     {
-        "Both zero-length, different points",
+        { "Both zero-length, different points" },
         { { 5, 5 }, { 5, 5 } },
         { { 10, 10 }, { 10, 10 } },
         false, false, false,
@@ -998,14 +998,14 @@ static const std::vector<SEG_SEG_INTERSECT_CASE> seg_intersect_cases = {
 
     // Diagonal intersection cases
     {
-        "45-degree crossing",
+        { "45-degree crossing" },
         { { 0, 0 }, { 10, 10 } },
         { { 0, 10 }, { 10, 0 } },
         false, false, true,
         { 5, 5 }
     },
     {
-        "Arbitrary angle crossing",
+        { "Arbitrary angle crossing" },
         { { 0, 0 }, { 6, 8 } },
         { { 0, 8 }, { 6, 0 } },
         false, false, true,
@@ -1014,21 +1014,21 @@ static const std::vector<SEG_SEG_INTERSECT_CASE> seg_intersect_cases = {
 
     // Bounding box optimization test cases
     {
-        "Far apart horizontal segments",
+        { "Far apart horizontal segments" },
         { { 0, 0 }, { 10, 0 } },
         { { 100, 0 }, { 110, 0 } },
         false, false, false,
         { 0, 0 }
     },
     {
-        "Far apart vertical segments",
+        { "Far apart vertical segments" },
         { { 0, 0 }, { 0, 10 } },
         { { 0, 100 }, { 0, 110 } },
         false, false, false,
         { 0, 0 }
     },
     {
-        "Far apart diagonal segments",
+        { "Far apart diagonal segments" },
         { { 0, 0 }, { 10, 10 } },
         { { 100, 100 }, { 110, 110 } },
         false, false, false,
@@ -1432,28 +1432,28 @@ bool SegLineIntersectCorrect( const SEG& aSeg, double aSlope, double aOffset,
 static const std::vector<SEG_LINE_INTERSECT_CASE> seg_line_intersect_cases = {
     // Basic intersection cases
     {
-        "Horizontal segment, diagonal line",
+        { "Horizontal segment, diagonal line" },
         { { 0, 5 }, { 10, 5 } },
         1.0, 0.0,  // y = x
         true,
         { 5, 5 }
     },
     {
-        "Vertical segment, horizontal line",
+        { "Vertical segment, horizontal line" },
         { { 5, 0 }, { 5, 10 } },
         0.0, 3.0,  // y = 3
         true,
         { 5, 3 }
     },
     {
-        "Diagonal segment, horizontal line crossing",
+        { "Diagonal segment, horizontal line crossing" },
         { { 0, 0 }, { 10, 10 } },
         0.0, 5.0,  // y = 5
         true,
         { 5, 5 }
     },
     {
-        "Diagonal segment, vertical line (steep slope)",
+        { "Diagonal segment, vertical line (steep slope)" },
         { { 0, 0 }, { 10, 10 } },
         1000.0, -5000.0,  // Very steep line: y = 1000x - 5000, crosses at x=5
         true,
@@ -1462,28 +1462,28 @@ static const std::vector<SEG_LINE_INTERSECT_CASE> seg_line_intersect_cases = {
 
     // Non-intersecting cases
     {
-        "Horizontal segment, parallel horizontal line",
+        { "Horizontal segment, parallel horizontal line" },
         { { 0, 5 }, { 10, 5 } },
         0.0, 10.0,  // y = 10 (parallel to y = 5)
         false,
         { 0, 0 }
     },
     {
-        "Diagonal segment, parallel line",
+        { "Diagonal segment, parallel line" },
         { { 0, 0 }, { 10, 10 } },
         1.0, 5.0,  // y = x + 5 (parallel to y = x)
         false,
         { 0, 0 }
     },
     {
-        "Segment above line",
+        { "Segment above line" },
         { { 0, 10 }, { 10, 10 } },
         0.0, 5.0,  // y = 5
         false,
         { 0, 0 }
     },
     {
-        "Segment to left of steep line",
+        { "Segment to left of steep line" },
         { { 0, 0 }, { 2, 2 } },
         1.0, 10.0,  // y = x + 10
         false,
@@ -1492,21 +1492,21 @@ static const std::vector<SEG_LINE_INTERSECT_CASE> seg_line_intersect_cases = {
 
     // Collinear cases (segment lies on line)
     {
-        "Horizontal segment on horizontal line",
+        { "Horizontal segment on horizontal line" },
         { { 0, 5 }, { 10, 5 } },
         0.0, 5.0,  // y = 5
         true,
         { 5, 5 }  // Midpoint
     },
     {
-        "Diagonal segment on diagonal line",
+        { "Diagonal segment on diagonal line" },
         { { 0, 0 }, { 10, 10 } },
         1.0, 0.0,  // y = x
         true,
         { 5, 5 }  // Midpoint
     },
     {
-        "Vertical segment, any line slope (collinear impossible)",
+        { "Vertical segment, any line slope (collinear impossible)" },
         { { 5, 0 }, { 5, 10 } },
         2.0, -5.0,  // y = 2x - 5, passes through (5, 5)
         true,
@@ -1515,42 +1515,42 @@ static const std::vector<SEG_LINE_INTERSECT_CASE> seg_line_intersect_cases = {
 
     // Edge cases
     {
-        "Zero-length segment (point) on line",
+        { "Zero-length segment (point) on line" },
         { { 3, 7 }, { 3, 7 } },
         2.0, 1.0,  // y = 2x + 1, point (3,7) should be on this line
         true,
         { 3, 7 }
     },
     {
-        "Zero-length segment (point) not on line",
+        { "Zero-length segment (point) not on line" },
         { { 3, 5 }, { 3, 5 } },
         2.0, 1.0,  // y = 2x + 1, point (3,5) not on line (should be y=7)
         false,
         { 0, 0 }
     },
     {
-        "Line with zero slope (horizontal)",
+        { "Line with zero slope (horizontal)" },
         { { 0, 0 }, { 10, 5 } },
         0.0, 2.5,  // y = 2.5
         true,
         { 5, 2 }  // Intersection at x=5, y=2.5 rounded to y=2 or 3
     },
     {
-        "Very steep positive slope",
+        { "Very steep positive slope" },
         { { 0, 0 }, { 10, 1 } },
         100.0, -250.0,  // y = 100x - 250, intersects at x=2.5
         true,
         { 2, 0 }  // Approximately (2.5, 0)
     },
     {
-        "Very steep negative slope",
+        { "Very steep negative slope" },
         { { 0, 0 }, { 10, 10 } },
         -100.0, 505.0,  // y = -100x + 505, intersects at x=5.05, y≈0
         true,
         { 5, 5 }  // Approximately (5.05, 0) but segment has y=5 at x=5
     },
     {
-        "Fractional slope",
+        { "Fractional slope" },
         { { 0, 0 }, { 12, 8 } },
         0.5, 1.0,  // y = 0.5x + 1
         true,
@@ -1559,21 +1559,21 @@ static const std::vector<SEG_LINE_INTERSECT_CASE> seg_line_intersect_cases = {
 
     // Endpoint intersections
     {
-        "Line passes through segment start point",
+        { "Line passes through segment start point" },
         { { 2, 3 }, { 80, 90 } },
         1.0, 1.0,  // y = x + 1, passes through (2,3)
         true,
         { 2, 3 }
     },
     {
-        "Line passes through segment end point",
+        { "Line passes through segment end point" },
         { { 20, 30 }, { 8, 9 } },
         1.0, 1.0,  // y = x + 1, passes through (8,9)
         true,
         { 8, 9 }
     },
     {
-        "Line intersects near endpoint",
+        { "Line intersects near endpoint" },
         { { 0, 0 }, { 10, 0 } },
         0.0, 0.0,  // y = 0, same as segment
         true,
@@ -1582,14 +1582,14 @@ static const std::vector<SEG_LINE_INTERSECT_CASE> seg_line_intersect_cases = {
 
     // Precision edge cases
     {
-        "Nearly parallel lines",
+        { "Nearly parallel lines" },
         { { 0, 0 }, { 1000, 1 } },
         0.0011, -0.05,  // Very slightly different slope
         true,
         { 500, 1 }  // At 500, y will round up to 1 in both cases
     },
     {
-        "Line intersection outside segment bounds",
+        { "Line intersection outside segment bounds" },
         { { 5, 5 }, { 10, 10 } },
         1.0, -10.0,  // y = x - 10, would intersect extended line at (15, 5)
         false,

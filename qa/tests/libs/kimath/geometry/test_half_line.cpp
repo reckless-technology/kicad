@@ -51,37 +51,37 @@ struct HalfLineContainsPointCase : public KI_TEST::NAMED_CASE
 
 const std::vector<HalfLineContainsPointCase> Contains_cases{
     {
-            "Point on the ray",
+            { "Point on the ray" },
             HALF_LINE( SEG( VECTOR2I( 0, 0 ), VECTOR2I( 100, 100 ) ) ),
             VECTOR2I( 50, 50 ),
             true,
     },
     {
-            "Point on the ray start",
+            { "Point on the ray start" },
             HALF_LINE( SEG( VECTOR2I( 0, 0 ), VECTOR2I( 100, 100 ) ) ),
             VECTOR2I( 0, 0 ),
             true,
     },
     {
-            "Point on the ray end",
+            { "Point on the ray end" },
             HALF_LINE( SEG( VECTOR2I( 0, 0 ), VECTOR2I( 100, 100 ) ) ),
             VECTOR2I( 100, 100 ),
             true,
     },
     {
-            "Point on the ray, past the end",
+            { "Point on the ray, past the end" },
             HALF_LINE( SEG( VECTOR2I( 0, 0 ), VECTOR2I( 100, 100 ) ) ),
             VECTOR2I( 150, 150 ),
             true,
     },
     {
-            "Point on the infinite line, but on the wrong side",
+            { "Point on the infinite line, but on the wrong side" },
             HALF_LINE( SEG( VECTOR2I( 0, 0 ), VECTOR2I( 100, 100 ) ) ),
             VECTOR2I( -50, -50 ),
             false,
     },
     {
-            "Point to one side",
+            { "Point to one side" },
             HALF_LINE( SEG( VECTOR2I( 0, 0 ), VECTOR2I( 100, 100 ) ) ),
             VECTOR2I( 50, 0 ),
             false,
@@ -99,13 +99,13 @@ BOOST_DATA_TEST_CASE( Contains, boost::unit_test::data::make( Contains_cases ), 
 
 const std::vector<HalfLineHalfLineIntersectionCase> Intersect_cases{
     {
-            "Simple cross",
+            { "Simple cross" },
             HALF_LINE( SEG( VECTOR2I( -100, -100 ), VECTOR2I( 0, 0 ) ) ),
             HALF_LINE( SEG( VECTOR2I( 100, -100 ), VECTOR2I( 0, 0 ) ) ),
             VECTOR2I( 0, 0 ),
     },
     {
-            "Parallel, no intersection",
+            { "Parallel, no intersection" },
             HALF_LINE( SEG( VECTOR2I( -100, 0 ), VECTOR2I( -100, 100 ) ) ),
             HALF_LINE( SEG( VECTOR2I( 100, 0 ), VECTOR2I( 100, 100 ) ) ),
             std::nullopt,
@@ -128,25 +128,25 @@ BOOST_DATA_TEST_CASE( Intersect, boost::unit_test::data::make( Intersect_cases )
 
 const std::vector<HalfLineBoxClipCase> ClipToBox_cases{
     {
-            "Center to right edge",
+            { "Center to right edge" },
             HALF_LINE( SEG( VECTOR2I( 0, 0 ), VECTOR2I( 100, 0 ) ) ),
             BOX2I{ VECTOR2{ -1000, -1000 }, VECTOR2{ 2000, 2000 } },
             SEG( VECTOR2I( 0, 0 ), VECTOR2I( 1000, 0 ) ),
     },
     {
-            "Centre to corner",
+            { "Centre to corner" },
             HALF_LINE( SEG( VECTOR2I( 0, 0 ), VECTOR2I( 100, 100 ) ) ),
             BOX2I{ VECTOR2{ -1000, -1000 }, VECTOR2{ 2000, 2000 } },
             SEG( VECTOR2I( 0, 0 ), VECTOR2I( 1000, 1000 ) ),
     },
     {
-            "Ray not in the box",
+            { "Ray not in the box" },
             HALF_LINE( SEG( VECTOR2I( 1500, 0 ), VECTOR2I( 1600, 0 ) ) ),
             BOX2I{ VECTOR2{ -1000, -1000 }, VECTOR2{ 2000, 2000 } },
             std::nullopt,
     },
     {
-            "Ray starts outside but crosses box",
+            { "Ray starts outside but crosses box" },
             HALF_LINE( SEG( VECTOR2I( -1500, 0 ), VECTOR2I( 0, 0 ) ) ),
             BOX2I{ VECTOR2{ -1000, -1000 }, VECTOR2{ 2000, 2000 } },
             SEG( VECTOR2I( -1000, 0 ), VECTOR2I( 1000, 0 ) ),
