@@ -352,7 +352,7 @@ BOOST_FIXTURE_TEST_CASE( MultichannelToolRegressions, MULTICHANNEL_TEST_FIXTURE 
 
         int result = mtTool->RepeatLayout( TOOL_EVENT(), refArea->m_zone );
 
-        BOOST_ASSERT( result >= 0 );
+        BOOST_CHECK( result >= 0 );
     }
 }
 

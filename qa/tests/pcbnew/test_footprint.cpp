@@ -147,8 +147,6 @@ BOOST_AUTO_TEST_CASE( FootprintCourtyardAndHull )
     expectedCourtyard.Mirror( VECTOR2I( 0, 0 ), FLIP_DIRECTION::LEFT_RIGHT );
     expectedHull.Mirror( VECTOR2I( 0, 0 ), FLIP_DIRECTION::LEFT_RIGHT );
 
-    const BOX2I flippedExpectedBox = BOX2I::ByCorners( VECTOR2I( -courtyardW, 0 ), VECTOR2I( 0, courtyardH ) );
-
     BOOST_TEST_CONTEXT( "Flipped courtyard" )
     {
         assertCourtyardMatches( B_CrtYd, expectedCourtyard );

@@ -2265,14 +2265,11 @@ BOOST_AUTO_TEST_CASE( AllTracksPositiveWidth )
         BOOST_TEST_CONTEXT( "Testing board: " << boardName )
         {
             int zeroWidthCount = 0;
-            int totalCount = 0;
 
             for( PCB_TRACK* track : board->Tracks() )
             {
                 if( track->Type() == PCB_TRACE_T || track->Type() == PCB_ARC_T )
                 {
-                    totalCount++;
-
                     if( track->GetWidth() <= 0 )
                     {
                         zeroWidthCount++;
@@ -2514,9 +2511,6 @@ BOOST_AUTO_TEST_CASE( OutlineBoundingBox )
 
     // 1 mil = 25400 nm
     const double milToNm = 25400.0;
-
-    // Allow 2 mil tolerance for coordinate rounding across formats
-    const int toleranceNm = static_cast<int>( 2.0 * milToNm );
 
     for( const auto& [brdFile, algFile] : testBoards )
     {

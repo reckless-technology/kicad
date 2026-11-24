@@ -80,7 +80,7 @@ public:
                                             boost::to_upper_copy( aModel.GetSpiceInfo().modelType ),
                                             aModelIndex ) );
 
-            for( unsigned i = 0; i < aModel.GetParamCount(); ++i )
+            for( int i = 0; i < aModel.GetParamCount(); ++i )
             {
                 BOOST_TEST_CONTEXT( "Param name: " << aModel.GetParam( i ).info.name )
                 {
@@ -127,7 +127,7 @@ public:
                                                         modelType,
                                                         fieldValue ) );
 
-            for( int i = 0; i < aParamNames.size(); ++i )
+            for( size_t i = 0; i < aParamNames.size(); ++i )
             {
                 std::string             paramName = aParamNames.at( i );
                 const SIM_MODEL::PARAM* param = aModel.FindParam( paramName );
@@ -172,7 +172,7 @@ BOOST_AUTO_TEST_CASE( Subckts )
 
     BOOST_CHECK_EQUAL( models.size(), 7 );
 
-    for( int i = 0; i < models.size(); ++i )
+    for( size_t i = 0; i < models.size(); ++i )
     {
         const auto& [modelName, model] = models.at( i );
 
@@ -260,7 +260,7 @@ BOOST_AUTO_TEST_CASE( Diodes )
 
     BOOST_CHECK_EQUAL( models.size(), 26 );
 
-    for( int i = 0; i < models.size(); ++i )
+    for( size_t i = 0; i < models.size(); ++i )
     {
         const auto& [modelName, model] = models.at( i );
 
@@ -487,7 +487,7 @@ BOOST_AUTO_TEST_CASE( Bjts )
 
     BOOST_CHECK_EQUAL( models.size(), 8 );
 
-    for( int i = 0; i < models.size(); ++i )
+    for( size_t i = 0; i < models.size(); ++i )
     {
         const auto& [modelName, model] = models.at( i );
 
@@ -1139,7 +1139,7 @@ BOOST_AUTO_TEST_CASE( Fets )
 
     BOOST_CHECK_EQUAL( models.size(), 46 );
 
-    for( int i = 0; i < models.size(); ++i )
+    for( size_t i = 0; i < models.size(); ++i )
     {
         const auto& [modelName, model] = models.at( i );
 

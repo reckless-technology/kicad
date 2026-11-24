@@ -101,14 +101,14 @@ BOOST_AUTO_TEST_CASE( CanNumber )
 
 BOOST_AUTO_TEST_CASE( TestPadCounting )
 {
-    PAD* p1  = MakeSmd( "1" );
-    PAD* p2  = MakeSmd( "2" );
-    PAD* p3  = MakeSmd( "33" );
-    PAD* p4  = MakeSmd( "AA12" );
-    PAD* p5  = MakeSmd( "BC35" );
-    PAD* pXa = MakeSmd( "AAA1" );
-    PAD* pXb = MakePTH( "MP" );
-    PAD* pXc = MakeSmd( "MP1a" );
+    MakeSmd( "1" );
+    MakeSmd( "2" );
+    MakeSmd( "33" );
+    MakeSmd( "AA12" );
+    MakeSmd( "BC35" );
+    MakeSmd( "AAA1" );
+    MakePTH( "MP" );
+    MakeSmd( "MP1a" );
 
     BOOST_CHECK_EQUAL( m_footprint.GetNumberedPadCount(), 5 );
 }
@@ -116,21 +116,21 @@ BOOST_AUTO_TEST_CASE( TestPadCounting )
 
 BOOST_AUTO_TEST_CASE( TestUSBcPadCounting )
 {
-    PAD* p1_2   = MakeSmd( "A1_B12" );
-    PAD* p3_4   = MakeSmd( "A4_B9" );
-    PAD* p5     = MakeSmd( "B8" );
-    PAD* p6     = MakeSmd( "A5" );
-    PAD* p7     = MakeSmd( "B7" );
-    PAD* p8     = MakeSmd( "A6" );
-    PAD* p9     = MakeSmd( "A7" );
-    PAD* p10    = MakeSmd( "B6" );
-    PAD* p11    = MakeSmd( "A8" );
-    PAD* p12    = MakeSmd( "B5" );
-    PAD* p13_14 = MakeSmd( "B4_A9" );
-    PAD* p15_16 = MakeSmd( "B1_A12" );
-    PAD* p17a   = MakeSmd( "S1" );
-    PAD* p17b   = MakeSmd( "S1" );
-    PAD* p17c   = MakeSmd( "S1" );
+    MakeSmd( "A1_B12" );
+    MakeSmd( "A4_B9" );
+    MakeSmd( "B8" );
+    MakeSmd( "A5" );
+    MakeSmd( "B7" );
+    MakeSmd( "A6" );
+    MakeSmd( "A7" );
+    MakeSmd( "B6" );
+    MakeSmd( "A8" );
+    MakeSmd( "B5" );
+    MakeSmd( "B4_A9" );
+    MakeSmd( "B1_A12" );
+    MakeSmd( "S1" );
+    MakeSmd( "S1" );
+    MakeSmd( "S1" );
 
     BOOST_CHECK_EQUAL( m_footprint.GetNumberedPadCount(), 17 );
 }

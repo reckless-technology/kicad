@@ -4800,8 +4800,8 @@ BOOST_AUTO_TEST_CASE( ScalarAttributesStableAcrossSaveLoadUnderScale )
     PCB_SHAPE*             seg;
     PCB_TEXT*              txt;
     PCB_POINT*             pt;
-    FOOTPRINT*             fp = buildCoincidentFootprint( *board, ANGLE_0, 2.0, 2.0, VECTOR2I( 53000000, 51000000 ),
-                                                          pad, seg, txt, pt );
+
+    buildCoincidentFootprint( *board, ANGLE_0, 2.0, 2.0, VECTOR2I( 53000000, 51000000 ), pad, seg, txt, pt );
 
     // Author board frame attributes while the 2x scale is active.
     seg->SetWidth( 400000 );

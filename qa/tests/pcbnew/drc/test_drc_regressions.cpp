@@ -30,6 +30,7 @@
 #include <drc/drc_item.h>
 #include <settings/settings_manager.h>
 #include <widgets/report_severity.h>
+#include <utility>
 
 
 namespace
@@ -197,7 +198,7 @@ BOOST_FIXTURE_TEST_CASE( DRCFalseNegativeRegressions, DRC_REGRESSION_TEST_FIXTUR
 
         bds.m_DRCEngine->RunTests( EDA_UNITS::MM, true, false );
 
-        if( violations.size() == expectedErrors )
+        if( std::cmp_equal( violations.size(), expectedErrors ) )
         {
             BOOST_CHECK_EQUAL( 1, 1 ); // quiet "did not check any assertions" warning
             BOOST_TEST_MESSAGE( wxString::Format( "DRC regression: %s, passed", testName ) );
