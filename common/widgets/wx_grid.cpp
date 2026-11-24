@@ -80,7 +80,7 @@ void WX_GRID::CellEditorSetMargins( wxTextEntryBase* aEntry )
 }
 
 
-void WX_GRID::CellEditorTransformSizeRect( wxRect& aRect )
+void WX_GRID::CellEditorTransformSizeRect( wxRect& aRect [[maybe_unused]] )
 {
 #if defined( __WXMSW__ ) || defined( __WXGTK__ )
     aRect.Deflate( 2 );

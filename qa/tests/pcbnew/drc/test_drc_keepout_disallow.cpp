@@ -61,8 +61,8 @@ BOOST_FIXTURE_TEST_CASE( DRCKeepoutDisallowViasAndTracks, DRC_KEEPOUT_TEST_FIXTU
     bds.m_DRCSeverities[DRCE_ALLOWED_ITEMS] = SEVERITY::RPT_SEVERITY_ERROR;
 
     bds.m_DRCEngine->SetViolationHandler(
-            [&]( const std::shared_ptr<DRC_ITEM>& aItem, const VECTOR2I& aPos, int aLayer,
-                 const std::function<void( PCB_MARKER* )>& aPathGenerator )
+            [&]( const std::shared_ptr<DRC_ITEM>& aItem, const VECTOR2I& aPos [[maybe_unused]], int aLayer [[maybe_unused]],
+                 const std::function<void( PCB_MARKER* )>& aPathGenerator [[maybe_unused]] )
             {
                 if( aItem->GetErrorCode() == DRCE_ALLOWED_ITEMS )
                     violations.push_back( *aItem );
@@ -142,8 +142,8 @@ BOOST_FIXTURE_TEST_CASE( DRCKeepoutFootprintExcludesItself, DRC_KEEPOUT_TEST_FIX
     bds.m_DRCSeverities[DRCE_ALLOWED_ITEMS] = SEVERITY::RPT_SEVERITY_ERROR;
 
     bds.m_DRCEngine->SetViolationHandler(
-            [&]( const std::shared_ptr<DRC_ITEM>& aItem, const VECTOR2I& aPos, int aLayer,
-                 const std::function<void( PCB_MARKER* )>& aPathGenerator )
+            [&]( const std::shared_ptr<DRC_ITEM>& aItem, const VECTOR2I& aPos [[maybe_unused]], int aLayer [[maybe_unused]],
+                 const std::function<void( PCB_MARKER* )>& aPathGenerator [[maybe_unused]] )
             {
                 if( aItem->GetErrorCode() != DRCE_ALLOWED_ITEMS )
                     return;
@@ -191,8 +191,8 @@ BOOST_FIXTURE_TEST_CASE( DRCKeepoutNoClearanceInflation, DRC_KEEPOUT_TEST_FIXTUR
     bds.m_DRCSeverities[DRCE_ALLOWED_ITEMS] = SEVERITY::RPT_SEVERITY_ERROR;
 
     bds.m_DRCEngine->SetViolationHandler(
-            [&]( const std::shared_ptr<DRC_ITEM>& aItem, const VECTOR2I& aPos, int aLayer,
-                 const std::function<void( PCB_MARKER* )>& aPathGenerator )
+            [&]( const std::shared_ptr<DRC_ITEM>& aItem, const VECTOR2I& aPos [[maybe_unused]], int aLayer [[maybe_unused]],
+                 const std::function<void( PCB_MARKER* )>& aPathGenerator [[maybe_unused]] )
             {
                 if( aItem->GetErrorCode() == DRCE_ALLOWED_ITEMS )
                     violations.push_back( *aItem );

@@ -32,7 +32,7 @@ SELECTION_CONDITION EDA_3D_CONDITIONS::GridSize( GRID3D_TYPE aGridSize )
 }
 
 
-bool EDA_3D_CONDITIONS::gridSizeFunction( const SELECTION& aSelection,
+bool EDA_3D_CONDITIONS::gridSizeFunction( const SELECTION& aSelection [[maybe_unused]],
                                           BOARD_ADAPTER* aAdapter,
                                           GRID3D_TYPE aGridSize )
 {

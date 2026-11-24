@@ -86,7 +86,7 @@ namespace
  */
 struct BENCH_PGM : public PGM_BASE
 {
-    void MacOpenFile( const wxString& aFileName ) override {}
+    void MacOpenFile( const wxString& aFileName [[maybe_unused]] ) override {}
 };
 
 
@@ -430,8 +430,8 @@ RUN_SAMPLE timeRun( BOARD* aBoard, const wxFileName& aRulesFile, double aTimeout
     std::atomic<int> violationCount{ 0 };
 
     engine->SetViolationHandler(
-            [&]( const std::shared_ptr<DRC_ITEM>& aItem, const VECTOR2I& aPos, int aLayer,
-                 const std::function<void( PCB_MARKER* )>& aCreateMarker )
+            [&]( const std::shared_ptr<DRC_ITEM>& aItem [[maybe_unused]], const VECTOR2I& aPos [[maybe_unused]], int aLayer [[maybe_unused]],
+                 const std::function<void( PCB_MARKER* )>& aCreateMarker [[maybe_unused]] )
             {
                 violationCount.fetch_add( 1, std::memory_order_relaxed );
             } );

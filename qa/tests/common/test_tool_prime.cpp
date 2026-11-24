@@ -45,9 +45,9 @@ public:
     {
     }
 
-    void Reset( RESET_REASON aReason ) override {}
+    void Reset( RESET_REASON aReason [[maybe_unused]] ) override {}
 
-    int Main( const TOOL_EVENT& aEvent )
+    int Main( const TOOL_EVENT& aEvent [[maybe_unused]] )
     {
         Activate();
 

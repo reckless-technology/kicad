@@ -245,7 +245,7 @@ void EDA_3D_CANVAS::OnCloseWindow( wxCloseEvent& event )
 }
 
 
-void EDA_3D_CANVAS::OnResize( wxSizeEvent& event )
+void EDA_3D_CANVAS::OnResize( wxSizeEvent& event [[maybe_unused]] )
 {
     Request_refresh();
 }
@@ -417,7 +417,7 @@ void EDA_3D_CANVAS::DisplayStatus()
 }
 
 
-void EDA_3D_CANVAS::OnPaint( wxPaintEvent& aEvent )
+void EDA_3D_CANVAS::OnPaint( wxPaintEvent& aEvent [[maybe_unused]] )
 {
     // Please have a look at: https://lists.launchpad.net/kicad-developers/msg25149.html
     DoRePaint();
@@ -908,7 +908,7 @@ void EDA_3D_CANVAS::OnEvent( wxEvent& aEvent )
 }
 
 
-void EDA_3D_CANVAS::OnEraseBackground( wxEraseEvent& event )
+void EDA_3D_CANVAS::OnEraseBackground( wxEraseEvent& event [[maybe_unused]] )
 {
     wxLogTrace( m_logTrace, wxT( "EDA_3D_CANVAS::OnEraseBackground" ) );
     // Do nothing, to avoid flashing.
@@ -1276,7 +1276,7 @@ void EDA_3D_CANVAS::OnRightDown( wxMouseEvent& event )
 }
 
 
-void EDA_3D_CANVAS::OnRightUp( wxMouseEvent& event )
+void EDA_3D_CANVAS::OnRightUp( wxMouseEvent& event [[maybe_unused]] )
 {
     if( m_camera_is_moving )
         return;
@@ -1289,14 +1289,14 @@ void EDA_3D_CANVAS::OnRightUp( wxMouseEvent& event )
 }
 
 
-void EDA_3D_CANVAS::OnMiddleDown( wxMouseEvent& event )
+void EDA_3D_CANVAS::OnMiddleDown( wxMouseEvent& event [[maybe_unused]] )
 {
     SetFocus();
     stop_editingTimeOut_Timer();
 }
 
 
-void EDA_3D_CANVAS::OnMiddleUp( wxMouseEvent& event )
+void EDA_3D_CANVAS::OnMiddleUp( wxMouseEvent& event [[maybe_unused]] )
 {
     if( m_camera_is_moving )
         return;
@@ -1353,7 +1353,7 @@ void EDA_3D_CANVAS::OnTimerTimeout_Redraw( wxTimerEvent& aEvent )
 }
 
 
-void EDA_3D_CANVAS::OnRefreshRequest( wxEvent& aEvent )
+void EDA_3D_CANVAS::OnRefreshRequest( wxEvent& aEvent [[maybe_unused]] )
 {
     Refresh();
 }

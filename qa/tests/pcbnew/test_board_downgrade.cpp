@@ -2078,7 +2078,7 @@ BOOST_AUTO_TEST_CASE( LibraryFilesDowngradeFailsClosed )
         return wxString();
     };
 
-    auto convertOk = [&]( const wxString& aFile, const wxString& aTmp ) -> DOWNGRADE_FILE_RESULT
+    auto convertOk = [&]( const wxString& aFile [[maybe_unused]], const wxString& aTmp ) -> DOWNGRADE_FILE_RESULT
     {
         wxFFile out( aTmp, wxT( "wb" ) );
         out.Write( wxT( "(version 123) converted" ) );

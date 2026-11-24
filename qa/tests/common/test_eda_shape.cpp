@@ -1006,7 +1006,7 @@ BOOST_AUTO_TEST_CASE( BezierPolylineRejectsOverrun )
 class STROKE_TEST_RENDER_SETTINGS : public KIGFX::RENDER_SETTINGS
 {
 public:
-    KIGFX::COLOR4D GetColor( const KIGFX::VIEW_ITEM* aItem, int aLayer ) const override
+    KIGFX::COLOR4D GetColor( const KIGFX::VIEW_ITEM* aItem [[maybe_unused]], int aLayer [[maybe_unused]] ) const override
     {
         return KIGFX::COLOR4D::BLACK;
     }

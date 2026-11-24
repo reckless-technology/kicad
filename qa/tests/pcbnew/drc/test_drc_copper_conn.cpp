@@ -80,8 +80,8 @@ BOOST_FIXTURE_TEST_CASE( DRCCopperConn, DRC_REGRESSION_TEST_FIXTURE )
         bds.m_DRCSeverities[ DRCE_CONNECTION_WIDTH ] = SEVERITY::RPT_SEVERITY_ERROR;
 
         bds.m_DRCEngine->SetViolationHandler(
-                [&]( const std::shared_ptr<DRC_ITEM>& aItem, const VECTOR2I& aPos, int aLayer,
-                     const std::function<void( PCB_MARKER* )>& aPathGenerator )
+                [&]( const std::shared_ptr<DRC_ITEM>& aItem, const VECTOR2I& aPos [[maybe_unused]], int aLayer [[maybe_unused]],
+                     const std::function<void( PCB_MARKER* )>& aPathGenerator [[maybe_unused]] )
                 {
                     if( bds.GetSeverity( aItem->GetErrorCode() ) == SEVERITY::RPT_SEVERITY_ERROR )
                         violations.push_back( *aItem );

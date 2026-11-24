@@ -223,7 +223,7 @@ SFVEC3F POST_SHADER_SSAO::Shade( const SFVEC2I& aShaderPos ) const
 }
 
 
-SFVEC4F POST_SHADER_SSAO::ApplyShadeColor( const SFVEC2I& aShaderPos, const SFVEC4F& aInputColor,
+SFVEC4F POST_SHADER_SSAO::ApplyShadeColor( const SFVEC2I& aShaderPos [[maybe_unused]], const SFVEC4F& aInputColor,
                                            const SFVEC3F& aShadeColor ) const
 {
     SFVEC4F outColor;

@@ -29,7 +29,7 @@
 #include <wx/debug.h>
 
 
-CONTAINER_2D_BASE::CONTAINER_2D_BASE( OBJECT_2D_TYPE aObjType )
+CONTAINER_2D_BASE::CONTAINER_2D_BASE( OBJECT_2D_TYPE aObjType [[maybe_unused]] )
 {
     m_bbox.Reset();
 }
@@ -61,14 +61,14 @@ CONTAINER_2D::CONTAINER_2D() : CONTAINER_2D_BASE( OBJECT_2D_TYPE::CONTAINER )
 }
 
 
-void CONTAINER_2D::GetIntersectingObjects( const BBOX_2D& aBBox,
-                                           CONST_LIST_OBJECT2D& aOutList ) const
+void CONTAINER_2D::GetIntersectingObjects( const BBOX_2D& aBBox [[maybe_unused]],
+                                           CONST_LIST_OBJECT2D& aOutList [[maybe_unused]] ) const
 {
     /// @todo Determine what to do with this code.
 }
 
 
-bool CONTAINER_2D::IntersectAny( const RAYSEG2D& aSegRay ) const
+bool CONTAINER_2D::IntersectAny( const RAYSEG2D& aSegRay [[maybe_unused]] ) const
 {
     /// @todo Determine what what needs done because someone wrote TODO here.
     return false;

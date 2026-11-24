@@ -147,7 +147,7 @@ LIB_TREE::LIB_TREE( wxWindow* aParent, const wxString& aRecentSearchesKey,
 
 #if defined( __WXOSX__ ) // Doesn't work properly on other ports
         m_query_ctrl->Bind( wxEVT_LEAVE_WINDOW,
-                            [this]( wxMouseEvent& aEvt )
+                            [this]( wxMouseEvent& aEvt [[maybe_unused]] )
                             {
                                 SetCursor( wxCURSOR_ARROW );
                             } );

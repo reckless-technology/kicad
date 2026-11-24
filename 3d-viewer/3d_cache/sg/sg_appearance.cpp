@@ -166,7 +166,7 @@ bool SGAPPEARANCE::SetAmbient( const SGCOLOR& aRGBColor )
 }
 
 
-SGNODE* SGAPPEARANCE::FindNode( const char* aNodeName, const SGNODE* aCaller) noexcept
+SGNODE* SGAPPEARANCE::FindNode( const char* aNodeName, const SGNODE* aCaller [[maybe_unused]]) noexcept
 {
     if( nullptr == aNodeName || 0 == aNodeName[0] )
         return nullptr;
@@ -343,7 +343,7 @@ bool SGAPPEARANCE::WriteCache( std::ostream& aFile, SGNODE* parentNode )
 }
 
 
-bool SGAPPEARANCE::ReadCache( std::istream& aFile, SGNODE* parentNode )
+bool SGAPPEARANCE::ReadCache( std::istream& aFile, SGNODE* parentNode [[maybe_unused]] )
 {
     S3D::ReadColor( aFile, ambient );
     aFile.read( (char*) &shininess, sizeof( shininess ) );

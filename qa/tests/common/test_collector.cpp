@@ -44,7 +44,7 @@ class TEST_COLLECTOR : public COLLECTOR
 public:
     TEST_COLLECTOR() : m_inspectCalls( 0 ), m_shouldCollect( true ) {}
 
-    INSPECT_RESULT Inspect( EDA_ITEM* aTestItem, void* aTestData ) override
+    INSPECT_RESULT Inspect( EDA_ITEM* aTestItem, void* aTestData [[maybe_unused]] ) override
     {
         m_inspectCalls++;
 

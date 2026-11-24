@@ -235,7 +235,7 @@ void PANEL_TRACK_WIDTH::OnTWCalculateFromIntWidth( wxCommandEvent& event )
 }
 
 
-void PANEL_TRACK_WIDTH::OnTWResetButtonClick( wxCommandEvent& event )
+void PANEL_TRACK_WIDTH::OnTWResetButtonClick( wxCommandEvent& event [[maybe_unused]] )
 {
     // Note: a wxString:Format( "%g", xx) is used to use local separator in floats
 

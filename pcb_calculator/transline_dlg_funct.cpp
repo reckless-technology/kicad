@@ -32,7 +32,7 @@
 #include <properties/property.h>
 
 
-void PANEL_TRANSLINE::OnTranslineEpsilonR_Button( wxCommandEvent& event )
+void PANEL_TRANSLINE::OnTranslineEpsilonR_Button( wxCommandEvent& event [[maybe_unused]] )
 {
     wxArrayString list = StandardRelativeDielectricConstantList();
     list.Add( "" );  // Add an empty line for no selection
@@ -50,7 +50,7 @@ void PANEL_TRANSLINE::OnTranslineEpsilonR_Button( wxCommandEvent& event )
 }
 
 
-void PANEL_TRANSLINE::OnTranslineTanD_Button( wxCommandEvent& event )
+void PANEL_TRANSLINE::OnTranslineTanD_Button( wxCommandEvent& event [[maybe_unused]] )
 {
     wxArrayString list = StandardLossTangentList();
     list.Add( "" );  // Add an empty line for no selection
@@ -68,7 +68,7 @@ void PANEL_TRANSLINE::OnTranslineTanD_Button( wxCommandEvent& event )
 }
 
 
-void PANEL_TRANSLINE::OnTranslineRho_Button( wxCommandEvent& event )
+void PANEL_TRANSLINE::OnTranslineRho_Button( wxCommandEvent& event [[maybe_unused]] )
 {
     wxArrayString list = StandardResistivityList();
     list.Add( "" );  // Add an empty line for no selection
@@ -412,7 +412,7 @@ void PANEL_TRANSLINE::OnTranslineSelection( wxCommandEvent& event )
 }
 
 
-void PANEL_TRANSLINE::OnTransLineResetButtonClick( wxCommandEvent& event )
+void PANEL_TRANSLINE::OnTransLineResetButtonClick( wxCommandEvent& event [[maybe_unused]] )
 {
     // Initialize param values to default value
     TRANSLINE_IDENT* tr_ident = m_transline_list[m_currTransLineType];

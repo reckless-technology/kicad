@@ -207,7 +207,7 @@ void PANEL_TRANSLINE::LoadSettings( PCB_CALCULATOR_SETTINGS* aCfg )
 }
 
 
-void PANEL_TRANSLINE::OnDielectricModelChanged( wxCommandEvent& event )
+void PANEL_TRANSLINE::OnDielectricModelChanged( wxCommandEvent& event [[maybe_unused]] )
 {
     UpdateSpecFrequencyEnable();
 }
@@ -223,14 +223,14 @@ void PANEL_TRANSLINE::UpdateSpecFrequencyEnable()
 }
 
 
-void PANEL_TRANSLINE::OnSoldermaskChanged( wxCommandEvent& event )
+void PANEL_TRANSLINE::OnSoldermaskChanged( wxCommandEvent& event [[maybe_unused]] )
 {
     updateSoldermaskEnables();
 }
 
 
 
-void PANEL_TRANSLINE::OnTranslineAnalyse( wxCommandEvent& event )
+void PANEL_TRANSLINE::OnTranslineAnalyse( wxCommandEvent& event [[maybe_unused]] )
 {
     if( m_currTransLine )
     {
@@ -240,7 +240,7 @@ void PANEL_TRANSLINE::OnTranslineAnalyse( wxCommandEvent& event )
 }
 
 
-void PANEL_TRANSLINE::OnTranslineSynthetize( wxCommandEvent& event )
+void PANEL_TRANSLINE::OnTranslineSynthetize( wxCommandEvent& event [[maybe_unused]] )
 {
     if( m_currTransLine )
     {

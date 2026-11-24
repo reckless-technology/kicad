@@ -88,7 +88,7 @@ wxString LIBRARY_LISTBOX::OnGetItemText( long item, long column [[maybe_unused]]
 }
 
 
-void LIBRARY_LISTBOX::SetSelection( int index, bool State )
+void LIBRARY_LISTBOX::SetSelection( int index, bool State [[maybe_unused]] )
 {
     if( index >= GetCount() )
         index = GetCount() - 1;

@@ -42,7 +42,7 @@ public:
     }
 
     void AddLine( const VECTOR2D& aStart, const VECTOR2D& aEnd,
-                  const IMPORTED_STROKE& aStroke ) override
+                  const IMPORTED_STROKE& aStroke [[maybe_unused]] ) override
     {
         m_lines.push_back( { aStart, aEnd } );
         m_lineSourceLayers.push_back( m_currentSourceLayer );
@@ -59,31 +59,31 @@ public:
 
     void SetCurrentSourceLayer( const wxString& aSourceLayer ) override { m_currentSourceLayer = aSourceLayer; }
 
-    void AddCircle( const VECTOR2D& aCenter, double aRadius, const IMPORTED_STROKE& aStroke,
-                    bool aFilled, const COLOR4D& aFillColor ) override {}
+    void AddCircle( const VECTOR2D& aCenter [[maybe_unused]], double aRadius [[maybe_unused]], const IMPORTED_STROKE& aStroke [[maybe_unused]],
+                    bool aFilled [[maybe_unused]], const COLOR4D& aFillColor [[maybe_unused]] ) override {}
 
-    void AddArc( const VECTOR2D& aCenter, const VECTOR2D& aStart, const EDA_ANGLE& aAngle,
-                 const IMPORTED_STROKE& aStroke ) override {}
+    void AddArc( const VECTOR2D& aCenter [[maybe_unused]], const VECTOR2D& aStart [[maybe_unused]], const EDA_ANGLE& aAngle [[maybe_unused]],
+                 const IMPORTED_STROKE& aStroke [[maybe_unused]] ) override {}
 
-    void AddPolygon( const std::vector<VECTOR2D>& aVertices, const IMPORTED_STROKE& aStroke,
-                     bool aFilled, const COLOR4D& aFillColor ) override {}
+    void AddPolygon( const std::vector<VECTOR2D>& aVertices [[maybe_unused]], const IMPORTED_STROKE& aStroke [[maybe_unused]],
+                     bool aFilled [[maybe_unused]], const COLOR4D& aFillColor [[maybe_unused]] ) override {}
 
-    void AddText( const VECTOR2D& aOrigin, const wxString& aText, double aHeight, double aWidth,
-                  double aThickness, double aOrientation, GR_TEXT_H_ALIGN_T aHJustify,
-                  GR_TEXT_V_ALIGN_T aVJustify, const COLOR4D& aColor ) override {}
+    void AddText( const VECTOR2D& aOrigin [[maybe_unused]], const wxString& aText [[maybe_unused]], double aHeight [[maybe_unused]], double aWidth [[maybe_unused]],
+                  double aThickness [[maybe_unused]], double aOrientation [[maybe_unused]], GR_TEXT_H_ALIGN_T aHJustify [[maybe_unused]],
+                  GR_TEXT_V_ALIGN_T aVJustify [[maybe_unused]], const COLOR4D& aColor [[maybe_unused]] ) override {}
 
-    void AddSpline( const VECTOR2D& aStart, const VECTOR2D& aBezierControl1,
-                    const VECTOR2D& aBezierControl2, const VECTOR2D& aEnd,
-                    const IMPORTED_STROKE& aStroke ) override {}
+    void AddSpline( const VECTOR2D& aStart [[maybe_unused]], const VECTOR2D& aBezierControl1 [[maybe_unused]],
+                    const VECTOR2D& aBezierControl2 [[maybe_unused]], const VECTOR2D& aEnd [[maybe_unused]],
+                    const IMPORTED_STROKE& aStroke [[maybe_unused]] ) override {}
 
-    void AddEllipse( const VECTOR2D& aCenter, double aMajorRadius, double aMinorRadius, const EDA_ANGLE& aRotation,
-                     const IMPORTED_STROKE& aStroke, bool aFilled, const COLOR4D& aFillColor ) override
+    void AddEllipse( const VECTOR2D& aCenter [[maybe_unused]], double aMajorRadius [[maybe_unused]], double aMinorRadius [[maybe_unused]], const EDA_ANGLE& aRotation [[maybe_unused]],
+                     const IMPORTED_STROKE& aStroke [[maybe_unused]], bool aFilled [[maybe_unused]], const COLOR4D& aFillColor [[maybe_unused]] ) override
     {
     }
 
-    void AddEllipseArc( const VECTOR2D& aCenter, double aMajorRadius, double aMinorRadius, const EDA_ANGLE& aRotation,
-                        const EDA_ANGLE& aStartAngle, const EDA_ANGLE& aEndAngle,
-                        const IMPORTED_STROKE& aStroke ) override
+    void AddEllipseArc( const VECTOR2D& aCenter [[maybe_unused]], double aMajorRadius [[maybe_unused]], double aMinorRadius [[maybe_unused]], const EDA_ANGLE& aRotation [[maybe_unused]],
+                        const EDA_ANGLE& aStartAngle [[maybe_unused]], const EDA_ANGLE& aEndAngle [[maybe_unused]],
+                        const IMPORTED_STROKE& aStroke [[maybe_unused]] ) override
     {
     }
 

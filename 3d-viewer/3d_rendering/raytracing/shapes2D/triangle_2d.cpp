@@ -66,14 +66,14 @@ bool TRIANGLE_2D::Intersects( const BBOX_2D& aBBox ) const
 }
 
 
-bool TRIANGLE_2D::Overlaps( const BBOX_2D& aBBox ) const
+bool TRIANGLE_2D::Overlaps( const BBOX_2D& aBBox [[maybe_unused]] ) const
 {
     // NOT IMPLEMENTED
     return false;
 }
 
 
-bool TRIANGLE_2D::Intersect( const RAYSEG2D& aSegRay, float* aOutT, SFVEC2F* aNormalOut ) const
+bool TRIANGLE_2D::Intersect( const RAYSEG2D& aSegRay [[maybe_unused]], float* aOutT [[maybe_unused]], SFVEC2F* aNormalOut [[maybe_unused]] ) const
 {
     return false;
 }

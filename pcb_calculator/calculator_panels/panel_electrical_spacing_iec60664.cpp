@@ -147,7 +147,7 @@ void PANEL_ELECTRICAL_SPACING_IEC60664::CalculateTransientImpulse()
 }
 
 
-void PANEL_ELECTRICAL_SPACING_IEC60664::UpdateTransientImpulse( wxCommandEvent& event )
+void PANEL_ELECTRICAL_SPACING_IEC60664::UpdateTransientImpulse( wxCommandEvent& event [[maybe_unused]] )
 {
     CalculateTransientImpulse();
 }
@@ -253,7 +253,7 @@ void PANEL_ELECTRICAL_SPACING_IEC60664::CalculateClearanceCreepage()
 }
 
 
-void PANEL_ELECTRICAL_SPACING_IEC60664::UpdateClearanceCreepage( wxCommandEvent& event )
+void PANEL_ELECTRICAL_SPACING_IEC60664::UpdateClearanceCreepage( wxCommandEvent& event [[maybe_unused]] )
 {
     CalculateClearanceCreepage();
 }

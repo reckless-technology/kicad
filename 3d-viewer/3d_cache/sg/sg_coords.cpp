@@ -83,7 +83,7 @@ bool SGCOORDS::SetParent( SGNODE* aParent, bool notify )
 }
 
 
-SGNODE* SGCOORDS::FindNode(const char *aNodeName, const SGNODE *aCaller) noexcept
+SGNODE* SGCOORDS::FindNode(const char *aNodeName, const SGNODE *aCaller [[maybe_unused]]) noexcept
 {
     if( nullptr == aNodeName || 0 == aNodeName[0] )
         return nullptr;
@@ -279,7 +279,7 @@ bool SGCOORDS::WriteCache( std::ostream& aFile, SGNODE* parentNode )
 }
 
 
-bool SGCOORDS::ReadCache( std::istream& aFile, SGNODE* parentNode )
+bool SGCOORDS::ReadCache( std::istream& aFile, SGNODE* parentNode [[maybe_unused]] )
 {
     wxCHECK( coords.empty(), false );
 

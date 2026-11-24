@@ -60,8 +60,8 @@ BOOST_FIXTURE_TEST_CASE( DRCIncorrectTextMirror, DRC_INCORRECT_TEXT_MIRROR_TEST_
         bds.m_DRCSeverities[DRCE_UNMIRRORED_TEXT_ON_BACK_LAYER] = SEVERITY::RPT_SEVERITY_ERROR;
 
         bds.m_DRCEngine->SetViolationHandler(
-                [&]( const std::shared_ptr<DRC_ITEM>& aItem, const VECTOR2I& aPos, int aLayer,
-                     const std::function<void( PCB_MARKER* )>& aPathGenerator )
+                [&]( const std::shared_ptr<DRC_ITEM>& aItem, const VECTOR2I& aPos [[maybe_unused]], int aLayer [[maybe_unused]],
+                     const std::function<void( PCB_MARKER* )>& aPathGenerator [[maybe_unused]] )
                 {
                     if( bds.GetSeverity( aItem->GetErrorCode() ) == SEVERITY::RPT_SEVERITY_ERROR )
                         violations.push_back( *aItem );

@@ -84,7 +84,7 @@ bool EDA_3D_CONTROLLER::Init()
 }
 
 
-void EDA_3D_CONTROLLER::Reset( RESET_REASON aReason )
+void EDA_3D_CONTROLLER::Reset( RESET_REASON aReason [[maybe_unused]] )
 {
     m_canvas = nullptr;
     m_boardAdapter = nullptr;
@@ -130,7 +130,7 @@ int EDA_3D_CONTROLLER::UpdateMenu( const TOOL_EVENT& aEvent )
 }
 
 
-int EDA_3D_CONTROLLER::Main( const TOOL_EVENT& aEvent )
+int EDA_3D_CONTROLLER::Main( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     // Main loop: keep receiving events
     while( TOOL_EVENT* evt = Wait() )
@@ -234,7 +234,7 @@ int EDA_3D_CONTROLLER::SetMaterial( const TOOL_EVENT& aEvent )
 }
 
 
-int EDA_3D_CONTROLLER::ToggleOrtho( const TOOL_EVENT& aEvent )
+int EDA_3D_CONTROLLER::ToggleOrtho( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_camera->ToggleProjection();
 
@@ -277,7 +277,7 @@ int EDA_3D_CONTROLLER::ToggleVisibility( const TOOL_EVENT& aEvent )
 }
 
 
-int EDA_3D_CONTROLLER::ToggleLayersManager( const TOOL_EVENT& aEvent )
+int EDA_3D_CONTROLLER::ToggleLayersManager( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     EDA_BASE_FRAME* frame = dynamic_cast<EDA_BASE_FRAME*>( m_toolMgr->GetToolHolder() );
 
@@ -299,7 +299,7 @@ int EDA_3D_CONTROLLER::On3DGridSelection( const TOOL_EVENT& aEvent )
 }
 
 
-int EDA_3D_CONTROLLER::ZoomRedraw( const TOOL_EVENT& aEvent )
+int EDA_3D_CONTROLLER::ZoomRedraw( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_canvas->Request_refresh();
     return 0;
@@ -320,7 +320,7 @@ int EDA_3D_CONTROLLER::ZoomInOutCenter( const TOOL_EVENT& aEvent )
 }
 
 
-int EDA_3D_CONTROLLER::doZoomInOut( bool aDirection, bool aCenterOnCursor )
+int EDA_3D_CONTROLLER::doZoomInOut( bool aDirection, bool aCenterOnCursor [[maybe_unused]] )
 {
     if( m_canvas )
     {
@@ -332,7 +332,7 @@ int EDA_3D_CONTROLLER::doZoomInOut( bool aDirection, bool aCenterOnCursor )
 }
 
 
-int EDA_3D_CONTROLLER::ZoomFitScreen( const TOOL_EVENT& aEvent )
+int EDA_3D_CONTROLLER::ZoomFitScreen( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     if( m_canvas )
     {
@@ -344,7 +344,7 @@ int EDA_3D_CONTROLLER::ZoomFitScreen( const TOOL_EVENT& aEvent )
 }
 
 
-int EDA_3D_CONTROLLER::ReloadBoard( const TOOL_EVENT& aEvent )
+int EDA_3D_CONTROLLER::ReloadBoard( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     EDA_BASE_FRAME* frame = dynamic_cast<EDA_BASE_FRAME*>( m_toolMgr->GetToolHolder() );
 
@@ -355,7 +355,7 @@ int EDA_3D_CONTROLLER::ReloadBoard( const TOOL_EVENT& aEvent )
 }
 
 
-int EDA_3D_CONTROLLER::ToggleRaytracing( const TOOL_EVENT& aEvent )
+int EDA_3D_CONTROLLER::ToggleRaytracing( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     EDA_BASE_FRAME* frame = dynamic_cast<EDA_BASE_FRAME*>( m_toolMgr->GetToolHolder() );
 
@@ -380,7 +380,7 @@ int EDA_3D_CONTROLLER::ToggleRaytracing( const TOOL_EVENT& aEvent )
 }
 
 
-int EDA_3D_CONTROLLER::ToggleShowMissingModels( const TOOL_EVENT& aEvent )
+int EDA_3D_CONTROLLER::ToggleShowMissingModels( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_boardAdapter->m_Cfg->m_Render.show_missing_models = !m_boardAdapter->m_Cfg->m_Render.show_missing_models;
     m_canvas->ReloadRequest();

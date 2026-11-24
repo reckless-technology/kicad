@@ -35,7 +35,7 @@ namespace
 class RECORDING_VIEW : public KIGFX::VIEW
 {
 public:
-    void Update( const KIGFX::VIEW_ITEM* aItem, int aUpdateFlags ) const override
+    void Update( const KIGFX::VIEW_ITEM* aItem, int aUpdateFlags [[maybe_unused]] ) const override
     {
         m_updated.push_back( aItem );
     }

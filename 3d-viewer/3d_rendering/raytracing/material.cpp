@@ -139,7 +139,7 @@ BOARD_NORMAL::BOARD_NORMAL( float aScale ) : MATERIAL_GENERATOR()
 }
 
 
-SFVEC3F BOARD_NORMAL::Generate( const RAY& aRay, const HITINFO& aHitInfo ) const
+SFVEC3F BOARD_NORMAL::Generate( const RAY& aRay [[maybe_unused]], const HITINFO& aHitInfo ) const
 {
     const SFVEC3F hitPos = aHitInfo.m_HitPoint * m_scale;
 
@@ -213,7 +213,7 @@ SFVEC3F SOLDER_MASK_NORMAL::Generate( const RAY& aRay, const HITINFO& aHitInfo )
 }
 
 
-SFVEC3F PLATED_COPPER_NORMAL::Generate( const RAY& aRay, const HITINFO& aHitInfo ) const
+SFVEC3F PLATED_COPPER_NORMAL::Generate( const RAY& aRay [[maybe_unused]], const HITINFO& aHitInfo ) const
 {
     SFVEC3F hitPos = aHitInfo.m_HitPoint * m_scale;
 
@@ -230,7 +230,7 @@ PLASTIC_NORMAL::PLASTIC_NORMAL( float aScale )
 }
 
 
-SFVEC3F PLASTIC_NORMAL::Generate( const RAY& aRay, const HITINFO& aHitInfo ) const
+SFVEC3F PLASTIC_NORMAL::Generate( const RAY& aRay [[maybe_unused]], const HITINFO& aHitInfo ) const
 {
         const SFVEC3F hitPos = aHitInfo.m_HitPoint * m_scale;
 
@@ -255,7 +255,7 @@ PLASTIC_SHINE_NORMAL::PLASTIC_SHINE_NORMAL( float aScale )
 }
 
 
-SFVEC3F PLASTIC_SHINE_NORMAL::Generate( const RAY& aRay, const HITINFO& aHitInfo ) const
+SFVEC3F PLASTIC_SHINE_NORMAL::Generate( const RAY& aRay [[maybe_unused]], const HITINFO& aHitInfo ) const
 {
     const SFVEC3F hitPos = aHitInfo.m_HitPoint * m_scale;
 
@@ -279,7 +279,7 @@ BRUSHED_METAL_NORMAL::BRUSHED_METAL_NORMAL( float aScale )
 }
 
 
-SFVEC3F BRUSHED_METAL_NORMAL::Generate( const RAY& aRay, const HITINFO& aHitInfo ) const
+SFVEC3F BRUSHED_METAL_NORMAL::Generate( const RAY& aRay [[maybe_unused]], const HITINFO& aHitInfo ) const
 {
     const SFVEC3F hitPos = aHitInfo.m_HitPoint * m_scale;
 
@@ -302,7 +302,7 @@ SILK_SCREEN_NORMAL::SILK_SCREEN_NORMAL( float aScale )
 }
 
 
-SFVEC3F SILK_SCREEN_NORMAL::Generate( const RAY& aRay, const HITINFO& aHitInfo ) const
+SFVEC3F SILK_SCREEN_NORMAL::Generate( const RAY& aRay [[maybe_unused]], const HITINFO& aHitInfo ) const
 {
     const SFVEC3F hitPos = aHitInfo.m_HitPoint * m_scale;
 

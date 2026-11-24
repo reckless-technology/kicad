@@ -825,8 +825,8 @@ BOOST_FIXTURE_TEST_CASE( DRCFlagsScaledFootprintWithPads, BOARD_FIXTURE )
     std::vector<int> violations;
 
     bds.m_DRCEngine->SetViolationHandler(
-            [&]( const std::shared_ptr<DRC_ITEM>& aItem, const VECTOR2I& aPos, int aLayer,
-                 const std::function<void( PCB_MARKER* )>& aPathGenerator )
+            [&]( const std::shared_ptr<DRC_ITEM>& aItem, const VECTOR2I& aPos [[maybe_unused]], int aLayer [[maybe_unused]],
+                 const std::function<void( PCB_MARKER* )>& aPathGenerator [[maybe_unused]] )
             {
                 violations.push_back( aItem->GetErrorCode() );
             } );
@@ -866,8 +866,8 @@ BOOST_FIXTURE_TEST_CASE( DRCSilentForUnscaledFootprintWithPads, BOARD_FIXTURE )
     int scaledFlagged = 0;
 
     bds.m_DRCEngine->SetViolationHandler(
-            [&]( const std::shared_ptr<DRC_ITEM>& aItem, const VECTOR2I& aPos, int aLayer,
-                 const std::function<void( PCB_MARKER* )>& aPathGenerator )
+            [&]( const std::shared_ptr<DRC_ITEM>& aItem, const VECTOR2I& aPos [[maybe_unused]], int aLayer [[maybe_unused]],
+                 const std::function<void( PCB_MARKER* )>& aPathGenerator [[maybe_unused]] )
             {
                 if( aItem->GetErrorCode() == DRCE_FOOTPRINT_SCALED_WITH_PADS )
                     scaledFlagged++;

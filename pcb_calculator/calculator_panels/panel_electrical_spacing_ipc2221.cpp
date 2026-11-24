@@ -135,12 +135,12 @@ void PANEL_ELECTRICAL_SPACING_IPC2221::LoadSettings( PCB_CALCULATOR_SETTINGS* aC
 
 
 
-void PANEL_ELECTRICAL_SPACING_IPC2221::OnElectricalSpacingUnitsSelection( wxCommandEvent& event )
+void PANEL_ELECTRICAL_SPACING_IPC2221::OnElectricalSpacingUnitsSelection( wxCommandEvent& event [[maybe_unused]] )
 {
     ElectricalSpacingUpdateData( m_ElectricalSpacingUnitsSelector->GetUnitScale() );
 }
 
-void PANEL_ELECTRICAL_SPACING_IPC2221::OnElectricalSpacingRefresh( wxCommandEvent& event )
+void PANEL_ELECTRICAL_SPACING_IPC2221::OnElectricalSpacingRefresh( wxCommandEvent& event [[maybe_unused]] )
 {
     ElectricalSpacingUpdateData( m_ElectricalSpacingUnitsSelector->GetUnitScale() );
 }

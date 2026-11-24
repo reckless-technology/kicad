@@ -412,7 +412,7 @@ void EDA_3D_MODEL_VIEWER::OnPaint( wxPaintEvent& event )
 }
 
 
-void EDA_3D_MODEL_VIEWER::OnEraseBackground( wxEraseEvent& event )
+void EDA_3D_MODEL_VIEWER::OnEraseBackground( wxEraseEvent& event [[maybe_unused]] )
 {
     wxLogTrace( m_logTrace, wxT( "EDA_3D_MODEL_VIEWER::OnEraseBackground" ) );
     // Do nothing, to avoid flashing.

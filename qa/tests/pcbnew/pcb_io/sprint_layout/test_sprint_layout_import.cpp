@@ -741,7 +741,7 @@ BOOST_AUTO_TEST_CASE( MultiBoardCallbackCancelThrows )
     PCB_IO_SPRINT_LAYOUT plugin;
 
     plugin.RegisterCallback(
-            [&]( const std::vector<IMPORT_PROJECT_DESC>& aOptions )
+            [&]( const std::vector<IMPORT_PROJECT_DESC>& aOptions [[maybe_unused]] )
             {
                 return std::vector<IMPORT_PROJECT_DESC>();
             } );

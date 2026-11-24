@@ -71,8 +71,8 @@ BOOST_FIXTURE_TEST_CASE( DRCLineWidth, DRC_LINE_WIDTH_FIXTURE )
     std::vector<int> codes;
 
     bds.m_DRCEngine->SetViolationHandler(
-            [&]( const std::shared_ptr<DRC_ITEM>& aItem, const VECTOR2I& aPos, int aLayer,
-                 const std::function<void( PCB_MARKER* )>& aPathGenerator )
+            [&]( const std::shared_ptr<DRC_ITEM>& aItem, const VECTOR2I& aPos [[maybe_unused]], int aLayer [[maybe_unused]],
+                 const std::function<void( PCB_MARKER* )>& aPathGenerator [[maybe_unused]] )
             {
                 codes.push_back( aItem->GetErrorCode() );
             } );

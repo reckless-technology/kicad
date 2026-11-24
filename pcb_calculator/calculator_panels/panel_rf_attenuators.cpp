@@ -145,7 +145,7 @@ void PANEL_RF_ATTENUATORS::SetAttenuator( unsigned aIdx )
 }
 
 
-void PANEL_RF_ATTENUATORS::OnCalculateAttenuator( wxCommandEvent& event )
+void PANEL_RF_ATTENUATORS::OnCalculateAttenuator( wxCommandEvent& event [[maybe_unused]] )
 {
     TransfPanelDataToAttenuator();
     m_CurrAttenuator->Calculate();

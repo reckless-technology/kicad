@@ -64,13 +64,13 @@ void PANEL_REGULATOR::ThemeChanged()
 }
 
 
-void PANEL_REGULATOR::OnRegulatorCalcButtonClick( wxCommandEvent& event )
+void PANEL_REGULATOR::OnRegulatorCalcButtonClick( wxCommandEvent& event [[maybe_unused]] )
 {
     RegulatorsSolve();
 }
 
 
-void PANEL_REGULATOR::OnRegulatorResetButtonClick( wxCommandEvent& event )
+void PANEL_REGULATOR::OnRegulatorResetButtonClick( wxCommandEvent& event [[maybe_unused]] )
 {
     m_resTolVal->SetValue( wxT( DEFAULT_REGULATOR_RESTOL ) );
 
@@ -146,13 +146,13 @@ void PANEL_REGULATOR::RegulatorPageUpdate()
 }
 
 
-void PANEL_REGULATOR::OnRegulTypeSelection( wxCommandEvent& event )
+void PANEL_REGULATOR::OnRegulTypeSelection( wxCommandEvent& event [[maybe_unused]] )
 {
     RegulatorPageUpdate();
 }
 
 
-void PANEL_REGULATOR::OnRegulatorSelection( wxCommandEvent& event )
+void PANEL_REGULATOR::OnRegulatorSelection( wxCommandEvent& event [[maybe_unused]] )
 {
     wxString        name = m_choiceRegulatorSelector->GetStringSelection();
     REGULATOR_DATA* item = m_RegulatorList.GetReg( name );
@@ -183,7 +183,7 @@ void PANEL_REGULATOR::OnRegulatorSelection( wxCommandEvent& event )
 }
 
 
-void PANEL_REGULATOR::OnDataFileSelection( wxCommandEvent& event )
+void PANEL_REGULATOR::OnDataFileSelection( wxCommandEvent& event [[maybe_unused]] )
 {
     wxString fullfilename = GetDataFilename();
 
@@ -235,7 +235,7 @@ void PANEL_REGULATOR::OnDataFileSelection( wxCommandEvent& event )
 }
 
 
-void PANEL_REGULATOR::OnAddRegulator( wxCommandEvent& event )
+void PANEL_REGULATOR::OnAddRegulator( wxCommandEvent& event [[maybe_unused]] )
 {
     DIALOG_REGULATOR_FORM dlg( wxGetTopLevelParent( this ), wxEmptyString );
 
@@ -263,7 +263,7 @@ void PANEL_REGULATOR::OnAddRegulator( wxCommandEvent& event )
 }
 
 
-void PANEL_REGULATOR::OnEditRegulator( wxCommandEvent& event )
+void PANEL_REGULATOR::OnEditRegulator( wxCommandEvent& event [[maybe_unused]] )
 {
     wxString name = m_choiceRegulatorSelector->GetStringSelection();
     REGULATOR_DATA* item  = m_RegulatorList.GetReg( name );
@@ -287,7 +287,7 @@ void PANEL_REGULATOR::OnEditRegulator( wxCommandEvent& event )
 }
 
 
-void PANEL_REGULATOR::OnRemoveRegulator( wxCommandEvent& event )
+void PANEL_REGULATOR::OnRemoveRegulator( wxCommandEvent& event [[maybe_unused]] )
 {
     wxString name = wxGetSingleChoice( _( "Remove Regulator" ), wxEmptyString,
                                        m_RegulatorList.GetRegList() );
@@ -329,7 +329,7 @@ void PANEL_REGULATOR::SelectLastSelectedRegulator()
 }
 
 
-void PANEL_REGULATOR::OnCopyCB( wxCommandEvent& event )
+void PANEL_REGULATOR::OnCopyCB( wxCommandEvent& event [[maybe_unused]] )
 {
     if( wxTheClipboard->Open() )
     {

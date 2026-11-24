@@ -155,13 +155,13 @@ void PANEL_R_DIVIDER::SaveSettings( PCB_CALCULATOR_SETTINGS* aCfg )
 }
 
 
-void PANEL_R_DIVIDER::OnModeChange( wxCommandEvent& aEvent )
+void PANEL_R_DIVIDER::OnModeChange( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     updateModeUI();
 }
 
 
-void PANEL_R_DIVIDER::OnCalculate( wxCommandEvent& aEvent )
+void PANEL_R_DIVIDER::OnCalculate( wxCommandEvent& aEvent [[maybe_unused]] )
 {
     const bool   voltageMode = m_rbModeVoltage->GetValue();
     const double vin = DoubleFromString( m_vinValue->GetValue() );

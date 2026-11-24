@@ -43,8 +43,8 @@ class TEST_COMMIT : public COMMIT
 public:
     void Push( const wxString&, int ) override {}
     void Revert() override {}
-    void RevertToCheckpoint(int aCheckpoint) override {}
-    EDA_ITEM* ResolveItem( KIID& aID ) override { return nullptr; }
+    void RevertToCheckpoint(int aCheckpoint [[maybe_unused]]) override {}
+    EDA_ITEM* ResolveItem( KIID& aID [[maybe_unused]] ) override { return nullptr; }
 
 protected:
     EDA_ITEM* undoLevelItem( EDA_ITEM* aItem ) const override { return aItem; }

@@ -57,11 +57,11 @@ public:
 
     wxString GetGeneratorType() const override { return m_testGeneratorType; }
 
-    void EditStart( GENERATOR_TOOL* aTool, BOARD* aBoard, BOARD_COMMIT* aCommit ) override {}
-    bool Update( GENERATOR_TOOL* aTool, BOARD* aBoard, BOARD_COMMIT* aCommit ) override { return true; }
-    void EditFinish( GENERATOR_TOOL* aTool, BOARD* aBoard, BOARD_COMMIT* aCommit ) override {}
-    void EditCancel( GENERATOR_TOOL* aTool, BOARD* aBoard, BOARD_COMMIT* aCommit ) override {}
-    void Remove( GENERATOR_TOOL* aTool, BOARD* aBoard, BOARD_COMMIT* aCommit ) override {}
+    void EditStart( GENERATOR_TOOL* aTool [[maybe_unused]], BOARD* aBoard [[maybe_unused]], BOARD_COMMIT* aCommit [[maybe_unused]] ) override {}
+    bool Update( GENERATOR_TOOL* aTool [[maybe_unused]], BOARD* aBoard [[maybe_unused]], BOARD_COMMIT* aCommit [[maybe_unused]] ) override { return true; }
+    void EditFinish( GENERATOR_TOOL* aTool [[maybe_unused]], BOARD* aBoard [[maybe_unused]], BOARD_COMMIT* aCommit [[maybe_unused]] ) override {}
+    void EditCancel( GENERATOR_TOOL* aTool [[maybe_unused]], BOARD* aBoard [[maybe_unused]], BOARD_COMMIT* aCommit [[maybe_unused]] ) override {}
+    void Remove( GENERATOR_TOOL* aTool [[maybe_unused]], BOARD* aBoard [[maybe_unused]], BOARD_COMMIT* aCommit [[maybe_unused]] ) override {}
 
     wxString GetPluralName() const override { return wxT( "Test Generators" ); }
     wxString GetCommitMessage() const override { return wxT( "Test Generator" ); }

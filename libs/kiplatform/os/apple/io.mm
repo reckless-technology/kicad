@@ -139,7 +139,7 @@ bool KIPLATFORM::IO::IsFileHidden( const wxString& aFileName )
 }
 
 
-void KIPLATFORM::IO::LongPathAdjustment( wxFileName& aFilename )
+void KIPLATFORM::IO::LongPathAdjustment( wxFileName& aFilename [[maybe_unused]] )
 {
     // no-op
 }

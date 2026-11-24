@@ -47,8 +47,8 @@ BOOST_FIXTURE_TEST_CASE( DRCViaDanglingRuleTest, DRC_REGRESSION_TEST_FIXTURE )
     BOARD_DESIGN_SETTINGS& bds = m_board->GetDesignSettings();
 
     bds.m_DRCEngine->SetViolationHandler(
-            [&]( const std::shared_ptr<DRC_ITEM>& aItem, const VECTOR2I& aPos, int aLayer,
-                 const std::function<void( PCB_MARKER* )>& aPathGenerator )
+            [&]( const std::shared_ptr<DRC_ITEM>& aItem, const VECTOR2I& aPos, int aLayer [[maybe_unused]],
+                 const std::function<void( PCB_MARKER* )>& aPathGenerator [[maybe_unused]] )
             {
                 PCB_MARKER temp( aItem, aPos );
 

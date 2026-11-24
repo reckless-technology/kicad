@@ -39,7 +39,7 @@ public:
     }
 
 protected:
-    const wxString dso_search_path( FACE_T aFaceId ) override
+    const wxString dso_search_path( FACE_T aFaceId [[maybe_unused]] ) override
     {
         return wxS( "/nonexistent/_missing.kiface" );
     }
@@ -53,7 +53,7 @@ public:
     wxString m_text;
 
 protected:
-    void DoLogTextAtLevel( wxLogLevel aLevel, const wxString& aMsg ) override { m_text += aMsg; }
+    void DoLogTextAtLevel( wxLogLevel aLevel [[maybe_unused]], const wxString& aMsg ) override { m_text += aMsg; }
 };
 
 } // namespace

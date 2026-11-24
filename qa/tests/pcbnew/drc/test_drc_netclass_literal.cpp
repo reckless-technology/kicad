@@ -44,8 +44,8 @@ BOOST_AUTO_TEST_CASE( DRCNetclassNameEndingInBackslash )
     std::vector<wxString> warnings;
 
     bds.m_DRCEngine->SetViolationHandler(
-            [&]( const std::shared_ptr<DRC_ITEM>& aItem, const VECTOR2I& aPos, int aLayer,
-                 const std::function<void( PCB_MARKER* )>& aPathGenerator )
+            [&]( const std::shared_ptr<DRC_ITEM>& aItem, const VECTOR2I& aPos [[maybe_unused]], int aLayer [[maybe_unused]],
+                 const std::function<void( PCB_MARKER* )>& aPathGenerator [[maybe_unused]] )
             {
                 if( aItem->GetErrorCode() == DRCE_GENERIC_WARNING )
                     warnings.push_back( aItem->GetErrorMessage( false ) );

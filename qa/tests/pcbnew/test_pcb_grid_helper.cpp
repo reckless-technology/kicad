@@ -39,9 +39,9 @@ public:
 
     // Required virtual functions
     wxString GetClass() const override { return "MockEDAItem"; }
-    void Move( const VECTOR2I& aMoveVector ) override {}
+    void Move( const VECTOR2I& aMoveVector [[maybe_unused]] ) override {}
     VECTOR2I GetPosition() const override { return VECTOR2I( 0, 0 ); }
-    void SetPosition( const VECTOR2I& aPos ) override {}
+    void SetPosition( const VECTOR2I& aPos [[maybe_unused]] ) override {}
     BOARD_ITEM* Clone() const override { return new MOCK_BOARD_ITEM( Type() ); }
 
     // Implement pure virtuals from BOARD_ITEM

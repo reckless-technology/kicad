@@ -106,7 +106,7 @@ bool POLYGON_2D::Intersects( const BBOX_2D& aBBox ) const
 }
 
 
-bool POLYGON_2D::Overlaps( const BBOX_2D& aBBox ) const
+bool POLYGON_2D::Overlaps( const BBOX_2D& aBBox [[maybe_unused]] ) const
 {
     // NOT IMPLEMENTED, why?
     return false;
@@ -172,7 +172,7 @@ bool POLYGON_2D::Intersect( const RAYSEG2D& aSegRay, float* aOutT, SFVEC2F* aNor
 }
 
 
-INTERSECTION_RESULT POLYGON_2D::IsBBoxInside( const BBOX_2D& aBBox ) const
+INTERSECTION_RESULT POLYGON_2D::IsBBoxInside( const BBOX_2D& aBBox [[maybe_unused]] ) const
 {
 
     return INTERSECTION_RESULT::MISSES;
@@ -228,14 +228,14 @@ bool DUMMY_BLOCK_2D::Intersects( const BBOX_2D& aBBox ) const
 }
 
 
-bool DUMMY_BLOCK_2D::Overlaps( const BBOX_2D& aBBox ) const
+bool DUMMY_BLOCK_2D::Overlaps( const BBOX_2D& aBBox [[maybe_unused]] ) const
 {
     // Not implemented
     return false;
 }
 
 
-bool DUMMY_BLOCK_2D::Intersect( const RAYSEG2D& aSegRay, float* aOutT, SFVEC2F* aNormalOut ) const
+bool DUMMY_BLOCK_2D::Intersect( const RAYSEG2D& aSegRay [[maybe_unused]], float* aOutT [[maybe_unused]], SFVEC2F* aNormalOut [[maybe_unused]] ) const
 {
     // The dummy block will be never intersected because it have no edges,
     // only it have a plan surface of the size of the bounding box
@@ -243,7 +243,7 @@ bool DUMMY_BLOCK_2D::Intersect( const RAYSEG2D& aSegRay, float* aOutT, SFVEC2F* 
 }
 
 
-INTERSECTION_RESULT DUMMY_BLOCK_2D::IsBBoxInside( const BBOX_2D& aBBox ) const
+INTERSECTION_RESULT DUMMY_BLOCK_2D::IsBBoxInside( const BBOX_2D& aBBox [[maybe_unused]] ) const
 {
     //!TODO:
     return INTERSECTION_RESULT::MISSES;

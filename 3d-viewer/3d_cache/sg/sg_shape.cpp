@@ -440,7 +440,7 @@ bool SGSHAPE::WriteCache( std::ostream& aFile, SGNODE* parentNode )
 }
 
 
-bool SGSHAPE::ReadCache( std::istream& aFile, SGNODE* parentNode )
+bool SGSHAPE::ReadCache( std::istream& aFile, SGNODE* parentNode [[maybe_unused]] )
 {
     wxCHECK( m_Appearance == nullptr && m_RAppearance == nullptr && m_FaceSet == nullptr &&
              m_RFaceSet == nullptr, false );

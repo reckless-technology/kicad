@@ -69,7 +69,7 @@ public:
         TOOL_BASE( BATCH, TOOL_MANAGER::MakeToolId( "" ), "testframework.dummytool" )
     {};
 
-    void Reset( RESET_REASON aReason ) override {}
+    void Reset( RESET_REASON aReason [[maybe_unused]] ) override {}
 };
 
 
