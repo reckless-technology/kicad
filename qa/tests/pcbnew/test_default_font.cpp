@@ -42,6 +42,8 @@
 #include <pgm_base.h>
 
 #include <algorithm>
+#include <boost/test/unit_test.hpp>
+
 #include <filesystem>
 #include <fstream>
 #include <sstream>
@@ -68,6 +70,13 @@ wxString installedFamily()
     }
 
     return families.empty() ? wxString() : wxString::FromUTF8( families.front() );
+}
+
+
+/// Precondition for the tests that need a font: a run on a machine with none shows them as skipped
+boost::test_tools::assertion_result hasInstalledFamily( boost::unit_test::test_unit_id )
+{
+    return !installedFamily().IsEmpty();
 }
 
 
@@ -132,15 +141,12 @@ BOOST_AUTO_TEST_CASE( NothingSetKeepsTheStrokeFont )
 }
 
 
-BOOST_AUTO_TEST_CASE( NewItemsTakeTheirLayerClassFont )
+BOOST_AUTO_TEST_CASE( NewItemsTakeTheirLayerClassFont, *boost::unit_test::precondition( hasInstalledFamily ) )
 {
     const wxString family = installedFamily();
 
-    if( family.IsEmpty() )
-    {
-        BOOST_TEST_MESSAGE( "No installed font family is listed; skipping" );
-        return;
-    }
+    BOOST_REQUIRE( !family.IsEmpty() );
+    BOOST_TEST_MESSAGE( "Default font family used: " << family );
 
     BOARD                  board;
     BOARD_DESIGN_SETTINGS& bds = board.GetDesignSettings();
@@ -208,15 +214,13 @@ BOOST_AUTO_TEST_CASE( NewItemsTakeTheirLayerClassFont )
 
 
 /// Restyling a footprint's fields to the board defaults leaves their face alone unless a default font is set.
-BOOST_AUTO_TEST_CASE( ApplyDefaultSettingsAndTheFootprintFieldFace )
+BOOST_AUTO_TEST_CASE( ApplyDefaultSettingsAndTheFootprintFieldFace,
+                      *boost::unit_test::precondition( hasInstalledFamily ) )
 {
     const wxString family = installedFamily();
 
-    if( family.IsEmpty() )
-    {
-        BOOST_TEST_MESSAGE( "No installed font family is listed; skipping" );
-        return;
-    }
+    BOOST_REQUIRE( !family.IsEmpty() );
+    BOOST_TEST_MESSAGE( "Default font family used: " << family );
 
     // The face the footprint's field starts with is not the one the board will name
     const wxString fieldFamily =
@@ -264,8 +268,6 @@ BOOST_AUTO_TEST_CASE( ApplyDefaultSettingsAndTheFootprintFieldFace )
 
 BOOST_AUTO_TEST_CASE( FontIsCopiedAndCompared )
 {
-    const wxString family = installedFamily();
-
     BOARD_DESIGN_SETTINGS first( nullptr, "first" );
     BOARD_DESIGN_SETTINGS second( nullptr, "second" );
 
@@ -285,15 +287,12 @@ BOOST_AUTO_TEST_CASE( FontIsCopiedAndCompared )
 }
 
 
-BOOST_AUTO_TEST_CASE( FontIsEmbeddedOnSave )
+BOOST_AUTO_TEST_CASE( FontIsEmbeddedOnSave, *boost::unit_test::precondition( hasInstalledFamily ) )
 {
     const wxString family = installedFamily();
 
-    if( family.IsEmpty() )
-    {
-        BOOST_TEST_MESSAGE( "No installed font family is listed; skipping" );
-        return;
-    }
+    BOOST_REQUIRE( !family.IsEmpty() );
+    BOOST_TEST_MESSAGE( "Default font family used: " << family );
 
     BOARD                  board;
     BOARD_DESIGN_SETTINGS& bds = board.GetDesignSettings();
@@ -312,7 +311,7 @@ BOOST_AUTO_TEST_CASE( FontIsEmbeddedOnSave )
     // Only a font whose licence allows embedding is embedded, so say if this one does not
     if( board.GetFonts().empty() )
     {
-        BOOST_TEST_MESSAGE( family << " does not permit embedding; skipping" );
+        BOOST_TEST_MESSAGE( "SKIPPED: " << family << " does not permit embedding" );
         return;
     }
 
