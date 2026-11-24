@@ -333,8 +333,9 @@ PGPROPERTY_DISTANCE::~PGPROPERTY_DISTANCE()
 
 
 #if wxCHECK_VERSION( 3, 3, 0 )
-bool PGPROPERTY_DISTANCE::StringToDistance( wxVariant& aVariant, const wxString& aText,
-                                            wxPGPropValFormatFlags aFlags ) const
+bool PGPROPERTY_DISTANCE::StringToDistance( wxVariant&             aVariant [[maybe_unused]],
+                                            const wxString&        aText [[maybe_unused]],
+                                            wxPGPropValFormatFlags aFlags [[maybe_unused]] ) const
 #else
 bool PGPROPERTY_DISTANCE::StringToDistance( wxVariant& aVariant [[maybe_unused]], const wxString& aText [[maybe_unused]],
                                             int aFlags [[maybe_unused]] ) const
@@ -345,8 +346,8 @@ bool PGPROPERTY_DISTANCE::StringToDistance( wxVariant& aVariant [[maybe_unused]]
 
 
 #if wxCHECK_VERSION( 3, 3, 0 )
-wxString PGPROPERTY_DISTANCE::DistanceToString( wxVariant& aVariant,
-                                                wxPGPropValFormatFlags aFlags ) const
+wxString PGPROPERTY_DISTANCE::DistanceToString( wxVariant&             aVariant,
+                                                wxPGPropValFormatFlags aFlags [[maybe_unused]] ) const
 #else
 wxString PGPROPERTY_DISTANCE::DistanceToString( wxVariant& aVariant, int aFlags [[maybe_unused]] ) const
 #endif
@@ -404,8 +405,8 @@ PGPROPERTY_AREA::PGPROPERTY_AREA( EDA_DRAW_FRAME* aParentFrame ) :
 
 
 #if wxCHECK_VERSION( 3, 3, 0 )
-bool PGPROPERTY_AREA::StringToValue( wxVariant& aVariant, const wxString& aText,
-                                     wxPGPropValFormatFlags aArgFlags ) const
+bool PGPROPERTY_AREA::StringToValue( wxVariant& aVariant [[maybe_unused]], const wxString& aText [[maybe_unused]],
+                                     wxPGPropValFormatFlags aArgFlags [[maybe_unused]] ) const
 #else
 bool PGPROPERTY_AREA::StringToValue( wxVariant& aVariant [[maybe_unused]], const wxString& aText [[maybe_unused]], int aArgFlags [[maybe_unused]] ) const
 #endif
@@ -415,7 +416,7 @@ bool PGPROPERTY_AREA::StringToValue( wxVariant& aVariant [[maybe_unused]], const
 
 
 #if wxCHECK_VERSION( 3, 3, 0 )
-wxString PGPROPERTY_AREA::ValueToString( wxVariant& aVariant, wxPGPropValFormatFlags aArgFlags ) const
+wxString PGPROPERTY_AREA::ValueToString( wxVariant& aVariant, wxPGPropValFormatFlags aArgFlags [[maybe_unused]] ) const
 #else
 wxString PGPROPERTY_AREA::ValueToString( wxVariant& aVariant, int aArgFlags [[maybe_unused]] ) const
 #endif
@@ -505,8 +506,8 @@ const wxPGEditor* PGPROPERTY_RATIO::DoGetEditorClass() const
 
 
 #if wxCHECK_VERSION( 3, 3, 0 )
-bool PGPROPERTY_RATIO::StringToValue( wxVariant& aVariant, const wxString& aText,
-                                      wxPGPropValFormatFlags aArgFlags ) const
+bool PGPROPERTY_RATIO::StringToValue( wxVariant& aVariant [[maybe_unused]], const wxString& aText [[maybe_unused]],
+                                      wxPGPropValFormatFlags aArgFlags [[maybe_unused]] ) const
 #else
 bool PGPROPERTY_RATIO::StringToValue( wxVariant& aVariant [[maybe_unused]], const wxString& aText [[maybe_unused]], int aArgFlags [[maybe_unused]] ) const
 #endif
@@ -516,7 +517,7 @@ bool PGPROPERTY_RATIO::StringToValue( wxVariant& aVariant [[maybe_unused]], cons
 
 
 #if wxCHECK_VERSION( 3, 3, 0 )
-wxString PGPROPERTY_RATIO::ValueToString( wxVariant& aVariant, wxPGPropValFormatFlags aArgFlags ) const
+wxString PGPROPERTY_RATIO::ValueToString( wxVariant& aVariant, wxPGPropValFormatFlags aArgFlags [[maybe_unused]] ) const
 #else
 wxString PGPROPERTY_RATIO::ValueToString( wxVariant& aVariant, int aArgFlags [[maybe_unused]] ) const
 #endif
@@ -571,7 +572,7 @@ wxValidator* PGPROPERTY_RATIO::DoGetValidator() const
 
 #if wxCHECK_VERSION( 3, 3, 0 )
 bool PGPROPERTY_ANGLE::StringToValue( wxVariant& aVariant, const wxString& aText,
-                                      wxPGPropValFormatFlags aArgFlags ) const
+                                      wxPGPropValFormatFlags aArgFlags [[maybe_unused]] ) const
 #else
 bool PGPROPERTY_ANGLE::StringToValue( wxVariant& aVariant, const wxString& aText, int aArgFlags [[maybe_unused]] ) const
 #endif
@@ -597,7 +598,7 @@ bool PGPROPERTY_ANGLE::StringToValue( wxVariant& aVariant, const wxString& aText
 
 
 #if wxCHECK_VERSION( 3, 3, 0 )
-wxString PGPROPERTY_ANGLE::ValueToString( wxVariant& aVariant, wxPGPropValFormatFlags aArgFlags ) const
+wxString PGPROPERTY_ANGLE::ValueToString( wxVariant& aVariant, wxPGPropValFormatFlags aArgFlags [[maybe_unused]] ) const
 #else
 wxString PGPROPERTY_ANGLE::ValueToString( wxVariant& aVariant, int aArgFlags [[maybe_unused]] ) const
 #endif
@@ -674,7 +675,7 @@ void PGPROPERTY_COLORENUM::OnCustomPaint( wxDC& aDC, const wxRect& aRect, wxPGPa
 
 
 #if wxCHECK_VERSION( 3, 3, 0 )
-wxString PGPROPERTY_STRING::ValueToString( wxVariant& aValue, wxPGPropValFormatFlags aFlags ) const
+wxString PGPROPERTY_STRING::ValueToString( wxVariant& aValue, wxPGPropValFormatFlags aFlags [[maybe_unused]] ) const
 #else
 wxString PGPROPERTY_STRING::ValueToString( wxVariant& aValue, int aFlags [[maybe_unused]] ) const
 #endif
@@ -688,7 +689,7 @@ wxString PGPROPERTY_STRING::ValueToString( wxVariant& aValue, int aFlags [[maybe
 
 #if wxCHECK_VERSION( 3, 3, 0 )
 bool PGPROPERTY_STRING::StringToValue( wxVariant& aVariant, const wxString& aString,
-                                       wxPGPropValFormatFlags aArgFlags ) const
+                                       wxPGPropValFormatFlags aArgFlags [[maybe_unused]] ) const
 #else
 bool PGPROPERTY_STRING::StringToValue( wxVariant& aVariant, const wxString& aString, int aFlags [[maybe_unused]] ) const
 #endif
@@ -731,7 +732,7 @@ PGPROPERTY_COLOR4D::PGPROPERTY_COLOR4D( const wxString& aLabel, const wxString& 
 
 #if wxCHECK_VERSION( 3, 3, 0 )
 bool PGPROPERTY_COLOR4D::StringToValue( wxVariant& aVariant, const wxString& aString,
-                                        wxPGPropValFormatFlags aArgFlags ) const
+                                        wxPGPropValFormatFlags aArgFlags [[maybe_unused]] ) const
 #else
 bool PGPROPERTY_COLOR4D::StringToValue( wxVariant& aVariant, const wxString& aString, int aFlags [[maybe_unused]] ) const
 #endif
@@ -766,8 +767,8 @@ PGPROPERTY_TIME::PGPROPERTY_TIME( EDA_DRAW_FRAME* aParentFrame ) :
 
 
 #if wxCHECK_VERSION( 3, 3, 0 )
-bool PGPROPERTY_TIME::StringToValue( wxVariant& aVariant, const wxString& aText,
-                                     wxPGPropValFormatFlags aArgFlags ) const
+bool PGPROPERTY_TIME::StringToValue( wxVariant& aVariant [[maybe_unused]], const wxString& aText [[maybe_unused]],
+                                     wxPGPropValFormatFlags aArgFlags [[maybe_unused]] ) const
 #else
 bool PGPROPERTY_TIME::StringToValue( wxVariant& aVariant [[maybe_unused]], const wxString& aText [[maybe_unused]], int aArgFlags [[maybe_unused]] ) const
 #endif
@@ -777,7 +778,7 @@ bool PGPROPERTY_TIME::StringToValue( wxVariant& aVariant [[maybe_unused]], const
 
 
 #if wxCHECK_VERSION( 3, 3, 0 )
-wxString PGPROPERTY_TIME::ValueToString( wxVariant& aVariant, wxPGPropValFormatFlags aArgFlags ) const
+wxString PGPROPERTY_TIME::ValueToString( wxVariant& aVariant, wxPGPropValFormatFlags aArgFlags [[maybe_unused]] ) const
 #else
 wxString PGPROPERTY_TIME::ValueToString( wxVariant& aVariant, int aArgFlags [[maybe_unused]] ) const
 #endif

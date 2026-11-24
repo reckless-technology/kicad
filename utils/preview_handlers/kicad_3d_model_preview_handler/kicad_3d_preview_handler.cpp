@@ -339,7 +339,7 @@ IFACEMETHODIMP KICAD_3D_PREVIEW_HANDLER::GetWindow( HWND* aHwnd )
     return hr;
 }
 
-IFACEMETHODIMP KICAD_3D_PREVIEW_HANDLER::ContextSensitiveHelp( BOOL aEnterMode )
+IFACEMETHODIMP KICAD_3D_PREVIEW_HANDLER::ContextSensitiveHelp( BOOL )
 {
     return E_NOTIMPL;
 }

@@ -62,7 +62,7 @@ void KIPLATFORM::UI::GetInfoBarColours( wxColour& aFGColour, wxColour& aBGColour
 }
 
 
-wxWindow* KIPLATFORM::UI::CreateCanvasOverlay( wxWindow* aCanvas )
+wxWindow* KIPLATFORM::UI::CreateCanvasOverlay( wxWindow* )
 {
     return nullptr;
 }
@@ -85,7 +85,7 @@ bool KIPLATFORM::UI::IsWindowActive( wxWindow* aWindow )
 }
 
 
-void KIPLATFORM::UI::StabilizeWindowPosition( wxWindow* aWindow )
+void KIPLATFORM::UI::StabilizeWindowPosition( wxWindow* )
 {
     // Not needed on this platform
 }
@@ -97,19 +97,19 @@ wxPoint KIPLATFORM::UI::GetRestorablePosition( wxWindow* aWindow )
 }
 
 
-void KIPLATFORM::UI::ReparentModal( wxNonOwnedWindow* aWindow )
+void KIPLATFORM::UI::ReparentModal( wxNonOwnedWindow* )
 {
     // Not needed on this platform
 }
 
 
-void KIPLATFORM::UI::ReparentWindow( wxNonOwnedWindow* aWindow, wxTopLevelWindow* aParent )
+void KIPLATFORM::UI::ReparentWindow( wxNonOwnedWindow*, wxTopLevelWindow* )
 {
     // Not needed on this platform (used only on macOS for child window ordering)
 }
 
 
-void KIPLATFORM::UI::FixupCancelButtonCmdKeyCollision( wxWindow *aWindow )
+void KIPLATFORM::UI::FixupCancelButtonCmdKeyCollision( wxWindow* )
 {
     // Not needed on this platform
 }
@@ -129,13 +129,13 @@ bool KIPLATFORM::UI::IsStockCursorOk( wxStockCursor aCursor )
 }
 
 
-void KIPLATFORM::UI::LargeChoiceBoxHack( wxChoice* aChoice )
+void KIPLATFORM::UI::LargeChoiceBoxHack( wxChoice* )
 {
     // Not implemented
 }
 
 
-void KIPLATFORM::UI::EllipsizeChoiceBox( wxChoice* aChoice )
+void KIPLATFORM::UI::EllipsizeChoiceBox( wxChoice* )
 {
     // Not implemented
 }
@@ -166,7 +166,7 @@ wxSize KIPLATFORM::UI::GetUnobscuredSize( const wxWindow* aWindow )
 }
 
 
-void KIPLATFORM::UI::SetOverlayScrolling( const wxWindow* aWindow, bool overlay )
+void KIPLATFORM::UI::SetOverlayScrolling( const wxWindow*, bool )
 {
     // Not implemented
 }
@@ -230,7 +230,7 @@ void KIPLATFORM::UI::ImeNotifyCancelComposition( wxWindow* aWindow )
 }
 
 
-bool KIPLATFORM::UI::InfiniteDragPrepareWindow( wxWindow* aWindow )
+bool KIPLATFORM::UI::InfiniteDragPrepareWindow( wxWindow* )
 {
     return true;
 }
@@ -242,17 +242,17 @@ void KIPLATFORM::UI::InfiniteDragReleaseWindow()
 }
 
 
-void KIPLATFORM::UI::SetFloatLevel( wxWindow* aWindow )
+void KIPLATFORM::UI::SetFloatLevel( wxWindow* )
 {
 }
 
-void KIPLATFORM::UI::ReleaseChildWindow( wxNonOwnedWindow* aWindow )
+void KIPLATFORM::UI::ReleaseChildWindow( wxNonOwnedWindow* )
 {
     // Not needed on this platform
 }
 
 
-void KIPLATFORM::UI::AllowNetworkFileSystems( wxDialog* aDialog )
+void KIPLATFORM::UI::AllowNetworkFileSystems( wxDialog* )
 {
     // Not needed on Windows - file dialogs show network filesystems by default
 }
@@ -264,13 +264,13 @@ int KIPLATFORM::UI::GetColumnWidth( const wxDataViewColumn* aColumn )
 }
 
 
-void KIPLATFORM::UI::CancelPendingScroll( wxDataViewCtrl* aCtrl )
+void KIPLATFORM::UI::CancelPendingScroll( wxDataViewCtrl* )
 {
     // Not needed on this platform; the native control does not race on model resets.
 }
 
 
-void KIPLATFORM::UI::SetWMClass( wxWindow* aWindow, const wxString& aClass )
+void KIPLATFORM::UI::SetWMClass( wxWindow*, const wxString& )
 {
     // WM_CLASS is an X11/Wayland concept; taskbar identity on Windows is driven by the
     // AppUserModelID (see KIPLATFORM::ENV::SetAppDetailsForWindow).
@@ -291,19 +291,19 @@ void KIPLATFORM::UI::GetNativeWindowHandles( wxWindow* aWindow, void** aHandle, 
 }
 
 
-void KIPLATFORM::UI::PrepareForExternalRendering( wxWindow* aWindow )
+void KIPLATFORM::UI::PrepareForExternalRendering( wxWindow* )
 {
     // The GPU API owns Win32 surfaces natively
 }
 
 
-void KIPLATFORM::UI::KeepAboveExternalRendering( wxWindow* aChild )
+void KIPLATFORM::UI::KeepAboveExternalRendering( wxWindow* )
 {
     // Child windows are native and clip their parent's surface
 }
 
 
-void KIPLATFORM::UI::RebindOnRealize( wxWindow* aWindow )
+void KIPLATFORM::UI::RebindOnRealize( wxWindow* )
 {
     // Win32 windows keep their HWND when reparented
 }

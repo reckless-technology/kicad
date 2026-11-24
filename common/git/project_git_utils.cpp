@@ -230,7 +230,7 @@ static wxString canonicalDir( const wxString& aPath )
 }
 
 
-wxString PROJECT_GIT_UTILS::ComputeSymlinkPreservingWorkDir( const wxString& aUserProjectPath,
+wxString PROJECT_GIT_UTILS::ComputeSymlinkPreservingWorkDir( const wxString& aUserProjectPath [[maybe_unused]],
                                                              const wxString& aCanonicalWorkDir )
 {
 #ifdef __WINDOWS__

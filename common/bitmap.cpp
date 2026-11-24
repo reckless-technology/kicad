@@ -127,7 +127,7 @@ KICOMMON_API wxBitmapBundle KiDisabledBitmapBundleDef( BITMAPS aBitmap, int aDef
 }
 
 
-int KiIconScale( wxWindow* aWindow )
+int KiIconScale( wxWindow* aWindow [[maybe_unused]] )
 {
     // For historical reasons, "4" here means unity (no scaling)
 
