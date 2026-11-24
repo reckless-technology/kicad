@@ -378,6 +378,9 @@ public:
 
     int GetMaxHoleSize() const;
 
+    /// The widest backdrill or post-machining, or 0 if there is none; the primary drill is left out
+    int GetMaxMachiningSize() const;
+
     /**
      * Get the diameter the front and back post-machining operations cut into aLayer.
      *

@@ -1451,7 +1451,13 @@ int PADSTACK::MachiningKnockout( const BOARD& aBoard, PCB_LAYER_ID aLayer ) cons
 
 int PADSTACK::GetMaxHoleSize() const
 {
-    int maxHoleSize = Drill().size.x;
+    return std::max( Drill().size.x, GetMaxMachiningSize() );
+}
+
+
+int PADSTACK::GetMaxMachiningSize() const
+{
+    int maxHoleSize = 0;
 
     const PADSTACK::POST_MACHINING_PROPS& frontPM = FrontPostMachining();
     const PADSTACK::POST_MACHINING_PROPS& backPM = BackPostMachining();

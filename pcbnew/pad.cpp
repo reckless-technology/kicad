@@ -1256,15 +1256,16 @@ std::shared_ptr<SHAPE> PAD::GetEffectiveHoleShape( PCB_LAYER_ID aLayer, DRC_CONS
 
         if( hole->Type() != SH_SEGMENT )
         {
-            // A rectangular hole: a backdrill or post-machining wider than its longer side adds
-            // its circle to the rectangle, which it need not cover
+            // A rectangular hole: a backdrill or post-machining wider than its shorter side reaches
+            // outside the rectangle, so its circle is added to it
             const VECTOR2I drill = GetDrillSize();
+            const int      machiningSize = Padstack().GetMaxMachiningSize();
 
-            if( maxHoleSize > std::max( drill.x, drill.y ) )
+            if( machiningSize > std::min( drill.x, drill.y ) )
             {
                 std::shared_ptr<SHAPE_COMPOUND> compound = std::make_shared<SHAPE_COMPOUND>();
                 compound->AddShape( hole->Clone() );
-                compound->AddShape( new SHAPE_CIRCLE( GetPosition(), maxHoleSize / 2 ) );
+                compound->AddShape( new SHAPE_CIRCLE( GetPosition(), machiningSize / 2 ) );
                 return compound;
             }
         }
@@ -1367,6 +1368,12 @@ void PAD::BuildEffectiveShapes() const
     {
         int maxHole = m_padStack.GetMaxHoleSize();
         drawCache.m_effectiveBoundingBox.Merge( BOX2I::ByCenter( pos, VECTOR2I( maxHole, maxHole ) ) );
+    }
+    else if( m_padStack.Drill().shape == PAD_DRILL_SHAPE::RECTANGLE )
+    {
+        // A backdrill or post-machining can reach outside a rectangular hole
+        int machining = m_padStack.GetMaxMachiningSize();
+        drawCache.m_effectiveBoundingBox.Merge( BOX2I::ByCenter( pos, VECTOR2I( machining, machining ) ) );
     }
 
     // All done
