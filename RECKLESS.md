@@ -66,12 +66,23 @@ build it in (#40); OpenGL stays the default canvas, and the engine loads the sys
 
 `KICAD_WERROR` (cmake/Warnings.cmake) makes every compiler warning in KiCad's own code an error, through CMake's
 `COMPILE_WARNING_AS_ERROR` target property (CMake 3.24 or newer), so configure-time feature checks are not affected.
-It is ON by default with Clang and OFF with other compilers; `-DKICAD_WERROR=OFF` turns it off. Code under
+It is ON by default with Clang and MSVC and OFF with other compilers; `-DKICAD_WERROR=OFF` turns it off. Code under
 `thirdparty/` keeps its own flags. The warnings are upstream's set (`-Wall` and the extras in `cmake/Warnings.cmake`)
 plus `-Wextra` and `-Wpedantic` (#6), applied once at the top level to all of KiCad's own C, C++ and Objective-C++
-(#46), so `qa/`, `3d-viewer/`, `pcb_calculator/` and the libraries are checked too. MSVC builds with its default
-level for now; `/W4 /WX /permissive-` is #43. A warning is fixed at its cause, not silenced with a pragma or a `-Wno-`
-flag. Upstream changes can introduce a warning when `reckless/main` is rebased: fix it in that rebase.
+(#46), so `qa/`, `3d-viewer/`, `pcb_calculator/` and the libraries are checked too. A warning is fixed at its cause,
+not silenced with a pragma or a `-Wno-` flag. Upstream changes can introduce a warning when `reckless/main` is
+rebased: fix it in that rebase.
+
+MSVC builds KiCad's own C++ at `/W4 /permissive-` (#43). Upstream's `/Wall` and its list of 37 `/wd` exceptions are
+gone, and there is one exception left, `/wd4251`. C4251 ("needs to have dll-interface") warns when an exported class
+has a member or base of a type that is not exported, such as a standard-library container. It matters only when
+modules are built with different toolsets or C runtimes. Every KiCad module is built in one configure, with one
+toolset and the dynamic CRT, which is where Microsoft documents C4251 as safe to ignore. The one pragma is a `#pragma
+warning( disable : 4324 )` between `push` and `pop` around `qa/tests/common/test_ki_any.cpp`'s `X3`, whose
+over-alignment is what that test tests.
+With `KICAD_WERROR` on, turning on an opt-in tool that the default build leaves out, such as the PNS debug tool
+(`KICAD_BUILD_PNS_DEBUG_TOOL`, about 120 C4100 sites), fails the MSVC build, because those tools have been outside
+every warning check so far (#78). Build them with `-DKICAD_WERROR=OFF` until then.
 
 ## Commits
 
