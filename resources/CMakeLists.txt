@@ -27,6 +27,24 @@ elseif( UNIX )
                                 ${PROJECT_BINARY_DIR}/resources/linux/metainfo/${KICAD_APP_NAME}.metainfo.xml
                                 ${PROJECT_SOURCE_DIR}/translation/pofiles )
 
+    # House fixed-width font (Reckless build): "monospace" resolves to Monaspace Xenon in KiCad's own processes only. The
+    # desktop entries start every program through env with FONTCONFIG_FILE pointing at a file from this prefix, so
+    # nothing outside KiCad changes, and a build without the option is untouched. The proportional font is not set
+    # here: on X11 GTK takes it from the desktop's XSETTINGS, which no environment variable or settings file
+    # beats without touching other programs.
+    if( KICAD_HOUSE_FONTS )
+        configure_file( ${PROJECT_SOURCE_DIR}/resources/linux/fonts/fonts.conf.in
+                        ${PROJECT_BINARY_DIR}/resources/linux/fonts/fonts.conf
+                        @ONLY )
+        install( FILES ${PROJECT_BINARY_DIR}/resources/linux/fonts/fonts.conf
+                 DESTINATION ${CMAKE_INSTALL_DATADIR}/kicad/fonts
+                 COMPONENT resources )
+        set( KICAD_DESKTOP_EXEC_ENV
+             "env FONTCONFIG_FILE=${CMAKE_INSTALL_FULL_DATADIR}/kicad/fonts/fonts.conf " )
+    else()
+        set( KICAD_DESKTOP_EXEC_ENV "" )
+    endif()
+
     # All the desktop files take two passes: First they are configured to replace the variables,
     # then they are translated from the binary directory
     configure_file( ${PROJECT_SOURCE_DIR}/resources/linux/launchers/org.kicad.eeschema.desktop.in
