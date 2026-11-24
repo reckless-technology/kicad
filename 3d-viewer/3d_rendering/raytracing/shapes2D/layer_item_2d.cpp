@@ -29,7 +29,7 @@
 
 
 LAYER_ITEM_2D::LAYER_ITEM_2D( const OBJECT_2D* aObjectA, std::vector<const OBJECT_2D*>* aObjectB,
-                              const OBJECT_2D* /* aObjectC: reserved, see IsPointInside() */,
+                              const OBJECT_2D* aObjectC [[maybe_unused]],
                               const BOARD_ITEM& aBoardItem ) :
         OBJECT_2D( OBJECT_2D_TYPE::CSG, aBoardItem ),
         m_objectA( aObjectA ),
