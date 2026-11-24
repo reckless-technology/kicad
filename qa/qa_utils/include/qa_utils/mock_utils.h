@@ -21,6 +21,28 @@
 
 #include <turtle/mock.hpp>
 
+/**
+ * Like MOCK_METHOD and MOCK_CONST_METHOD, but declare the mocked method with 'override' so that
+ * the compiler checks it against the base class.
+ *
+ * Unlike MOCK_METHOD, only the one given constness is generated, and the signature is required.
+ */
+#define KI_MOCK_METHOD_OVERRIDE( M, n, S )                                                         \
+    static_assert( n == mock::detail::function_arity_t<S>::value, "Arity mismatch" );              \
+    MOCK_DECL( M, n, S, ) override                                                                 \
+    {                                                                                              \
+        return MOCK_ANONYMOUS_HELPER( M )( MOCK_FORWARD_PARAMS( n, S ) );                          \
+    }                                                                                              \
+    MOCK_METHOD_HELPER( S, M )
+
+#define KI_MOCK_CONST_METHOD_OVERRIDE( M, n, S )                                                   \
+    static_assert( n == mock::detail::function_arity_t<S>::value, "Arity mismatch" );              \
+    MOCK_DECL( M, n, S, const ) override                                                           \
+    {                                                                                              \
+        return MOCK_ANONYMOUS_HELPER( M )( MOCK_FORWARD_PARAMS( n, S ) );                          \
+    }                                                                                              \
+    MOCK_METHOD_HELPER( S, M )
+
 
 namespace KI_TEST
 {
