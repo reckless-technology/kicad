@@ -47,6 +47,19 @@ namespace KIPLATFORM
 
         wxColour GetDialogBGColour();
 
+#ifdef __WXGTK__
+        /**
+         * Use the given family for the interface font of this process, keeping the size and style the desktop
+         * chose. The setting has application priority, so it holds over the desktop's own (XSETTINGS) font. Does
+         * nothing if the family is not installed or if there is no display.
+         *
+         * Only for the Reckless build's house font (see KICAD_HOUSE_FONTS).
+         *
+         * @param aFamily is the font family, for example "Noto Serif".
+         */
+        void SetInterfaceFontFamily( const char* aFamily );
+#endif
+
         /**
          * Pass the current focus to the window. On OSX this will forcefully give the focus to
          * the desired window, while on MSW and GTK it will simply call the wxWidgets SetFocus()
