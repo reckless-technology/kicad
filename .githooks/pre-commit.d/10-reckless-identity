@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+#
+# Reckless build: refuses a commit whose author or committer is not the fork's one identity.
+# Git exports the commit's author to this hook, so `git var` reports what the commit will record,
+# including an --author given on the command line.
+
+expected="Jonny Reckless <jonny@recklesstechnology.com>"
+status=0
+
+for which in AUTHOR COMMITTER; do
+    # The ident is "Name <email> timestamp zone"; keep the name and email
+    ident=$(git var "GIT_${which}_IDENT" | sed -E 's/ [0-9]+ [-+][0-9]{4}$//')
+
+    if [ "$ident" != "$expected" ]; then
+        echo "ERROR: the commit's $(echo "$which" | tr 'A-Z' 'a-z') is '$ident', not '$expected'."
+        echo "Set it in this clone: git config user.name 'Jonny Reckless'; git config user.email jonny@recklesstechnology.com"
+        status=1
+    fi
+done
+
+exit $status
