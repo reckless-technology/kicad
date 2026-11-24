@@ -196,13 +196,14 @@ namespace
         return assignment;
     }
 
-    size_t countMatches( const std::vector<int>& aAssignment )
+    unsigned int countMatches( const std::vector<int>& aAssignment )
     {
-        return std::count_if( aAssignment.begin(), aAssignment.end(),
-                              []( int aIndex )
-                              {
-                                  return aIndex >= 0;
-                              } );
+        // Counts are kept as unsigned int, like ALIGN_CANDIDATE::total; a count can't exceed the contact list.
+        return static_cast<unsigned int>( std::count_if( aAssignment.begin(), aAssignment.end(),
+                                                         []( int aIndex )
+                                                         {
+                                                             return aIndex >= 0;
+                                                         } ) );
     }
 
     BOX2 bodyBox( const std::vector<REGION>& aRegions, const M3& aRotation, const V3& aOffset )
@@ -570,7 +571,7 @@ std::vector<ALIGN_SOLUTION> SolveAlignment( const std::vector<REGION>& aRegions,
         padBox.extend( vec( pad.position ) );
     }
 
-    padCentre /= aPadGroup.size();
+    padCentre /= static_cast<double>( aPadGroup.size() );
     std::vector<V3> directions{ V3::UnitX(), -V3::UnitX(), V3::UnitY(), -V3::UnitY(), V3::UnitZ(), -V3::UnitZ() };
     V3              normal = vec( seed.normal );
 
@@ -699,7 +700,7 @@ std::vector<ALIGN_SOLUTION> SolveAlignment( const std::vector<REGION>& aRegions,
             centre += points.back();
         }
 
-        centre /= points.size();
+        centre /= static_cast<double>( points.size() );
         V2 contactExtents = contactBox.sizes();
         V2 padExtents = padBox.sizes();
         std::sort( contactExtents.data(), contactExtents.data() + 2 );
