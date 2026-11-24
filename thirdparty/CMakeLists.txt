@@ -53,6 +53,8 @@ add_subdirectory( expected )
 set( FASTFLOAT_INSTALL OFF )
 add_subdirectory( fast_float )
 set( FMT_INSTALL OFF )
+# KiCad uses fmt as a library and never imports it as a C++ module, so don't build the module target
+set( FMT_MODULE OFF )
 add_subdirectory( fmt )
 add_subdirectory( glad )
 add_subdirectory( gzip-hpp )
