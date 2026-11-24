@@ -74,14 +74,6 @@ DIALOG_PAGES_SETTINGS_BASE::DIALOG_PAGES_SETTINGS_BASE( wxWindow* parent, wxWind
 	fgSizer1->Add( m_userSizeYLabel, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxLEFT, 5 );
 
 	m_userSizeYCtrl = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_LEFT );
-	#ifdef __WXGTK__
-	if ( !m_userSizeYCtrl->HasFlag( wxTE_MULTILINE ) )
-	{
-	m_userSizeYCtrl->SetMaxLength( -1 );
-	}
-	#else
-	m_userSizeYCtrl->SetMaxLength( -1 );
-	#endif
 	m_userSizeYCtrl->SetToolTip( _("Custom paper height.") );
 
 	fgSizer1->Add( m_userSizeYCtrl, 0, wxEXPAND|wxRIGHT|wxLEFT, 5 );
@@ -95,14 +87,6 @@ DIALOG_PAGES_SETTINGS_BASE::DIALOG_PAGES_SETTINGS_BASE( wxWindow* parent, wxWind
 	fgSizer1->Add( m_userSizeXLabel, 0, wxALIGN_CENTER_VERTICAL|wxBOTTOM|wxRIGHT|wxLEFT, 5 );
 
 	m_userSizeXCtrl = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_LEFT );
-	#ifdef __WXGTK__
-	if ( !m_userSizeXCtrl->HasFlag( wxTE_MULTILINE ) )
-	{
-	m_userSizeXCtrl->SetMaxLength( -1 );
-	}
-	#else
-	m_userSizeXCtrl->SetMaxLength( -1 );
-	#endif
 	m_userSizeXCtrl->SetToolTip( _("Custom paper width.") );
 
 	fgSizer1->Add( m_userSizeXCtrl, 0, wxEXPAND|wxBOTTOM|wxRIGHT|wxLEFT, 5 );
