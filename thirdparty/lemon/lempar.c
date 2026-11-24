@@ -375,10 +375,11 @@ void *ParseAlloc(void *(*mallocProc)(YYMALLOCARGTYPE) ParseCTX_PDECL){
 ** deletions is derived from the %destructor and/or %token_destructor
 ** directives of the input grammar.
 */
+/* Reckless: yypminor is unused when the grammar declares no destructors; marked [[maybe_unused]]. */
 static void yy_destructor(
   yyParser *yypParser,    /* The parser */
   YYCODETYPE yymajor,     /* Type code for object to destroy */
-  YYMINORTYPE *yypminor   /* The object to be destroyed */
+  YYMINORTYPE *yypminor [[maybe_unused]]  /* The object to be destroyed */
 ){
   ParseARG_FETCH
   ParseCTX_FETCH
@@ -780,10 +781,11 @@ static void yy_parse_failed(
 /*
 ** The following code executes when a syntax error first occurs.
 */
+/* Reckless: yymajor and yyminor are unused when the grammar has no %syntax_error action; marked [[maybe_unused]]. */
 static void yy_syntax_error(
   yyParser *yypParser,           /* The parser */
-  int yymajor,                   /* The major type of the error token */
-  ParseTOKENTYPE yyminor         /* The minor type of the error token */
+  int yymajor [[maybe_unused]],  /* The major type of the error token */
+  ParseTOKENTYPE yyminor [[maybe_unused]] /* The minor type of the error token */
 ){
   ParseARG_FETCH
   ParseCTX_FETCH
