@@ -177,8 +177,8 @@ public:
      *                  RTTI doesn't work across compile boundaries).
      * @return a pointer to a loaded settings object.
      */
-    template<typename T>
-    T* GetToolbarSettings( const wxString& aFilename )
+    template <typename T>
+    T* GetToolbarSettings( const wxString& aFilename [[maybe_unused]] )
     {
         T* ret = nullptr;
 

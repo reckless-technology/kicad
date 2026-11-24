@@ -86,7 +86,7 @@ long long WX_FILENAME::GetTimestamp()
 }
 
 
-void WX_FILENAME::ResolvePossibleSymlinks( wxFileName& aFilename )
+void WX_FILENAME::ResolvePossibleSymlinks( wxFileName& aFilename [[maybe_unused]] )
 {
 #ifndef __WINDOWS__
     if( aFilename.Exists( wxFILE_EXISTS_SYMLINK ) )

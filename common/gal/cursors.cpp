@@ -396,7 +396,7 @@ const wxCursor& CURSOR_STORE::storeGetCursor( KICURSOR aIdKey, bool aHiDPI ) con
 #endif
 
 /* static */
-const WX_CURSOR_TYPE CURSOR_STORE::GetCursor( KICURSOR aCursorType, bool aHiDPI )
+const WX_CURSOR_TYPE CURSOR_STORE::GetCursor( KICURSOR aCursorType, bool aHiDPI [[maybe_unused]] )
 {
     // Use a single cursor store instance
     static CURSOR_STORE store;
