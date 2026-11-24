@@ -153,6 +153,11 @@ option( KICAD_HOUSE_FONTS
     "Linux: make fixed-width text Monaspace Xenon in KiCad's programs started from the desktop entries"
     ${_KICAD_HOUSE_FONTS_DEFAULT} )
 
+# The interface font is set in code (PGM_BASE::InitPgm), so the build carries the choice however a program is started.
+if( KICAD_HOUSE_FONTS )
+    add_compile_definitions( KICAD_HOUSE_FONTS )
+endif()
+
 # Options to build with flatpak platform defaults (only on Linux)
 cmake_dependent_option( KICAD_BUILD_FLATPAK
     "Build KiCad with metadata, launchers, icons, and MIME info following flatpak conventions"
