@@ -16,6 +16,11 @@ Fixes first: the Altium importer faults we met converting our own designs, each 
 (gitlab.com/kicad/code/kicad issues #26126-#26133). Each fix starts on its own `fix/*` branch from `reckless/main`
 and lands as one commit. We don't offer the changes back to KiCad unless KiCad asks for them.
 
+Schematic text defaults to Noto Serif (#48): `appearance.default_font` ships as Noto Serif when fontconfig lists that
+family, and as the KiCad stroke font otherwise. New text carries no font of its own, so it follows the setting when
+drawn. The choice is made when the settings object is built, because fontconfig answers a missing family with some
+other font, never the stroke font. No migration touches the key: a file that names a font keeps it.
+
 ## Keeping up with upstream
 
 `reckless/main` is rebased onto upstream `master` only when Jonny asks for it, never on a schedule, so a rebase never

@@ -22,6 +22,8 @@
 #include <wx/aui/framemanager.h>
 
 #include <map>
+#include <string>
+#include <vector>
 
 #include <remote_provider_settings.h>
 #include <settings/app_settings.h>
@@ -305,6 +307,21 @@ public:
     virtual bool MigrateFromLegacy( wxConfigBase* aLegacyConfig ) override;
 
     static std::vector<BOM_PLUGIN_SETTINGS> DefaultBomPlugins();
+
+    /// The font a new schematic's text uses unless the user has chosen another, when it is installed.
+    static wxString PreferredDefaultFont();
+
+    /**
+     * Pick the shipped default for #APPEARANCE::default_font.
+     *
+     * @param aInstalledFonts is the list of installed font family names.
+     * @return #PreferredDefaultFont() when it is in \a aInstalledFonts (compared without regard to case),
+     *         otherwise the KiCad stroke font.
+     */
+    static wxString ChooseDefaultFont( const std::vector<std::string>& aInstalledFonts );
+
+    /// Pick the shipped default for #APPEARANCE::default_font from the fonts installed on this machine.
+    static wxString InstalledDefaultFont();
 
 
 protected:
