@@ -422,12 +422,15 @@ public:
     static NODE* ToNode( const wxDataViewItem& aItem ) { return static_cast<NODE*>( aItem.GetID() ); }
 
     // wxDataViewModel
+#if !wxCHECK_VERSION( 3, 3, 0 )
+    // Pure virtual before wx 3.3; from 3.3 they are deprecated and never called
     unsigned int GetColumnCount() const override { return COL_COUNT; }
 
     wxString GetColumnType( unsigned int aCol ) const override
     {
         return aCol == COL_NAME ? wxS( "wxDataViewIconText" ) : wxS( "string" );
     }
+#endif
 
     bool IsContainer( const wxDataViewItem& aItem ) const override
     {
