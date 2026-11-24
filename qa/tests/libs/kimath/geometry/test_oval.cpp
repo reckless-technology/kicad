@@ -61,10 +61,6 @@ struct OVAL_POINTS_TEST_CASE
 
 void DoOvalPointTestChecks( const OVAL_POINTS_TEST_CASE& testcase )
 {
-    const auto sort_vectors_x_then_y = []( const VECTOR2I& a, const VECTOR2I& b ) {
-        return LexicographicalCompare<VECTOR2I::coord_type>( a, b ) > 0;
-    };
-
     std::vector<TYPED_POINT2I> expected_points = testcase.m_expected_points;
 
     std::vector<TYPED_POINT2I> actual_points =

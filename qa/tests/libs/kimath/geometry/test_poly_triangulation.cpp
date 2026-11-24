@@ -21,6 +21,7 @@
 #include <filesystem>
 #include <fstream>
 #include <array>
+#include <utility>
 
 #include <wx/log.h>
 
@@ -201,7 +202,7 @@ bool validateTriangulation( const SHAPE_POLY_SET::TRIANGULATED_POLYGON& result,
     }
 
     // Validate that original vertices are preserved
-    if( strict && result.GetVertexCount() >= original.PointCount() )
+    if( strict && std::cmp_greater_equal( result.GetVertexCount(), original.PointCount() ) )
     {
         const auto& vertices = result.Vertices();
         for( int i = 0; i < original.PointCount(); i++ )
@@ -732,7 +733,7 @@ BOOST_AUTO_TEST_CASE( ConcurrentTriangulation )
 
     for( int t = 0; t < numThreads; t++ )
     {
-        futures.push_back( std::async( std::launch::async, [t, numTriangulationsPerThread]()
+        futures.push_back( std::async( std::launch::async, [t]()
         {
             for( int i = 0; i < numTriangulationsPerThread; i++ )
             {
@@ -820,7 +821,7 @@ BOOST_AUTO_TEST_CASE( Issue18083_SelfIntersectingPolygonArea )
     // Calculate the triangulated area
     double triangulatedArea = 0.0;
 
-    for( int ii = 0; ii < polySet.TriangulatedPolyCount(); ii++ )
+    for( unsigned int ii = 0; ii < polySet.TriangulatedPolyCount(); ii++ )
     {
         const auto triPoly = polySet.TriangulatedPolygon( ii );
 
@@ -870,7 +871,7 @@ BOOST_AUTO_TEST_CASE( Issue18083_IndexedSelfTouchingOutlineArea )
 
     double triangulatedArea = 0.0;
 
-    for( int i = 0; i < polySet.TriangulatedPolyCount(); ++i )
+    for( unsigned int i = 0; i < polySet.TriangulatedPolyCount(); ++i )
     {
         const auto triPoly = polySet.TriangulatedPolygon( i );
 

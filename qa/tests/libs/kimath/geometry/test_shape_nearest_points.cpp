@@ -399,7 +399,6 @@ BOOST_AUTO_TEST_CASE( NearestPoints_ArcToLineChain )
     chain.Append( VECTOR2I( 15, 10 ) );
 
     VECTOR2I ptA, ptB;
-    int64_t distSq;
     bool result = chain.NearestPoints( &arc, ptB, ptA );
 
     BOOST_CHECK( result );
