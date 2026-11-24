@@ -58,24 +58,6 @@ FOOTPRINT_IMPORT_RECONCILER::FOOTPRINT_IMPORT_RECONCILER( FOOTPRINT_LIBRARY_ADAP
 
 namespace
 {
-std::multiset<wxString> padNumbers( const FOOTPRINT& aFp )
-{
-    std::multiset<wxString> numbers;
-
-    for( const PAD* pad : aFp.Pads() )
-        numbers.insert( pad->GetNumber() );
-
-    return numbers;
-}
-
-
-// two tools never draw a footprint identically, so equivalence is the pad set
-bool sameInterface( const FOOTPRINT& aLhs, const FOOTPRINT& aRhs )
-{
-    return padNumbers( aLhs ) == padNumbers( aRhs );
-}
-
-
 // unset and explicit default thermal settings resolve the same
 bool sameCopperOverrides( const PADSTACK& aLhs, const PADSTACK& aRhs, PCB_LAYER_ID aLayer )
 {
@@ -146,6 +128,14 @@ bool samePadOverrides( FOOTPRINT& aInstance, const FOOTPRINT& aDef )
     def->SetParent( nullptr );
 
     return same;
+}
+
+
+// a placed footprint may link to a library item only when it equals it, as the parity check reads it
+bool equalsItem( FOOTPRINT& aInstance, const FOOTPRINT& aItem )
+{
+    return !aInstance.FootprintNeedsUpdate( &aItem, BOARD_ITEM::COMPARE_FLAGS::DRC )
+           && samePadOverrides( aInstance, aItem );
 }
 
 
@@ -236,8 +226,36 @@ FOOTPRINT_IMPORT_RECONCILER::Reconcile( BOARD* aBoard,
 
     std::set<wxString> provenance( aSourceLibNicknames.begin(), aSourceLibNicknames.end() );
 
-    // resolve one source lib, empty if none or ambiguous
-    auto resolveSource = [&]( const FOOTPRINT* aFp, const wxString& aName ) -> wxString
+    // source items are loaded once however many placed footprints share them
+    std::map<SOURCE_KEY, std::unique_ptr<FOOTPRINT>> itemCache;
+
+    auto loadItem = [&]( const wxString& aNick, const wxString& aName ) -> const FOOTPRINT*
+    {
+        SOURCE_KEY key( aNick, aName );
+        auto       it = itemCache.find( key );
+
+        if( it == itemCache.end() )
+        {
+            std::unique_ptr<FOOTPRINT> item;
+
+            // some plugins throw for a footprint their library lacks
+            try
+            {
+                item.reset( m_adapter.LoadFootprint( aNick, aName, true ) );
+            }
+            catch( const IO_ERROR& )
+            {
+            }
+
+            it = itemCache.emplace( key, std::move( item ) ).first;
+        }
+
+        return it->second.get();
+    };
+
+    // resolve one source lib for one placed footprint, empty if none holds an item it equals, or if
+    // several do
+    auto resolveSource = [&]( FOOTPRINT* aFp, const wxString& aName ) -> wxString
     {
         std::vector<wxString> candidates;
         wxString              ownNick = aFp->GetFPID().GetUniStringLibNickname();
@@ -259,46 +277,23 @@ FOOTPRINT_IMPORT_RECONCILER::Reconcile( BOARD* aBoard,
                 continue;
 
             // A nickname the importer emitted is not provenance.  An unrelated library that
-            // happens to carry the name must not swallow the imported definition, so it takes the
-            // link only when it holds the same footprint.
-            if( provenance.count( nick ) )
-            {
-                // some plugins throw for a footprint their library lacks
-                bool exists = false;
+            // happens to carry the name must not swallow the imported definition.
+            if( !provenance.count( nick ) && !findDef( ownNick, aName ) )
+                continue;
 
-                try
-                {
-                    exists = m_adapter.FootprintExists( nick, aName );
-                }
-                catch( const IO_ERROR& )
-                {
-                }
+            // the same pad numbers do not make the same footprint: the item must equal the placed one,
+            // or updating from the library edits the board
+            const FOOTPRINT* item = loadItem( nick, aName );
 
-                if( !exists )
-                    continue;
-            }
-            else
-            {
-                FOOTPRINT* def = findDef( ownNick, aName );
-
-                if( !def )
-                    continue;
-
-                // one load answers both existence and equivalence, FootprintExists is itself a load
-                std::unique_ptr<FOOTPRINT> candidate( m_adapter.LoadFootprint( nick, aName, true ) );
-
-                if( !candidate || !sameInterface( *candidate, *def ) )
-                    continue;
-            }
-
-            matches.push_back( nick );
+            if( item && equalsItem( *aFp, *item ) )
+                matches.push_back( nick );
         }
 
         return matches.size() == 1 ? matches.front() : wxString( wxEmptyString );
     };
 
     // per-instance target, empty target = cache-bound
-    std::map<SOURCE_KEY, wxString>                targetByKey;
+    std::map<const FOOTPRINT*, wxString>          targetByInstance;
     std::set<SOURCE_KEY>                          cacheKeys;
     std::map<SOURCE_KEY, std::vector<FOOTPRINT*>> instancesByKey;
 
@@ -310,17 +305,15 @@ FOOTPRINT_IMPORT_RECONCILER::Reconcile( BOARD* aBoard,
             continue;
 
         SOURCE_KEY key( fp->GetFPID().GetUniStringLibNickname(), name );
+        wxString   sourceNick = resolveSource( fp, name );
 
-        instancesByKey[key].push_back( fp );
-
-        if( targetByKey.count( key ) )
-            continue;
-
-        wxString sourceNick = resolveSource( fp, name );
-        targetByKey[key] = sourceNick;
+        targetByInstance[fp] = sourceNick;
 
         if( sourceNick.IsEmpty() )
+        {
             cacheKeys.insert( key );
+            instancesByKey[key].push_back( fp );
+        }
     }
 
     // a .pretty holds one file per footprint, so the file name must be unique, and case-folded for
@@ -464,9 +457,9 @@ FOOTPRINT_IMPORT_RECONCILER::Reconcile( BOARD* aBoard,
             continue;
 
         SOURCE_KEY key( fpid.GetUniStringLibNickname(), name );
-        auto       it = targetByKey.find( key );
+        auto       it = targetByInstance.find( fp );
 
-        if( it == targetByKey.end() )
+        if( it == targetByInstance.end() )
         {
             result.m_unresolved++;
             continue;

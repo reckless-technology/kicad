@@ -52,10 +52,11 @@ struct FOOTPRINT_IMPORT_RECONCILE_RESULT
  * freshly imported (non-KiCad) board so that every board footprint FPID resolves to a registered
  * project library.
  *
- * A footprint whose definition provably lives in a provenance source library is re-linked there
- * ("prefer source"); anything left over is written into a single manager-chosen generated cache
- * (.pretty) registered in the project footprint-library table ("generate residual").  The service
- * never scans arbitrary loaded/global libraries and never deletes a user library.
+ * A footprint is re-linked to a provenance source library ("prefer source") only when it equals the
+ * item there: pads equal in size, shape, drill, position and layers, and the drawing, a back side
+ * footprint being compared un-flipped.  Anything left over, whatever its side, is written into a
+ * single manager-chosen generated cache (.pretty) registered in the project footprint-library table
+ * ("generate residual").  The service never scans arbitrary loaded/global libraries and never deletes a user library.
  *
  * The footprint-library adapter and project path are injected so the service can be exercised with
  * a temporary project and a locally-owned LIBRARY_MANAGER, without a frame.
