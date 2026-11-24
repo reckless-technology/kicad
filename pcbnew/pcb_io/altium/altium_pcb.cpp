@@ -6147,6 +6147,18 @@ void ALTIUM_PCB::HelperRemoveRedundantTracks()
                 return TRACK_KEY( aTrack->GetLayer(), aTrack->GetNetCode(), aTrack->GetWidth(), a, b );
             };
 
+    // Altium's coordinates are read onto a 10 nm grid, so ends a unit or two apart in Altium's own
+    // units come out either equal or one grid step apart on each axis.  A track no further than a step
+    // apart on both axes adds no more copper than a zero-length one, so both take the same rule.
+    constexpr int GRID_STEP = pcbIUScale.mmToIU( 0.00001 );
+
+    auto isDot = []( const PCB_TRACK* aTrack )
+    {
+        VECTOR2I delta = aTrack->GetEnd() - aTrack->GetStart();
+
+        return std::abs( delta.x ) <= GRID_STEP && std::abs( delta.y ) <= GRID_STEP;
+    };
+
     std::set<TRACK_KEY>     seen;
     std::set<BOARD_ITEM*>   redundant;
     std::vector<PCB_TRACK*> dots;
@@ -6155,7 +6167,7 @@ void ALTIUM_PCB::HelperRemoveRedundantTracks()
     {
         if( !seen.insert( keyOf( track ) ).second )
             redundant.insert( track );
-        else if( track->GetStart() == track->GetEnd() )
+        else if( isDot( track ) )
             dots.push_back( track );
     }
 

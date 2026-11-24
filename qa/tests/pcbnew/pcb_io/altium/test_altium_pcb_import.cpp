@@ -93,6 +93,8 @@ struct ALTIUM_PCB_IMPORT_FIXTURE
         aImporter.ConvertArcs6ToBoardItemOnLayer( aArc, aLayer );
     }
 
+    static void removeRedundantTracks( ALTIUM_PCB& aImporter ) { aImporter.HelperRemoveRedundantTracks(); }
+
     static std::vector<const ZONE*> collectRuleAreas( const BOARD& aBoard )
     {
         std::vector<const ZONE*> ruleAreas;
@@ -2110,6 +2112,58 @@ BOOST_AUTO_TEST_CASE( RedundantTracksAreDropped )
 
     BOOST_CHECK_EQUAL( dots, 1 );
     BOOST_CHECK_EQUAL( segments, 1 );
+}
+
+
+/**
+ * Altium reads its coordinates onto a 10 nm grid, so a track whose ends are a unit or two apart in
+ * Altium's units ends up equal or one grid step long.  It adds no more copper than a zero-length
+ * one, so both are dropped inside other copper of their net and kept alone; a track longer than a
+ * step is neither.
+ */
+BOOST_AUTO_TEST_CASE( SubStepTracksAreDotsToo )
+{
+    BOARD                 board;
+    LAYER_MAPPING_HANDLER layerMappingHandler;
+    ALTIUM_PCB            importer( &board, nullptr, layerMappingHandler );
+
+    constexpr int step = 10; // nm, the grid Altium's coordinates are read onto
+    const int     width = pcbIUScale.mmToIU( 0.2 );
+    const int     mm = pcbIUScale.mmToIU( 1.0 );
+
+    auto addTrack = [&]( const VECTOR2I& aStart, const VECTOR2I& aEnd, int aWidth = 0 )
+    {
+        PCB_TRACK* track = new PCB_TRACK( &board );
+
+        track->SetStart( aStart );
+        track->SetEnd( aEnd );
+        track->SetWidth( aWidth ? aWidth : width );
+        track->SetLayer( F_Cu );
+        board.Add( track, ADD_MODE::APPEND );
+    };
+
+    addTrack( VECTOR2I( 0, 0 ), VECTOR2I( 10 * mm, 0 ) );                // carries the others
+    addTrack( VECTOR2I( 2 * mm, 0 ), VECTOR2I( 2 * mm, 0 ) );            // zero length, covered
+    addTrack( VECTOR2I( 4 * mm, 0 ), VECTOR2I( 4 * mm + step, 0 ) );     // one step, covered
+    addTrack( VECTOR2I( 6 * mm, 0 ), VECTOR2I( 6 * mm + 2 * step, 0 ) ); // two steps, covered
+    addTrack( VECTOR2I( 7 * mm, 0 ), VECTOR2I( 9 * mm, 0 ), 2 * width ); // wider, so a nudged dot fits
+    addTrack( VECTOR2I( 8 * mm, 0 ), VECTOR2I( 8 * mm + step, step ) );  // one step each way, covered
+    addTrack( VECTOR2I( 0, 5 * mm ), VECTOR2I( step, 5 * mm ) );         // one step, alone
+
+    ALTIUM_PCB_IMPORT_FIXTURE::removeRedundantTracks( importer );
+
+    std::set<std::pair<int, int>> left;
+
+    for( PCB_TRACK* track : board.Tracks() )
+        left.insert( { track->GetStart().x, track->GetStart().y } );
+
+    BOOST_CHECK_EQUAL( board.Tracks().size(), 4 );
+    BOOST_CHECK( left.count( { 0, 0 } ) );      // the carrier
+    BOOST_CHECK( left.count( { 6 * mm, 0 } ) ); // longer than a step: kept
+    BOOST_CHECK( left.count( { 0, 5 * mm } ) ); // alone: real copper, kept
+    BOOST_CHECK( !left.count( { 2 * mm, 0 } ) );
+    BOOST_CHECK( !left.count( { 4 * mm, 0 } ) );
+    BOOST_CHECK( !left.count( { 8 * mm, 0 } ) );
 }
 
 
