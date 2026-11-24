@@ -1673,7 +1673,23 @@ void PCB_IO_IPC2581::addSlotCavity( wxXmlNode* aNode, const PAD& aPad, const wxS
         addLocationNode( slotNode, aPad.GetPosition().x, aPad.GetPosition().y );
 
     // B1 SlotCavity accepts only Simple shapes, so revision B writes the hole outline
-    if( m_revision == IPC2581::REVISION::C && aPad.GetDrillShape() == PAD_DRILL_SHAPE::OBLONG )
+    if( m_revision == IPC2581::REVISION::C && aPad.GetDrillShape() == PAD_DRILL_SHAPE::RECTANGLE )
+    {
+        // Like the oval: a primitive about the Location, turned by an Xform
+        VECTOR2I  drill_size = aPad.GetDrillSize();
+        EDA_ANGLE rotation = aPad.GetOrientation().Normalize();
+
+        if( rotation != ANGLE_0 )
+        {
+            wxXmlNode* xformNode = appendNode( slotNode, "Xform" );
+            addAttribute( xformNode, "rotation", floatVal( rotation.AsDegrees() ) );
+        }
+
+        wxXmlNode* rectNode = appendNode( slotNode, "RectCenter" );
+        addAttribute( rectNode, "width", floatVal( m_scale * drill_size.x ) );
+        addAttribute( rectNode, "height", floatVal( m_scale * drill_size.y ) );
+    }
+    else if( m_revision == IPC2581::REVISION::C && aPad.GetDrillShape() == PAD_DRILL_SHAPE::OBLONG )
     {
         VECTOR2I  drill_size = aPad.GetDrillSize();
         EDA_ANGLE rotation = aPad.GetOrientation().Normalize();

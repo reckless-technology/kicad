@@ -1624,6 +1624,103 @@ BOOST_AUTO_TEST_CASE( SlotCavityUsesDrillPosition )
 }
 
 
+/**
+ * Revision C writes a rectangular hole as the oval is written: a RectCenter about the slot's
+ * Location, turned by an Xform, not an outline in board coordinates beside the Location.
+ * Revision B, which has no primitive there, keeps the outline.
+ */
+BOOST_AUTO_TEST_CASE( RectangularSlotCavityIsRelativeToItsLocation )
+{
+    std::unique_ptr<BOARD> board = LoadBoard( "rectangular_holes/fab.kicad_pcb" );
+    BOOST_REQUIRE( board );
+
+    // Hole center in IPC-2581 millimetres (Y up), size and rotation, by reference
+    struct EXPECTED
+    {
+        double x, y, width, height, rotation;
+    };
+
+    const std::map<wxString, EXPECTED> expected = { { wxS( "SQ" ), { 20.0, -20.0, 2.0, 2.0, 0.0 } },
+                                                    { wxS( "NR" ), { 30.0, -20.0, 3.0, 2.0, 0.0 } },
+                                                    { wxS( "R30" ), { 40.0, -20.0, 2.5, 1.5, 30.0 } },
+                                                    { wxS( "R90" ), { 70.0, -20.0, 2.5, 1.5, 90.0 } } };
+
+    for( char version : { 'B', 'C' } )
+    {
+        wxString                    output = CreateTempFile();
+        std::map<std::string, UTF8> props = { { "units", "mm" },
+                                              { "version", version == 'B' ? "B" : "C" },
+                                              { "sigfig", "6" } };
+        BOOST_REQUIRE_NO_THROW( m_ipc2581Plugin.SaveBoard( output, *board, &props ) );
+
+        wxXmlDocument document;
+        BOOST_REQUIRE( document.Load( output ) );
+        std::vector<wxXmlNode*> slots;
+        CollectXmlElements( document.GetRoot(), wxS( "SlotCavity" ), slots );
+
+        int rectangles = 0;
+
+        for( wxXmlNode* slot : slots )
+        {
+            wxXmlNode* rect = FindXmlChild( slot, wxS( "RectCenter" ) );
+
+            if( version == 'B' )
+            {
+                BOOST_CHECK( !rect );
+                BOOST_CHECK( FindXmlChild( slot, wxS( "Outline" ) ) );
+                continue;
+            }
+
+            if( !rect )
+                continue;
+
+            rectangles++;
+            BOOST_CHECK( !FindXmlChild( slot, wxS( "Outline" ) ) );
+
+            wxXmlNode* location = FindXmlChild( slot, wxS( "Location" ) );
+            BOOST_REQUIRE( location );
+
+            double x = 0, y = 0, width = 0, height = 0, rotation = 0;
+            BOOST_REQUIRE( location->GetAttribute( wxS( "x" ) ).ToCDouble( &x ) );
+            BOOST_REQUIRE( location->GetAttribute( wxS( "y" ) ).ToCDouble( &y ) );
+            BOOST_REQUIRE( rect->GetAttribute( wxS( "width" ) ).ToCDouble( &width ) );
+            BOOST_REQUIRE( rect->GetAttribute( wxS( "height" ) ).ToCDouble( &height ) );
+
+            if( wxXmlNode* xform = FindXmlChild( slot, wxS( "Xform" ) ) )
+                BOOST_REQUIRE( xform->GetAttribute( wxS( "rotation" ) ).ToCDouble( &rotation ) );
+
+            bool matched = false;
+
+            for( const auto& [ref, hole] : expected )
+            {
+                if( std::hypot( x - hole.x, y - hole.y ) > 0.001 )
+                    continue;
+
+                BOOST_TEST_CONTEXT( ref )
+                {
+                    BOOST_CHECK_CLOSE( width, hole.width, 0.001 );
+                    BOOST_CHECK_CLOSE( height, hole.height, 0.001 );
+                    BOOST_CHECK_SMALL( rotation - hole.rotation, 0.001 );
+                }
+
+                matched = true;
+            }
+
+            BOOST_CHECK_MESSAGE( matched, "RectCenter at an unexpected location " << x << ", " << y );
+        }
+
+        if( version == 'C' )
+            BOOST_CHECK_EQUAL( rectangles, 4 );
+
+        if( SchemaCheckReady( version ) )
+        {
+            wxString schemaError = ValidateXmlWithXsd( output, GetXsdPath( version ) );
+            BOOST_CHECK_MESSAGE( schemaError.IsEmpty(), "Revision " << version << ": " << schemaError.ToStdString() );
+        }
+    }
+}
+
+
 /** Full pad_backdrill exports pass the B1 and C schemas including SlotCavity */
 BOOST_AUTO_TEST_CASE( SlotCavityFullBoardSchema )
 {
