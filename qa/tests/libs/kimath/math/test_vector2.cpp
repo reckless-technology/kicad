@@ -203,7 +203,7 @@ BOOST_AUTO_TEST_CASE( test_casting )
     vdouble = VECTOR2D( -4.0, -3.0 );
     vlong = VECTOR2L( -4, -3 );
     vfloat = VECTOR2<float>( -4.0f, -3.0f );
-    vunsigned = VECTOR2<unsigned>( -4, -3 );
+    vunsigned = VECTOR2<unsigned>( std::numeric_limits<unsigned>::max() - 3, std::numeric_limits<unsigned>::max() - 2 );
 
     vint = vint - 1;
     vdouble = vdouble - 1;

@@ -152,9 +152,7 @@ public:
     /// @param w_ch is a UTF-16 value (can be a UTF-32 on Linux)
     UTF8& operator+=( unsigned w_ch );
 
-    // std::string::npos is not constexpr, so we can't use it in an
-    // initializer.
-    static constexpr std::string::size_type npos = -1;
+    static constexpr std::string::size_type npos = std::string::npos;
 
     UTF8& operator=( const wxString& o );
 

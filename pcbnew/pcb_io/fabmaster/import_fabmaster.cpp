@@ -344,7 +344,7 @@ size_t FABMASTER::processPadStackLayers( size_t aRow )
     size_t rownum = aRow + 2;
 
     if( rownum >= rows.size() )
-        return -1;
+        return 0;
 
     const single_row& header = rows[aRow];
 
@@ -402,13 +402,13 @@ size_t FABMASTER::processPadStacks( size_t aRow )
     size_t rownum = aRow + 2;
 
     if( rownum >= rows.size() )
-        return -1;
+        return 0;
 
     const single_row& header = rows[aRow];
     double scale_factor = processScaleFactor( aRow + 1 );
 
     if( scale_factor <= 0.0 )
-        return -1;
+        return 0;
 
     int pad_name_col       = getColFromName( aRow, "PADNAME" );
     int pad_num_col        = getColFromName( aRow, "RECNUMBER" );
@@ -678,19 +678,19 @@ size_t FABMASTER::processSimpleLayers( size_t aRow )
     size_t rownum = aRow + 2;
 
      if( rownum >= rows.size() )
-         return -1;
+         return 0;
 
      auto& header = rows[aRow];
      double scale_factor = processScaleFactor( aRow + 1 );
 
      if( scale_factor <= 0.0 )
-         return -1;
+         return 0;
 
      int layer_class_col     = getColFromName( aRow, "CLASS" );
      int layer_subclass_col  = getColFromName( aRow, "SUBCLASS" );
 
      if( layer_class_col < 0 || layer_subclass_col < 0 )
-         return -1;
+         return 0;
 
      for( ; rownum < rows.size() && rows[rownum].size() > 0 && rows[rownum][0] == "S"; ++rownum )
      {
@@ -854,13 +854,13 @@ size_t FABMASTER::processLayers( size_t aRow )
     size_t rownum = aRow + 2;
 
     if( rownum >= rows.size() )
-        return -1;
+        return 0;
 
     auto& header = rows[aRow];
     double scale_factor = processScaleFactor( aRow + 1 );
 
     if( scale_factor <= 0.0 )
-        return -1;
+        return 0;
 
     int layer_sort_col      = getColFromName( aRow, "LAYERSORT" );
     int layer_subclass_col  = getColFromName( aRow, "LAYERSUBCLASS" );
@@ -873,7 +873,7 @@ size_t FABMASTER::processLayers( size_t aRow )
 
     if( layer_sort_col < 0 || layer_subclass_col < 0 || layer_art_col < 0 || layer_use_col < 0
             || layer_cond_col < 0 || layer_er_col < 0 || layer_rho_col < 0 || layer_mat_col < 0 )
-        return -1;
+        return 0;
 
     for( ; rownum < rows.size() && rows[rownum].size() > 0 && rows[rownum][0] == "S"; ++rownum )
     {
@@ -926,13 +926,13 @@ size_t FABMASTER::processCustomPads( size_t aRow )
     size_t rownum = aRow + 2;
 
     if( rownum >= rows.size() )
-        return -1;
+        return 0;
 
     auto& header = rows[aRow];
     double scale_factor = processScaleFactor( aRow + 1 );
 
     if( scale_factor <= 0.0 )
-        return -1;
+        return 0;
 
     int pad_subclass_col     = getColFromName( aRow, "SUBCLASS" );
     int pad_shape_name_col   = getColFromName( aRow, "PADSHAPENAME" );
@@ -957,7 +957,7 @@ size_t FABMASTER::processCustomPads( size_t aRow )
             || pad_grdata6_col < 0 || pad_grdata7_col < 0 || pad_grdata8_col < 0
             || pad_grdata9_col < 0 || pad_stack_name_col < 0 || pad_refdes_col < 0
             || pad_pin_num_col < 0 )
-        return -1;
+        return 0;
 
     for( ; rownum < rows.size() && rows[rownum].size() > 0 && rows[rownum][0] == "S"; ++rownum )
     {
@@ -1484,13 +1484,13 @@ size_t FABMASTER::processGeometry( size_t aRow )
     size_t rownum = aRow + 2;
 
     if( rownum >= rows.size() )
-        return -1;
+        return 0;
 
     const single_row& header = rows[aRow];
     double scale_factor = processScaleFactor( aRow + 1 );
 
     if( scale_factor <= 0.0 )
-        return -1;
+        return 0;
 
     int geo_name_col = getColFromName( aRow, "GRAPHICDATANAME" );
     int geo_num_col = getColFromName( aRow, "GRAPHICDATANUMBER" );
@@ -1513,7 +1513,7 @@ size_t FABMASTER::processGeometry( size_t aRow )
             || geo_grdata6_col < 0 || geo_grdata7_col < 0 || geo_grdata8_col < 0
             || geo_grdata9_col < 0 || geo_subclass_col < 0 || geo_sym_name_col < 0
             || geo_refdes_col < 0 )
-        return -1;
+        return 0;
 
     for( ; rownum < rows.size() && rows[rownum].size() > 0 && rows[rownum][0] == "S"; ++rownum )
     {
@@ -1616,13 +1616,13 @@ size_t FABMASTER::processVias( size_t aRow )
     size_t rownum = aRow + 2;
 
     if( rownum >= rows.size() )
-        return -1;
+        return 0;
 
     const single_row& header = rows[aRow];
     double scale_factor = processScaleFactor( aRow + 1 );
 
     if( scale_factor <= 0.0 )
-        return -1;
+        return 0;
 
     int viax_col = getColFromName( aRow, "VIAX" );
     int viay_col = getColFromName( aRow, "VIAY" );
@@ -1632,7 +1632,7 @@ size_t FABMASTER::processVias( size_t aRow )
 
     if( viax_col < 0 || viay_col < 0 || padstack_name_col < 0 || net_name_col < 0
             || test_point_col < 0 )
-        return -1;
+        return 0;
 
     for( ; rownum < rows.size() && rows[rownum].size() > 0 && rows[rownum][0] == "S"; ++rownum )
     {
@@ -1671,13 +1671,13 @@ size_t FABMASTER::processTraces( size_t aRow )
     size_t rownum = aRow + 2;
 
     if( rownum >= rows.size() )
-        return -1;
+        return 0;
 
     const single_row& header = rows[aRow];
     double scale_factor = processScaleFactor( aRow + 1 );
 
     if( scale_factor <= 0.0 )
-        return -1;
+        return 0;
 
     int class_col = getColFromName( aRow, "CLASS" );
     int layer_col = getColFromName( aRow, "SUBCLASS" );
@@ -1699,7 +1699,7 @@ size_t FABMASTER::processTraces( size_t aRow )
             || tag_col < 0 || grdata1_col < 0 || grdata2_col < 0 || grdata3_col < 0
             || grdata4_col < 0 || grdata5_col < 0 || grdata6_col < 0 || grdata7_col < 0
             || grdata8_col < 0 || grdata9_col < 0 || netname_col < 0 )
-        return -1;
+        return 0;
 
     for( ; rownum < rows.size() && rows[rownum].size() > 0 && rows[rownum][0] == "S"; ++rownum )
     {
@@ -1854,13 +1854,13 @@ size_t FABMASTER::processFootprints( size_t aRow )
     size_t rownum = aRow + 2;
 
     if( rownum >= rows.size() )
-        return -1;
+        return 0;
 
     const single_row& header = rows[aRow];
     double scale_factor = processScaleFactor( aRow + 1 );
 
     if( scale_factor <= 0.0 )
-        return -1;
+        return 0;
 
     int refdes_col = getColFromName( aRow, "REFDES" );
     int compclass_col = getColFromName( aRow, "COMPCLASS" );
@@ -1882,7 +1882,7 @@ size_t FABMASTER::processFootprints( size_t aRow )
             || compdevlabelcol < 0 || compinscode_col < 0 || symtype_col < 0 || symname_col < 0
             || symmirror_col < 0 || symrotate_col < 0 || symx_col < 0 || symy_col < 0
             || compvalue_col < 0 || comptol_col < 0 || compvolt_col < 0 )
-        return -1;
+        return 0;
 
     for( ; rownum < rows.size() && rows[rownum].size() > 0 && rows[rownum][0] == "S"; ++rownum )
     {
@@ -1950,13 +1950,13 @@ size_t FABMASTER::processPins( size_t aRow )
     size_t rownum = aRow + 2;
 
     if( rownum >= rows.size() )
-        return -1;
+        return 0;
 
     const single_row& header = rows[aRow];
     double scale_factor = processScaleFactor( aRow + 1 );
 
     if( scale_factor <= 0.0 )
-        return -1;
+        return 0;
 
     int symname_col = getColFromName( aRow, "SYMNAME" );
     int symmirror_col = getColFromName( aRow, "SYMMIRROR" );
@@ -1972,7 +1972,7 @@ size_t FABMASTER::processPins( size_t aRow )
     if( symname_col < 0 ||symmirror_col < 0 || pinname_col < 0 || pinnum_col < 0 || pinx_col < 0
             || piny_col < 0 || padstack_col < 0 || refdes_col < 0 || pinrot_col < 0
             || testpoint_col < 0 )
-        return -1;
+        return 0;
 
     for( ; rownum < rows.size() && rows[rownum].size() > 0 && rows[rownum][0] == "S"; ++rownum )
     {
@@ -2028,13 +2028,13 @@ size_t FABMASTER::processNets( size_t aRow )
     size_t rownum = aRow + 2;
 
     if( rownum >= rows.size() )
-        return -1;
+        return 0;
 
     const single_row& header = rows[aRow];
     double scale_factor = processScaleFactor( aRow + 1 );
 
     if( scale_factor <= 0.0 )
-        return -1;
+        return 0;
 
     int netname_col = getColFromName( aRow, "NETNAME" );
     int refdes_col = getColFromName( aRow, "REFDES" );
@@ -2045,7 +2045,7 @@ size_t FABMASTER::processNets( size_t aRow )
 
     if( netname_col < 0 || refdes_col < 0 || pinnum_col < 0 || pinname_col < 0 || pingnd_col < 0
             || pinpwr_col < 0 )
-        return -1;
+        return 0;
 
     for( ; rownum < rows.size() && rows[rownum].size() > 0 && rows[rownum][0] == "S"; ++rownum )
     {
@@ -2091,81 +2091,81 @@ bool FABMASTER::Process()
             /// the stackup is kept in the basic fabmaster export
             processPadStackLayers( i );
             assignLayers();
-            int retval = processPadStacks( i );
+            size_t retval = processPadStacks( i );
 
-            i += std::max( retval, 1 );
+            i += std::max<size_t>( retval, 1 );
             break;
         }
 
         case EXTRACT_FULL_LAYERS:
         {
-            int retval = processLayers( i );
+            size_t retval = processLayers( i );
 
-            i += std::max( retval, 1 );
+            i += std::max<size_t>( retval, 1 );
             break;
         }
 
         case EXTRACT_BASIC_LAYERS:
         {
-            int retval = processSimpleLayers( i );
+            size_t retval = processSimpleLayers( i );
 
-            i += std::max( retval, 1 );
+            i += std::max<size_t>( retval, 1 );
             break;
         }
 
         case EXTRACT_VIAS:
         {
-            int retval = processVias( i );
+            size_t retval = processVias( i );
 
-            i += std::max( retval, 1 );
+            i += std::max<size_t>( retval, 1 );
             break;
         }
 
         case EXTRACT_TRACES:
         {
-            int retval = processTraces( i );
+            size_t retval = processTraces( i );
 
-            i += std::max( retval, 1 );
+            i += std::max<size_t>( retval, 1 );
             break;
         }
 
         case EXTRACT_REFDES:
         {
-            int retval = processFootprints( i );
+            size_t retval = processFootprints( i );
 
-            i += std::max( retval, 1 );
+            i += std::max<size_t>( retval, 1 );
             break;
         }
 
         case EXTRACT_NETS:
         {
-            int retval = processNets( i );
+            size_t retval = processNets( i );
 
-            i += std::max( retval, 1 );
+            i += std::max<size_t>( retval, 1 );
             break;
         }
 
         case EXTRACT_GRAPHICS:
         {
-            int retval = processGeometry( i );
+            size_t retval = processGeometry( i );
 
-            i += std::max( retval, 1 );
+            i += std::max<size_t>( retval, 1 );
             break;
         }
 
         case EXTRACT_PINS:
         {
-            int retval = processPins( i );
+            size_t retval = processPins( i );
 
-            i += std::max( retval, 1 );
+            i += std::max<size_t>( retval, 1 );
             break;
         }
 
         case EXTRACT_PAD_SHAPES:
         {
-            int retval = processCustomPads( i );
+            size_t retval = processCustomPads( i );
 
-            i += std::max( retval, 1 );
+            i += std::max<size_t>( retval, 1 );
             break;
         }
 

@@ -564,7 +564,7 @@ private:
      * Processes data from text vectors into internal database
      * for further ordering
      * @param aRow vector offset being processed
-     * @return Count of the number of rows processed, return -1 on error
+     * @return Count of the number of rows processed, or 0 on error
      */
     double processScaleFactor( size_t aRow );
     size_t processPadStacks( size_t aRow );
