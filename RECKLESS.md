@@ -25,6 +25,13 @@ from a shell skips the entries. The proportional font (Noto Serif) is not set th
 desktop's XSETTINGS, which a `settings.ini` or theme in the environment does not override, so it needs a small code
 change (#47 comment).
 
+Schematic text defaults to Noto Serif (#48): `appearance.default_font` ships as Noto Serif when fontconfig lists that
+family, and as the KiCad stroke font otherwise. New text carries no font of its own, so it follows the setting when
+drawn. The choice is made when the settings object is built, because fontconfig answers a missing family with some other
+font, never the stroke font. No migration touches the key: a file that names a font keeps it. Text saved with no face of
+its own, which includes every pin's name and number and most fields, follows the setting too, so existing schematics
+draw and plot in Noto Serif; the preference set back to "KiCad Font" restores the stroke font.
+
 ## Keeping up with upstream
 
 `reckless/main` is rebased onto upstream `master` only when Jonny asks for it, never on a schedule, so a rebase never
