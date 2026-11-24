@@ -17,6 +17,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <map>
 #include <memory>
 #include <set>
 #include <vector>
@@ -188,6 +189,99 @@ COLLISION_CANDIDATE findCandidate( IMPORTED_BOARD& aSample )
     }
 
     return candidate;
+}
+
+/// A front footprint of @p aBoard with two or more pads whose name no other footprint shares.
+FOOTPRINT* findUniqueFront( BOARD& aBoard, const FOOTPRINT* aExcept )
+{
+    std::map<wxString, int> counts;
+
+    for( FOOTPRINT* fp : aBoard.Footprints() )
+        counts[fp->GetFPID().GetUniStringLibItemName()]++;
+
+    for( FOOTPRINT* fp : aBoard.Footprints() )
+    {
+        wxString name = fp->GetFPID().GetUniStringLibItemName();
+
+        if( fp != aExcept && fp->GetLayer() == F_Cu && fp->Pads().size() > 1 && !name.IsEmpty()
+            && counts[name] == 1 )
+        {
+            return fp;
+        }
+    }
+
+    return nullptr;
+}
+
+
+/// Register a source library holding @p aItems, each stored under its footprint's name.
+void publishSourceLibrary( PROJECT& aProject, FOOTPRINT_LIBRARY_ADAPTER& aAdapter, const wxString& aNickname,
+                           const std::vector<const FOOTPRINT*>& aItems )
+{
+    wxFileName libDir( aProject.GetProjectPath(), aNickname, wxString( FILEEXT::KiCadFootprintLibPathExtension ) );
+    wxString   libPath = libDir.GetFullPath();
+
+    IO_RELEASER<PCB_IO> pi( PCB_IO_MGR::FindPlugin( PCB_IO_MGR::KICAD_SEXP ) );
+    BOOST_REQUIRE( pi );
+
+    pi->CreateLibrary( libPath );
+
+    for( const FOOTPRINT* item : aItems )
+    {
+        std::unique_ptr<FOOTPRINT> copy( static_cast<FOOTPRINT*>( item->Clone() ) );
+
+        copy->SetFPID( LIB_ID( aNickname, item->GetFPID().GetUniStringLibItemName() ) );
+        copy->SetReference( wxS( "REF**" ) );
+        pi->FootprintSave( libPath, copy.get() );
+    }
+
+    LIBRARY_TABLE* table = aAdapter.ProjectTable().value_or( nullptr );
+    BOOST_REQUIRE( table );
+
+    LIBRARY_TABLE_ROW& row = table->InsertRow();
+    row.SetNickname( aNickname );
+    row.SetURI( wxS( "${KIPRJMOD}/" ) + libDir.GetFullName() );
+    row.SetType( wxS( "KiCad" ) );
+    row.SetScope( LIBRARY_TABLE_SCOPE::PROJECT );
+
+    BOOST_REQUIRE( table->Save().has_value() );
+    aAdapter.LoadOne( aNickname );
+}
+
+
+/// Make the footprint a different part with the same pad numbers: the first pad gets bigger.
+void growFirstPad( FOOTPRINT& aFootprint )
+{
+    PAD* pad = aFootprint.Pads().front();
+
+    pad->SetSize( PADSTACK::ALL_LAYERS, pad->GetSize( PADSTACK::ALL_LAYERS ) + VECTOR2I( 100000, 100000 ) );
+}
+
+/// True when the footprint with @p aReference, as saved and read back, equals the item its FPID names.
+bool equalsLinkedItem( PROJECT& aProject, FOOTPRINT_LIBRARY_ADAPTER& aAdapter, BOARD& aBoard,
+                       const wxString& aReference )
+{
+    PCB_IO_KICAD_SEXPR kicad;
+    wxString           boardPath = aProject.GetProjectPath() + wxS( "equal.kicad_pcb" );
+
+    kicad.SaveBoard( boardPath, aBoard );
+    std::unique_ptr<BOARD> reloaded( kicad.LoadBoard( boardPath, nullptr, &aProject ) );
+    BOOST_REQUIRE( reloaded );
+
+    for( FOOTPRINT* fp : reloaded->Footprints() )
+    {
+        if( fp->GetReference() != aReference )
+            continue;
+
+        std::unique_ptr<FOOTPRINT> item( aAdapter.LoadFootprint( fp->GetFPID().GetUniStringLibNickname(),
+                                                                 fp->GetFPID().GetUniStringLibItemName(), true ) );
+        BOOST_REQUIRE( item );
+
+        return !fp->FootprintNeedsUpdate( item.get(), BOARD_ITEM::COMPARE_FLAGS::DRC );
+    }
+
+    BOOST_FAIL( "footprint not found after reload" );
+    return false;
 }
 } // namespace
 
@@ -466,6 +560,121 @@ BOOST_AUTO_TEST_CASE( SourceLibraryMissingAFootprintStillReconciles )
 
     BOOST_CHECK_EQUAL( result.m_cacheNickname, cacheNick );
     BOOST_CHECK_EQUAL( result.m_unresolved, 0 );
+}
+
+
+// A source item with the placed footprint's name and pad numbers is the same footprint only when it equals it
+// fails on revert, since the link then went by pad numbers alone and the board kept its own geometry
+BOOST_AUTO_TEST_CASE( FrontFootprintLinksToSourceItemOnlyWhenEqual )
+{
+    KI_TEST::SCOPED_TEMP_DIR projectDir( wxS( "fpreconcile_equal_front" ) );
+    stageProject( projectDir.Path(), wxS( "fpreconcile_equal_front" ) );
+    PROJECT& project = Pgm().GetSettingsManager().Prj();
+
+    PCB_IO_ALTIUM_DESIGNER plugin;
+    std::unique_ptr<BOARD> board = std::make_unique<BOARD>();
+    board->SetProject( &project );
+    plugin.LoadAndAppendBoard( KI_TEST::GetPcbnewTestDataDir() + "plugins/altium/HiFive/HiFive1.B01.PcbDoc", *board,
+                               nullptr, &project );
+
+    FOOTPRINT* differing = findUniqueFront( *board, nullptr );
+    FOOTPRINT* same = findUniqueFront( *board, differing );
+    BOOST_REQUIRE( differing );
+    BOOST_REQUIRE( same );
+
+    const wxString differingReference = differing->GetReference();
+    const wxString sameReference = same->GetReference();
+
+    std::unique_ptr<FOOTPRINT> sourceDiffering( static_cast<FOOTPRINT*>( differing->Clone() ) );
+    growFirstPad( *sourceDiffering );
+
+    FOOTPRINT_LIBRARY_ADAPTER* adapter = PROJECT_PCB::FootprintLibAdapter( &project );
+    BOOST_REQUIRE( adapter );
+
+    publishSourceLibrary( project, *adapter, wxS( "source_lib" ), { sourceDiffering.get(), same } );
+
+    std::vector<std::unique_ptr<FOOTPRINT>> defs;
+
+    for( FOOTPRINT* fp : plugin.GetImportedCachedLibraryFootprints() )
+        defs.emplace_back( fp );
+
+    const wxString              cacheNick = wxS( "equal-front-fps" );
+    FOOTPRINT_IMPORT_RECONCILER reconciler( *adapter, project.GetProjectPath() );
+
+    FOOTPRINT_IMPORT_RECONCILE_RESULT result =
+            reconciler.Reconcile( board.get(), std::move( defs ), cacheNick, { wxS( "source_lib" ) } );
+
+    // the equal one links to the source item, the one that differs does not
+    BOOST_CHECK_EQUAL( same->GetFPID().GetUniStringLibNickname(), wxS( "source_lib" ) );
+    BOOST_CHECK_EQUAL( differing->GetFPID().GetUniStringLibNickname(), cacheNick );
+    BOOST_CHECK_GT( result.m_linkedToSource, 0 );
+    BOOST_CHECK_EQUAL( result.m_unresolved, 0 );
+
+    // and what it links to equals it, so nothing edits the board
+    BOOST_CHECK( equalsLinkedItem( project, *adapter, *board, differingReference ) );
+    BOOST_CHECK( equalsLinkedItem( project, *adapter, *board, sameReference ) );
+}
+
+
+// A back side footprint is compared un-flipped: an equal item links, a different one is cached un-flipped
+// fails on revert, since the link then went by pad numbers alone and the board kept its own geometry
+BOOST_AUTO_TEST_CASE( BackSideFootprintLinksToSourceItemOnlyWhenEqual )
+{
+    KI_TEST::SCOPED_TEMP_DIR projectDir( wxS( "fpreconcile_equal_back" ) );
+    stageProject( projectDir.Path(), wxS( "fpreconcile_equal_back" ) );
+    PROJECT& project = Pgm().GetSettingsManager().Prj();
+
+    PCB_IO_ALTIUM_DESIGNER plugin;
+    std::unique_ptr<BOARD> board = std::make_unique<BOARD>();
+    board->SetProject( &project );
+    plugin.LoadAndAppendBoard( KI_TEST::GetPcbnewTestDataDir() + "plugins/altium/HiFive/HiFive1.B01.PcbDoc", *board,
+                               nullptr, &project );
+
+    FOOTPRINT* differing = findUniqueFront( *board, nullptr );
+    FOOTPRINT* same = findUniqueFront( *board, differing );
+    BOOST_REQUIRE( differing );
+    BOOST_REQUIRE( same );
+
+    const wxString differingReference = differing->GetReference();
+    const wxString sameReference = same->GetReference();
+
+    // the source items are the front side originals, as a library holds them
+    std::unique_ptr<FOOTPRINT> sourceDiffering( static_cast<FOOTPRINT*>( differing->Clone() ) );
+    growFirstPad( *sourceDiffering );
+
+    FOOTPRINT_LIBRARY_ADAPTER* adapter = PROJECT_PCB::FootprintLibAdapter( &project );
+    BOOST_REQUIRE( adapter );
+
+    publishSourceLibrary( project, *adapter, wxS( "source_lib" ), { sourceDiffering.get(), same } );
+
+    // both are then placed on the back
+    differing->Flip( differing->GetPosition(), FLIP_DIRECTION::TOP_BOTTOM );
+    same->Flip( same->GetPosition(), FLIP_DIRECTION::TOP_BOTTOM );
+    BOOST_REQUIRE( differing->IsFlipped() );
+    BOOST_REQUIRE( same->IsFlipped() );
+
+    std::vector<std::unique_ptr<FOOTPRINT>> defs;
+
+    for( FOOTPRINT* fp : plugin.GetImportedCachedLibraryFootprints() )
+        defs.emplace_back( fp );
+
+    const wxString              cacheNick = wxS( "equal-back-fps" );
+    FOOTPRINT_IMPORT_RECONCILER reconciler( *adapter, project.GetProjectPath() );
+
+    FOOTPRINT_IMPORT_RECONCILE_RESULT result =
+            reconciler.Reconcile( board.get(), std::move( defs ), cacheNick, { wxS( "source_lib" ) } );
+
+    BOOST_CHECK_EQUAL( same->GetFPID().GetUniStringLibNickname(), wxS( "source_lib" ) );
+    BOOST_CHECK_EQUAL( differing->GetFPID().GetUniStringLibNickname(), cacheNick );
+    BOOST_CHECK_EQUAL( result.m_unresolved, 0 );
+
+    // the item written for the back side copy is a front side one that the copy equals
+    std::unique_ptr<FOOTPRINT> linked( adapter->LoadFootprint( cacheNick, differing->GetFPID().GetUniStringLibItemName(),
+                                                               true ) );
+    BOOST_REQUIRE( linked );
+    BOOST_CHECK( !linked->IsFlipped() );
+    BOOST_CHECK( equalsLinkedItem( project, *adapter, *board, differingReference ) );
+    BOOST_CHECK( equalsLinkedItem( project, *adapter, *board, sameReference ) );
 }
 
 
