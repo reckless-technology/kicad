@@ -18,9 +18,13 @@
 */
 
 #include <functional>
+#include <string>
+#include <vector>
 
 #include <dialogs/dialog_bom_cfg_lexer.h>
 #include <eda_draw_frame.h>
+#include <font/fontconfig.h>
+#include <font/kicad_font_name.h>
 #include <eeschema_settings.h>
 #include <layer_ids.h>
 #include <symbol_editor_settings.h>
@@ -170,6 +174,38 @@ const wxAuiPaneInfo& defaultRemoteSymbolPaneInfo( wxWindow* aWindow )
 }
 
 
+wxString EESCHEMA_SETTINGS::PreferredDefaultFont()
+{
+    return wxS( "Noto Serif" );
+}
+
+
+wxString EESCHEMA_SETTINGS::ChooseDefaultFont( const std::vector<std::string>& aInstalledFonts )
+{
+    const wxString preferred = PreferredDefaultFont();
+
+    for( const std::string& family : aInstalledFonts )
+    {
+        if( wxString::FromUTF8( family ).CmpNoCase( preferred ) == 0 )
+            return preferred;
+    }
+
+    // Not installed: a font that is missing is silently replaced by whatever fontconfig likes best, which is
+    // never the stroke font, so fall back to the stroke font here rather than at render time.
+    return KICAD_FONT_NAME;
+}
+
+
+wxString EESCHEMA_SETTINGS::InstalledDefaultFont()
+{
+    std::vector<std::string> families;
+
+    Fontconfig()->ListFonts( families, std::string( Pgm().GetLanguageTag().utf8_str() ) );
+
+    return ChooseDefaultFont( families );
+}
+
+
 EESCHEMA_SETTINGS::EESCHEMA_SETTINGS() :
         APP_SETTINGS_BASE( "eeschema", eeschemaSchemaVersion ),
         m_Appearance(),
@@ -196,7 +232,7 @@ EESCHEMA_SETTINGS::EESCHEMA_SETTINGS() :
             &m_Appearance.print_sheet_reference, true ) );
 
     m_params.emplace_back( new PARAM<wxString>( "appearance.default_font",
-            &m_Appearance.default_font, "KiCad Font" ) );
+            &m_Appearance.default_font, InstalledDefaultFont() ) );
 
     m_params.emplace_back( new PARAM<bool>( "appearance.show_hidden_pins",
             &m_Appearance.show_hidden_pins, false ) );
