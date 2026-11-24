@@ -569,6 +569,15 @@ bool PAD::IsNPTHWithNoCopper() const
                     if( GetSize( layer ).x > GetDrillSize().x || GetSize( layer ).y > GetDrillSize().y )
                         hasCopper = true;
                 }
+                else if( GetShape( layer ) == PAD_SHAPE::RECTANGLE && GetDrillShape() == PAD_DRILL_SHAPE::RECTANGLE )
+                {
+                    // The same test FlashLayer() makes: the rectangle and its hole turn together
+                    if( GetOffset( layer ) != VECTOR2I( 0, 0 ) || GetSize( layer ).x > GetDrillSize().x
+                        || GetSize( layer ).y > GetDrillSize().y )
+                    {
+                        hasCopper = true;
+                    }
+                }
                 else
                 {
                     hasCopper = true;
