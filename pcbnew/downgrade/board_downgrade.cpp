@@ -118,6 +118,8 @@ static constexpr int VER_IMAGE_OPACITY = 20261025;
 static constexpr int VER_FP_LIB_HEADER = 20261028;
 static constexpr int VER_STACKUP_TABLE = 20261030;
 static constexpr int VER_NON_COMPONENT_PAD = 20261031;
+// Rectangular pad holes arrived without a format bump while 20261031 was current.
+static constexpr int VER_RECTANGULAR_HOLE = 20261031;
 
 // The board format these rules were written against. When SEXPR_BOARD_FILE_VERSION moves past
 // it, ClassifyBoardForDowngrade asserts in debug builds until the new format is covered.
@@ -768,6 +770,20 @@ static void dropPostMachining( BOARD* aBoard )
         if( track->Type() == PCB_VIA_T )
             clear( static_cast<PCB_VIA*>( track )->Padstack() );
     }
+}
+
+
+static int countRectangularHoles( const BOARD* aBoard )
+{
+    int count = 0;
+
+    for( PAD* pad : aBoard->GetPads() )
+    {
+        if( pad->HasHole() && pad->GetDrillShape() == PAD_DRILL_SHAPE::RECTANGLE )
+            count++;
+    }
+
+    return count;
 }
 
 
@@ -2817,6 +2833,10 @@ static std::vector<BOARD_RULE> boardRules()
         { VER_BACKDRILL, DOWNGRADE_BUCKET::BLOCK, _( "Backdrill / tertiary drill" ),
           _( "Backdrilling changes copper connectivity and cannot be represented." ),
           countBackdrills, nullptr },
+        { VER_RECTANGULAR_HOLE, DOWNGRADE_BUCKET::BLOCK, _( "Rectangular pad holes" ),
+          _( "The target has no rectangular hole. It would make the hole round, which changes the board's "
+             "clearances and the fabricated hole." ),
+          countRectangularHoles, nullptr },
         { VER_POST_MACHINING, DOWNGRADE_BUCKET::DROP, _( "Counterbore / countersink" ),
           _( "Drill post-machining is removed." ), countPostMachining, dropPostMachining, dropPostMachiningFp },
         { VER_PRESSFIT, DOWNGRADE_BUCKET::DROP, _( "Press-fit pads" ),

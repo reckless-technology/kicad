@@ -317,6 +317,31 @@ BOOST_AUTO_TEST_CASE( NonComponentPadBlocksOlderTargets )
 }
 
 
+// A rectangular pad hole has no counterpart in 10.0 or 9.0, whose writers would make it round, so it
+// blocks the export rather than change the hole.
+BOOST_AUTO_TEST_CASE( RectangularHoleBlocksOlderTargets )
+{
+    BOARD      board;
+    FOOTPRINT* fp = new FOOTPRINT( &board );
+    board.Add( fp );
+
+    PAD* pad = new PAD( fp );
+    pad->SetAttribute( PAD_ATTRIB::PTH );
+    pad->SetShape( PADSTACK::ALL_LAYERS, PAD_SHAPE::RECTANGLE );
+    pad->SetSize( PADSTACK::ALL_LAYERS, VECTOR2I( pcbIUScale.mmToIU( 3 ), pcbIUScale.mmToIU( 3 ) ) );
+    pad->SetDrillShape( PAD_DRILL_SHAPE::RECTANGLE );
+    pad->SetDrillSize( VECTOR2I( pcbIUScale.mmToIU( 2 ), pcbIUScale.mmToIU( 2 ) ) );
+    pad->SetLayerSet( PAD::PTHMask() );
+    fp->Add( pad );
+
+    BOOST_CHECK_EQUAL( ClassifyBoardForDowngrade( &board, kicad10 ).Count( DOWNGRADE_BUCKET::BLOCK ), 1 );
+    BOOST_CHECK_EQUAL( ClassifyBoardForDowngrade( &board, kicad9 ).Count( DOWNGRADE_BUCKET::BLOCK ), 1 );
+
+    pad->SetDrillShape( PAD_DRILL_SHAPE::OBLONG );
+    BOOST_CHECK_EQUAL( ClassifyBoardForDowngrade( &board, kicad10 ).Count( DOWNGRADE_BUCKET::BLOCK ), 0 );
+}
+
+
 // Per-zone layer properties (20250302) postdate 9.0, so they are dropped like the board-level
 // zone defaults.
 BOOST_AUTO_TEST_CASE( ZoneLayerPropertiesDroppedForKicad9 )

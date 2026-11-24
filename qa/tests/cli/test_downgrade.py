@@ -21,6 +21,7 @@ import xml.etree.ElementTree as ET
 
 GOLDEN = Path(__file__).resolve().parents[2] / "data/downgrade/golden"
 REGRESSIONS = GOLDEN.parent / "regressions"
+RECTANGULAR_HOLES = GOLDEN.parents[1] / "pcbnew/rectangular_holes/fab.kicad_pcb"
 U1_UUID = "a4c99c12-ed9f-4373-b780-7fdce8d40657"
 HATCH_FOOTPRINT = """(footprint "Hatch" (version 20260623) (generator "pcbnew")
   (layer "F.Cu")
@@ -160,6 +161,26 @@ class TestDropApproximations(unittest.TestCase):
         self.assertTrue(json.loads(report.read_text())["blocked"])
         self.assertFalse(output.exists())
         self.assertEqual(self.source_snapshot(), original)
+
+    def test_rectangular_pad_holes_block_older_targets(self):
+        board = self.source / "rectangular_holes.kicad_pcb"
+        shutil.copyfile(RECTANGULAR_HOLES, board)
+        original = board.read_bytes()
+        for target in ("9.0", "10.0"):
+            with self.subTest(target=target):
+                report_path = self.root / f"rectangular-{target}.json"
+                result = self.cli("pcb", "downgrade", board, "--target", target, "--dry-run",
+                                  "--report-json", report_path)
+                report = json.loads(report_path.read_text())
+                self.assertTrue(report["blocked"], result.stdout + result.stderr)
+                self.assertIn("Rectangular pad holes",
+                              [e["feature"] for e in report["entries"] if e["category"] == "block"])
+                self.assertIn("Rectangular pad holes", result.stdout + result.stderr)
+                output = self.root / f"rectangular-{target}.kicad_pcb"
+                result = self.cli("pcb", "downgrade", board, "--target", target, "--force", "--output", output)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertFalse(output.exists())
+                self.assertEqual(board.read_bytes(), original)
 
     def test_json_report_cannot_replace_source_designs(self):
         original = self.source_snapshot()
