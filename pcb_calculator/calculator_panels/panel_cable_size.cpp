@@ -212,7 +212,7 @@ void PANEL_CABLE_SIZE::OnCableSizeChange( wxCommandEvent& aEvent [[maybe_unused]
         double   value;
         int      index = m_sizeChoice->GetSelection();
 
-        if( ( index >= 0 ) && ( index < m_entries.size() ) )
+        if( ( index >= 0 ) && ( index < static_cast<int>( m_entries.size() ) ) )
         {
             value = m_entries.at( index ).m_Radius;
             updateAll( value );

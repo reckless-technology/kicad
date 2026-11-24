@@ -79,7 +79,7 @@ public:
 protected:
     void doReCreateMenuBar() override;
 
-    DECLARE_EVENT_TABLE();
+    DECLARE_EVENT_TABLE()
 
 private:
     // Event handlers

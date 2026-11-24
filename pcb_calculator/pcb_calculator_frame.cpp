@@ -277,7 +277,7 @@ void PCB_CALCULATOR_FRAME::OnPageChanged ( wxTreebookEvent& aEvent )
         m_treebook->ExpandNode( page );
 
         // Select the first child
-        if( page + 1 < m_treebook->GetPageCount() )
+        if( static_cast<size_t>( page + 1 ) < m_treebook->GetPageCount() )
             m_treebook->ChangeSelection( page + 1 );
     }
 }
@@ -379,7 +379,7 @@ void PCB_CALCULATOR_FRAME::OnUpdateUI( wxUpdateUIEvent& event [[maybe_unused]] )
             translinePanel->GetTranslineSelector()->Command( event2 );
         }
 
-        for( int i = 0; i < attenPanel->m_AttenuatorList.size(); ++i )
+        for( int i = 0; i < static_cast<int>( attenPanel->m_AttenuatorList.size() ); ++i )
         {
             if( attenPanel->m_AttenuatorList[i] == attenPanel->m_CurrAttenuator )
             {
