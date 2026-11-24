@@ -1534,6 +1534,11 @@ void ODB_LAYER_ENTITY::InitDrillData()
                 if( isNPTHLayer != padIsNPTH )
                     continue;
 
+                // A drill layer holds only round hits and straight slots, so a rectangular hole is
+                // left to the rout layer, which carries its outline
+                if( pad->GetDrillShape() == PAD_DRILL_SHAPE::RECTANGLE )
+                    continue;
+
                 m_tools.value().AddDrillTool( m_plugin->GetFormat(),
                                               padIsNPTH ? wxT( "NON_PLATED" ) : wxT( "PLATED" ),
                                               std::min( pad->GetDrillSize().x, pad->GetDrillSize().y ),
