@@ -32,6 +32,12 @@ if (POLICY CMP0141)
   cmake_policy(SET CMP0141 NEW)
 endif (POLICY CMP0141)
 
+#  Drop repeated libraries from link lines on linkers that resolve archives in any order
+#  (Apple ld, MSVC), which warn about the repeats; GNU ld keeps them, as it needs them
+if (POLICY CMP0156)
+  cmake_policy(SET CMP0156 NEW)
+endif (POLICY CMP0156)
+
 # Default to CMAKE_BUILD_TYPE = Release unless overridden on command line
 # http://www.cmake.org/pipermail/cmake/2008-September/023808.html
 if( DEFINED CMAKE_BUILD_TYPE )
