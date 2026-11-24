@@ -25,6 +25,8 @@
 #include <boost/test/unit_test.hpp>
 #include <eeschema_test_utils.h>
 
+#include <iterator>
+
 #include <sch_io/kicad_sexpr/sch_io_kicad_sexpr.h>
 #include <sch_shape.h>
 #include <sch_screen.h>
@@ -385,11 +387,8 @@ BOOST_AUTO_TEST_CASE( TestLoadLegacyHierarchicalSchematic )
         if( path.LastScreen() )
         {
             // Count symbols on this sheet
-            int symbolCount = 0;
-            for( SCH_ITEM* item : path.LastScreen()->Items().OfType( SCH_SYMBOL_T ) )
-            {
-                symbolCount++;
-            }
+            auto symbols = path.LastScreen()->Items().OfType( SCH_SYMBOL_T );
+            int  symbolCount = std::distance( symbols.begin(), symbols.end() );
             BOOST_TEST_MESSAGE( "  Symbol count: " + std::to_string( symbolCount ) );
         }
     }

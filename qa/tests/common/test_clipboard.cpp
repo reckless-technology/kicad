@@ -369,7 +369,7 @@ BOOST_AUTO_TEST_CASE( GetTabularDataFromClipboard_InvalidData )
     SaveClipboard( invalidText );
 
     std::vector<std::vector<wxString>> retrieved;
-    bool result = GetTabularDataFromClipboard( retrieved );
+    GetTabularDataFromClipboard( retrieved );
 
     // Should either parse as single-column data or return appropriate result
     // Exact behavior depends on AutoDecodeCSV implementation
@@ -433,7 +433,7 @@ BOOST_AUTO_TEST_CASE( Clipboard_ConcurrentAccess )
     std::string testText1 = "Concurrent test 1";
     std::string testText2 = "Concurrent test 2";
 
-    bool result1 = SaveClipboard( testText1 );
+    SaveClipboard( testText1 );
     bool result2 = SaveClipboard( testText2 );
 
     if( result2 )

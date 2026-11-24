@@ -105,7 +105,6 @@ public:
         SCH_SHEET_PIN* pin = new SCH_SHEET_PIN( &sheet );
         pin->SetText( aText );
         pin->SetShape( aShape );
-        SCH_SHEET_PATH sheetPath;
         SCH_CONNECTION* conn = pin->GetOrInitConnection( sheetPath, &graph );
         conn->ConfigureFromLabel( aText );
         looseItems.push_back( pin );

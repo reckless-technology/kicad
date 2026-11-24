@@ -95,7 +95,7 @@ BOOST_FIXTURE_TEST_CASE( ERCFootprintFiltersUsesCorrectErrorCode,
     // layers, otherwise it repaints as a red error even though it is ignored.
     for( const SCH_SHEET_PATH& path : m_schematic->Hierarchy() )
     {
-        for( SCH_ITEM* item : path.LastScreen()->Items().OfType( SCH_MARKER_T ) )
-            BOOST_CHECK( static_cast<SCH_MARKER*>( item )->ViewGetLayers().empty() );
+        for( SCH_ITEM* markerItem : path.LastScreen()->Items().OfType( SCH_MARKER_T ) )
+            BOOST_CHECK( static_cast<SCH_MARKER*>( markerItem )->ViewGetLayers().empty() );
     }
 }

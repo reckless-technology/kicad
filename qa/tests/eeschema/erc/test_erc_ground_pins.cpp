@@ -229,7 +229,7 @@ BOOST_FIXTURE_TEST_CASE( ERCGroundPinMismatch, ERC_GROUND_PIN_TEST_FIXTURE )
 
     // Verify the error is the correct type
     bool foundGroundPinError = false;
-    for( unsigned i = 0; i < errors.GetCount(); i++ )
+    for( int i = 0; i < errors.GetCount(); i++ )
     {
         if( errors.GetItem( i )->GetErrorCode() == ERCE_GROUND_PIN_NOT_GROUND )
         {
@@ -276,7 +276,7 @@ BOOST_FIXTURE_TEST_CASE( ERCGroundPinCorrect, ERC_GROUND_PIN_TEST_FIXTURE )
 
     // Should have no ground pin errors since the GND pin is correctly connected
     int groundPinErrors = 0;
-    for( unsigned i = 0; i < errors.GetCount(); i++ )
+    for( int i = 0; i < errors.GetCount(); i++ )
     {
         if( errors.GetItem( i )->GetErrorCode() == ERCE_GROUND_PIN_NOT_GROUND )
         {
@@ -324,7 +324,7 @@ BOOST_FIXTURE_TEST_CASE( ERCGroundPinMixed, ERC_GROUND_PIN_TEST_FIXTURE )
 
     // Should have exactly 1 ground pin error for the GND_ALT pin
     int groundPinErrors = 0;
-    for( unsigned i = 0; i < errors.GetCount(); i++ )
+    for( int i = 0; i < errors.GetCount(); i++ )
     {
         if( errors.GetItem( i )->GetErrorCode() == ERCE_GROUND_PIN_NOT_GROUND )
         {
@@ -372,7 +372,7 @@ BOOST_FIXTURE_TEST_CASE( ERCGroundPinNoGroundNet, ERC_GROUND_PIN_TEST_FIXTURE )
 
     // Should have no ground pin errors since there's no ground net to compare against
     int groundPinErrors = 0;
-    for( unsigned i = 0; i < errors.GetCount(); i++ )
+    for( int i = 0; i < errors.GetCount(); i++ )
     {
         if( errors.GetItem( i )->GetErrorCode() == ERCE_GROUND_PIN_NOT_GROUND )
         {
@@ -414,7 +414,7 @@ BOOST_FIXTURE_TEST_CASE( ERCGroundPinToggle, ERC_GROUND_PIN_TEST_FIXTURE )
 
     errors.SetSeverities( RPT_SEVERITY_ERROR | RPT_SEVERITY_WARNING );
 
-    for( unsigned i = 0; i < errors.GetCount(); i++ )
+    for( int i = 0; i < errors.GetCount(); i++ )
     {
         if( errors.GetItem( i )->GetErrorCode() == ERCE_GROUND_PIN_NOT_GROUND )
         {
@@ -435,7 +435,7 @@ BOOST_FIXTURE_TEST_CASE( ERCGroundPinToggle, ERC_GROUND_PIN_TEST_FIXTURE )
 
     groundPinErrors = 0;
 
-    for( unsigned i = 0; i < errors.GetCount(); i++ )
+    for( int i = 0; i < errors.GetCount(); i++ )
     {
         if( errors.GetItem( i )->GetErrorCode() == ERCE_GROUND_PIN_NOT_GROUND )
         {
@@ -479,7 +479,7 @@ BOOST_FIXTURE_TEST_CASE( ERCGroundPinErrorMessage, ERC_GROUND_PIN_TEST_FIXTURE )
     bool foundGroundPinError = false;
     wxString errorMessage;
 
-    for( unsigned i = 0; i < errors.GetCount(); i++ )
+    for( int i = 0; i < errors.GetCount(); i++ )
     {
         if( errors.GetItem( i )->GetErrorCode() == ERCE_GROUND_PIN_NOT_GROUND )
         {
@@ -539,7 +539,7 @@ BOOST_FIXTURE_TEST_CASE( ERCGroundPinEarthNet, ERC_GROUND_PIN_TEST_FIXTURE )
 
     int groundPinErrors = 0;
 
-    for( unsigned i = 0; i < errors.GetCount(); i++ )
+    for( int i = 0; i < errors.GetCount(); i++ )
     {
         if( errors.GetItem( i )->GetErrorCode() == ERCE_GROUND_PIN_NOT_GROUND )
         {
@@ -602,7 +602,7 @@ BOOST_FIXTURE_TEST_CASE( ERCGroundPinComprehensive, ERC_GROUND_PIN_TEST_FIXTURE 
 
         // Count only ground pin errors
         int groundPinErrors = 0;
-        for( unsigned i = 0; i < errors.GetCount(); i++ )
+        for( int i = 0; i < errors.GetCount(); i++ )
         {
             if( errors.GetItem( i )->GetErrorCode() == ERCE_GROUND_PIN_NOT_GROUND )
             {

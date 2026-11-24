@@ -180,10 +180,10 @@ BOOST_AUTO_TEST_CASE( AnyCast_3 )
         MoveEnabled(const MoveEnabled&) = default;
     };
     MoveEnabled m;
-    MoveEnabled m2 = any_cast<MoveEnabled>(any(m));
+    any_cast<MoveEnabled>(any(m));
     BOOST_CHECK(move_count == 1);
     any a( m );
-    MoveEnabled&& m3 = any_cast<MoveEnabled&&>( std::move( a ) );
+    any_cast<MoveEnabled&&>( std::move( a ) );
     BOOST_CHECK(move_count == 1);
 }
 
@@ -196,8 +196,8 @@ BOOST_AUTO_TEST_CASE( AnyCast_4 )
         explicit ExplicitCopy(const ExplicitCopy&) = default;
     };
     any x = ExplicitCopy();
-    ExplicitCopy ec{any_cast<ExplicitCopy>(x)};
-    ExplicitCopy ec2{any_cast<ExplicitCopy>(std::move(x))};
+    any_cast<ExplicitCopy>(x);
+    any_cast<ExplicitCopy>(std::move(x));
 }
 
 
@@ -599,12 +599,14 @@ struct A {
 
 BOOST_AUTO_TEST_CASE( Assign_1 )
 {
-    any a;
-    a = a;
+    any  a;
+    any& self = a; // assign through a reference so the self-assignment is deliberate
+
+    a = self;
     BOOST_CHECK( !a.has_value() );
 
     a = A{};
-    a = a;
+    a = self;
     BOOST_CHECK( a.has_value() );
 
     a.reset();

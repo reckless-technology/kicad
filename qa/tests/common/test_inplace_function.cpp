@@ -68,7 +68,9 @@ BOOST_AUTO_TEST_CASE( SelfAssignmentIsSafe )
     int v = 11;
     INPLACE_FUNCTION<int()> fn( [&v]() { return v; } );
 
-    fn = fn;
+    // Assign through a reference so the self-assignment is deliberate and not a typo
+    INPLACE_FUNCTION<int()>& self = fn;
+    fn = self;
     BOOST_CHECK_EQUAL( fn(), 11 );
 }
 

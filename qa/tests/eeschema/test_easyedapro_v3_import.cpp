@@ -915,8 +915,6 @@ BOOST_AUTO_TEST_CASE( PluginLoadPowerSymbolsKeepValueAndVisibility )
  */
 BOOST_AUTO_TEST_CASE( PluginLoadFillsRootSheetWithFirstPage )
 {
-    SCHEMATIC& schematic = LOADED_SAMPLE::Get().m_schematic;
-
     int rootSymbols = 0;
 
     SCH_SHEET* rootSheet = LOADED_SAMPLE::Get().m_rootSheet;

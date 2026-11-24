@@ -55,7 +55,7 @@ BOOST_FIXTURE_TEST_CASE( ERCSignalPinToPin, ERC_SIGNAL_TEST_FIXTURE )
     const int expectedMismatches = 3;
 
     int mismatchCount = 0;
-    for( size_t i = 0; i < provider.GetCount(); ++i )
+    for( int i = 0; i < provider.GetCount(); ++i )
     {
         auto item = provider.GetItem( i );
         if( !item )
@@ -103,7 +103,7 @@ BOOST_FIXTURE_TEST_CASE( ERCSignalPinToPin, ERC_SIGNAL_TEST_FIXTURE )
         }
         // Also list all item codes for clarity
         oss << "All ERC item codes (severity filtered): ";
-        for( size_t i = 0; i < provider.GetCount(); ++i )
+        for( int i = 0; i < provider.GetCount(); ++i )
         {
             auto it = provider.GetItem( i );
             if( it )
@@ -151,7 +151,7 @@ BOOST_FIXTURE_TEST_CASE( ERCSignalPowerInputDrivenAcrossSignal, ERC_SIGNAL_TEST_
 
     // Count any POWER PIN NOT DRIVEN markers (should be zero due to suppression across signal)
     int powerNotDriven = 0;
-    for( size_t i = 0; i < provider.GetCount(); ++i )
+    for( int i = 0; i < provider.GetCount(); ++i )
     {
         auto item = provider.GetItem( i );
         if( item && item->GetErrorCode() == ERCE_POWERPIN_NOT_DRIVEN )
@@ -222,7 +222,7 @@ BOOST_FIXTURE_TEST_CASE( ERCSignalPinToPinErrorMatrixMapped, ERC_SIGNAL_TEST_FIX
     int errorCount = 0;
     int warningCount = 0;
 
-    for( size_t i = 0; i < provider.GetCount(); ++i )
+    for( int i = 0; i < provider.GetCount(); ++i )
     {
         auto item = provider.GetItem( i );
 

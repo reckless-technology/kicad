@@ -452,9 +452,9 @@ BOOST_AUTO_TEST_CASE( MemoryManagement )
     for( int i = 0; i < 1000; ++i )
     {
         auto expr = "@{" + std::to_string( i ) + " * 2}";
-        auto result = evaluator.Evaluate( wxString::FromUTF8( expr ) );
+        auto smallResult = evaluator.Evaluate( wxString::FromUTF8( expr ) );
         BOOST_CHECK( !evaluator.HasErrors() );
-        BOOST_CHECK_EQUAL( result.ToStdString( wxConvUTF8 ), std::to_string( i * 2 ) );
+        BOOST_CHECK_EQUAL( smallResult.ToStdString( wxConvUTF8 ), std::to_string( i * 2 ) );
     }
 }
 

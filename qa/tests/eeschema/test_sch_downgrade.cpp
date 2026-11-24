@@ -1079,13 +1079,13 @@ BOOST_AUTO_TEST_CASE( DegenerateLineEndingKeepsItsGraphic )
 
             int kept = 0;
 
-            for( const SCH_ITEM& drawing : symbol.GetDrawItems() )
+            for( const SCH_ITEM& remaining : symbol.GetDrawItems() )
             {
-                if( drawing.Type() != SCH_SHAPE_T )
+                if( remaining.Type() != SCH_SHAPE_T )
                     continue;
 
                 kept++;
-                BOOST_CHECK( static_cast<const SCH_SHAPE&>( drawing ).GetEndEndingStyle()
+                BOOST_CHECK( static_cast<const SCH_SHAPE&>( remaining ).GetEndEndingStyle()
                              == LINE_ENDING_STYLE::NONE );
             }
 
