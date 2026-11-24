@@ -44,9 +44,14 @@
 #include <pcb_io/kicad_sexpr/pcb_io_kicad_sexpr_parser.h>
 #include <pcbnew/exporters/gendrill_excellon_writer.h>
 #include <pcbnew/exporters/gendrill_gerber_writer.h>
+#include <pcbnew/pcb_io/odbpp/pcb_io_odbpp.h>
+
+#include <set>
 
 #include <wx/ffile.h>
+#include <wx/dir.h>
 #include <wx/filename.h>
+#include <wx/tokenzr.h>
 
 
 namespace
@@ -434,6 +439,94 @@ BOOST_AUTO_TEST_CASE( DrillFilesRouteTheRectangle )
                                           "X9500000Y-10500000D01*\n"
                                           "X9500000Y-9500000D01*\n" ) ) );
     BOOST_CHECK( gerberPth.Contains( wxT( ",Rout" ) ) );
+}
+
+
+// ODB++ drill layers hold round hits and straight slots, whose symbols each need a tool. A
+// rectangular hole is neither, so it is left off them and goes to the rout layer as its outline.
+BOOST_AUTO_TEST_CASE( OdbDrillLayersAgreeWithTheirTools )
+{
+    std::unique_ptr<BOARD> board =
+            KI_TEST::ReadBoardFromFile( KI_TEST::GetPcbnewTestDataDir() + "rectangular_holes/fab.kicad_pcb" );
+    BOOST_REQUIRE( board );
+
+    KI_TEST::SCOPED_TEMP_DIR tempDir( wxT( "kicad_rectangular_hole_odb" ) );
+    wxFileName               odbRoot( tempDir.PathStr(), wxEmptyString );
+    odbRoot.AppendDir( wxT( "odb" ) );
+    BOOST_REQUIRE( odbRoot.Mkdir( wxS_DIR_DEFAULT, wxPATH_MKDIR_FULL ) );
+
+    PCB_IO_ODBPP                odb;
+    std::map<std::string, UTF8> props = { { "units", "mm" }, { "sigfig", "4" } };
+    BOOST_REQUIRE_NO_THROW( odb.SaveBoard( odbRoot.GetFullPath(), *board, &props ) );
+
+    wxFileName layersDir( odbRoot.GetFullPath(), wxEmptyString );
+    layersDir.AppendDir( wxT( "steps" ) );
+    layersDir.AppendDir( wxT( "pcb" ) );
+    layersDir.AppendDir( wxT( "layers" ) );
+
+    wxDir    dir( layersDir.GetFullPath() );
+    wxString layer;
+    int      drillLayers = 0;
+    int      drillFeatures = 0;
+
+    BOOST_REQUIRE( dir.IsOpened() );
+
+    for( bool more = dir.GetFirst( &layer, wxEmptyString, wxDIR_DIRS ); more; more = dir.GetNext( &layer ) )
+    {
+        if( !layer.StartsWith( wxT( "drill" ) ) )
+            continue;
+
+        drillLayers++;
+
+        wxFileName layerDir( layersDir.GetFullPath(), wxEmptyString );
+        layerDir.AppendDir( layer );
+
+        std::set<wxString> tools;
+        wxStringTokenizer  toolLines( readFile( layerDir.GetFullPath(), wxT( "tools" ) ), wxT( "\n" ) );
+
+        while( toolLines.HasMoreTokens() )
+        {
+            wxString line = toolLines.GetNextToken().Trim().Trim( false );
+
+            if( line.StartsWith( wxT( "DRILL_SIZE=" ) ) )
+                tools.insert( line.AfterFirst( '=' ) );
+        }
+
+        wxStringTokenizer featureLines( readFile( layerDir.GetFullPath(), wxT( "features" ) ), wxT( "\n" ) );
+
+        while( featureLines.HasMoreTokens() )
+        {
+            wxString line = featureLines.GetNextToken().Trim().Trim( false );
+
+            // Symbols are "$<n> r<diameter in um>"
+            if( line.StartsWith( wxT( "$" ) ) )
+            {
+                wxString symbol = line.AfterFirst( ' ' );
+
+                BOOST_TEST_CONTEXT( layer << " symbol " << symbol )
+                {
+                    BOOST_CHECK( symbol.StartsWith( wxT( "r" ) ) );
+                    BOOST_CHECK_MESSAGE( tools.count( symbol.Mid( 1 ) ), "no tool for " << symbol );
+                }
+            }
+            else if( line.StartsWith( wxT( "L " ) ) || line.StartsWith( wxT( "P " ) ) )
+            {
+                drillFeatures++;
+            }
+        }
+    }
+
+    // The plated and the unplated drill layer; on them only the round hole and the oval slot
+    BOOST_CHECK_EQUAL( drillLayers, 2 );
+    BOOST_CHECK_EQUAL( drillFeatures, 2 );
+
+    // The 2 mm square at (20, 20) is on the rout layer as its outline
+    wxFileName routDir( layersDir.GetFullPath(), wxEmptyString );
+    routDir.AppendDir( wxT( "rout" ) );
+
+    const wxString rout = readFile( routDir.GetFullPath(), wxT( "features" ) );
+    BOOST_TEST_MESSAGE( "Rout features:\n" << rout );
+    BOOST_CHECK( rout.Contains( wxT( "L 19.0 -19.0 21.0 -19.0" ) ) );
 }
 
 
