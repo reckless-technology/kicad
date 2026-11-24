@@ -121,6 +121,7 @@ set( QA_PCBNEW_SRCS
     test_pad_check.cpp
     test_pad_flashing.cpp
     test_pad_numbering.cpp
+    test_pad_rectangular_hole.cpp
     test_pad_roundtrip.cpp
     test_pcb_differ.cpp
     test_diff_canvas_context.cpp
