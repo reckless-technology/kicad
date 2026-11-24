@@ -1185,6 +1185,75 @@ add_subdirectory( api )
 add_subdirectory( resources )
 add_subdirectory( thirdparty )
 
+#  macOS: correct the link items of three vendored targets from here, so thirdparty/ stays as upstream ships it.
+#  Apple's ld warns "ignoring duplicate libraries" for a library named twice, and CMP0156 above removes repeated
+#  targets but cannot look inside raw flags.  libm is part of libSystem, which every link already gets, so the `m`
+#  of libwmf_orcad and the `-lm` of clipper2 are dropped.  nanodbc links `odbc` and also the whole output of
+#  `odbc_config --libs` as one flag string, "-L<prefix>/lib -lodbc": the -L becomes a link directory, and the -l of
+#  a library already linked is dropped.  A target the rewrite no longer changes gets a warning, so this goes when
+#  upstream fixes it rather than lingering unseen.
+if( APPLE )
+    function( kicad_apple_drop_duplicate_link_items target )
+        set( changed FALSE )
+
+        foreach( property LINK_LIBRARIES INTERFACE_LINK_LIBRARIES )
+            get_target_property( items ${target} ${property} )
+
+            if( NOT items )
+                continue()
+            endif()
+
+            if( property STREQUAL "LINK_LIBRARIES" )
+                set( directory_property LINK_DIRECTORIES )
+            else()
+                set( directory_property INTERFACE_LINK_DIRECTORIES )
+            endif()
+
+            set( kept_items "" )
+
+            foreach( item IN LISTS items )
+                string( REGEX REPLACE "^\\$<LINK_ONLY:(.*)>$" "\\1" bare_item "${item}" )
+
+                if( bare_item STREQUAL "m" OR bare_item STREQUAL "-lm" )
+                    set( changed TRUE )
+                elseif( bare_item MATCHES "^-" AND bare_item MATCHES " " )
+                    set( changed TRUE )
+                    separate_arguments( flag_tokens UNIX_COMMAND "${bare_item}" )
+
+                    foreach( token IN LISTS flag_tokens )
+                        # Not one if() with MATCHES and ${CMAKE_MATCH_1}: the reference expands before the match runs.
+                        string( REGEX REPLACE "^-l" "" library_name "${token}" )
+
+                        if( token MATCHES "^-L" )
+                            string( SUBSTRING "${token}" 2 -1 link_directory )
+                            set_property( TARGET ${target} APPEND PROPERTY ${directory_property} "${link_directory}" )
+                        elseif( token STREQUAL "-lm" )
+                        elseif( NOT library_name STREQUAL token AND library_name IN_LIST items )
+                        else()
+                            list( APPEND kept_items "${token}" )
+                        endif()
+                    endforeach()
+                else()
+                    list( APPEND kept_items "${item}" )
+                endif()
+            endforeach()
+
+            set_property( TARGET ${target} PROPERTY ${property} "${kept_items}" )
+        endforeach()
+
+        if( NOT changed )
+            message( AUTHOR_WARNING "${target} no longer links libm or a duplicating flag string on macOS; "
+                                    "remove it from kicad_apple_drop_duplicate_link_items" )
+        endif()
+    endfunction()
+
+    foreach( vendored_target clipper2 libwmf_orcad nanodbc )
+        if( TARGET ${vendored_target} )
+            kicad_apple_drop_duplicate_link_items( ${vendored_target} )
+        endif()
+    endforeach()
+endif()
+
 # Reckless: the warning set reaches every directory of KiCad's own code added from here on, in C, C++
 # and Objective-C++. thirdparty/ above keeps its own flags. Before this, each directory appended the
 # flags itself, and the directories and Objective-C++ files that did not compiled with none.
