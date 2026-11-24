@@ -31,7 +31,7 @@
 #include <wx/string.h>
 
 class EDA_3D_MODEL_VIEWER;
-class S3DMODEL;
+struct S3DMODEL;
 class wxCheckBox;
 class wxFileDialog;
 
