@@ -510,6 +510,33 @@ BOOST_AUTO_TEST_CASE( RectangularHoleIsNotDrilled )
 }
 
 
+// A backdrill wider than a rectangular hole's shorter side reaches outside it, so the hole used for
+// hole-to-hole takes in its circle; one no wider than the shorter side stays inside the rectangle
+BOOST_AUTO_TEST_CASE( BackdrillOutsideTheRectangleIsAdded )
+{
+    BOARD board;
+    PAD*  pad = addHolePad( board, VECTOR2I( 0, 0 ), PAD_DRILL_SHAPE::RECTANGLE, VECTOR2I( mm( 2 ), mm( 1 ) ),
+                            PAD_ATTRIB::PTH, PAD_SHAPE::RECTANGLE, VECTOR2I( mm( 3 ), mm( 2 ) ) );
+
+    // On the X axis just past the short side: inside a 1.5 mm circle, outside the 2 x 1 rectangle's
+    // top edge
+    const VECTOR2I abovePad( 0, mm( 0.6 ) );
+
+    pad->SetSecondaryDrillSize( VECTOR2I( mm( 1.5 ), mm( 1.5 ) ) );
+    pad->SetSecondaryDrillStartLayer( F_Cu );
+    pad->SetSecondaryDrillEndLayer( In1_Cu );
+
+    std::shared_ptr<SHAPE> hole = pad->GetEffectiveHoleShape( UNDEFINED_LAYER, HOLE_TO_HOLE_CONSTRAINT );
+    BOOST_CHECK( hole->Collide( abovePad ) );
+    BOOST_CHECK( hole->Collide( VECTOR2I( mm( 0.95 ), mm( 0.45 ) ) ) );
+
+    pad->SetSecondaryDrillSize( VECTOR2I( mm( 0.8 ), mm( 0.8 ) ) );
+    hole = pad->GetEffectiveHoleShape( UNDEFINED_LAYER, HOLE_TO_HOLE_CONSTRAINT );
+    BOOST_CHECK( hole->Type() == SH_SIMPLE );
+    BOOST_CHECK( !hole->Collide( abovePad ) );
+}
+
+
 // ODB++ drill layers hold round hits and straight slots, whose symbols each need a tool. A
 // rectangular hole is neither, so it is left off them and goes to the rout layer as its outline.
 BOOST_AUTO_TEST_CASE( OdbDrillLayersAgreeWithTheirTools )
