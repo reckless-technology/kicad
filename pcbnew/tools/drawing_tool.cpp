@@ -458,6 +458,7 @@ void DRAWING_TOOL::Reset( RESET_REASON aReason )
     m_textAttrs.m_Size = bds.GetTextSize( m_layer );
     m_textAttrs.m_StrokeWidth = bds.GetTextThickness( m_layer );
     m_textAttrs.m_Italic = bds.GetTextItalic( m_layer );
+    m_textAttrs.m_Font = bds.GetTextFont( m_layer, false, m_textAttrs.m_Italic, m_board->GetFontFiles() );
     m_textAttrs.m_KeepUpright = bds.GetTextUpright( m_layer );
     m_textAttrs.m_Mirrored = m_board->IsBackLayer( m_layer );
     m_textAttrs.m_Halign = GR_TEXT_H_ALIGN_LEFT;
@@ -1307,6 +1308,7 @@ int DRAWING_TOOL::PlaceText( const TOOL_EVENT& aEvent )
                 textAttrs.m_Size = bds.GetTextSize( layer );
                 textAttrs.m_StrokeWidth = bds.GetTextThickness( layer );
                 textAttrs.m_Italic = bds.GetTextItalic( layer );
+                textAttrs.m_Font = bds.GetTextFont( layer, false, textAttrs.m_Italic, m_board->GetFontFiles() );
                 textAttrs.m_KeepUpright = bds.GetTextUpright( layer );
                 textAttrs.m_Mirrored = m_board->IsBackLayer( layer );
                 textAttrs.m_Halign = GR_TEXT_H_ALIGN_LEFT;
@@ -2031,6 +2033,8 @@ int DRAWING_TOOL::DrawDimension( const TOOL_EVENT& aEvent )
                 dimension->SetTextSize( boardSettings.GetTextSize( layer ) );
                 dimension->SetTextThickness( boardSettings.GetTextThickness( layer ) );
                 dimension->SetItalic( boardSettings.GetTextItalic( layer ) );
+                dimension->SetFont(
+                        boardSettings.GetTextFont( layer, false, dimension->IsItalic(), m_board->GetFontFiles() ) );
                 dimension->SetLineThickness( boardSettings.GetLineThickness( layer ) );
                 dimension->SetArrowLength( boardSettings.m_DimensionArrowLength );
                 dimension->SetExtensionOffset( boardSettings.m_DimensionExtensionOffset );
@@ -2219,6 +2223,8 @@ int DRAWING_TOOL::DrawDimension( const TOOL_EVENT& aEvent )
             dimension->SetTextSize( boardSettings.GetTextSize( layer ) );
             dimension->SetTextThickness( boardSettings.GetTextThickness( layer ) );
             dimension->SetItalic( boardSettings.GetTextItalic( layer ) );
+            dimension->SetFont(
+                    boardSettings.GetTextFont( layer, false, dimension->IsItalic(), m_board->GetFontFiles() ) );
             dimension->SetLineThickness( boardSettings.GetLineThickness( layer ) );
             dimension->Update();
 
@@ -2937,6 +2943,7 @@ bool DRAWING_TOOL::drawShape( const TOOL_EVENT& aTool, PCB_SHAPE** aGraphic, std
         m_textAttrs.m_Size = bds.GetTextSize( m_layer );
         m_textAttrs.m_StrokeWidth = bds.GetTextThickness( m_layer );
         m_textAttrs.m_Italic = bds.GetTextItalic( m_layer );
+        m_textAttrs.m_Font = bds.GetTextFont( m_layer, false, m_textAttrs.m_Italic, m_board->GetFontFiles() );
         m_textAttrs.m_KeepUpright = bds.GetTextUpright( m_layer );
         m_textAttrs.m_Mirrored = m_board->IsBackLayer( m_layer );
         m_textAttrs.m_Halign = GR_TEXT_H_ALIGN_LEFT;
@@ -3113,6 +3120,7 @@ bool DRAWING_TOOL::drawShape( const TOOL_EVENT& aTool, PCB_SHAPE** aGraphic, std
                 m_textAttrs.m_Size = bds.GetTextSize( m_layer );
                 m_textAttrs.m_StrokeWidth = bds.GetTextThickness( m_layer );
                 m_textAttrs.m_Italic = bds.GetTextItalic( m_layer );
+                m_textAttrs.m_Font = bds.GetTextFont( m_layer, false, m_textAttrs.m_Italic, m_board->GetFontFiles() );
                 m_textAttrs.m_KeepUpright = bds.GetTextUpright( m_layer );
                 m_textAttrs.m_Mirrored = m_board->IsBackLayer( m_layer );
                 m_textAttrs.m_Halign = GR_TEXT_H_ALIGN_LEFT;

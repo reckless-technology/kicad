@@ -36,7 +36,7 @@ PANEL_SETUP_TEXT_AND_GRAPHICS_BASE::PANEL_SETUP_TEXT_AND_GRAPHICS_BASE( wxWindow
 	m_grid = new WX_GRID( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 
 	// Grid
-	m_grid->CreateGrid( 6, 6 );
+	m_grid->CreateGrid( 6, 7 );
 	m_grid->EnableEditing( true );
 	m_grid->EnableGridLines( true );
 	m_grid->EnableDragGridSize( false );
@@ -49,6 +49,7 @@ PANEL_SETUP_TEXT_AND_GRAPHICS_BASE::PANEL_SETUP_TEXT_AND_GRAPHICS_BASE( wxWindow
 	m_grid->SetColSize( 3, 140 );
 	m_grid->SetColSize( 4, 80 );
 	m_grid->SetColSize( 5, 120 );
+	m_grid->SetColSize( 6, 200 );
 	m_grid->EnableDragColMove( false );
 	m_grid->EnableDragColSize( true );
 	m_grid->SetColLabelValue( 0, _("Line Thickness") );
@@ -57,6 +58,7 @@ PANEL_SETUP_TEXT_AND_GRAPHICS_BASE::PANEL_SETUP_TEXT_AND_GRAPHICS_BASE( wxWindow
 	m_grid->SetColLabelValue( 3, _("Text Thickness") );
 	m_grid->SetColLabelValue( 4, _("Italic") );
 	m_grid->SetColLabelValue( 5, _("Keep Upright") );
+	m_grid->SetColLabelValue( 6, _("Font") );
 	m_grid->SetColLabelSize( wxGRID_AUTOSIZE );
 	m_grid->SetColLabelAlignment( wxALIGN_CENTER, wxALIGN_CENTER );
 

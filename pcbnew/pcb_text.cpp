@@ -376,6 +376,10 @@ void PCB_TEXT::StyleFromSettings( const BOARD_DESIGN_SETTINGS& aSettings, bool a
     SetTextThickness( aSettings.GetTextThickness( GetLayer() ) );
     SetItalic( aSettings.GetTextItalic( GetLayer() ) );
 
+    // With no default font set, the item keeps the face it has
+    if( !aSettings.GetTextFontName( GetLayer() ).IsEmpty() )
+        SetFont( aSettings.GetTextFont( GetLayer(), IsBold(), IsItalic(), GetEmbeddedFonts() ) );
+
     if( GetParentFootprint() )
         SetKeepUpright( aSettings.GetTextUpright( GetLayer() ) );
 

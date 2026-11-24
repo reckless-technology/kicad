@@ -35,6 +35,16 @@ font, never the stroke font. No migration touches the key: a file that names a f
 its own, which includes every pin's name and number and most fields, follows the setting too, so existing schematics
 draw and plot in Noto Serif; the preference set back to "KiCad Font" restores the stroke font.
 
+PCB text has a default font face too (#49), set per layer class in Board Setup > Text & Graphics Defaults beside size,
+thickness and italic, stored in `BOARD_DESIGN_SETTINGS` (`defaults.silk_text_font`, `copper`, `fab` and `other`, in the
+`.kicad_pro`). It has three states: **not set**, the empty string, which is the default and what an absent key reads as
+(shown as "(not set)" in the grid); an explicit "KiCad Font", the stroke font; or a face. Not set leaves everything as it
+was: `StyleFromSettings()` keeps the face an existing item has, so restyling a footprint's fields, the netlist update and
+the global edit dialog never strip a face, and the drawing tools give new items no font. An explicit "KiCad Font" or a
+face is applied by `StyleFromSettings()` and by the text, text box and dimension tools. The footprint editor's own
+defaults have no font setting yet. A board with "Embed fonts" on embeds the fonts its items use, and
+`BOARD::GetFonts()` now includes footprint fields and text as well as board drawings.
+
 ## Keeping up with upstream
 
 `reckless/main` is rebased onto upstream `master` only when Jonny asks for it, never on a schedule, so a rebase never
