@@ -327,8 +327,9 @@ bool SYSINFO::getVersionFromDXRegistry( int64_t aAdapterLuid, std::string& aDriv
             status = ::RegOpenKeyEx(
                     (HKEY) HKEY_LOCAL_MACHINE, subKeyName.t_str(), 0, KEY_READ, &tmpKey );
 
-            ULONGLONG adapterLuid;
-            DWORD dwType, dwSize = sizeof(ULONGLONG);
+            // The registry holds the LUID's 64 bits; read them as the signed value they are compared with
+            int64_t adapterLuid;
+            DWORD   dwType, dwSize = sizeof( adapterLuid );
             status = ::RegQueryValueEx((HKEY)tmpKey, L"AdapterLuid",
                 0,
                 &dwType, (LPBYTE)&adapterLuid, &dwSize);
