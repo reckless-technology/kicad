@@ -498,10 +498,15 @@ ValueType any_cast( any&& any )
     static_assert( std::is_constructible_v<ValueType, U>,
                    "Template argument must be constructible from an rvalue" );
 
-    auto p = any_cast<U>( &any );
+    // An any only ever holds an object, so for a function type the pointer cast is always null and there is
+    // nothing to move from: don't form the cast at all.
+    if constexpr( std::is_object_v<U> )
+    {
+        auto p = any_cast<U>( &any );
 
-    if( p )
-        return static_cast<ValueType>( std::move( *p ) );
+        if( p )
+            return static_cast<ValueType>( std::move( *p ) );
+    }
 
     throw bad_any_cast{};
 }
