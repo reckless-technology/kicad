@@ -332,92 +332,6 @@ static bool netNameMatches( const wxString& aActual, const wxString& aExpected )
 }
 
 
-struct PADS_NETLIST_SIGNATURE
-{
-    std::set<std::string>                   parts;
-    std::multiset<std::vector<std::string>> partitions;
-};
-
-
-static PADS_NETLIST_SIGNATURE padsNetlistSignature( const std::string& aPath )
-{
-    enum class SECTION
-    {
-        NONE,
-        PARTS,
-        NETS
-    };
-
-    std::ifstream            input( aPath );
-    PADS_NETLIST_SIGNATURE   result;
-    SECTION                  section = SECTION::NONE;
-    std::vector<std::string> pins;
-    auto                     flush = [&]()
-    {
-        if( pins.empty() )
-            return;
-
-        std::ranges::sort( pins );
-        result.partitions.insert( pins );
-        pins.clear();
-    };
-    std::string line;
-
-    while( std::getline( input, line ) )
-    {
-        if( !line.empty() && line.back() == '\r' )
-            line.pop_back();
-
-        if( line.starts_with( "*PART*" ) )
-        {
-            flush();
-            section = SECTION::PARTS;
-            continue;
-        }
-
-        if( line.starts_with( "*NET*" ) )
-        {
-            flush();
-            section = SECTION::NETS;
-            continue;
-        }
-
-        if( line.starts_with( "*SIGNAL*" ) )
-        {
-            flush();
-            continue;
-        }
-
-        if( line.starts_with( '*' ) )
-        {
-            flush();
-            section = SECTION::NONE;
-            continue;
-        }
-
-        std::istringstream fields( line );
-
-        if( section == SECTION::PARTS )
-        {
-            std::string reference;
-
-            if( fields >> reference )
-                result.parts.insert( std::move( reference ) );
-        }
-        else if( section == SECTION::NETS )
-        {
-            std::string pin;
-
-            while( fields >> pin )
-                pins.push_back( std::move( pin ) );
-        }
-    }
-
-    flush();
-    return result;
-}
-
-
 static SCH_SHEET_PATH sourceSheetPath( SCHEMATIC& aSchematic, const PADS_SCH_BINARY::PADS_SCH_MODEL& aModel,
                                        PADS_SCH_BINARY::SHEET_ID aSheetId )
 {
@@ -639,7 +553,6 @@ static CONNECTIVITY_ORACLE_COUNTS assertSourceConnectivity( const PADS_SCH_BINAR
         SCH_SCREEN*    screen = path.LastScreen();
         BOOST_REQUIRE( screen );
         const int          pageHeight = screen->GetPageSettings().GetHeightIU( schIUScale.IU_PER_MILS );
-        const MODEL_SHEET& sourceSheet = *std::ranges::find( aModel.sheets, net.sheet.id, &MODEL_SHEET::id );
 
         for( const MODEL_CONNECTION& sourceConnection : net.connections )
         {
@@ -2816,7 +2729,7 @@ BOOST_AUTO_TEST_CASE( BinaryConnectivityAndGraphics )
     {
         std::vector<VECTOR2I> points;
 
-        for( size_t vertex = 0; vertex < aShape.GetPolyShape().VertexCount(); ++vertex )
+        for( int vertex = 0; vertex < aShape.GetPolyShape().VertexCount(); ++vertex )
             points.push_back( aShape.GetPolyShape().CVertex( vertex ) );
 
         return points;

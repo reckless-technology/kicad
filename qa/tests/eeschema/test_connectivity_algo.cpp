@@ -30,6 +30,8 @@
 #include <settings/settings_manager.h>
 #include <locale_io.h>
 
+#include <utility>
+
 namespace
 {
 struct CONNECTIVITY_TEST_FIXTURE
@@ -58,7 +60,7 @@ BOOST_FIXTURE_TEST_CASE( CheckNetCounts, CONNECTIVITY_TEST_FIXTURE )
         SCH_SHEET_LIST sheets = m_schematic->BuildSheetListSortedByPageNumbers();
         CONNECTION_GRAPH* graph = m_schematic->ConnectionGraph();
 
-        BOOST_CHECK( nets == graph->GetNetMap().size() );
+        BOOST_CHECK( std::cmp_equal( nets, graph->GetNetMap().size() ) );
 
     }
 }

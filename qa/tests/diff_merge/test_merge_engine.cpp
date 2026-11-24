@@ -71,29 +71,6 @@ ITEM_CHANGE makeModifiedWidth( const KIID& aUuid, int aBefore, int aAfter )
     return c;
 }
 
-
-ITEM_CHANGE makeModifiedTwoProps( const KIID& aUuid )
-{
-    ITEM_CHANGE c;
-    c.id.push_back( aUuid );
-    c.typeName = wxS( "FOOTPRINT" );
-    c.kind     = CHANGE_KIND::MODIFIED;
-
-    PROPERTY_DELTA p1;
-    p1.name   = wxS( "Position X" );
-    p1.before = DIFF_VALUE::FromInt( 0 );
-    p1.after  = DIFF_VALUE::FromInt( 1000 );
-    c.properties.push_back( p1 );
-
-    PROPERTY_DELTA p2;
-    p2.name   = wxS( "Reference" );
-    p2.before = DIFF_VALUE::FromString( wxS( "R1" ) );
-    p2.after  = DIFF_VALUE::FromString( wxS( "R2" ) );
-    c.properties.push_back( p2 );
-
-    return c;
-}
-
 } // namespace
 
 

@@ -154,7 +154,7 @@ BOOST_FIXTURE_TEST_CASE( ERCPinConflictsUsePublishedNets, ERC_REGRESSION_TEST_FI
                 errors.SetSeverities( RPT_SEVERITY_ERROR | RPT_SEVERITY_WARNING );
                 std::multiset<DIAGNOSTIC> actual;
 
-                for( size_t i = 0; i < errors.GetCount(); ++i )
+                for( int i = 0; i < errors.GetCount(); ++i )
                 {
                     const auto item = std::static_pointer_cast<ERC_ITEM>( errors.GetItem( i ) );
                     actual.emplace( item->GetErrorCode(), item->GetMainItemID(), item->GetAuxItemID(),

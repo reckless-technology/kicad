@@ -30,6 +30,7 @@
 #include <advanced_config.h>
 #include <sch_marker.h>
 #include <algorithm>
+#include <iterator>
 #include <map>
 #include <tuple>
 #include <set>
@@ -109,8 +110,8 @@ BOOST_FIXTURE_TEST_CASE( ERCWireEndpointsUsePublishedState, ERC_REGRESSION_TEST_
             {
                 if( screens.insert( path.LastScreen() ).second )
                 {
-                    for( SCH_ITEM* marker : path.LastScreen()->Items().OfType( SCH_MARKER_T ) )
-                        ++markerCount;
+                    auto markers = path.LastScreen()->Items().OfType( SCH_MARKER_T );
+                    markerCount += std::distance( markers.begin(), markers.end() );
                 }
             }
 

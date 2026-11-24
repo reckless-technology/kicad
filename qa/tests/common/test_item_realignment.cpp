@@ -165,8 +165,6 @@ BOOST_AUTO_TEST_CASE( RotateAndMove )
 {
     // In this case, the points are rotated and moved.
 
-    const int pitch = 1000;
-
     // Rectangle 2000x1000 centred on 0,0
     std::vector<VECTOR2I> ptsA = {
         { -1000, -500 },

@@ -720,7 +720,6 @@ public:
     {
         PCBEXPR_COMPILER compiler( new PCBEXPR_UNIT_RESOLVER );
         PCBEXPR_UCODE    ucode, parentUcode;
-        bool             ok = true;
 
         const auto matchItem = []( const BOARD_ITEM& aItem, PCBEXPR_UCODE& aUcode ) -> bool
         {

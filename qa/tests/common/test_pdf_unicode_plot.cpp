@@ -278,9 +278,7 @@ BOOST_AUTO_TEST_CASE( GlyphBBoxIncludesOffsetAndStrokeWidth )
     // Verify that no glyph has a minX of exactly 0 (would mean X offset was not applied) and
     // that the bbox extends beyond the stroke center coordinates by at least half the stroke
     // width.
-    const ADVANCED_CFG& cfg = ADVANCED_CFG::GetCfg();
     double unitsPerEm = 1000.0;
-    double expectedXOffset = cfg.m_PDFStrokeFontXOffset * unitsPerEm;
     double widthFactor = 300.0 / 3000.0;
     double expectedHalfStroke = unitsPerEm * widthFactor / 2.0;
 

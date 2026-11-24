@@ -660,9 +660,9 @@ BOOST_DATA_TEST_CASE_F( CONNECTIVITY_DUMP_FIXTURE,
 
             item = screen->GetConnectivityItem( id );
             BOOST_REQUIRE( item );
-            SCH_COMMIT removal( &manager );
-            removal.Remove( item, screen );
-            removal.Push( "Remove native oracle geometry", SKIP_UNDO );
+            SCH_COMMIT geometryRemoval( &manager );
+            geometryRemoval.Remove( item, screen );
+            geometryRemoval.Push( "Remove native oracle geometry", SKIP_UNDO );
             BOOST_REQUIRE( !screen->CheckIfOnDrawList( item ) );
             delete item;
 

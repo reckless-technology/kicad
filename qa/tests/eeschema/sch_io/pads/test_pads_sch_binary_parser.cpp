@@ -1171,19 +1171,19 @@ static std::vector<CANONICAL_SEMANTIC_RECORD> normalizeAsciiModel( const PADS_SC
             for( const std::string& name :
                  { "arc_center_x_half_mils", "arc_bounds_x1_half_mils", "arc_bounds_x2_half_mils" } )
             {
-                auto property = out.back().properties.find( name );
+                auto arcProperty = out.back().properties.find( name );
 
-                if( property != out.back().properties.end() )
-                    std::get<int64_t>( property->second.value ) += std::llround( lines.origin.x * 2 );
+                if( arcProperty != out.back().properties.end() )
+                    std::get<int64_t>( arcProperty->second.value ) += std::llround( lines.origin.x * 2 );
             }
 
             for( const std::string& name :
                  { "arc_center_y_half_mils", "arc_bounds_y1_half_mils", "arc_bounds_y2_half_mils" } )
             {
-                auto property = out.back().properties.find( name );
+                auto arcProperty = out.back().properties.find( name );
 
-                if( property != out.back().properties.end() )
-                    std::get<int64_t>( property->second.value ) += std::llround( lines.origin.y * 2 );
+                if( arcProperty != out.back().properties.end() )
+                    std::get<int64_t>( arcProperty->second.value ) += std::llround( lines.origin.y * 2 );
             }
 
             if( g.type == PADS_SCH::GRAPHIC_TYPE::RECTANGLE )
@@ -1686,7 +1686,7 @@ BOOST_AUTO_TEST_CASE( FreeText )
         MODEL_JUSTIFICATION vertical;
     };
 
-    for( const JUSTIFICATION_CASE& expected :
+    for( const JUSTIFICATION_CASE& justCase :
          { JUSTIFICATION_CASE{ 5, MODEL_JUSTIFICATION::CENTER, MODEL_JUSTIFICATION::RIGHT },
            { 7, MODEL_JUSTIFICATION::CENTER, MODEL_JUSTIFICATION::LEFT },
            { 15, MODEL_JUSTIFICATION::CENTER, MODEL_JUSTIFICATION::CENTER },
@@ -1696,11 +1696,11 @@ BOOST_AUTO_TEST_CASE( FreeText )
            { 0x0306, MODEL_JUSTIFICATION::CENTER, MODEL_JUSTIFICATION::LEFT } } )
     {
         std::vector<uint8_t> changedJustification = loadBinaryFixture( "text_encoding.sch" );
-        writeU16( changedJustification, text.source.absoluteOffset + 18, expected.raw );
+        writeU16( changedJustification, text.source.absoluteOffset + 18, justCase.raw );
         PADS_SCH_MODEL justified = parser.Parse( changedJustification, wxS( "text_encoding.sch" ) );
         BOOST_REQUIRE_EQUAL( justified.texts.size(), 1 );
-        BOOST_CHECK( justified.texts[0].presentation.horizontalJustification == expected.horizontal );
-        BOOST_CHECK( justified.texts[0].presentation.verticalJustification == expected.vertical );
+        BOOST_CHECK( justified.texts[0].presentation.horizontalJustification == justCase.horizontal );
+        BOOST_CHECK( justified.texts[0].presentation.verticalJustification == justCase.vertical );
         BOOST_CHECK_EQUAL( justified.diagnostics.size(), model.diagnostics.size() );
     }
 
@@ -1711,16 +1711,16 @@ BOOST_AUTO_TEST_CASE( FreeText )
         bool     italic;
     };
 
-    for( const FONT_CASE& expected : { FONT_CASE{ 0, false, false }, FONT_CASE{ 1, false, true },
+    for( const FONT_CASE& fontCase : { FONT_CASE{ 0, false, false }, FONT_CASE{ 1, false, true },
                                        FONT_CASE{ 2, true, false }, FONT_CASE{ 3, true, true } } )
     {
         std::vector<uint8_t> changedFont = loadBinaryFixture( "text_encoding.sch" );
         writeU16( changedFont, text.source.absoluteOffset, 0 );
-        writeU32( changedFont, outerControllerOffset( changedFont, 19 ), expected.style );
+        writeU32( changedFont, outerControllerOffset( changedFont, 19 ), fontCase.style );
         PADS_SCH_MODEL styled = parser.Parse( changedFont, wxS( "text_encoding.sch" ) );
         BOOST_REQUIRE_EQUAL( styled.texts.size(), 1 );
-        BOOST_CHECK_EQUAL( styled.texts[0].presentation.bold, expected.bold );
-        BOOST_CHECK_EQUAL( styled.texts[0].presentation.italic, expected.italic );
+        BOOST_CHECK_EQUAL( styled.texts[0].presentation.bold, fontCase.bold );
+        BOOST_CHECK_EQUAL( styled.texts[0].presentation.italic, fontCase.italic );
         BOOST_CHECK_EQUAL( styled.texts[0].presentation.width, 10 );
     }
 

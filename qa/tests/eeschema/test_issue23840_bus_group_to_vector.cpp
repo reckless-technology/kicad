@@ -66,8 +66,7 @@ BOOST_FIXTURE_TEST_CASE( Issue23840BusGroupToVector, ISSUE23840_FIXTURE )
 
     KI_TEST::LoadSchematic( m_settingsManager, "issue23840/BusAndVectors", m_schematic );
 
-    SCH_SHEET_LIST    sheets = m_schematic->BuildSheetListSortedByPageNumbers();
-    CONNECTION_GRAPH* graph = m_schematic->ConnectionGraph();
+    SCH_SHEET_LIST sheets = m_schematic->BuildSheetListSortedByPageNumbers();
 
     // Collect net names keyed by "ref.pin" across all sheet instances.
     std::map<wxString, wxString> pinNetNames;
