@@ -70,7 +70,7 @@ void testEnums( bool aPartiallyMapped = false, std::optional<KiCadEnum> aNullMap
                 continue;
             }
 
-            KiCadEnum result;
+            KiCadEnum result{};
             // Every non-unknown Proto value should map to a valid KiCad value
             BOOST_REQUIRE_NO_THROW( result = ( FromProtoEnum<KiCadEnum, ProtoEnum>( value ) ) );
 
@@ -84,7 +84,7 @@ void testEnums( bool aPartiallyMapped = false, std::optional<KiCadEnum> aNullMap
     {
         BOOST_TEST_CONTEXT( magic_enum::enum_type_name<KiCadEnum>() << "::" << magic_enum::enum_name( value ) )
         {
-            ProtoEnum result;
+            ProtoEnum result{};
 
             if( aPartiallyMapped )
             {

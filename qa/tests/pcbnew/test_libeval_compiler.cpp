@@ -94,13 +94,9 @@ static bool testEvalExpr( const wxString& expr, const LIBEVAL::VALUE& expectedRe
     if( error )
         return true;
 
-    LIBEVAL::VALUE* result;
+    LIBEVAL::VALUE* result = ucode.Run( &context );
 
-    if( ok )
-    {
-        result = ucode.Run( &context );
-        ok     = ( result->EqualTo( &context, &expectedResult ) );
-    }
+    ok = result->EqualTo( &context, &expectedResult );
 
     if( expectedResult.GetType() == LIBEVAL::VT_NUMERIC )
     {

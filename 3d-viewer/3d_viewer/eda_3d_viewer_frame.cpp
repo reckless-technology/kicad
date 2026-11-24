@@ -802,7 +802,7 @@ bool EDA_3D_VIEWER_FRAME::getExportFileName( EDA_3D_VIEWER_EXPORT_FORMAT& aForma
 
     // Determine format based on file extension first
     wxString fileExt = m_defaultSaveScreenshotFileName.GetExt().Lower();
-    EDA_3D_VIEWER_EXPORT_FORMAT detectedFormat;
+    EDA_3D_VIEWER_EXPORT_FORMAT detectedFormat = aFormat;
     bool formatDetected = false;
 
     if( fileExt == wxT("jpg") || fileExt == wxT("jpeg") )

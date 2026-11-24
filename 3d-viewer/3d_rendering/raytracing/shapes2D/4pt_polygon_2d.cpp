@@ -78,8 +78,8 @@ bool POLYGON_4PT_2D::Overlaps( const BBOX_2D& aBBox [[maybe_unused]] ) const
 bool POLYGON_4PT_2D::Intersect( const RAYSEG2D& aSegRay, float* aOutT, SFVEC2F* aNormalOut ) const
 {
     bool         hited = false;
-    unsigned int hitIndex;
-    float        bestHitT;
+    unsigned int hitIndex = 0;
+    float        bestHitT = 0.0f;
 
     for( unsigned int i = 0; i < 4; i++ )
     {

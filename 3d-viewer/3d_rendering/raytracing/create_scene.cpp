@@ -2500,8 +2500,8 @@ void RENDER_3D_RAYTRACE_BASE::addModels( CONTAINER_3D& aDstContainer, const S3DM
               && ( mesh.m_VertexSize > 0 ) && ( ( mesh.m_FaceIdxSize % 3 ) == 0 )
               && ( mesh.m_MaterialIdx < a3DModel->m_MaterialsSize ) )
             {
-                float                       fpTransparency;
-                const BLINN_PHONG_MATERIAL* blinn_material;
+                float                       fpTransparency = 1.0f;
+                const BLINN_PHONG_MATERIAL* blinn_material = nullptr;
 
                 if( !aSkipMaterialInformation )
                 {

@@ -239,9 +239,9 @@ BOOST_AUTO_TEST_CASE( UnknownAlignmentReturnsDefault )
     XNODE alignNode( wxXML_ELEMENT_NODE, wxT( "ALIGN" ) );
     AddCadstarAttributes( &alignNode, { wxT( "FUTURE_ALIGNMENT" ) } );
 
-    CADSTAR_ARCHIVE_PARSER::ALIGNMENT result;
+    CADSTAR_ARCHIVE_PARSER::ALIGNMENT result{};
 
-    BOOST_CHECK_NO_THROW( result = CADSTAR_ARCHIVE_PARSER::ParseAlignment( &alignNode ) );
+    BOOST_REQUIRE_NO_THROW( result = CADSTAR_ARCHIVE_PARSER::ParseAlignment( &alignNode ) );
     BOOST_CHECK_EQUAL( static_cast<int>( result ),
                        static_cast<int>( CADSTAR_ARCHIVE_PARSER::ALIGNMENT::NO_ALIGNMENT ) );
 }
@@ -255,9 +255,9 @@ BOOST_AUTO_TEST_CASE( UnknownReadabilityReturnsDefault )
     XNODE readNode( wxXML_ELEMENT_NODE, wxT( "READABILITY" ) );
     AddCadstarAttributes( &readNode, { wxT( "LEFT_TO_RIGHT" ) } );
 
-    CADSTAR_ARCHIVE_PARSER::READABILITY result;
+    CADSTAR_ARCHIVE_PARSER::READABILITY result{};
 
-    BOOST_CHECK_NO_THROW( result = CADSTAR_ARCHIVE_PARSER::ParseReadability( &readNode ) );
+    BOOST_REQUIRE_NO_THROW( result = CADSTAR_ARCHIVE_PARSER::ParseReadability( &readNode ) );
     BOOST_CHECK_EQUAL( static_cast<int>( result ),
                        static_cast<int>( CADSTAR_ARCHIVE_PARSER::READABILITY::BOTTOM_TO_TOP ) );
 }
@@ -297,9 +297,9 @@ BOOST_AUTO_TEST_CASE( UnknownUnitsReturnsDefault )
     XNODE unitsNode( wxXML_ELEMENT_NODE, wxT( "UNITS" ) );
     AddCadstarAttributes( &unitsNode, { wxT( "FUTURISTIC_UNIT" ) } );
 
-    CADSTAR_ARCHIVE_PARSER::UNITS result;
+    CADSTAR_ARCHIVE_PARSER::UNITS result{};
 
-    BOOST_CHECK_NO_THROW( result = CADSTAR_ARCHIVE_PARSER::ParseUnits( &unitsNode ) );
+    BOOST_REQUIRE_NO_THROW( result = CADSTAR_ARCHIVE_PARSER::ParseUnits( &unitsNode ) );
     BOOST_CHECK_EQUAL( static_cast<int>( result ),
                        static_cast<int>( CADSTAR_ARCHIVE_PARSER::UNITS::DESIGN ) );
 }
@@ -313,9 +313,9 @@ BOOST_AUTO_TEST_CASE( UnknownPinTypeReturnsDefault )
     XNODE pinTypeNode( wxXML_ELEMENT_NODE, wxT( "PINTYPE" ) );
     AddCadstarAttributes( &pinTypeNode, { wxT( "FUTURE_PIN_TYPE" ) } );
 
-    CADSTAR_PIN_TYPE result;
+    CADSTAR_PIN_TYPE result{};
 
-    BOOST_CHECK_NO_THROW( result = CADSTAR_ARCHIVE_PARSER::PART::GetPinType( &pinTypeNode ) );
+    BOOST_REQUIRE_NO_THROW( result = CADSTAR_ARCHIVE_PARSER::PART::GetPinType( &pinTypeNode ) );
     BOOST_CHECK_EQUAL( static_cast<int>( result ),
                        static_cast<int>( CADSTAR_PIN_TYPE::UNCOMMITTED ) );
 }
