@@ -60,7 +60,7 @@ long NL_FOOTPRINT_PROPERTIES_PLUGIN_IMPL::GetModelExtents( navlib::box_t& extent
     min -= diff;
     max += diff;
 
-    extents = { min.x, min.y, min.z, max.x, max.y, max.z };
+    extents = { { { min.x, min.y, min.z, max.x, max.y, max.z } } };
 
     return 0;
 }

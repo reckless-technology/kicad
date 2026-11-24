@@ -57,8 +57,7 @@ struct FOOTPRINT_LOAD_BOARD_TEST_CASE: public KI_TEST::BOARD_LOAD_TEST_CASE
 
 const std::vector<FOOTPRINT_LOAD_BOARD_TEST_CASE> FootprintLoadSave_testCases{
     {
-            "footprints_load_save",
-            std::nullopt,
+            { "footprints_load_save", std::nullopt },
             {
                     // From top to bottom in the board file
                     {

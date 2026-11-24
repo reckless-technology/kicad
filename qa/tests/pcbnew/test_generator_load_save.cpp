@@ -48,8 +48,7 @@ struct GENERATOR_LOAD_BOARD_TEST_CASE: public KI_TEST::BOARD_LOAD_TEST_CASE
 
 const std::vector<GENERATOR_LOAD_BOARD_TEST_CASE> GeneratorLoading_testCases{
     {
-            "tuning_generators_load_save",
-            20231231,
+            { "tuning_generators_load_save", 20231231 },
             {
                     // From top to bottom in the board file
                     {
@@ -63,8 +62,7 @@ const std::vector<GENERATOR_LOAD_BOARD_TEST_CASE> GeneratorLoading_testCases{
     {
             // Before 20231231, 'id' was used in generator s-exprs
             // and we need to continue to load it for compatibility
-            "tuning_generators_load_save_v20231212",
-            20231212,
+            { "tuning_generators_load_save_v20231212", 20231212 },
             {
                     // From top to bottom in the board file
                     {

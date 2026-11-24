@@ -49,8 +49,7 @@ const std::vector<GRAPHICS_LOAD_BOARD_TEST_CASE> GraphicsLoad_testCases{
     {
             // Before 20241129, 'fill' would be solid or none
             // in PCB shapes
-            "graphics_load_save_v20240108",
-            20240108,
+            { "graphics_load_save_v20240108", 20240108 },
             {
                     // Filled poly
                     {

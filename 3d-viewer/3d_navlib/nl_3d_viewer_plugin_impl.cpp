@@ -261,7 +261,7 @@ long NL_3D_VIEWER_PLUGIN_IMPL::GetPointerPosition( navlib::point_t& position ) c
     SFVEC3F origin, direction;
     m_camera->MakeRayAtCurrentMousePosition( origin, direction );
 
-    position = { origin.x, origin.y, origin.z };
+    position = { { { origin.x, origin.y, origin.z } } };
 
     return 0;
 }
@@ -278,7 +278,7 @@ long NL_3D_VIEWER_PLUGIN_IMPL::GetViewExtents( navlib::box_t& extents ) const
 
     double half_width = f.fw / 2.;
     double half_height = f.fh / 2.;
-    extents = { -half_width, -half_height, f.nearD, half_width, half_height, f.farD };
+    extents = { { { -half_width, -half_height, f.nearD, half_width, half_height, f.farD } } };
 
     return 0;
 }
@@ -303,7 +303,7 @@ long NL_3D_VIEWER_PLUGIN_IMPL::GetViewFrustum( navlib::frustum_t& aFrustum ) con
     const CAMERA_FRUSTUM& f = m_camera->GetFrustum();
     double                half_width = f.nw / 2.;
     double                half_height = f.nh / 2.;
-    aFrustum = { -half_width, half_width, -half_height, half_height, f.nearD, f.farD };
+    aFrustum = { { { -half_width, half_width, -half_height, half_height, f.nearD, f.farD } } };
 
     return 0;
 }
@@ -416,7 +416,7 @@ long NL_3D_VIEWER_PLUGIN_IMPL::GetModelExtents( navlib::box_t& extents ) const
     SFVEC3F min = m_canvas->GetBoardAdapter().GetBBox().Min();
     SFVEC3F max = m_canvas->GetBoardAdapter().GetBBox().Max();
 
-    extents = { min.x, min.y, min.z, max.x, max.y, max.z };
+    extents = { { { min.x, min.y, min.z, max.x, max.y, max.z } } };
 
     return 0;
 }
@@ -452,7 +452,7 @@ long NL_3D_VIEWER_PLUGIN_IMPL::GetPivotPosition( navlib::point_t& position ) con
 {
     SFVEC3F lap = m_camera->GetLookAtPos();
 
-    position = { lap.x, lap.y, lap.z };
+    position = { { { lap.x, lap.y, lap.z } } };
 
     return 0;
 }
@@ -513,7 +513,7 @@ long NL_3D_VIEWER_PLUGIN_IMPL::GetHitLookAt( navlib::point_t& position ) const
     if( m_canvas->GetBoardAdapter().GetBBox().Intersect( mouseRay, &hit ) )
     {
         vec = mouseRay.at( hit );
-        position = { vec.x, vec.y, vec.z };
+        position = { { { vec.x, vec.y, vec.z } } };
         return 0;
     }
 
@@ -641,7 +641,7 @@ long NL_3D_VIEWER_PLUGIN_IMPL::SetCameraTarget( const navlib::point_t& position 
 
 long NL_3D_VIEWER_PLUGIN_IMPL::GetFrontView( navlib::matrix_t& matrix ) const
 {
-    matrix = { 1, 0, 0, 0, 0, 0, 1, 0, 0, -1, 0, 0, 0, 0, 0, 1 };
+    matrix = { { { 1, 0, 0, 0, 0, 0, 1, 0, 0, -1, 0, 0, 0, 0, 0, 1 } } };
     return 0;
 }
 
@@ -649,7 +649,7 @@ long NL_3D_VIEWER_PLUGIN_IMPL::GetFrontView( navlib::matrix_t& matrix ) const
 long NL_3D_VIEWER_PLUGIN_IMPL::GetCoordinateSystem( navlib::matrix_t& matrix ) const
 {
     // Use the right-handed coordinate system X-right, Z-up, Y-in (row vectors)
-    matrix = { 1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1 };
+    matrix = { { { 1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1 } } };
     return 0;
 }
 

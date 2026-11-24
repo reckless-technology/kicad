@@ -190,7 +190,7 @@ struct ARC_SME_CASE : public KI_TEST::NAMED_CASE
 
 static const std::vector<ARC_SME_CASE> arc_sme_cases = {
     {
-            "S(-100,0), M(0,100), E(100,0)",
+            { "S(-100,0), M(0,100), E(100,0)" },
             {
                     { -100, 0 },
                     { 0, 100 },
@@ -209,7 +209,7 @@ static const std::vector<ARC_SME_CASE> arc_sme_cases = {
             },
     },
     {
-            "S(100,0), M(0,100), E(-100,0) (reversed)",
+            { "S(100,0), M(0,100), E(-100,0) (reversed)" },
             {
                     { 100, 0 },
                     { 0, 100 },
@@ -232,7 +232,7 @@ static const std::vector<ARC_SME_CASE> arc_sme_cases = {
             // This should be corrected by the constructor.
             // The mid point should be at about (-71, -71) for a 270 degree arc, with the
             // bottom right quadrant open.
-            "S(100,0), M(-100,0), E(0,100) (bad midpoint)",
+            { "S(100,0), M(-100,0), E(0,100) (bad midpoint)" },
             {
                     { 100, 0 },
                     { -100, 0 },
@@ -292,7 +292,7 @@ struct ARC_CPA_CASE : public KI_TEST::NAMED_CASE
 
 static const std::vector<ARC_CPA_CASE> arc_cases = {
     {
-            "C(0,0) 114 + 360 degree",
+            { "C(0,0) 114 + 360 degree" },
             {
                     { 0, 0 },
                     { -306451, 687368 },
@@ -311,7 +311,7 @@ static const std::vector<ARC_CPA_CASE> arc_cases = {
             },
     },
     {
-            "C(0,0) 180 + 360 degree",
+            { "C(0,0) 180 + 360 degree" },
             {
                     { 0, 0 },
                     { -100, 0 },
@@ -330,7 +330,7 @@ static const std::vector<ARC_CPA_CASE> arc_cases = {
             },
     },
     {
-            "C(0,0) 180 + 90 degree",
+            { "C(0,0) 180 + 90 degree" },
             {
                     { 0, 0 },
                     { -100, 0 },
@@ -349,7 +349,7 @@ static const std::vector<ARC_CPA_CASE> arc_cases = {
             },
     },
     {
-            "C(100,200)  0 - 30 degree",
+            { "C(100,200)  0 - 30 degree" },
             {
                     { 100, 200 },
                     { 300, 200 },
@@ -371,7 +371,7 @@ static const std::vector<ARC_CPA_CASE> arc_cases = {
             // This is a "fan shape" which includes the top quadrant point,
             // so it exercises the bounding box code (centre and end points
             // do not contain the top quadrant)
-            "C(0,0) 30 + 120 degree",
+            { "C(0,0) 30 + 120 degree" },
             {
                     { 0, 0 },
                     { 17320, 10000 },
@@ -392,7 +392,7 @@ static const std::vector<ARC_CPA_CASE> arc_cases = {
     },
     {
             // An arc that covers three quadrant points (L/R, bottom)
-            "C(0,0) 150 + 240 degree",
+            { "C(0,0) 150 + 240 degree" },
             {
                     { 0, 0 },
                     { -17320, 10000 },
@@ -413,7 +413,7 @@ static const std::vector<ARC_CPA_CASE> arc_cases = {
     },
     {
             // Same as above but reverse direction
-            "C(0,0) 30 - 300 degree",
+            { "C(0,0) 30 - 300 degree" },
             {
                     { 0, 0 },
                     { 17320, 10000 },
@@ -475,7 +475,7 @@ struct ARC_TTR_CASE : public KI_TEST::NAMED_CASE
 
 static const std::vector<ARC_TTR_CASE> arc_ttr_cases = {
     {
-            "90 degree segments intersecting",
+            { "90 degree segments intersecting" },
             {
                     { 0, 0, 0, 1000 },
                     { 0, 0, 1000, 0 },
@@ -494,7 +494,7 @@ static const std::vector<ARC_TTR_CASE> arc_ttr_cases = {
             }
     },
     {
-            "45 degree segments intersecting",
+            { "45 degree segments intersecting" },
             {
                     { 0, 0, 0, 1000 },
                     { 0, 0, 1000, 1000 },
@@ -513,7 +513,7 @@ static const std::vector<ARC_TTR_CASE> arc_ttr_cases = {
             }
     },
     {
-            "135 degree segments intersecting",
+            { "135 degree segments intersecting" },
             {
                     { 0, 0, 0, 1000 },
                     { 0, 0, 1000, -1000 },
@@ -610,12 +610,12 @@ struct ARC_SEC_CASE : public KI_TEST::NAMED_CASE
 
 
 static const std::vector<ARC_SEC_CASE> arc_sec_cases = {
-    { "180 deg, clockwise", { { 100, 0 }, { 0, 0 }, { 50, 0 } }, true, { 50, -50 } },
-    { "180 deg, anticlockwise", { { 100, 0 }, { 0, 0 }, { 50, 0 } }, false, { 50, 50 } },
-    { "180 deg flipped, clockwise", { { 0, 0 }, { 100, 0 }, { 50, 0 } }, true, { 50, 50 } },
-    { "180 deg flipped, anticlockwise", { { 0, 0 }, { 100, 0 }, { 50, 0 } }, false, { 50, -50 } },
-    { "90 deg, clockwise", { { -100, 0 }, { 0, 100 }, { 0, 0 } }, true, { -71, 71 } },
-    { "90 deg, anticlockwise", { { -100, 0 }, { 0, 100 }, { 0, 0 } }, false, { 71, -71 } },
+    { { "180 deg, clockwise" }, { { 100, 0 }, { 0, 0 }, { 50, 0 } }, true, { 50, -50 } },
+    { { "180 deg, anticlockwise" }, { { 100, 0 }, { 0, 0 }, { 50, 0 } }, false, { 50, 50 } },
+    { { "180 deg flipped, clockwise" }, { { 0, 0 }, { 100, 0 }, { 50, 0 } }, true, { 50, 50 } },
+    { { "180 deg flipped, anticlockwise" }, { { 0, 0 }, { 100, 0 }, { 50, 0 } }, false, { 50, -50 } },
+    { { "90 deg, clockwise" }, { { -100, 0 }, { 0, 100 }, { 0, 0 } }, true, { -71, 71 } },
+    { { "90 deg, anticlockwise" }, { { -100, 0 }, { 0, 100 }, { 0, 0 } }, false, { 71, -71 } },
 };
 
 
@@ -644,7 +644,7 @@ struct ARC_CICLE_COLLIDE_CASE : public KI_TEST::NAMED_CASE
 };
 
 static const std::vector<ARC_CICLE_COLLIDE_CASE> arc_circle_collide_cases = {
-    { " Issue 20336, large arc", { { 183000000, 65710001}, {150496913, 147587363},{116291153, 66406583}}, 2000000 / 2, {116300000, 133100000}, 300000, true, 53319 }
+    { { " Issue 20336, large arc" }, { { 183000000, 65710001}, {150496913, 147587363},{116291153, 66406583}}, 2000000 / 2, {116300000, 133100000}, 300000, true, 53319 }
 };
 
 
@@ -687,52 +687,52 @@ struct ARC_PT_COLLIDE_CASE : public KI_TEST::NAMED_CASE
 
 
 static const std::vector<ARC_PT_COLLIDE_CASE> arc_pt_collide_cases = {
-    { " 270deg, 0 cl, 0   deg    ", { { 0, 0 }, { 100, 0 }, 270.0 }, 0, { 100, 0 }, true, 0 },
-    { " 270deg, 0 cl, 90  deg    ", { { 0, 0 }, { 100, 0 },  270.0 }, 0, { 0, 100 }, true, 0 },
-    { " 270deg, 0 cl, 180 deg    ", { { 0, 0 }, { 100, 0 },  270.0 }, 0, { -100, 0 }, true, 0 },
-    { " 270deg, 0 cl, 270 deg    ", { { 0, 0 }, { 100, 0 },  270.0 }, 0, { 0, -100 }, true, 0 },
-    { " 270deg, 0 cl, 45  deg    ", { { 0, 0 }, { 100, 0 },  270.0 }, 0, { 71, 71 }, true, 0 },
-    { " 270deg, 0 cl, -45 deg    ", { { 0, 0 }, { 100, 0 },  270.0 }, 0, { 71, -71 }, false, -1 },
-    { "-270deg, 0 cl, 0   deg    ", { { 0, 0 }, { 100, 0 }, -270.0 }, 0, { 100, 0 }, true, 0 },
-    { "-270deg, 0 cl, 90  deg    ", { { 0, 0 }, { 100, 0 }, -270.0 }, 0, { 0, 100 }, true, 0 },
-    { "-270deg, 0 cl, 180 deg    ", { { 0, 0 }, { 100, 0 }, -270.0 }, 0, { -100, 0 }, true, 0 },
-    { "-270deg, 0 cl, 270 deg    ", { { 0, 0 }, { 100, 0 }, -270.0 }, 0, { 0, -100 }, true, 0 },
-    { "-270deg, 0 cl, 45  deg    ", { { 0, 0 }, { 100, 0 }, -270.0 }, 0, { 71, 71 }, false, -1 },
-    { "-270deg, 0 cl, -45 deg    ", { { 0, 0 }, { 100, 0 }, -270.0 }, 0, { 71, -71 }, true, 0 },
-    { " 270deg, 5 cl, 0   deg, 5 pos X", { { 0, 0 }, { 100, 0 },  270.0 }, 5, { 105, 0 }, true, 5 },
-    { " 270deg, 5 cl, 0  deg, 5 pos Y", { { 0, 0 }, { 100, 0 },  270.0 }, 5, { 100, -5 }, true, 5 },
-    { " 270deg, 5 cl, 90  deg, 5 pos", { { 0, 0 }, { 100, 0 },  270.0 }, 5, { 0, 105 }, true, 5 },
-    { " 270deg, 5 cl, 180 deg, 5 pos", { { 0, 0 }, { 100, 0 },  270.0 }, 5, { -105, 0 }, true, 5 },
-    { " 270deg, 5 cl, 270 deg, 5 pos", { { 0, 0 }, { 100, 0 },  270.0 }, 5, { 0, -105 }, true, 5 },
-    { " 270deg, 5 cl, 0   deg, 5 neg", { { 0, 0 }, { 100, 0 },  270.0 }, 5, { 105, 0 }, true, 5 },
-    { " 270deg, 5 cl, 90  deg, 5 neg", { { 0, 0 }, { 100, 0 },  270.0 }, 5, { 0, 105 }, true, 5 },
-    { " 270deg, 5 cl, 180 deg, 5 neg", { { 0, 0 }, { 100, 0 },  270.0 }, 5, { -105, 0 }, true, 5 },
-    { " 270deg, 5 cl, 270 deg, 5 neg", { { 0, 0 }, { 100, 0 },  270.0 }, 5, { 0, -105 }, true, 5 },
-    { " 270deg, 5 cl, 45  deg, 5 pos", { { 0, 0 }, { 100, 0 },  270.0 }, 5, { 74, 75 }, true, 5 }, // 74.246, -74.246
-    { " 270deg, 5 cl, -45 deg, 5 pos", { { 0, 0 }, { 100, 0 },  270.0 }, 5, { 74, -75 }, false, -1 }, //74.246, -74.246
-    { " 270deg, 5 cl, 45  deg, 5 neg", { { 0, 0 }, { 100, 0 },  270.0 }, 5, { 67, 67 }, true, 5 }, // 67.17, 67.17
-    { " 270deg, 5 cl, -45 deg, 5 neg", { { 0, 0 }, { 100, 0 },  270.0 }, 5, { 67, -67 }, false, -1 }, // 67.17, -67.17
-    { " 270deg, 4 cl, 0   deg pos", { { 0, 0 }, { 100, 0 },  270.0 }, 4, { 105, 0 }, false, -1 },
-    { " 270deg, 4 cl, 90  deg pos", { { 0, 0 }, { 100, 0 },  270.0 }, 4, { 0, 105 }, false, -1 },
-    { " 270deg, 4 cl, 180 deg pos", { { 0, 0 }, { 100, 0 },  270.0 }, 4, { -105, 0 }, false, -1 },
-    { " 270deg, 4 cl, 270 deg pos", { { 0, 0 }, { 100, 0 },  270.0 }, 4, { 0, -105 }, false, -1 },
-    { "  90deg, 0 cl,   0 deg    ", { { 0, 0 }, { 71, -71 },  90.0 }, 0, { 71, -71 }, true, 0 },
-    { "  90deg, 0 cl,  45 deg    ", { { 0, 0 }, { 71, -71 },  90.0 }, 0, { 100, 0 }, true, 0 },
-    { "  90deg, 0 cl,  90 deg    ", { { 0, 0 }, { 71, -71 },  90.0 }, 0, { 71, 71 }, true, 0 },
-    { "  90deg, 0 cl, 135 deg    ", { { 0, 0 }, { 71, -71 },  90.0 }, 0, { 0, -100 }, false, -1 },
-    { "  90deg, 0 cl, -45 deg    ", { { 0, 0 }, { 71, -71 },  90.0 }, 0, { 0,  100 }, false, -1 },
-    { " -90deg, 0 cl,   0 deg    ", { { 0, 0 }, { 71,  71 }, -90.0 }, 0, { 71, -71 }, true, 0 },
-    { " -90deg, 0 cl,  45 deg    ", { { 0, 0 }, { 71,  71 }, -90.0 }, 0, { 100, 0 }, true, 0 },
-    { " -90deg, 0 cl,  90 deg    ", { { 0, 0 }, { 71,  71 }, -90.0 }, 0, { 71, 71 }, true, 0 },
-    { " -90deg, 0 cl, 135 deg    ", { { 0, 0 }, { 71,  71 }, -90.0 }, 0, { 0, -100 }, false, -1 },
-    { " -90deg, 0 cl, -45 deg    ", { { 0, 0 }, { 71,  71 }, -90.0 }, 0, { 0,  100 }, false, -1 },
-    { "issue 11358 collide",
+    { { " 270deg, 0 cl, 0   deg    " }, { { 0, 0 }, { 100, 0 }, 270.0 }, 0, { 100, 0 }, true, 0 },
+    { { " 270deg, 0 cl, 90  deg    " }, { { 0, 0 }, { 100, 0 },  270.0 }, 0, { 0, 100 }, true, 0 },
+    { { " 270deg, 0 cl, 180 deg    " }, { { 0, 0 }, { 100, 0 },  270.0 }, 0, { -100, 0 }, true, 0 },
+    { { " 270deg, 0 cl, 270 deg    " }, { { 0, 0 }, { 100, 0 },  270.0 }, 0, { 0, -100 }, true, 0 },
+    { { " 270deg, 0 cl, 45  deg    " }, { { 0, 0 }, { 100, 0 },  270.0 }, 0, { 71, 71 }, true, 0 },
+    { { " 270deg, 0 cl, -45 deg    " }, { { 0, 0 }, { 100, 0 },  270.0 }, 0, { 71, -71 }, false, -1 },
+    { { "-270deg, 0 cl, 0   deg    " }, { { 0, 0 }, { 100, 0 }, -270.0 }, 0, { 100, 0 }, true, 0 },
+    { { "-270deg, 0 cl, 90  deg    " }, { { 0, 0 }, { 100, 0 }, -270.0 }, 0, { 0, 100 }, true, 0 },
+    { { "-270deg, 0 cl, 180 deg    " }, { { 0, 0 }, { 100, 0 }, -270.0 }, 0, { -100, 0 }, true, 0 },
+    { { "-270deg, 0 cl, 270 deg    " }, { { 0, 0 }, { 100, 0 }, -270.0 }, 0, { 0, -100 }, true, 0 },
+    { { "-270deg, 0 cl, 45  deg    " }, { { 0, 0 }, { 100, 0 }, -270.0 }, 0, { 71, 71 }, false, -1 },
+    { { "-270deg, 0 cl, -45 deg    " }, { { 0, 0 }, { 100, 0 }, -270.0 }, 0, { 71, -71 }, true, 0 },
+    { { " 270deg, 5 cl, 0   deg, 5 pos X" }, { { 0, 0 }, { 100, 0 },  270.0 }, 5, { 105, 0 }, true, 5 },
+    { { " 270deg, 5 cl, 0  deg, 5 pos Y" }, { { 0, 0 }, { 100, 0 },  270.0 }, 5, { 100, -5 }, true, 5 },
+    { { " 270deg, 5 cl, 90  deg, 5 pos" }, { { 0, 0 }, { 100, 0 },  270.0 }, 5, { 0, 105 }, true, 5 },
+    { { " 270deg, 5 cl, 180 deg, 5 pos" }, { { 0, 0 }, { 100, 0 },  270.0 }, 5, { -105, 0 }, true, 5 },
+    { { " 270deg, 5 cl, 270 deg, 5 pos" }, { { 0, 0 }, { 100, 0 },  270.0 }, 5, { 0, -105 }, true, 5 },
+    { { " 270deg, 5 cl, 0   deg, 5 neg" }, { { 0, 0 }, { 100, 0 },  270.0 }, 5, { 105, 0 }, true, 5 },
+    { { " 270deg, 5 cl, 90  deg, 5 neg" }, { { 0, 0 }, { 100, 0 },  270.0 }, 5, { 0, 105 }, true, 5 },
+    { { " 270deg, 5 cl, 180 deg, 5 neg" }, { { 0, 0 }, { 100, 0 },  270.0 }, 5, { -105, 0 }, true, 5 },
+    { { " 270deg, 5 cl, 270 deg, 5 neg" }, { { 0, 0 }, { 100, 0 },  270.0 }, 5, { 0, -105 }, true, 5 },
+    { { " 270deg, 5 cl, 45  deg, 5 pos" }, { { 0, 0 }, { 100, 0 },  270.0 }, 5, { 74, 75 }, true, 5 }, // 74.246, -74.246
+    { { " 270deg, 5 cl, -45 deg, 5 pos" }, { { 0, 0 }, { 100, 0 },  270.0 }, 5, { 74, -75 }, false, -1 }, //74.246, -74.246
+    { { " 270deg, 5 cl, 45  deg, 5 neg" }, { { 0, 0 }, { 100, 0 },  270.0 }, 5, { 67, 67 }, true, 5 }, // 67.17, 67.17
+    { { " 270deg, 5 cl, -45 deg, 5 neg" }, { { 0, 0 }, { 100, 0 },  270.0 }, 5, { 67, -67 }, false, -1 }, // 67.17, -67.17
+    { { " 270deg, 4 cl, 0   deg pos" }, { { 0, 0 }, { 100, 0 },  270.0 }, 4, { 105, 0 }, false, -1 },
+    { { " 270deg, 4 cl, 90  deg pos" }, { { 0, 0 }, { 100, 0 },  270.0 }, 4, { 0, 105 }, false, -1 },
+    { { " 270deg, 4 cl, 180 deg pos" }, { { 0, 0 }, { 100, 0 },  270.0 }, 4, { -105, 0 }, false, -1 },
+    { { " 270deg, 4 cl, 270 deg pos" }, { { 0, 0 }, { 100, 0 },  270.0 }, 4, { 0, -105 }, false, -1 },
+    { { "  90deg, 0 cl,   0 deg    " }, { { 0, 0 }, { 71, -71 },  90.0 }, 0, { 71, -71 }, true, 0 },
+    { { "  90deg, 0 cl,  45 deg    " }, { { 0, 0 }, { 71, -71 },  90.0 }, 0, { 100, 0 }, true, 0 },
+    { { "  90deg, 0 cl,  90 deg    " }, { { 0, 0 }, { 71, -71 },  90.0 }, 0, { 71, 71 }, true, 0 },
+    { { "  90deg, 0 cl, 135 deg    " }, { { 0, 0 }, { 71, -71 },  90.0 }, 0, { 0, -100 }, false, -1 },
+    { { "  90deg, 0 cl, -45 deg    " }, { { 0, 0 }, { 71, -71 },  90.0 }, 0, { 0,  100 }, false, -1 },
+    { { " -90deg, 0 cl,   0 deg    " }, { { 0, 0 }, { 71,  71 }, -90.0 }, 0, { 71, -71 }, true, 0 },
+    { { " -90deg, 0 cl,  45 deg    " }, { { 0, 0 }, { 71,  71 }, -90.0 }, 0, { 100, 0 }, true, 0 },
+    { { " -90deg, 0 cl,  90 deg    " }, { { 0, 0 }, { 71,  71 }, -90.0 }, 0, { 71, 71 }, true, 0 },
+    { { " -90deg, 0 cl, 135 deg    " }, { { 0, 0 }, { 71,  71 }, -90.0 }, 0, { 0, -100 }, false, -1 },
+    { { " -90deg, 0 cl, -45 deg    " }, { { 0, 0 }, { 71,  71 }, -90.0 }, 0, { 0,  100 }, false, -1 },
+    { { "issue 11358 collide" },
       { { 119888000, 60452000 }, { 120904000, 60452000 }, 360.0 },
       0,
       { 120395500, 59571830 },
       true,
       0 },
-    { "issue 11358 dist",
+    { { "issue 11358 dist" },
       { { 119888000, 60452000 }, { 120904000, 60452000 }, 360.0 },
       100,
       { 118872050, 60452000 },
@@ -781,19 +781,19 @@ struct ARC_SEG_COLLIDE_CASE : public KI_TEST::NAMED_CASE
 
 
 static const std::vector<ARC_SEG_COLLIDE_CASE> arc_seg_collide_cases = {
-    { "0   deg    ", { { 0, 0 }, { 100, 0 }, 270.0 }, 0, { { 100, 0 }, { 50, 0 } }, true, 0, { 100, 0 } },
-    { "90  deg    ", { { 0, 0 }, { 100, 0 }, 270.0 }, 0, { { 0, 100 }, { 0, 50 } }, true, 0, { 0, 100 } },
-    { "180 deg    ", { { 0, 0 }, { 100, 0 }, 270.0 }, 0, { { -100, 0 }, { -50, 0 } }, true, 0, { -100, 0 } },
-    { "270 deg    ", { { 0, 0 }, { 100, 0 }, 270.0 }, 0, { { 0, -100 }, { 0, -50 } }, true, 0, { 0, -100 } },
-    { "45  deg    ", { { 0, 0 }, { 100, 0 }, 270.0 }, 0, { { 71, 71 }, { 35, 35 } }, true, 0, { 70, 70 } },
-    { "-45 deg    ", { { 0, 0 }, { 100, 0 }, 270.0 }, 0, { { 71, -71 }, { 35, -35 } }, false, -1, { 0, 0 } },
-    { "seg inside arc start", { { 0, 0 }, { 71, -71 }, 90.0 },
+    { { "0   deg    " }, { { 0, 0 }, { 100, 0 }, 270.0 }, 0, { { 100, 0 }, { 50, 0 } }, true, 0, { 100, 0 } },
+    { { "90  deg    " }, { { 0, 0 }, { 100, 0 }, 270.0 }, 0, { { 0, 100 }, { 0, 50 } }, true, 0, { 0, 100 } },
+    { { "180 deg    " }, { { 0, 0 }, { 100, 0 }, 270.0 }, 0, { { -100, 0 }, { -50, 0 } }, true, 0, { -100, 0 } },
+    { { "270 deg    " }, { { 0, 0 }, { 100, 0 }, 270.0 }, 0, { { 0, -100 }, { 0, -50 } }, true, 0, { 0, -100 } },
+    { { "45  deg    " }, { { 0, 0 }, { 100, 0 }, 270.0 }, 0, { { 71, 71 }, { 35, 35 } }, true, 0, { 70, 70 } },
+    { { "-45 deg    " }, { { 0, 0 }, { 100, 0 }, 270.0 }, 0, { { 71, -71 }, { 35, -35 } }, false, -1, { 0, 0 } },
+    { { "seg inside arc start" }, { { 0, 0 }, { 71, -71 }, 90.0 },
                         10, { { 90, 0 }, { -35, 0 } }, true, 10, { 100, 0 } },
-    { "seg inside arc end", { { 0, 0 }, { 71, -71  }, 90.0 },
+    { { "seg inside arc end" }, { { 0, 0 }, { 71, -71  }, 90.0 },
                         10, { { -35, 0 }, { 90, 0 } }, true, 10, { 100, 0 } },
-    { "large diameter arc", { { 172367922, 82282076 }, { 162530000, 92120000 }, -45.0 },
+    { { "large diameter arc" }, { { 172367922, 82282076 }, { 162530000, 92120000 }, -45.0 },
                         433300, { { 162096732, 92331236 }, { 162096732, 78253268 } }, true, 433268, { 162530000, 92120000 } },
-    { "upside down collide", { { 26250000, 16520000 }, { 28360000, 16520000 }, 90.0 },
+    { { "upside down collide" }, { { 26250000, 16520000 }, { 28360000, 16520000 }, 90.0 },
                         0, { { 27545249, 18303444 }, { 27545249, 18114500 } }, true, 0, { 27545249, 18185662 } }
 };
 
@@ -869,77 +869,77 @@ struct ARC_ARC_COLLIDE_CASE : public KI_TEST::NAMED_CASE
 
 
 static const std::vector<ARC_ARC_COLLIDE_CASE> arc_arc_collide_cases = {
-    { "case 1: No intersection",
+    { { "case 1: No intersection" },
       { 73.843527, 74.355869, 71.713528, 72.965869, -76.36664803, 0.2 },
       { 71.236473, 74.704131, 73.366472, 76.094131, -76.36664803, 0.2 },
       0,
       false },
-    { "case 2: No intersection",
+    { { "case 2: No intersection" },
       { 82.542335, 74.825975, 80.413528, 73.435869, -76.4, 0.2 },
       { 76.491192, 73.839894, 78.619999, 75.23, -76.4, 0.2 },
       0,
       false },
-    { "case 3: No intersection",
+    { { "case 3: No intersection" },
       { 89.318807, 74.810106, 87.19, 73.42, -76.4, 0.2 },
       { 87.045667, 74.632941, 88.826472, 75.794131, -267.9, 0.2 },
       0,
       false },
-    { "case 4: Co-centered not intersecting",
+    { { "case 4: Co-centered not intersecting" },
       { 94.665667, 73.772941, 96.446472, 74.934131, -267.9, 0.2 },
       { 94.665667, 73.772941, 93.6551, 73.025482, -255.5, 0.2 },
       0,
       false },
-    { "case 5: Not intersecting, but end points very close",
+    { { "case 5: Not intersecting, but end points very close" },
       { 72.915251, 80.493054, 73.570159, 81.257692, -260.5, 0.2 },
       { 73.063537, 82.295989, 71.968628, 81.581351, -255.5, 0.2 },
       0,
       false },
-    { "case 6: Coincident centers, colliding due to arc thickness",
+    { { "case 6: Coincident centers, colliding due to arc thickness" },
       { 79.279991, 80.67988, 80.3749, 81.394518, -255.5, 0.3 },
       { 79.279991, 80.67988, 80.3749, 81.694518, -255.5, 0.3 },
       0,
       true },
-    { "case 7: Single intersection",
+    { { "case 7: Single intersection" },
       { 88.495265, 81.766089, 90.090174, 82.867869, -255.5, 0.2 },
       { 86.995265, 81.387966, 89.090174, 82.876887, -255.5, 0.2 },
       0,
       true },
-    { "case 8: Double intersection",
+    { { "case 8: Double intersection" },
       { 96.149734, 81.792126, 94.99, 83.37, -347.2, 0.2 },
       { 94.857156, 81.240589, 95.91, 83.9, -288.5, 0.2 },
       0,
       true },
-    { "case 9: Endpoints within arc width",
+    { { "case 9: Endpoints within arc width" },
       { 72.915251, 86.493054, 73.970159, 87.257692, -260.5, 0.2 },
       { 73.063537, 88.295989, 71.968628, 87.581351, -255.5, 0.2 },
       0,
       true },
-    { "case 10: Endpoints close, outside, no collision",
+    { { "case 10: Endpoints close, outside, no collision" },
       { 78.915251, 86.393054, 79.970159, 87.157692, 99.5, 0.2 },
       { 79.063537, 88.295989, 77.968628, 87.581351, -255.5, 0.2 },
       0,
       false },
-    { "case 11: Endpoints close, inside, collision due to arc width",
+    { { "case 11: Endpoints close, inside, collision due to arc width" },
       { 85.915251, 86.993054, 86.970159, 87.757692, 99.5, 0.2 },
       { 86.063537, 88.295989, 84.968628, 87.581351, -255.5, 0.2 },
       0,
       true },
-    { "case 12: Simulated differential pair length-tuning",
+    { { "case 12: Simulated differential pair length-tuning" },
       { 94.6551, 88.296, 95.6551, 88.296, 90.0, 0.1 },
       { 94.6551, 88.296, 95.8551, 88.296, 90.0, 0.1 },
       0.1,
       false },
-    { "case 13: One arc fully enclosed in other, non-concentric",
+    { { "case 13: One arc fully enclosed in other, non-concentric" },
       { 73.77532, 93.413654, 75.70532, 93.883054, 60.0, 0.1 },
       { 73.86532, 93.393054, 75.86532, 93.393054, 90.0, 0.3 },
       0,
       true },
-    { "case 14: One arc fully enclosed in other, concentric",
+    { { "case 14: One arc fully enclosed in other, concentric" },
       { 79.87532, 93.413654, 81.64532, 94.113054, 60.0, 0.1 },
       { 79.87532, 93.413654, 81.86532, 93.393054, 90.0, 0.3 },
       0,
       true },
-    { "case 15: Arcs separated by clearance",
+    { { "case 15: Arcs separated by clearance" },
         { 303.7615, 149.9252, 303.695968, 149.925237, 90.0262, 0.065 },
         { 303.6345, 149.2637, 303.634523, 148.85619, 89.9957, 0.065 },
       0.15,
@@ -1179,7 +1179,7 @@ bool ArePolylineMidPointsNearCircle( const SHAPE_LINE_CHAIN& aPolyline, const VE
 
 const std::vector<ARC_TO_POLYLINE_CASE> ArcToPolyline_cases{
     {
-        "Zero rad",
+        { "Zero rad" },
         {
             { 0, 0 },
             { 0, 0 },
@@ -1187,7 +1187,7 @@ const std::vector<ARC_TO_POLYLINE_CASE> ArcToPolyline_cases{
         },
     },
     {
-        "Semicircle",
+        { "Semicircle" },
         {
             { 0, 0 },
             { -1000000, 0 },
@@ -1197,7 +1197,7 @@ const std::vector<ARC_TO_POLYLINE_CASE> ArcToPolyline_cases{
     {
         // check that very small circles don't fall apart and that reverse angles
         // work too
-        "Extremely small semicircle",
+        { "Extremely small semicircle" },
         {
             { 0, 0 },
             { -1000, 0 },
@@ -1206,7 +1206,7 @@ const std::vector<ARC_TO_POLYLINE_CASE> ArcToPolyline_cases{
     },
     {
         // Make sure it doesn't only work for "easy" angles
-        "Non-round geometry",
+        { "Non-round geometry" },
         {
             { 0, 0 },
             { 1234567, 0 },

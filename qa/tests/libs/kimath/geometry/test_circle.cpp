@@ -91,73 +91,73 @@ struct CIR_PT_BOOL_CASE : public KI_TEST::NAMED_CASE
  */
 static const std::vector<CIR_PT_BOOL_CASE> contains_cases = {
     {
-        "on center",
+        { "on center" },
         { { 100, 100 }, 200 },
         { 100, 100 },
         false,
     },
     {
-        "0 deg",
+        { "0 deg" },
         { { 100, 100 }, 200 },
         { 300, 100 },
         true,
     },
     {
-        "0 deg, allowed tolerance pos",
+        { "0 deg, allowed tolerance pos" },
         { { 100, 100 }, 200 },
         { 100, 300 + SHAPE::MIN_PRECISION_IU },
         true,
     },
     {
-        "0 deg, allowed tolerance neg",
+        { "0 deg, allowed tolerance neg" },
         { { 100, 100 }, 200 },
         { 100, 300 - SHAPE::MIN_PRECISION_IU },
         true,
     },
     {
-        "0 deg, allowed tolerance pos + 1",
+        { "0 deg, allowed tolerance pos + 1" },
         { { 100, 100 }, 200 },
         { 100, 300 + SHAPE::MIN_PRECISION_IU + 1 },
         false,
     },
     {
-        "0 deg, allowed tolerance neg - 1",
+        { "0 deg, allowed tolerance neg - 1" },
         { { 100, 100 }, 200 },
         { 100, 300 - SHAPE::MIN_PRECISION_IU - 1 },
         false,
     },
     {
-        "45 deg",
+        { "45 deg" },
         { { 100, 100 }, 200 },
         { 241, 241 },
         true,
     },
     {
-        "45 deg, allowed tolerance pos",
+        { "45 deg, allowed tolerance pos" },
         { { 100, 100 }, 200 },
         { 241 + MIN_PRECISION_45DEG, 241 + MIN_PRECISION_45DEG },
         true,
     },
     {
-        "45 deg, allowed tolerance pos + 1",
+        { "45 deg, allowed tolerance pos + 1" },
         { { 100, 100 }, 200 },
         { 241 + MIN_PRECISION_45DEG + 1, 241 + MIN_PRECISION_45DEG + 1 },
         false,
     },
     {
-        "90 deg",
+        { "90 deg" },
         { { 100, 100 }, 200 },
         { 100, 300 },
         true,
     },
     {
-        "180 deg",
+        { "180 deg" },
         { { 100, 100 }, 200 },
         { -100, 100 },
         true,
     },
     {
-        "270 deg",
+        { "270 deg" },
         { { 100, 100 }, 200 },
         { 100, -100 },
         true,
@@ -189,25 +189,25 @@ struct CIR_PT_PT_CASE : public KI_TEST::NAMED_CASE
  */
 static const std::vector<CIR_PT_PT_CASE> nearest_point_cases = {
     {
-        "on center",
+        { "on center" },
         { { 10, 10 }, 20 },
         { 10, 10 },
         { 30, 10 }, // special case: when at the circle return a point on the x axis
     },
     {
-        "inside",
+        { "inside" },
         { { 10, 10 }, 20 },
         { 10, 20 },
         { 10, 30 },
     },
     {
-        "outside",
+        { "outside" },
         { { 10, 10 }, 20 },
         { 10, 50 },
         { 10, 30 },
     },
     {
-        "angled",
+        { "angled" },
         { { 10, 10 }, 20 },
         { 50, 50 },
         { 24, 24 },
@@ -239,7 +239,7 @@ struct CIR_CIR_VECPT_CASE : public KI_TEST::NAMED_CASE
  */
 static const std::vector<CIR_CIR_VECPT_CASE> intersect_circle_cases = {
     {
-        "two point aligned",
+        { "two point aligned" },
         { { 10, 10 }, 20 },
         { { 10, 45 }, 20 },
         {
@@ -248,7 +248,7 @@ static const std::vector<CIR_CIR_VECPT_CASE> intersect_circle_cases = {
         },
     },
     {
-        "two point angled",
+        { "two point angled" },
         { { 10, 10 }, 20 },
         { { 20, 20 }, 20 },
         {
@@ -257,7 +257,7 @@ static const std::vector<CIR_CIR_VECPT_CASE> intersect_circle_cases = {
         },
     },
     {
-        "tangent aligned, external",
+        { "tangent aligned, external" },
         { { 10, 10 }, 20 },
         { { 10, 50 }, 20 },
         {
@@ -265,7 +265,7 @@ static const std::vector<CIR_CIR_VECPT_CASE> intersect_circle_cases = {
         },
     },
     {
-        "tangent aligned, internal",
+        { "tangent aligned, internal" },
         { { 10, 10 }, 40 },
         { { 10, 30 }, 20 },
         {
@@ -273,7 +273,7 @@ static const std::vector<CIR_CIR_VECPT_CASE> intersect_circle_cases = {
         },
     },
     {
-        "no intersection",
+        { "no intersection" },
         { { 10, 10 }, 20 },
         { { 10, 51 }, 20 },
         {
@@ -281,7 +281,7 @@ static const std::vector<CIR_CIR_VECPT_CASE> intersect_circle_cases = {
         },
     },
     {
-        "KiROUND overflow 1",
+        { "KiROUND overflow 1" },
         { { 44798001, -94001999 }, 200001 },
         { { 44797999, -94001999 }, 650001 },
         {
@@ -289,7 +289,7 @@ static const std::vector<CIR_CIR_VECPT_CASE> intersect_circle_cases = {
         },
     },
     {
-        "KiROUND overflow 2",
+        { "KiROUND overflow 2" },
         { { 50747999, -92402001 }, 650001 },
         { { 50748001, -92402001 }, 200001 },
         {
@@ -297,7 +297,7 @@ static const std::vector<CIR_CIR_VECPT_CASE> intersect_circle_cases = {
         },
     },
     {
-        "KiROUND overflow 3",
+        { "KiROUND overflow 3" },
         { { 43947999, -92402001 }, 650001 },
         { { 43948001, -92402001 }, 200001 },
         {
@@ -305,7 +305,7 @@ static const std::vector<CIR_CIR_VECPT_CASE> intersect_circle_cases = {
         },
     },
     {
-        "KiROUND overflow 4",
+        { "KiROUND overflow 4" },
         { { 46497999, -94001999 }, 200001 },
         { { 46498001, -94001999 }, 650001 },
         {
@@ -313,7 +313,7 @@ static const std::vector<CIR_CIR_VECPT_CASE> intersect_circle_cases = {
         },
     },
     {
-        "Co-centered, same radius", // Exercise d=0
+        { "Co-centered, same radius" }, // Exercise d=0
         { { 205999999, 136367974 }, 3742026 },
         { { 205999999, 136367974 }, 3742026 },
         {
@@ -359,7 +359,7 @@ struct SEG_SEG_VECPT_CASE : public KI_TEST::NAMED_CASE
  */
 static const std::vector<SEG_SEG_VECPT_CASE> intersect_seg_cases = {
     {
-        "two point aligned",
+        { "two point aligned" },
         { { 0, 0 }, 20 },
         { { 10, -40 }, {10, 40} },
         {
@@ -368,7 +368,7 @@ static const std::vector<SEG_SEG_VECPT_CASE> intersect_seg_cases = {
         },
     },
     {
-        "two point angled",
+        { "two point angled" },
         { { 0, 0 }, 20 },
         { { -20, -40 }, {20, 40} },
         {
@@ -377,7 +377,7 @@ static const std::vector<SEG_SEG_VECPT_CASE> intersect_seg_cases = {
         },
     },
     {
-        "tangent",
+        { "tangent" },
         { { 0, 0 }, 20 },
         { { 20, 0 }, {20, 40} },
         {
@@ -385,7 +385,7 @@ static const std::vector<SEG_SEG_VECPT_CASE> intersect_seg_cases = {
         },
     },
     {
-        "no intersection",
+        { "no intersection" },
         { { 0, 0 }, 20 },
         { { 25, 0 }, {25, 40} },
         {
@@ -393,7 +393,7 @@ static const std::vector<SEG_SEG_VECPT_CASE> intersect_seg_cases = {
         },
     },
     {
-        "no intersection: seg end points inside circle",
+        { "no intersection: seg end points inside circle" },
         { { 0, 0 }, 20 },
         { { 0, 10 }, {0, -10} },
         {
@@ -418,7 +418,7 @@ BOOST_DATA_TEST_CASE( Intersect, boost::unit_test::data::make( intersect_seg_cas
  */
 static const std::vector<SEG_SEG_VECPT_CASE> intersect_line_cases = {
     {
-        "two point aligned",
+        { "two point aligned" },
         { { 0, 0 }, 20 },
         { { 10, 45 }, {10, 40} },
         {
@@ -427,7 +427,7 @@ static const std::vector<SEG_SEG_VECPT_CASE> intersect_line_cases = {
         },
     },
     {
-        "two point angled",
+        { "two point angled" },
         { { 0, 0 }, 20 },
         { { -20, -40 }, {20, 40} },
         {
@@ -436,7 +436,7 @@ static const std::vector<SEG_SEG_VECPT_CASE> intersect_line_cases = {
         },
     },
     {
-        "tangent",
+        { "tangent" },
         { { 0, 0 }, 20 },
         { { 20, 0 }, {20, 40} },
         {
@@ -444,7 +444,7 @@ static const std::vector<SEG_SEG_VECPT_CASE> intersect_line_cases = {
         },
     },
     {
-        "no intersection",
+        { "no intersection" },
         { { 0, 0 }, 20 },
         { { 25, 0 }, {25, 40} },
         {
@@ -452,7 +452,7 @@ static const std::vector<SEG_SEG_VECPT_CASE> intersect_line_cases = {
         },
     },
     {
-        "intersection, seg end points inside circle",
+        { "intersection, seg end points inside circle" },
         { { 0, 0 }, 20 },
         { { 0, 10 }, {0, -10} },
         {
@@ -490,35 +490,35 @@ struct CIR_SEG_VECPT_CASE : public KI_TEST::NAMED_CASE
  */
 static const std::vector<CIR_SEG_VECPT_CASE> construct_tan_tan_pt_cases = {
     {
-        "90 degree segs, point on seg",
+        { "90 degree segs, point on seg" },
         { { 0, 0 }, {    0, 1000 } },
         { { 0, 0 }, { 1000, 0    } },
         { 0, 400 },
         { { 400, 400} , 400 }, // result from simple geometric inference
     },
     {
-        "90 degree segs, point floating",
+        { "90 degree segs, point floating" },
         { { 0, 0 }, {    0, 1000 } },
         { { 0, 0 }, { 1000, 0    } },
         { 200, 100 },
         { { 500, 500} , 500 }, // result from LibreCAD 2.2.0-rc2
     },
     {
-        "45 degree segs, point on seg",
+        { "45 degree segs, point on seg" },
         { { 0, 0 }, { 1000,    0 } },
         { { 0, 0 }, { 1000, 1000 } },
         { 400, 0 },
         { { 400, 166} , 166 },// result from LibreCAD 2.2.0-rc2
     },
     {
-        "45 degree segs, point floating",
+        { "45 degree segs, point floating" },
         { { 0, 0 }, { 1000000,       0 } },
         { { 0, 0 }, { 1000000, 1000000 } },
         { 200000, 100000 },
         { { 332439, 137701} , 137701 }, // result from LibreCAD 2.2.0-rc2
     },
     {
-        "135 degree segs, point on seg",
+        { "135 degree segs, point on seg" },
         { { 0, 0 }, {  1000000,       0 } },
         { { 0, 0 }, { -1000000, 1000000 } },
         { 400000, 0 },
@@ -526,7 +526,7 @@ static const std::vector<CIR_SEG_VECPT_CASE> construct_tan_tan_pt_cases = {
         //{ { 400000, 965686 } , 965686 }, // result from LibreCAD 2.2.0-rc2
     },
     {
-        "135 degree segs, point floating",
+        { "135 degree segs, point floating" },
         { { 0, 0 }, {  1000,    0 } },
         { { 0, 0 }, { -1000, 1000 } },
         { 200, 100 },
@@ -534,7 +534,7 @@ static const std::vector<CIR_SEG_VECPT_CASE> construct_tan_tan_pt_cases = {
         //{ { 822, 1985} , 1985 }, // result from LibreCAD 2.2.0-rc2
     },
     {
-        "point on intersection",
+        { "point on intersection" },
         { { 10, 0 }, {  1000,    0 } },
         { { 10, 0 }, { -1000, 1000 } },
         { 10, 0 },

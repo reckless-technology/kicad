@@ -49,8 +49,7 @@ struct GROUP_LOAD_BOARD_TEST_CASE: public KI_TEST::BOARD_LOAD_TEST_CASE
 
 const std::vector<GROUP_LOAD_BOARD_TEST_CASE> GroupsLoadSave_testCases{
     {
-            "groups_load_save",
-            20231231,
+            { "groups_load_save", 20231231 },
             {
                     // From top to bottom in the board file
                     {
@@ -64,8 +63,7 @@ const std::vector<GROUP_LOAD_BOARD_TEST_CASE> GroupsLoadSave_testCases{
     {
             // Before 20231231, 'id' was used in group s-exprs
             // and we need to continue to load it for compatibility
-            "groups_load_save_v20231212",
-            20231212,
+            { "groups_load_save_v20231212", 20231212 },
             {
                     // From top to bottom in the board file
                     {
