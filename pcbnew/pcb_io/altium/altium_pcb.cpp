@@ -7339,9 +7339,15 @@ namespace
 {
 /**
  * Glyph advances of Altium's stroke fonts, in units of the text height, fitted by least squares
- * to the stored text boxes of 58 boards (ink width = box width - stroke width; 427 sans-serif and
- * 201 default strings, median error 1.0 % and 0.2 %), and checked against Altium's own Gerbers.
- * A character not in a table takes the table's fallback advance.
+ * to the stored text boxes of 58 boards (ink width = box width - stroke width; 427 sans-serif,
+ * 201 default and 1,357 serif strings, median error 1.0 %, 0.2 % and 1.3 %), and checked against
+ * Altium's own Gerbers.  A character not in a table takes the table's fallback advance.
+ *
+ * The serif table holds fitted advances only for glyphs that occur at least 45 times in those
+ * strings (digits, most capitals, space, e, k and m); the rest, which the strings cannot tell apart
+ * (a lower case letter occurs in a few words, always with the same neighbors), take an advance
+ * scaled from KiCad's own stroke glyph width: 0.743 times it plus 0.209 text heights, the line
+ * through the well-determined glyphs.
  */
 struct ALTIUM_STROKE_ADVANCES
 {
@@ -7384,7 +7390,31 @@ const ALTIUM_STROKE_ADVANCES& altiumStrokeAdvances( ATEXT6::STROKE_FONT_TYPE aFo
         0.172, 0.998,
         {  } };
 
-    return aFont == ATEXT6::STROKE_FONT_TYPE::DEFAULT ? default_ : sansserif;
+    static const ALTIUM_STROKE_ADVANCES serif{
+        { { ' ', 0.69 }, { '&', 1.129 }, { '\'', 0.563 }, { '(', 0.704 }, { ')', 0.704 },
+          { '+', 1.129 }, { ',', 0.563 }, { '-', 1.129 }, { '.', 0.563 }, { '/', 0.987 },
+          { '0', 0.874 }, { '1', 0.611 }, { '2', 0.837 }, { '3', 0.839 }, { '4', 0.919 },
+          { '5', 0.851 }, { '6', 0.816 }, { '7', 0.824 }, { '8', 0.841 }, { '9', 0.827 },
+          { 'A', 0.958 }, { 'B', 0.934 }, { 'C', 0.884 }, { 'D', 1.005 }, { 'E', 0.931 },
+          { 'F', 0.846 }, { 'G', 0.952 }, { 'H', 1.164 }, { 'I', 0.618 }, { 'J', 0.775 },
+          { 'K', 0.992 }, { 'L', 0.958 }, { 'M', 1.181 }, { 'N', 1.027 }, { 'O', 0.979 },
+          { 'P', 1.087 }, { 'Q', 0.987 }, { 'R', 1.037 }, { 'S', 0.872 }, { 'T', 0.752 },
+          { 'U', 0.987 }, { 'V', 0.994 }, { 'W', 1.058 }, { 'X', 0.917 }, { 'Y', 0.846 },
+          { '_', 0.775 }, { 'a', 0.881 }, { 'b', 0.881 }, { 'c', 0.846 }, { 'd', 0.881 },
+          { 'e', 0.872 }, { 'f', 0.634 }, { 'g', 0.881 }, { 'h', 0.881 }, { 'i', 0.563 },
+          { 'k', 0.935 }, { 'l', 0.598 }, { 'm', 1.37 }, { 'n', 0.881 }, { 'o', 0.881 },
+          { 'p', 0.881 }, { 'q', 0.881 }, { 'r', 0.669 }, { 's', 0.81 }, { 't', 0.634 },
+          { 'u', 0.881 }, { 'v', 0.775 }, { 'w', 0.987 }, { 'x', 0.81 }, { 'y', 0.775 },
+          { 'z', 0.81 } },
+        0.071, 0.9,
+        {  } };
+
+    switch( aFont )
+    {
+    case ATEXT6::STROKE_FONT_TYPE::DEFAULT: return default_;
+    case ATEXT6::STROKE_FONT_TYPE::SERIF: return serif;
+    default: return sansserif;
+    }
 }
 } // namespace
 
@@ -7411,10 +7441,6 @@ bool ALTIUM_PCB::HelperPlaceStrokeTextOnAltiumInk( const ATEXT6& aElem, EDA_TEXT
     if( aElem.textbox_rect_width > 0 )
     {
         inkWidth = static_cast<double>( aElem.textbox_rect_width ) - stroke;
-    }
-    else if( aElem.strokefonttype == ATEXT6::STROKE_FONT_TYPE::SERIF )
-    {
-        inkWidth = 0.0; // no measured advances: keep KiCad's glyph widths, place the start only
     }
     else
     {

@@ -117,6 +117,11 @@ struct ALTIUM_PCB_IMPORT_FIXTURE
         return ruleAreas;
     }
 
+    static bool placeStrokeText( ALTIUM_PCB& aImporter, const ATEXT6& aElem, EDA_TEXT* aText )
+    {
+        return aImporter.HelperPlaceStrokeTextOnAltiumInk( aElem, aText );
+    }
+
     static int getNetCode( ALTIUM_PCB& aImporter, const std::vector<int>& aNetcodes, uint16_t aId )
     {
         aImporter.m_altiumToKicadNetcodes = aNetcodes;
@@ -1348,6 +1353,67 @@ BOOST_AUTO_TEST_CASE( CopperAndMaskTextCoincide )
 
     BOOST_CHECK_MESSAGE( matchedPairs > 0,
                          "Expected at least one coincident copper/soldermask text pair" );
+}
+
+
+/**
+ * Altium draws its serif stroke font with glyph advances of its own, which the importer takes from
+ * a table fitted to the text boxes Altium stores, since a text has no stored box of its own once
+ * Altium has re-flowed it.  Serif text had no table, so it was placed with KiCad's wider glyph
+ * widths and only its start was on Altium's ink.  The ink lengths below were measured on Altium's
+ * own Gerbers (centre lines plus the stroke, a 0.2 mm stroke at a 1.2 mm height); the imported
+ * centre lines must run as far as the Gerber's, within 60 microns.
+ */
+BOOST_AUTO_TEST_CASE( SerifStrokeTextRunsAsLongAsAltiumInk )
+{
+    struct SERIF_CASE
+    {
+        const wxChar* text;
+        double        gerberInkMm;
+    };
+
+    const SERIF_CASE cases[] = {
+        { wxT( "R12" ), 2.902 }, { wxT( "C10" ), 2.748 }, { wxT( "RV1" ), 3.079 }, { wxT( "D1" ), 1.845 }
+    };
+
+    constexpr uint32_t      subrecordSize = 40;
+    constexpr size_t        recordSize = 1 + sizeof( subrecordSize ) + subrecordSize;
+    std::unique_ptr<char[]> content = std::make_unique<char[]>( recordSize );
+    std::memset( content.get(), 0, recordSize );
+    content[0] = static_cast<char>( ALTIUM_RECORD::TEXT );
+    std::memcpy( content.get() + 1, &subrecordSize, sizeof( subrecordSize ) );
+
+    ALTIUM_BINARY_PARSER         reader( content, recordSize );
+    std::map<uint32_t, wxString> stringTable;
+    ATEXT6                       element( reader, stringTable );
+
+    element.height = pcbIUScale.mmToIU( 1.2 );
+    element.strokewidth = pcbIUScale.mmToIU( 0.2 );
+    element.strokefonttype = ATEXT6::STROKE_FONT_TYPE::SERIF;
+    element.fonttype = ALTIUM_TEXT_TYPE::STROKE;
+    element.textbox_rect_width = 0;
+    element.rotation = 0.0;
+
+    BOARD                 board;
+    LAYER_MAPPING_HANDLER layerMappingHandler;
+    ALTIUM_PCB            importer( &board, nullptr, layerMappingHandler );
+
+    for( const SERIF_CASE& testCase : cases )
+    {
+        element.text = testCase.text;
+
+        PCB_TEXT text( &board );
+        text.SetText( element.text );
+
+        BOOST_REQUIRE( placeStrokeText( importer, element, &text ) );
+
+        const BOX2I  run = text.GetEffectiveTextShape()->BBox();
+        const double centreLinesMm = pcbIUScale.IUTomm( run.GetWidth() - text.GetEffectiveTextPenWidth() );
+
+        BOOST_CHECK_MESSAGE( std::abs( centreLinesMm - ( testCase.gerberInkMm - 0.2 ) ) < 0.06,
+                             wxString::Format( "Serif '%s' runs %.3f mm, Altium's ink %.3f mm", element.text,
+                                               centreLinesMm, testCase.gerberInkMm - 0.2 ) );
+    }
 }
 
 
