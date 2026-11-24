@@ -16,6 +16,15 @@ Fixes first: the Altium importer faults we met converting our own designs, each 
 (gitlab.com/kicad/code/kicad issues #26126-#26133). Each fix starts on its own `fix/*` branch from `reckless/main`
 and lands as one commit. We don't offer the changes back to KiCad unless KiCad asks for them.
 
+House fonts (#47, part): fixed-width text (the custom rules editor, text-variable fields, the scripting console) uses
+Monaspace Xenon in our installed build. On Linux the desktop entries start each program through `env` with
+`FONTCONFIG_FILE` pointing at `share/kicad/fonts/fonts.conf`, which includes the system configuration and maps
+`monospace` to Monaspace Xenon, so only KiCad's processes see it. The `KICAD_HOUSE_FONTS` option controls it, on when
+`KICAD_VERSION_EXTRA` is `reckless` and off otherwise, so a build without it is stock KiCad. Starting a program by hand
+from a shell skips the entries. The proportional font (Noto Serif) is not set this way: on X11 GTK takes it from the
+desktop's XSETTINGS, which a `settings.ini` or theme in the environment does not override, so it needs a small code
+change (#47 comment).
+
 ## Keeping up with upstream
 
 `reckless/main` is rebased onto upstream `master` only when Jonny asks for it, never on a schedule, so a rebase never

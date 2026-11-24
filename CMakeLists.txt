@@ -142,6 +142,17 @@ cmake_dependent_option( KICAD_WAYLAND
     ON "UNIX_NOT_APPLE"
     OFF )
 
+# Reckless build: house fixed-width font through the desktop entries (see resources/CMakeLists.txt).
+# On for our builds only.
+if( KICAD_VERSION_EXTRA STREQUAL "reckless" )
+    set( _KICAD_HOUSE_FONTS_DEFAULT ON )
+else()
+    set( _KICAD_HOUSE_FONTS_DEFAULT OFF )
+endif()
+option( KICAD_HOUSE_FONTS
+    "Linux: make fixed-width text Monaspace Xenon in KiCad's programs started from the desktop entries"
+    ${_KICAD_HOUSE_FONTS_DEFAULT} )
+
 # Options to build with flatpak platform defaults (only on Linux)
 cmake_dependent_option( KICAD_BUILD_FLATPAK
     "Build KiCad with metadata, launchers, icons, and MIME info following flatpak conventions"
