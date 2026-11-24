@@ -1270,8 +1270,11 @@ void PCB_WRITER_V9::format( const PAD* aPad ) const
     {
         m_out->Print( "(drill" );
 
-        if( aPad->GetDrillShape() == PAD_DRILL_SHAPE::OBLONG )
+        // This format has no rectangular hole; an oval of the same size is the nearest it has
+        if( aPad->GetDrillShape() == PAD_DRILL_SHAPE::OBLONG || aPad->GetDrillShape() == PAD_DRILL_SHAPE::RECTANGLE )
+        {
             m_out->Print( " oval" );
+        }
 
         if( sz.x > 0 )
             m_out->Print( " %s", formatInternalUnits( sz.x ).c_str() );

@@ -93,6 +93,12 @@ struct DRILL_OPERATION
     int       m_Diameter = 0;
     bool      m_IsSlot = false;
 
+    /**
+     * A rectangular hole of m_SizeXY, made by routing round its outline with a bit of
+     * m_Diameter. It is also a slot, since it is routed rather than drilled.
+     */
+    bool m_IsRectangle = false;
+
     PCB_LAYER_ID m_TopLayer = F_Cu;
     PCB_LAYER_ID m_BottomLayer = B_Cu;
     PCB_LAYER_ID m_DrillStart = UNDEFINED_LAYER;

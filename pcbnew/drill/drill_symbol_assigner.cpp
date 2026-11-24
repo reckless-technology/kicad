@@ -181,6 +181,7 @@ std::map<KIID, std::vector<DRILL_SYMBOL_ENTRY>> ResolveDrillSymbolsByItem(
             entry.m_SizeXY = op.m_SizeXY;
             entry.m_Orientation = op.m_Orientation;
             entry.m_IsSlot = op.m_IsSlot;
+            entry.m_IsRectangle = op.m_IsRectangle;
 
             byItem[op.m_SourceId].push_back( entry );
         }

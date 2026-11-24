@@ -292,12 +292,12 @@ PAD_DRILL_SHAPE KIGFX::PCB_PRINT_PAINTER::getDrillShape( const PAD* aPad ) const
 }
 
 
-SHAPE_SEGMENT KIGFX::PCB_PRINT_PAINTER::getPadHoleShape( const PAD* aPad ) const
+std::shared_ptr<SHAPE> KIGFX::PCB_PRINT_PAINTER::getPadHoleShape( const PAD* aPad ) const
 {
     if( m_drillMarkReal )
         return KIGFX::PCB_PAINTER::getPadHoleShape( aPad );
     else
-        return SHAPE_SEGMENT( aPad->GetPosition(), aPad->GetPosition(), m_drillMarkSize );
+        return std::make_shared<SHAPE_SEGMENT>( aPad->GetPosition(), aPad->GetPosition(), m_drillMarkSize );
 }
 
 

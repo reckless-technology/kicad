@@ -2086,6 +2086,8 @@ void PCB_IO_KICAD_SEXPR::format( const PAD* aPad ) const
 
         if( aPad->GetDrillShape() == PAD_DRILL_SHAPE::OBLONG )
             m_out->Print( " oval" );
+        else if( aPad->GetDrillShape() == PAD_DRILL_SHAPE::RECTANGLE )
+            m_out->Print( " rect" );
 
         if( drill.x > 0 )
             m_out->Print( " %s", formatInternalUnits( drill.x ).c_str() );

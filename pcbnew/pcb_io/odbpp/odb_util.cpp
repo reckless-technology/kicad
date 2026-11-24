@@ -72,7 +72,7 @@ bool ViaInPad( const PCB_VIA& aVia )
     if( !board )
         return false;
 
-    std::shared_ptr<SHAPE_SEGMENT> hole = aVia.GetEffectiveHoleShape();
+    std::shared_ptr<SHAPE> hole = aVia.GetEffectiveHoleShape();
 
     if( !hole )
         return false;

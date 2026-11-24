@@ -7476,6 +7476,7 @@ PAD* PCB_IO_KICAD_SEXPR_PARSER::parsePAD( FOOTPRINT* aParent )
                 switch( token )
                 {
                 case T_oval: pad->SetDrillShape( PAD_DRILL_SHAPE::OBLONG ); break;
+                case T_rect: pad->SetDrillShape( PAD_DRILL_SHAPE::RECTANGLE ); break;
 
                 case T_NUMBER:
                 {
@@ -7503,7 +7504,7 @@ PAD* PCB_IO_KICAD_SEXPR_PARSER::parsePAD( FOOTPRINT* aParent )
                     break;
 
                 default:
-                    Expecting( "oval, size, or offset" );
+                    Expecting( "oval, rect, size, or offset" );
                 }
             }
 

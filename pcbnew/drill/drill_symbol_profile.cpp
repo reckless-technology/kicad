@@ -71,6 +71,10 @@ std::string DRILL_SYMBOL_PROFILE::GroupKeyString( const DRILL_OPERATION& aOperat
     {
         key += aOperation.m_IsSlot ? fmt::format( "|s{}x{}", aOperation.m_SizeXY.x, aOperation.m_SizeXY.y )
                                    : "|s-";
+
+        // A rectangle and an oval slot of one size are different holes
+        if( aOperation.m_IsRectangle )
+            key += "|r";
     }
 
     if( IsGroupedBy( DRILL_GROUP_KEY::PLATING ) )

@@ -761,10 +761,9 @@ PAD_DRILL_SHAPE PCB_PAINTER::getDrillShape( const PAD* aPad ) const
 }
 
 
-SHAPE_SEGMENT PCB_PAINTER::getPadHoleShape( const PAD* aPad ) const
+std::shared_ptr<SHAPE> PCB_PAINTER::getPadHoleShape( const PAD* aPad ) const
 {
-    SHAPE_SEGMENT segm = *aPad->GetEffectiveHoleShape();
-    return segm;
+    return aPad->GetEffectiveHoleShape();
 }
 
 
@@ -1958,7 +1957,15 @@ void PCB_PAINTER::drawDrillMarks( const PCB_DRILL_MAP* aMap, const std::vector<D
         }
 
         // A slot's true extent is the cost driver, so it is outlined as well as marked
-        if( aMap->GetOutlineSlots() && entry.m_IsSlot )
+        if( aMap->GetOutlineSlots() && entry.m_IsRectangle )
+        {
+            m_gal->SetIsFill( false );
+            m_gal->SetIsStroke( true );
+            m_gal->SetStrokeColor( aColor );
+            m_gal->SetLineWidth( profile.GetSymbolWidth() );
+            m_gal->DrawPolyline( RectangularHoleOutline( pos, entry.m_SizeXY, entry.m_Orientation ) );
+        }
+        else if( aMap->GetOutlineSlots() && entry.m_IsSlot )
         {
             // Built the same way the plotter builds its oval, so a rotated or tall slot is
             // not drawn as a horizontal one on screen
@@ -2203,17 +2210,28 @@ void PCB_PAINTER::draw( const PAD* aPad, int aLayer )
         m_gal->SetFillColor( color );
         m_gal->SetMinLineWidth( lineWidth );
 
-        std::shared_ptr<SHAPE_SEGMENT> slot = aPad->GetEffectiveHoleShape();
+        std::shared_ptr<SHAPE> hole = aPad->GetEffectiveHoleShape();
 
-        if( slot->GetSeg().A == slot->GetSeg().B )    // Circular hole
+        if( hole->Type() == SH_SIMPLE ) // Rectangular hole
         {
-            double holeRadius = slot->GetWidth() / 2.0;
-            m_gal->DrawHoleWall( slot->GetSeg().A, holeRadius, lineWidth );
+            SHAPE_POLY_SET wall;
+            aPad->TransformHoleToPolygon( wall, KiROUND( lineWidth ), m_maxError, ERROR_INSIDE );
+            m_gal->DrawPolygon( wall );
         }
         else
         {
-            int holeSize = KiROUND( slot->GetWidth() + ( 2 * lineWidth ) );
-            m_gal->DrawSegment( slot->GetSeg().A, slot->GetSeg().B, holeSize );
+            const SHAPE_SEGMENT* slot = static_cast<const SHAPE_SEGMENT*>( hole.get() );
+
+            if( slot->GetSeg().A == slot->GetSeg().B ) // Circular hole
+            {
+                double holeRadius = slot->GetWidth() / 2.0;
+                m_gal->DrawHoleWall( slot->GetSeg().A, holeRadius, lineWidth );
+            }
+            else
+            {
+                int holeSize = KiROUND( slot->GetWidth() + ( 2 * lineWidth ) );
+                m_gal->DrawSegment( slot->GetSeg().A, slot->GetSeg().B, holeSize );
+            }
         }
 
         m_gal->SetMinLineWidth( 1.0 );
@@ -2222,7 +2240,9 @@ void PCB_PAINTER::draw( const PAD* aPad, int aLayer )
         // regardless of layer rendering order
         if( !m_pcbSettings.IsPrinting() && aPad->GetDrillSize().x > 0 )
         {
-            const VECTOR2I& holePos = slot->GetSeg().A;
+            const VECTOR2I  holePos = hole->Type() == SH_SEGMENT
+                                              ? static_cast<const SHAPE_SEGMENT*>( hole.get() )->GetSeg().A
+                                              : aPad->GetPosition();
             const VECTOR2I& secondaryDrill = aPad->GetSecondaryDrillSize();
             const VECTOR2I& tertiaryDrill = aPad->GetTertiaryDrillSize();
 
@@ -2283,13 +2303,22 @@ void PCB_PAINTER::draw( const PAD* aPad, int aLayer )
 
     if( aLayer == LAYER_PAD_PLATEDHOLES || aLayer == LAYER_NON_PLATEDHOLES )
     {
-        SHAPE_SEGMENT slot = getPadHoleShape( aPad );
-        VECTOR2I center = slot.GetSeg().A;
+        std::shared_ptr<SHAPE> hole = getPadHoleShape( aPad );
 
-        if( slot.GetSeg().A == slot.GetSeg().B )    // Circular hole
-            m_gal->DrawCircle( center, slot.GetWidth() / 2.0 );
+        if( hole->Type() == SH_SIMPLE ) // Rectangular hole
+        {
+            m_gal->DrawPolygon( static_cast<const SHAPE_SIMPLE*>( hole.get() )->Vertices() );
+        }
         else
-            m_gal->DrawSegment( slot.GetSeg().A, slot.GetSeg().B, slot.GetWidth() );
+        {
+            const SHAPE_SEGMENT* slot = static_cast<const SHAPE_SEGMENT*>( hole.get() );
+            VECTOR2I             center = slot->GetSeg().A;
+
+            if( slot->GetSeg().A == slot->GetSeg().B ) // Circular hole
+                m_gal->DrawCircle( center, slot->GetWidth() / 2.0 );
+            else
+                m_gal->DrawSegment( slot->GetSeg().A, slot->GetSeg().B, slot->GetWidth() );
+        }
     }
     else if( drawShape )
     {
@@ -2641,8 +2670,19 @@ void PCB_PAINTER::draw( const PAD* aPad, int aLayer )
         }
         else if( aPad->GetEffectiveHoleShape() && clearance > 0 )
         {
-            std::shared_ptr<SHAPE_SEGMENT> slot = aPad->GetEffectiveHoleShape();
-            m_gal->DrawSegment( slot->GetSeg().A, slot->GetSeg().B, slot->GetWidth() + 2 * clearance );
+            std::shared_ptr<SHAPE> hole = aPad->GetEffectiveHoleShape();
+
+            if( hole->Type() == SH_SIMPLE ) // Rectangular hole
+            {
+                SHAPE_POLY_SET outline;
+                aPad->TransformHoleToPolygon( outline, clearance, m_maxError, ERROR_INSIDE );
+                m_gal->DrawPolygon( outline );
+            }
+            else
+            {
+                const SHAPE_SEGMENT* slot = static_cast<const SHAPE_SEGMENT*>( hole.get() );
+                m_gal->DrawSegment( slot->GetSeg().A, slot->GetSeg().B, slot->GetWidth() + 2 * clearance );
+            }
         }
     }
 

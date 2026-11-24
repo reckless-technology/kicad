@@ -376,6 +376,7 @@ void DIALOG_BOARD_STATISTICS::updateDrillGrid()
         {
         case PAD_DRILL_SHAPE::CIRCLE: shapeStr = _( "Round" ); break;
         case PAD_DRILL_SHAPE::OBLONG: shapeStr = _( "Slot" );  break;
+        case PAD_DRILL_SHAPE::RECTANGLE: shapeStr = _( "Rectangle" ); break;
         default:                      shapeStr = _( "???" );   break;
         }
 

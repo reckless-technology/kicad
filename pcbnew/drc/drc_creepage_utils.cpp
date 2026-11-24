@@ -108,14 +108,33 @@ void BuildCreepageBoardEdges( BOARD& aBoard, std::vector<BOARD_ITEM*>& aVector,
 
         // TODO: handle backdrilling and post-machining
 
-        std::shared_ptr<SHAPE_SEGMENT> hole = p->GetEffectiveHoleShape();
+        std::shared_ptr<SHAPE> holeShape = p->GetEffectiveHoleShape();
 
-        if( !hole )
+        if( !holeShape )
             continue;
 
-        VECTOR2I ptA = hole->GetSeg().A;
-        VECTOR2I ptB = hole->GetSeg().B;
-        int      radius = hole->GetWidth() / 2;
+        if( holeShape->Type() == SH_SIMPLE )
+        {
+            // Rectangular hole outline as its four sides
+            const SHAPE_SIMPLE* rect = static_cast<const SHAPE_SIMPLE*>( holeShape.get() );
+
+            for( size_t ii = 0; ii < rect->GetSegmentCount(); ++ii )
+            {
+                const SEG side = rect->GetSegment( static_cast<int>( ii ) );
+                auto      s = std::make_unique<PCB_SHAPE>( nullptr, SHAPE_T::SEGMENT );
+                s->SetStart( side.A );
+                s->SetEnd( side.B );
+                aVector.push_back( s.get() );
+                aOwned.push_back( std::move( s ) );
+            }
+
+            continue;
+        }
+
+        const SHAPE_SEGMENT* hole = static_cast<const SHAPE_SEGMENT*>( holeShape.get() );
+        VECTOR2I             ptA = hole->GetSeg().A;
+        VECTOR2I             ptB = hole->GetSeg().B;
+        int                  radius = hole->GetWidth() / 2;
 
         if( ptA == ptB )
         {

@@ -1016,10 +1016,26 @@ bool STEP_PCB_MODEL::AddPadShape( const PAD* aPad, const VECTOR2D& aOrigin, bool
 
         TopoDS_Shape plating;
 
-        std::shared_ptr<SHAPE_SEGMENT> seg_hole = aPad->GetEffectiveHoleShape();
+        std::shared_ptr<SHAPE_SEGMENT> seg_hole =
+                std::dynamic_pointer_cast<SHAPE_SEGMENT>( aPad->GetEffectiveHoleShape() );
         double width = std::min( aPad->GetDrillSize().x, aPad->GetDrillSize().y );
 
-        if( !castellated )
+        if( !seg_hole )
+        {
+            // A rectangular hole has no axis, so its plating is a prism of its outline; the hole
+            // itself is removed later, as for every other hole
+            SHAPE_POLY_SET polyHole;
+            aPad->TransformHoleToPolygon( polyHole, 0, aPad->GetMaxError(), ERROR_OUTSIDE );
+
+            if( castellated )
+                polyHole.BooleanIntersection( *aClipPolygon );
+
+            if( MakePolygonAsWall( plating, polyHole, hole_height, bottom, aOrigin ) )
+                padShapes.push_back( plating );
+            else
+                success = false;
+        }
+        else if( !castellated )
         {
             if( MakeShapeAsThickSegment( plating, seg_hole->GetSeg().A, seg_hole->GetSeg().B, width,
                                          hole_height, bottom, aOrigin ) )
@@ -1142,6 +1158,41 @@ bool STEP_PCB_MODEL::AddHole( const SHAPE_SEGMENT& aShape, int aPlatingThickness
         }
     }
 
+    return true;
+}
+
+
+bool STEP_PCB_MODEL::AddHole( const PAD& aPad, int aPlatingThickness, const VECTOR2D& aOrigin )
+{
+    double margin = 0.001; // as for a round hole, so the hole is taller than the board with copper
+
+    if( m_extraPadThickness )
+        margin += 0.01;
+
+    double f_pos, f_thickness;
+    double b_pos, b_thickness;
+    getLayerZPlacement( F_Cu, f_pos, f_thickness );
+    getLayerZPlacement( B_Cu, b_pos, b_thickness );
+    double top = std::max( f_pos, f_pos + f_thickness );
+    double bottom = std::min( b_pos, b_pos + b_thickness );
+
+    double holeZsize = ( top - bottom ) + ( margin * 2 );
+
+    SHAPE_POLY_SET boardHole;
+    SHAPE_POLY_SET copperHole;
+    aPad.TransformHoleToPolygon( boardHole, 0, aPad.GetMaxError(), ERROR_INSIDE );
+    aPad.TransformHoleToPolygon( copperHole, -aPlatingThickness, aPad.GetMaxError(), ERROR_INSIDE );
+
+    TopoDS_Shape copperCutout, boardCutout;
+
+    if( !MakePolygonAsWall( copperCutout, copperHole, holeZsize, bottom - margin, aOrigin )
+        || !MakePolygonAsWall( boardCutout, boardHole, holeZsize, bottom - margin, aOrigin ) )
+    {
+        return false;
+    }
+
+    m_copperCutouts.push_back( copperCutout );
+    m_boardCutouts.push_back( boardCutout );
     return true;
 }
 

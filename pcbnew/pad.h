@@ -700,10 +700,11 @@ public:
                                                                 ERROR_LOC aErrorLoc = ERROR_INSIDE ) const;
 
     /**
-     * Return a SHAPE_SEGMENT object representing the pad's hole.
+     * Return the pad's hole: a SHAPE_SEGMENT for a round or oblong hole, a SHAPE_SIMPLE for a
+     * rectangular one.
      */
-    std::shared_ptr<SHAPE_SEGMENT> GetEffectiveHoleShape( PCB_LAYER_ID aLayer = UNDEFINED_LAYER,
-                                                          DRC_CONSTRAINT_T aUsage = NULL_CONSTRAINT ) const override;
+    std::shared_ptr<SHAPE> GetEffectiveHoleShape( PCB_LAYER_ID     aLayer = UNDEFINED_LAYER,
+                                                  DRC_CONSTRAINT_T aUsage = NULL_CONSTRAINT ) const override;
 
     /**
      * Return the radius of a minimum sized circle which fully encloses this pad.
@@ -1191,7 +1192,7 @@ private:
 
         BOX2I                          m_effectiveBoundingBox;
         LAYER_SHAPE_MAP                m_effectiveShapes;
-        std::shared_ptr<SHAPE_SEGMENT> m_effectiveHoleShape;
+        std::shared_ptr<SHAPE>         m_effectiveHoleShape;
         LAYER_POLYGON_MAP              m_effectivePolygons;
         double                         m_lastGalZoomLevel = 0.0;
     };

@@ -385,6 +385,7 @@ enum DrillShape
   DS_CIRCLE = 1;
   DS_OBLONG = 2;
   DS_UNDEFINED = 3;
+  DS_RECTANGLE = 4;  // A sharp-cornered rectangle of the drill size, rotated with the pad
 }
 
 enum ViaDrillCappingMode

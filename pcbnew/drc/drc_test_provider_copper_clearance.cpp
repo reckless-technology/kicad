@@ -376,7 +376,7 @@ bool DRC_TEST_PROVIDER_COPPER_CLEARANCE::testSingleLayerItemAgainstItem( BOARD_I
 
         for( size_t ii = 0; ii < 2; ++ii )
         {
-            std::shared_ptr<SHAPE_SEGMENT> holeShape;
+            std::shared_ptr<SHAPE> holeShape;
 
             if( b[ii]->Type() == PCB_VIA_T )
             {
@@ -537,7 +537,7 @@ void DRC_TEST_PROVIDER_COPPER_CLEARANCE::testItemAgainstZone( BOARD_ITEM* aItem,
 
     if( testHoles && aItem->HasHole() )
     {
-        std::shared_ptr<SHAPE_SEGMENT> holeShape;
+        std::shared_ptr<SHAPE> holeShape;
 
         if( aItem->Type() == PCB_VIA_T )
         {
@@ -1011,7 +1011,7 @@ bool DRC_TEST_PROVIDER_COPPER_CLEARANCE::testPadAgainstItem( PAD* pad, const std
 
     auto doTestHole =
             [&]( BOARD_ITEM* item, const SHAPE* shape, BOARD_ITEM* otherItem,
-                 const std::shared_ptr<SHAPE_SEGMENT>& aOtherShape, int aClearance )
+                 const std::shared_ptr<SHAPE>& aOtherShape, int aClearance )
             {
                 if( shape->Collide( aOtherShape.get(), sub_e( aClearance ), &actual, &pos ) )
                 {

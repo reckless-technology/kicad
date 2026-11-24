@@ -640,8 +640,8 @@ int DRC_TEST_PROVIDER_PHYSICAL_CLEARANCE::testItemAgainstItem( BOARD_ITEM* aItem
 
     if( testHoles )
     {
-        std::shared_ptr<SHAPE_SEGMENT> itemHoleShape;
-        std::shared_ptr<SHAPE_SEGMENT> otherHoleShape;
+        std::shared_ptr<SHAPE> itemHoleShape;
+        std::shared_ptr<SHAPE> otherHoleShape;
         clearance = 0;
 
         if( aItem->Type() == PCB_VIA_T )
@@ -778,11 +778,7 @@ void DRC_TEST_PROVIDER_PHYSICAL_CLEARANCE::testItemAgainstZones( BOARD_ITEM* aIt
                     if( pad->GetDrillSize().x == 0 && pad->GetDrillSize().y == 0 )
                         continue;
 
-                    std::shared_ptr<SHAPE_SEGMENT> hole = pad->GetEffectiveHoleShape( aLayer,
-                                                                                      PHYSICAL_CLEARANCE_CONSTRAINT );
-                    int                            size = hole->GetWidth();
-
-                    itemShape = std::make_shared<SHAPE_SEGMENT>( hole->GetSeg(), size );
+                    itemShape = pad->GetEffectiveHoleShape( aLayer, PHYSICAL_CLEARANCE_CONSTRAINT );
                 }
             }
 
@@ -810,7 +806,7 @@ void DRC_TEST_PROVIDER_PHYSICAL_CLEARANCE::testItemAgainstZones( BOARD_ITEM* aIt
 
         if( testHoles )
         {
-            std::shared_ptr<SHAPE_SEGMENT> holeShape;
+            std::shared_ptr<SHAPE> holeShape;
 
             if( aItem->Type() == PCB_VIA_T )
             {

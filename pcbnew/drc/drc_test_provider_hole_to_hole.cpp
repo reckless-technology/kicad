@@ -52,7 +52,7 @@ public:
     virtual const wxString GetName() const override { return wxT( "hole_to_hole_clearance" ); };
 
 private:
-    bool testHoleAgainstHole( BOARD_ITEM* aItem, SHAPE_SEGMENT* aHole, BOARD_ITEM* aOther );
+    bool testHoleAgainstHole( BOARD_ITEM* aItem, SHAPE* aHole, BOARD_ITEM* aOther );
 
     BOARD*    m_board;
     DRC_RTREE m_holeTree;
@@ -145,8 +145,7 @@ bool DRC_TEST_PROVIDER_HOLE_TO_HOLE::Run()
         // holes (which are generally drilled post laminataion).
         if( via->GetViaType() != VIATYPE::MICROVIA )
         {
-            std::shared_ptr<SHAPE_SEGMENT> holeShape = via->GetEffectiveHoleShape( UNDEFINED_LAYER,
-                                                                                   HOLE_TO_HOLE_CONSTRAINT );
+            std::shared_ptr<SHAPE> holeShape = via->GetEffectiveHoleShape( UNDEFINED_LAYER, HOLE_TO_HOLE_CONSTRAINT );
 
             m_holeTree.QueryColliding( via, Edge_Cuts, Edge_Cuts,
                     // Filter:
@@ -192,8 +191,8 @@ bool DRC_TEST_PROVIDER_HOLE_TO_HOLE::Run()
             // Test every drilled or milled hole, including oval (slotted) holes
             if( pad->HasHole() )
             {
-                std::shared_ptr<SHAPE_SEGMENT> holeShape = pad->GetEffectiveHoleShape( UNDEFINED_LAYER,
-                                                                                       HOLE_TO_HOLE_CONSTRAINT );
+                std::shared_ptr<SHAPE> holeShape =
+                        pad->GetEffectiveHoleShape( UNDEFINED_LAYER, HOLE_TO_HOLE_CONSTRAINT );
 
                 m_holeTree.QueryColliding( pad, Edge_Cuts, Edge_Cuts,
                         // Filter:
@@ -234,8 +233,7 @@ bool DRC_TEST_PROVIDER_HOLE_TO_HOLE::Run()
 }
 
 
-bool DRC_TEST_PROVIDER_HOLE_TO_HOLE::testHoleAgainstHole( BOARD_ITEM* aItem, SHAPE_SEGMENT* aHole,
-                                                          BOARD_ITEM* aOther )
+bool DRC_TEST_PROVIDER_HOLE_TO_HOLE::testHoleAgainstHole( BOARD_ITEM* aItem, SHAPE* aHole, BOARD_ITEM* aOther )
 {
     bool reportCoLocation = !m_drcEngine->IsErrorLimitExceeded( DRCE_DRILLED_HOLES_COLOCATED );
     bool reportHole2Hole = !m_drcEngine->IsErrorLimitExceeded( DRCE_DRILLED_HOLES_TOO_CLOSE );
@@ -243,10 +241,9 @@ bool DRC_TEST_PROVIDER_HOLE_TO_HOLE::testHoleAgainstHole( BOARD_ITEM* aItem, SHA
     if( !reportCoLocation && !reportHole2Hole )
         return false;
 
-    std::shared_ptr<SHAPE_SEGMENT> otherHole = aOther->GetEffectiveHoleShape( UNDEFINED_LAYER,
-                                                                              HOLE_TO_HOLE_CONSTRAINT );
-    int                            epsilon = m_board->GetDesignSettings().GetDRCEpsilon();
-    SEG::ecoord                    epsilon_sq = SEG::Square( epsilon );
+    std::shared_ptr<SHAPE> otherHole = aOther->GetEffectiveHoleShape( UNDEFINED_LAYER, HOLE_TO_HOLE_CONSTRAINT );
+    int                    epsilon = m_board->GetDesignSettings().GetDRCEpsilon();
+    SEG::ecoord            epsilon_sq = SEG::Square( epsilon );
 
     // Blind-buried vias are drilled prior to stackup; they're only an issue if they share layers
     if( aItem->Type() == PCB_VIA_T && aOther->Type() == PCB_VIA_T )
@@ -257,8 +254,19 @@ bool DRC_TEST_PROVIDER_HOLE_TO_HOLE::testHoleAgainstHole( BOARD_ITEM* aItem, SHA
             return false;
     }
 
+    auto holeCenter =
+            []( const SHAPE* aShape ) -> VECTOR2I
+            {
+                if( aShape->Type() == SH_SEGMENT )
+                    return static_cast<const SHAPE_SEGMENT*>( aShape )->GetCenter();
+
+                return aShape->Centre();
+            };
+
+    const VECTOR2I center = holeCenter( aHole );
+
     // Holes at same location generate a separate violation
-    if( ( aHole->GetCenter() - otherHole->GetCenter() ).SquaredEuclideanNorm() < epsilon_sq )
+    if( ( center - holeCenter( otherHole.get() ) ).SquaredEuclideanNorm() < epsilon_sq )
     {
         if( reportCoLocation )
         {
@@ -269,8 +277,7 @@ bool DRC_TEST_PROVIDER_HOLE_TO_HOLE::testHoleAgainstHole( BOARD_ITEM* aItem, SHA
 
             std::shared_ptr<DRC_ITEM> drcItem = DRC_ITEM::Create( DRCE_DRILLED_HOLES_COLOCATED );
             drcItem->SetItems( aItem, aOther );
-            reportTwoPointGeometry( drcItem, aHole->GetCenter(), aHole->GetCenter(), aHole->GetCenter(),
-                                    UNDEFINED_LAYER );
+            reportTwoPointGeometry( drcItem, center, center, center, UNDEFINED_LAYER );
         }
     }
     else if( reportHole2Hole )
@@ -278,9 +285,21 @@ bool DRC_TEST_PROVIDER_HOLE_TO_HOLE::testHoleAgainstHole( BOARD_ITEM* aItem, SHA
         // Measure between the hole axes, then back off the two half-widths.  For a round hole
         // the segment is zero-length and its width is the drill diameter, so this reduces to
         // the centre-to-centre distance less the two radii; for a slot it follows the milled
-        // oval correctly.
-        int actual = aHole->GetSeg().Distance( otherHole->GetSeg() );
-        actual = std::max( 0, actual - aHole->GetWidth() / 2 - otherHole->GetWidth() / 2 );
+        // oval correctly.  A rectangular hole has no axis, so it is measured as the shape it is.
+        int actual;
+
+        if( aHole->Type() == SH_SEGMENT && otherHole->Type() == SH_SEGMENT )
+        {
+            const SHAPE_SEGMENT* hole = static_cast<const SHAPE_SEGMENT*>( aHole );
+            const SHAPE_SEGMENT* other = static_cast<const SHAPE_SEGMENT*>( otherHole.get() );
+
+            actual = hole->GetSeg().Distance( other->GetSeg() );
+            actual = std::max( 0, actual - hole->GetWidth() / 2 - other->GetWidth() / 2 );
+        }
+        else
+        {
+            actual = std::max( 0, aHole->GetClearance( otherHole.get() ) );
+        }
 
         auto constraint = m_drcEngine->EvalRules( HOLE_TO_HOLE_CONSTRAINT, aItem, aOther,
                                                   UNDEFINED_LAYER /* holes pierce all layers */ );
@@ -303,7 +322,7 @@ bool DRC_TEST_PROVIDER_HOLE_TO_HOLE::testHoleAgainstHole( BOARD_ITEM* aItem, SHA
                                                 actual ) );
             drcItem->SetItems( aItem, aOther );
             drcItem->SetViolatingRule( constraint.GetParentRule() );
-            reportTwoShapeGeometry( drcItem, aHole->GetCenter(), aHole, otherHole.get(), UNDEFINED_LAYER, actual );
+            reportTwoShapeGeometry( drcItem, center, aHole, otherHole.get(), UNDEFINED_LAYER, actual );
         }
     }
 

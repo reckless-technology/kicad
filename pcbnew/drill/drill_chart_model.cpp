@@ -102,6 +102,7 @@ void DRILL_CHART_MODEL::Build( const BOARD& aBoard, const std::vector<DRILL_SPAN
                         group.m_Diameter = op.m_Diameter;
                         group.m_SizeXY = op.m_SizeXY;
                         group.m_IsSlot = op.m_IsSlot;
+                        group.m_IsRectangle = op.m_IsRectangle;
                         group.m_NotPlated = op.m_NotPlated;
                         group.m_TopLayer = op.m_TopLayer;
                         group.m_BottomLayer = op.m_BottomLayer;

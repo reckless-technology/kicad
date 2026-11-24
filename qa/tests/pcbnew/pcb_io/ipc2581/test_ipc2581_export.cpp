@@ -1604,7 +1604,7 @@ BOOST_AUTO_TEST_CASE( SlotCavityUsesDrillPosition )
     std::vector<wxXmlNode*> slots;
     CollectXmlElements( document.GetRoot(), wxS( "SlotCavity" ), slots );
     BOOST_REQUIRE_GE( slots.size(), 4u );
-    VECTOR2I holeCenter = pad->GetEffectiveHoleShape()->GetCenter();
+    VECTOR2I holeCenter = std::static_pointer_cast<SHAPE_SEGMENT>( pad->GetEffectiveHoleShape() )->GetCenter();
     double expectedX = pcbIUScale.IUTomm( holeCenter.x );
     double expectedY = -pcbIUScale.IUTomm( holeCenter.y );
     double nearest = 1e9;

@@ -834,10 +834,13 @@ void DIALOG_PAD_PROPERTIES::initValues()
     case PAD_PROP::PRESSFIT:         m_choiceFabProperty->SetSelection( 8 ); break;
     }
 
-    if( m_previewPad->GetDrillShape() != PAD_DRILL_SHAPE::OBLONG )
-        m_holeShapeCtrl->SetSelection( 0 );
+    // The hole shape choice lists Round, Oblong and Rectangular, in the pad shape choice's order
+    if( m_previewPad->GetDrillShape() == PAD_DRILL_SHAPE::OBLONG )
+        m_holeShapeCtrl->SetSelection( CHOICE_SHAPE_OVAL );
+    else if( m_previewPad->GetDrillShape() == PAD_DRILL_SHAPE::RECTANGLE )
+        m_holeShapeCtrl->SetSelection( CHOICE_SHAPE_RECT );
     else
-        m_holeShapeCtrl->SetSelection( 1 );
+        m_holeShapeCtrl->SetSelection( CHOICE_SHAPE_CIRCLE );
 
     // Backdrills are read through the PADSTACK accessors, which key the top/bottom side on the
     // drill's start layer, so a pad written by KiCad 10.0 (top backdrill in the tertiary slot)
@@ -1393,7 +1396,7 @@ void DIALOG_PAD_PROPERTIES::OnUpdateUI( wxUpdateUIEvent& event [[maybe_unused]] 
     m_holeShapeLabel->Enable( hasHole );
     m_holeShapeCtrl->Enable( hasHole );
     m_holeX.Enable( hasHole );
-    m_holeY.Enable( hasHole && m_holeShapeCtrl->GetSelection() == CHOICE_SHAPE_OVAL );
+    m_holeY.Enable( hasHole && m_holeShapeCtrl->GetSelection() != CHOICE_SHAPE_CIRCLE );
 
     // Enable/disable number and net
     m_padNumLabel->Enable( hasConnection );
@@ -2095,7 +2098,8 @@ bool DIALOG_PAD_PROPERTIES::transferDataToPad( PAD* aPad )
     }
     else
     {
-        aPad->SetDrillShape( PAD_DRILL_SHAPE::OBLONG );
+        aPad->SetDrillShape( m_holeShapeCtrl->GetSelection() == CHOICE_SHAPE_RECT ? PAD_DRILL_SHAPE::RECTANGLE
+                                                                                  : PAD_DRILL_SHAPE::OBLONG );
         aPad->SetDrillSize( VECTOR2I( m_holeX.GetIntValue(), m_holeY.GetIntValue() ) );
     }
 

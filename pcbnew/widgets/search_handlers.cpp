@@ -911,7 +911,10 @@ wxString DRILL_SEARCH_HANDLER::cellText( const DRILL_LINE_ITEM& e, int col ) con
     switch( col )
     {
     case 0:  return wxString::Format( "%d", e.m_Qty );
-    case 1:  return e.shape == PAD_DRILL_SHAPE::CIRCLE ? _( "Round" ) : _( "Slot" );
+    case 1:
+        return e.shape == PAD_DRILL_SHAPE::CIRCLE      ? _( "Round" )
+               : e.shape == PAD_DRILL_SHAPE::RECTANGLE ? _( "Rectangle" )
+                                                       : _( "Slot" );
     case 2:  return m_frame->MessageTextFromValue( e.xSize );
     case 3:  return m_frame->MessageTextFromValue( e.ySize );
     case 4:  return e.isPlated ? _( "PTH" ) : _( "NPTH" );

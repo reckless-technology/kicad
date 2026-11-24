@@ -715,8 +715,8 @@ bool PAD::FlashLayer( int aLayer, bool aOnlyCheckIfPermitted ) const
             if( GetOffset( layer ) == VECTOR2I( 0, 0 ) && GetDrillSize().x >= GetSize( layer ).x )
                 return false;
         }
-        else if( GetShape( layer ) == PAD_SHAPE::OVAL
-                 && GetDrillShape() == PAD_DRILL_SHAPE::OBLONG )
+        else if( ( GetShape( layer ) == PAD_SHAPE::OVAL && GetDrillShape() == PAD_DRILL_SHAPE::OBLONG )
+                 || ( GetShape( layer ) == PAD_SHAPE::RECTANGLE && GetDrillShape() == PAD_DRILL_SHAPE::RECTANGLE ) )
         {
             if( GetOffset( layer ) == VECTOR2I( 0, 0 )
                     && GetDrillSize().x >= GetSize( layer ).x
@@ -1230,10 +1230,12 @@ std::shared_ptr<SHAPE_COMPOUND> PAD::getMaskShape( PCB_LAYER_ID aLayer, int aExp
 }
 
 
-std::shared_ptr<SHAPE_SEGMENT> PAD::GetEffectiveHoleShape( PCB_LAYER_ID aLayer, DRC_CONSTRAINT_T aUsage ) const
+std::shared_ptr<SHAPE> PAD::GetEffectiveHoleShape( PCB_LAYER_ID aLayer, DRC_CONSTRAINT_T aUsage ) const
 {
     if( m_shapesDirty )
         BuildEffectiveShapes();
+
+    const std::shared_ptr<SHAPE>& hole = getDrawCache().m_effectiveHoleShape;
 
     if( aUsage == HOLE_TO_HOLE_CONSTRAINT
             || ( aUsage == HOLE_CLEARANCE_CONSTRAINT && IsBackdrilledOrPostMachined( aLayer ) )
@@ -1243,12 +1245,28 @@ std::shared_ptr<SHAPE_SEGMENT> PAD::GetEffectiveHoleShape( PCB_LAYER_ID aLayer, 
     {
         int maxHoleSize = Padstack().GetMaxHoleSize();
 
+        if( hole->Type() != SH_SEGMENT )
+        {
+            // A rectangular hole: a backdrill or post-machining wider than its longer side adds
+            // its circle to the rectangle, which it need not cover
+            const VECTOR2I drill = GetDrillSize();
+
+            if( maxHoleSize > std::max( drill.x, drill.y ) )
+            {
+                std::shared_ptr<SHAPE_COMPOUND> compound = std::make_shared<SHAPE_COMPOUND>();
+                compound->AddShape( hole->Clone() );
+                compound->AddShape( new SHAPE_CIRCLE( GetPosition(), maxHoleSize / 2 ) );
+                return compound;
+            }
+        }
         // If it's bigger than the pad's hole, return it
-        if( maxHoleSize > getDrawCache().m_effectiveHoleShape->GetWidth() )
+        else if( maxHoleSize > hole->GetWidth() )
+        {
             return std::make_shared<SHAPE_SEGMENT>( GetPosition(), GetPosition(), maxHoleSize );
+        }
     }
 
-    return getDrawCache().m_effectiveHoleShape;
+    return hole;
 }
 
 
@@ -1317,6 +1335,22 @@ void PAD::BuildEffectiveShapes() const
 
     VECTOR2I pos = GetPosition();
     drawCache.m_effectiveHoleShape = std::make_shared<SHAPE_SEGMENT>( pos - half_len, pos + half_len, half_width * 2 );
+
+    if( m_padStack.Drill().shape == PAD_DRILL_SHAPE::RECTANGLE )
+    {
+        SHAPE_LINE_CHAIN corners;
+
+        corners.Append( -half_size.x, -half_size.y );
+        corners.Append( half_size.x, -half_size.y );
+        corners.Append( half_size.x, half_size.y );
+        corners.Append( -half_size.x, half_size.y );
+        corners.SetClosed( true );
+
+        corners.Rotate( GetOrientation() );
+        corners.Move( pos );
+
+        drawCache.m_effectiveHoleShape = std::make_shared<SHAPE_SIMPLE>( corners );
+    }
 
     drawCache.m_effectiveBoundingBox.Merge( drawCache.m_effectiveHoleShape->BBox() );
 
@@ -3012,7 +3046,15 @@ bool PAD::TransformHoleToPolygon( SHAPE_POLY_SET& aBuffer, int aClearance, int a
     if( !drillsize.x || !drillsize.y )
         return false;
 
-    std::shared_ptr<SHAPE_SEGMENT> slot = GetEffectiveHoleShape();
+    if( GetDrillShape() == PAD_DRILL_SHAPE::RECTANGLE )
+    {
+        // Inflating rounds the corners by the clearance, which is the true clearance contour
+        TransformRoundChamferedRectToPolygon( aBuffer, GetPosition(), drillsize, GetOrientation(), 0, 0.0, 0,
+                                              aClearance, aError, aErrorLoc );
+        return true;
+    }
+
+    std::shared_ptr<SHAPE_SEGMENT> slot = std::static_pointer_cast<SHAPE_SEGMENT>( GetEffectiveHoleShape() );
 
     TransformOvalToPolygon( aBuffer, slot->GetSeg().A, slot->GetSeg().B, slot->GetWidth() + aClearance * 2,
                             aError, aErrorLoc );
@@ -3558,7 +3600,8 @@ static struct PAD_DESC
         ENUM_MAP<PAD_DRILL_SHAPE>::Instance()
                 .Map( PAD_DRILL_SHAPE::UNDEFINED,  _HKI( "Undefined" ) )
                 .Map( PAD_DRILL_SHAPE::CIRCLE,     _HKI( "Round" ) )
-                .Map( PAD_DRILL_SHAPE::OBLONG,     _HKI( "Oblong" ) );
+                .Map( PAD_DRILL_SHAPE::OBLONG,     _HKI( "Oblong" ) )
+                .Map( PAD_DRILL_SHAPE::RECTANGLE,  _HKI( "Rectangular" ) );
 
         ENUM_MAP<PAD_SIM_ELECTRICAL_TYPE>::Instance()
                 .Map( PAD_SIM_ELECTRICAL_TYPE::NONE, _HKI( "None" ) )

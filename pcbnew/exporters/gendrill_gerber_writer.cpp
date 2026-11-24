@@ -449,7 +449,17 @@ int GERBER_WRITER::createDrillFile( wxString& aFullFilename, bool aIsNpth,
             gbr_metadata.SetNetAttribType( GBR_NETLIST_METADATA::GBR_NETINFO_CMP );
         }
 
-        if( hole_descr.m_IsSlot )
+        if( hole_descr.m_IsRectangle )
+        {
+            // Routed round its outline, as in the Excellon file
+            if( hole_descr.m_Diameter == 0 )
+                continue;
+
+            plotter.PlotPoly( RectangularHoleOutline( hole_descr.m_Position, hole_descr.m_SizeXY,
+                                                      hole_descr.m_Orientation, hole_descr.m_Diameter / 2 ),
+                              FILL_T::NO_FILL, hole_descr.m_Diameter, &gbr_metadata );
+        }
+        else if( hole_descr.m_IsSlot )
         {
 #if FLASH_OVAL_HOLE     // set to 1 to use flashed oblong holes,
                         // 0 to draw them as a line.

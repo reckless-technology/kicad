@@ -100,7 +100,7 @@ public:
 protected:
     PAD_DRILL_SHAPE getDrillShape( const PAD* aPad ) const override;
 
-    SHAPE_SEGMENT getPadHoleShape( const PAD* aPad ) const override;
+    std::shared_ptr<SHAPE> getPadHoleShape( const PAD* aPad ) const override;
 
     int getViaDrillSize( const PCB_VIA* aVia ) const override;
 
