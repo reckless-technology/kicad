@@ -24,24 +24,13 @@
 #include <kiface_base.h>
 #include <config.h>
 
-// Suppress a warning that the mock methods don't override the base class methods because
-// turtlemocks doesn't seem to provide a way to actually annotate the methods with override.
-#ifdef HAVE_WINCONSISTENT_MISSING_OVERRIDE
-    _Pragma( "GCC diagnostic push" ) \
-    _Pragma( "GCC diagnostic ignored \"-Winconsistent-missing-override\"" )
-#endif
-
 MOCK_BASE_CLASS( MOCK_KIFACE_BASE, KIFACE_BASE )
 {
     MOCK_KIFACE_BASE() : KIFACE_BASE( "common_test", KIWAY::KIWAY_FACE_COUNT ) {};
     virtual ~MOCK_KIFACE_BASE() {};
 
-    MOCK_METHOD( OnKifaceStart, 3, bool( PGM_BASE*, int, KIWAY* ) );
-    MOCK_METHOD( OnKifaceEnd, 0, void() );
-    MOCK_METHOD( CreateKiWindow, 4, wxWindow*( wxWindow*, int, KIWAY*, int ) );
-    MOCK_METHOD( IfaceOrAddress, 1, void*( int ) );
+    KI_MOCK_METHOD_OVERRIDE( OnKifaceStart, 3, bool( PGM_BASE*, int, KIWAY* ) );
+    KI_MOCK_METHOD_OVERRIDE( OnKifaceEnd, 0, void() );
+    KI_MOCK_METHOD_OVERRIDE( CreateKiWindow, 4, wxWindow*( wxWindow*, int, KIWAY*, int ) );
+    KI_MOCK_METHOD_OVERRIDE( IfaceOrAddress, 1, void*( int ) );
 };
-
-#ifdef HAVE_WINCONSISTENT_MISSING_OVERRIDE
-    _Pragma( "GCC diagnostic pop" )
-#endif
