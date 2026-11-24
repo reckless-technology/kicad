@@ -442,6 +442,58 @@ BOOST_AUTO_TEST_CASE( DrillFilesRouteTheRectangle )
 }
 
 
+// An unplated rectangular hole with a pad no bigger than itself has no copper, so the solder mask
+// test does not see copper there; nor does it for the round hole beside it. The board has SMD pads
+// 0.6 mm from a 2 mm square NPTH hole and from a 2 mm round one, each pair on two nets.
+BOOST_AUTO_TEST_CASE( UnplatedRectangularHoleMakesNoMaskBridge )
+{
+    SETTINGS_MANAGER       settingsManager;
+    std::unique_ptr<BOARD> board;
+
+    KI_TEST::LoadBoard( settingsManager, "rectangular_holes/mask_bridge", board );
+    BOOST_REQUIRE( board );
+
+    for( FOOTPRINT* footprint : board->Footprints() )
+    {
+        for( PAD* pad : footprint->Pads() )
+        {
+            if( pad->GetAttribute() == PAD_ATTRIB::NPTH && pad->GetSize( F_Cu ) == pad->GetDrillSize() )
+            {
+                BOOST_TEST_CONTEXT( footprint->GetReference() )
+                {
+                    BOOST_CHECK( pad->IsNPTHWithNoCopper() );
+                    BOOST_CHECK( !pad->FlashLayer( F_Cu ) );
+                }
+            }
+        }
+    }
+
+    BOARD_DESIGN_SETTINGS& bds = board->GetDesignSettings();
+    BOOST_REQUIRE( bds.m_DRCEngine );
+
+    int bridges = 0;
+
+    bds.m_DRCEngine->SetViolationHandler(
+            [&]( const std::shared_ptr<DRC_ITEM>& aItem, const VECTOR2I& aPos [[maybe_unused]],
+                 int                                       aLayer [[maybe_unused]],
+                 const std::function<void( PCB_MARKER* )>& aPathGenerator [[maybe_unused]] )
+            {
+                if( aItem->GetErrorCode() == DRCE_SOLDERMASK_BRIDGE )
+                {
+                    BOOST_TEST_MESSAGE( "Bridge: " << aItem->GetErrorMessage( false ) );
+                    bridges++;
+                }
+            } );
+
+    bds.m_DRCEngine->RunTests( EDA_UNITS::MM, true, false );
+    bds.m_DRCEngine->ClearViolationHandler();
+
+    BOOST_CHECK_EQUAL( bridges, 0 );
+
+    board->SetProject( nullptr );
+}
+
+
 // ODB++ drill layers hold round hits and straight slots, whose symbols each need a tool. A
 // rectangular hole is neither, so it is left off them and goes to the rout layer as its outline.
 BOOST_AUTO_TEST_CASE( OdbDrillLayersAgreeWithTheirTools )
