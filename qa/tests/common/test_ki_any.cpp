@@ -489,7 +489,15 @@ BOOST_AUTO_TEST_CASE( Construction_Pair )
 
 
 // Alignment requiremnts of this type prevent it being stored in 'any'
+// The over-alignment is what this test is about, so the padding MSVC reports for it (C4324) is expected.
+#if defined( _MSC_VER )
+#pragma warning( push )
+#pragma warning( disable : 4324 )
+#endif
 struct alignas(2 * alignof(void*)) X3 { };
+#if defined( _MSC_VER )
+#pragma warning( pop )
+#endif
 
 bool
 stored_internally(void* obj, const ki::any& a)
