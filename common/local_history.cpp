@@ -1097,7 +1097,12 @@ void LOCAL_HISTORY::WaitForPendingSave()
     if( m_pendingFuture.valid() )
     {
         wxLogTrace( traceAutoSave, wxS( "[history] waiting for pending background save" ) );
-        m_pendingFuture.get();
+
+        // get() rather than wait(): it rethrows anything the save threw and leaves the future invalid
+        const bool committed = m_pendingFuture.get();
+
+        wxLogTrace( traceAutoSave, wxS( "[history] pending background save %s" ),
+                    committed ? wxS( "committed" ) : wxS( "made no new commit" ) );
     }
 }
 
