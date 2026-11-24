@@ -51,7 +51,7 @@ static const wxChar* const traceGalCachedContainerGpu = wxT( "KICAD_GAL_CACHED_C
 CACHED_CONTAINER_GPU::CACHED_CONTAINER_GPU( unsigned int aSize ) :
         CACHED_CONTAINER( aSize ),
         m_isMapped( false ),
-        m_glBufferHandle( -1 )
+        m_glBufferHandle( 0 )
 {
     m_useCopyBuffer = !!GLAD_GL_ARB_copy_buffer;
 

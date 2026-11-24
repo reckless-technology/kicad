@@ -3163,7 +3163,7 @@ bool SCH_SYMBOL::ResolveTextVar( const SCH_SHEET_PATH* aPath, wxString* token, c
         }
         else
         {
-            pin = pin.SubString( 1, -1 ); // Strip ':' from front
+            pin = pin.Mid( 1 ); // Strip ':' from front
 
             for( const std::reference_wrapper<const SIM_MODEL_PIN>& modelPin : model.GetPins() )
             {
