@@ -360,8 +360,8 @@ public:
 
     CONTEXT() :
             m_stack(),
-            m_stackPtr( 0 ),
-            m_inlineUsed( 0 )
+            m_inlineUsed( 0 ),
+            m_stackPtr( 0 )
     {
         m_ownedValues.reserve( 8 );
     }
@@ -490,10 +490,10 @@ private:
 
     std::vector<VALUE*> m_ownedValues;
     VALUE*              m_stack[STACK_CAPACITY];    // std::stack not performant enough
-    int                 m_stackPtr;
 
     alignas( VALUE ) unsigned char m_inlineStorage[INLINE_VALUE_COUNT * sizeof( VALUE )];
     std::size_t                    m_inlineUsed;
+    int                            m_stackPtr;
 
     ERROR_CALLBACK m_errorCallback;
 };

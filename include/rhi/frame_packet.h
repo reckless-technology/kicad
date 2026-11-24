@@ -264,6 +264,12 @@ struct LAYER_RANGE
  */
 struct FRAME_DRAW_DESC
 {
+    // The 16-byte aligned uniform blocks go first. After the other members they would need padding to
+    // reach their alignment, which MSVC reports as C4324.
+    FRAME_UBO_DATA  frameUBO;
+    GRID_UBO_DATA   gridUBO;
+    CURSOR_UBO_DATA cursorUBO;
+
     RHI_LINE_PIPELINE_KIND linePipelineKind = RHI_LINE_PIPELINE_KIND::PCB_TRACKS;
 
     /**
@@ -316,10 +322,6 @@ struct FRAME_DRAW_DESC
     uint64_t bufferGeneration = 0;
 
     float backgroundColor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
-
-    FRAME_UBO_DATA  frameUBO;
-    GRID_UBO_DATA   gridUBO;
-    CURSOR_UBO_DATA cursorUBO;
 
     bool HasGeometry() const
     {

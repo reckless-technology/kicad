@@ -193,11 +193,12 @@ struct WINDOW_STATE
      */
     struct RENDERED_CONTENT
     {
-        bool           valid = false;
-        uint64_t       epoch = 0;
-        bool           drawGrid = false;
+        // The 16-byte aligned uniform blocks go first, as in FRAME_DRAW_DESC (MSVC C4324)
         FRAME_UBO_DATA frameUBO;
         GRID_UBO_DATA  gridUBO;
+        uint64_t       epoch = 0;
+        bool           valid = false;
+        bool           drawGrid = false;
         uint32_t       margin = 0;      /**< how much of the static target's margin was drawn */
     };
 
