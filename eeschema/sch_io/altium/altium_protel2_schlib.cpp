@@ -26,6 +26,7 @@
 
 #include <io/io_utils.h>
 #include <ki_exception.h>
+#include <wx/arrstr.h>
 #include <wx/translation.h>
 
 

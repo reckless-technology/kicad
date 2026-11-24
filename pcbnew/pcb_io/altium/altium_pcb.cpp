@@ -525,7 +525,7 @@ static void RemoveDuplicateCourtyards( FOOTPRINT& aFootprint )
     // File coordinates drift by nanometres
     const int epsilon = pcbIUScale.mmToIU( 0.002 );
 
-    auto near =
+    auto isNear =
             [&]( const VECTOR2I& aA, const VECTOR2I& aB )
             {
                 return std::abs( aA.x - aB.x ) <= epsilon && std::abs( aA.y - aB.y ) <= epsilon;
@@ -573,8 +573,8 @@ static void RemoveDuplicateCourtyards( FOOTPRINT& aFootprint )
                 allDrawn = std::any_of( lines.begin(), lines.end(),
                         [&]( const SEG& aLine )
                         {
-                            return ( near( edge.A, aLine.A ) && near( edge.B, aLine.B ) )
-                                   || ( near( edge.A, aLine.B ) && near( edge.B, aLine.A ) );
+                            return ( isNear( edge.A, aLine.A ) && isNear( edge.B, aLine.B ) )
+                                   || ( isNear( edge.A, aLine.B ) && isNear( edge.B, aLine.A ) );
                         } );
             }
 
