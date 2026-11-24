@@ -1766,6 +1766,34 @@ void RENDER_3D_RAYTRACE_BASE::insertHole( const PAD* aPad )
     const float botZ = m_boardAdapter.GetLayerBottomZPos( B_Cu )
                        - m_boardAdapter.GetBackCopperThickness() * 0.99f + backDepth;
 
+    if( aPad->GetDrillShape() == PAD_DRILL_SHAPE::RECTANGLE )
+    {
+        // The plating of a rectangular hole: the hole grown by the plating thickness, less the
+        // hole, as triangles standing from the bottom copper to the top
+        SHAPE_POLY_SET barrel;
+        SHAPE_POLY_SET hole;
+        aPad->TransformHoleToPolygon( barrel, m_boardAdapter.GetHolePlatingThickness(), aPad->GetMaxError(),
+                                      ERROR_INSIDE );
+        aPad->TransformHoleToPolygon( hole, 0, aPad->GetMaxError(), ERROR_INSIDE );
+        barrel.BooleanSubtract( hole );
+
+        const LIST_OBJECT2D& objects = m_containerWithObjectsToDelete.GetList();
+        const size_t         before = objects.size();
+
+        ConvertPolygonToTriangles( barrel, m_containerWithObjectsToDelete, unitScale, *aPad );
+
+        for( auto it = std::next( objects.begin(), before ); it != objects.end(); ++it )
+        {
+            LAYER_ITEM* objPtr = new LAYER_ITEM( *it, topZ, botZ );
+
+            objPtr->SetMaterial( &m_materials.m_Copper );
+            objPtr->SetColor( ConvertSRGBToLinear( objColor ) );
+            m_objectContainer.Add( objPtr );
+        }
+
+        return;
+    }
+
     if( isRoundHole ) // usual round hole
     {
         holeCenter = SFVEC2F( aPad->GetPosition().x * unitScale,
