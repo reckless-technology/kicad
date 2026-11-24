@@ -67,10 +67,11 @@ build it in (#40); OpenGL stays the default canvas, and the engine loads the sys
 `KICAD_WERROR` (cmake/Warnings.cmake) makes every compiler warning in KiCad's own code an error, through CMake's
 `COMPILE_WARNING_AS_ERROR` target property (CMake 3.24 or newer), so configure-time feature checks are not affected.
 It is ON by default with Clang and OFF with other compilers; `-DKICAD_WERROR=OFF` turns it off. Code under
-`thirdparty/` keeps its own flags. The set of warnings is upstream's own (`-Wall` and the extras in
-`cmake/Warnings.cmake`); `-Wextra` and `-Wpedantic` are not enabled, pending #6. A warning is fixed at its cause,
-not silenced with a pragma or a `-Wno-` flag. Upstream changes can introduce a warning when `reckless/main` is
-rebased: fix it in that rebase.
+`thirdparty/` keeps its own flags. The warnings are upstream's set (`-Wall` and the extras in `cmake/Warnings.cmake`)
+plus `-Wextra` and `-Wpedantic` (#6), applied once at the top level to all of KiCad's own C, C++ and Objective-C++
+(#46), so `qa/`, `3d-viewer/`, `pcb_calculator/` and the libraries are checked too. MSVC builds with its default
+level for now; `/W4 /WX /permissive-` is #43. A warning is fixed at its cause, not silenced with a pragma or a `-Wno-`
+flag. Upstream changes can introduce a warning when `reckless/main` is rebased: fix it in that rebase.
 
 ## Commits
 
