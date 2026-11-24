@@ -247,10 +247,6 @@ BOOST_AUTO_TEST_CASE( ArcDirection )
     BOOST_CHECK_CLOSE( paramsCCW.GetArcAngle(), M_PI, 0.1 );
     BOOST_CHECK_CLOSE( paramsCW.GetArcAngle(), M_PI, 0.1 );
 
-    // Centers should be on opposite sides of the chord
-    VECTOR2D centerCCW = paramsCCW.GetCenterPoint();
-    VECTOR2D centerCW = paramsCW.GetCenterPoint();
-
     // CCW center should be above the chord (positive y)
     // CW center should be below the chord (negative y)
     // For semicircles, centers are on the chord, so we check the normal direction
