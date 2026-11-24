@@ -371,7 +371,8 @@ std::pair<RESISTANCE&, RESISTANCE&> RES_EQUIV_CALC::findIn2RBuffer( double aTarg
     if( aTarget <= m_buffer_2R.front().value || aTarget >= m_buffer_2R.back().value )
         return { m_buffer_2R.front(), m_buffer_2R.back() };
 
-    auto it = std::lower_bound( m_buffer_2R.begin(), m_buffer_2R.end(), aTarget ) - m_buffer_2R.begin();
+    const size_t it = static_cast<size_t>(
+            std::lower_bound( m_buffer_2R.begin(), m_buffer_2R.end(), aTarget ) - m_buffer_2R.begin() );
 
     if( it == 0 )
         return { m_buffer_2R[0], m_buffer_2R[0] };

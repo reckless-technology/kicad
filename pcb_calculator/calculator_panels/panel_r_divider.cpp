@@ -206,15 +206,17 @@ void PANEL_R_DIVIDER::OnCalculate( wxCommandEvent& aEvent [[maybe_unused]] )
     for( int row = 0; row < rows; ++row )
     {
         const R_DIVIDER& divider = dividers[row];
-        const double     top = divider.Top.Value;
-        const double     bottom = divider.Bottom.Value;
+        const double     topValue = divider.Top.Value;
+        const double     bottomValue = divider.Bottom.Value;
 
-        const wxString target = voltageMode ? wxString::Format( wxS( "%.4g V" ), vin * bottom / ( top + bottom ) )
-                                            : wxString::Format( wxS( "%.4g" ), top / bottom );
+        const wxString targetText = voltageMode
+                                        ? wxString::Format( wxS( "%.4g V" ),
+                                                            vin * bottomValue / ( topValue + bottomValue ) )
+                                        : wxString::Format( wxS( "%.4g" ), topValue / bottomValue );
 
         m_resultsGrid->SetCellValue( row, COL_R1, formatLeg( divider.Top ) );
         m_resultsGrid->SetCellValue( row, COL_R2, formatLeg( divider.Bottom ) );
-        m_resultsGrid->SetCellValue( row, COL_TARGET, target );
+        m_resultsGrid->SetCellValue( row, COL_TARGET, targetText );
         m_resultsGrid->SetCellValue( row, COL_TARGET_ERROR, formatError( divider.TargetError ) );
         m_resultsGrid->SetCellValue( row, COL_IMPEDANCE, strValue( divider.Impedance ) );
         m_resultsGrid->SetCellValue( row, COL_IMPEDANCE_ERROR, formatError( divider.ImpedanceError ) );

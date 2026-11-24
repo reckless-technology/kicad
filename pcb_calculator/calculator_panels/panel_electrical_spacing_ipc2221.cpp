@@ -32,10 +32,6 @@
 #include <units_scales.h>
 
 
-// The IPC2221 formula used to calculate track width is valid only for copper material
-const double copper_resistivity = 1.72e-8;
-
-
 #define VALUE_COUNT 8
 #define CLASS_COUNT 10
 

@@ -101,7 +101,6 @@ public:
 private:
     double m_ratedVoltage = 100e3;
     double m_frequency = 50;
-    bool   m_coated = false;
     bool   m_pcbMaterial = false;
 
     double           m_RMSvoltage = 100e3;

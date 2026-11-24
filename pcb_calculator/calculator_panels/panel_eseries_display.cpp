@@ -222,11 +222,10 @@ void PANEL_ESERIES_DISPLAY::populateE2496Tree()
     // column. Like in a newspaper. The term column is not used since
     // the grid already has columns. The 96 in the second calculation
     // is the number of entries in the largest series displayed (E96)
-    constexpr unsigned int numStripes = 4;
-    constexpr unsigned int stripeHeight = 96 / numStripes;
+    constexpr int numStripes = 4;
+    constexpr int stripeHeight = 96 / numStripes;
 
     int      idx = 0;
-    int      stripe = 0;
     wxString value;
 
     m_GridEseries2496->BeginBatch();
@@ -295,7 +294,7 @@ void PANEL_ESERIES_DISPLAY::populateE2496Tree()
     // cause the areas between stripes to appear more empty
     // by making them a single cell the height of the stripe
     // this causes the horizontal row lines rows to disappear
-    for( unsigned int stripeGap = 1; stripeGap < numStripes; ++stripeGap )
+    for( int stripeGap = 1; stripeGap < numStripes; ++stripeGap )
     {
         const int stripeColumn = -1 + stripeGap * 4;
 
@@ -314,7 +313,7 @@ void PANEL_ESERIES_DISPLAY::populateE2496Tree()
 
 void PANEL_ESERIES_DISPLAY::recolourE112Tree()
 {
-    const unsigned int numRows = m_GridEseries112->GetNumberRows();
+    const int numRows = m_GridEseries112->GetNumberRows();
 
     m_GridEseries112->BeginBatch();
 
@@ -373,9 +372,8 @@ void PANEL_ESERIES_DISPLAY::recolourE112Tree()
 
 void PANEL_ESERIES_DISPLAY::recolourE2496Tree()
 {
-    const unsigned int     numRows = m_GridEseries2496->GetNumberRows();
-    constexpr unsigned int numStripes = 4;
-    constexpr unsigned int stripeHeight = 96 / numStripes;
+    const int     numRows = m_GridEseries2496->GetNumberRows();
+    constexpr int numStripes = 4;
 
     m_GridEseries2496->BeginBatch();
 
@@ -436,7 +434,7 @@ void PANEL_ESERIES_DISPLAY::recolourE2496Tree()
 
     // recolour empty areas between columns to match label background
     // to make them less eye-catching
-    for( unsigned int stripeGap = 1; stripeGap < numStripes; ++stripeGap )
+    for( int stripeGap = 1; stripeGap < numStripes; ++stripeGap )
     {
         const int stripeColumn = -1 + stripeGap * 4;
 
