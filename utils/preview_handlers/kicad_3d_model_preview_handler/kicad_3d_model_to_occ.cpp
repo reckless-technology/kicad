@@ -29,7 +29,14 @@
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 #include <Quantity_Color.hxx>
+#include <Standard_Version.hxx>
+
+#if OCC_VERSION_HEX >= 0x080000
+#include <NCollection_HArray1.hxx>
+#else
 #include <TColStd_HArray1OfInteger.hxx>
+#endif
+
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
 
@@ -164,7 +171,11 @@ Handle( AIS_Triangulation ) BuildS3DMeshPresentation( const S3DMODEL& aModel, co
     // mesh actually carries per-vertex colours.
     if( aMesh.m_Color )
     {
+#if OCC_VERSION_HEX >= 0x080000
+        auto colors = new NCollection_HArray1<int>( 1, static_cast<int>( aMesh.m_VertexSize ) );
+#else
         auto colors = new TColStd_HArray1OfInteger( 1, static_cast<int>( aMesh.m_VertexSize ) );
+#endif
 
         for( unsigned int vertex = 0; vertex < aMesh.m_VertexSize; ++vertex )
             colors->SetValue( static_cast<int>( vertex + 1 ), PackColor( aMesh.m_Color[vertex] ) );
