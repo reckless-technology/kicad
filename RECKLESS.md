@@ -61,3 +61,13 @@ It is ON by default with Clang and OFF with other compilers; `-DKICAD_WERROR=OFF
 `cmake/Warnings.cmake`); `-Wextra` and `-Wpedantic` are not enabled, pending #6. A warning is fixed at its cause,
 not silenced with a pragma or a `-Wno-` flag. Upstream changes can introduce a warning when `reckless/main` is
 rebased: fix it in that rebase.
+
+## Commits
+
+Every commit in `reckless/main` is authored and committed by one identity, Jonny Reckless
+<jonny@recklesstechnology.com>. Set it in each clone (`git config user.name` and `user.email`) and turn the hooks on
+once per clone with `git config core.hooksPath .githooks`. Two drop-ins check the identity:
+`.githooks/pre-commit.d/10-reckless-identity` refuses a commit whose author or committer is anyone else, and
+`.githooks/pre-push.d/10-reckless-identity` refuses a push carrying such a commit, which catches a rebase or
+cherry-pick, since those run no pre-commit hook. Commits already on a remote-tracking branch, upstream KiCad's among
+them, are not checked.
