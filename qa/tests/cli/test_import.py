@@ -227,6 +227,42 @@ class TestImportEasyEdaProProject:
             "PCB1_1.kicad_pcb"
         ]
 
+    def test_import_writes_subsheets_beside_output( self, kitest: KiTestFixture ):
+        """The root schematic's sub-sheets are written and linked beside the output, never the input."""
+        base_dir = kitest.get_output_path( "cli/import/easyedapro_subsheets/" )
+        input_dir = base_dir / "input"
+        output_dir = base_dir / "output"
+
+        for directory in ( input_dir, output_dir ):
+            if directory.exists():
+                shutil.rmtree( directory )
+
+            directory.mkdir( parents=True )
+
+        # a private copy of the archive, so anything written beside the input shows up here
+        archive = input_dir / Path( get_easyedapro_v3_test_file() ).name
+        shutil.copyfile( get_easyedapro_v3_test_file(), archive )
+        stem = output_dir / "project"
+
+        command = [ utils.kicad_cli(), "import", str( archive ), "-o", str( stem ) ]
+
+        # twice: a re-import finds the first one's library tables, links footprints, and so reopens
+        # and re-saves the schematic through its sheet links
+        for _ in range( 2 ):
+            stdout, stderr, return_code = utils.run_and_capture( command )
+
+            assert return_code == 0
+            assert sorted( entry.name for entry in input_dir.iterdir() ) == [ archive.name ]
+
+        root_schematic = stem.with_suffix( ".kicad_sch" ).read_text( encoding="utf-8" )
+        sheet_files = re.findall( r'\(property "Sheetfile" "([^"]*)"', root_schematic )
+
+        assert len( sheet_files ) == 4
+
+        for sheet_file in sheet_files:
+            assert sheet_file == Path( sheet_file ).name, f"Sheetfile '{sheet_file}' leaves the output directory"
+            assert ( output_dir / sheet_file ).is_file(), f"Sheetfile '{sheet_file}' does not resolve"
+
 
 @pytest.mark.skipif( get_easyedapro_v2_test_file() is None,
                      reason="EasyEDA Pro v2 test file not available" )
