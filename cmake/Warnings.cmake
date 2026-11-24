@@ -230,75 +230,19 @@ endif()
 if( MSVC )
     set( COMPILER_SUPPORTS_WARNINGS TRUE )
 
-    # Establish /Wall early and selectively disable some very common warnings in kicad code
-    # or warnings that really shouldn't be warnings. Also some warnings like implicit fallthrough
-    # in case statements happen in msvc std lib and despite /external:env:INCLUDE leak
-    # into build log generating thousands of noise entries.
-
-    # Unlike gcc /Wall actually enables all warnings on msvc.
+    # Reckless: /W4, with every warning fixed at its cause and errors under KICAD_WERROR (#43). /permissive- is
+    # already on for every C++ compile (CMakeLists.txt). Headers outside KiCad's own code are external and
+    # compiled at /W0.
 
     # Warnings for C are not enabled since C files are mostly generated
-    # set( WARN_FLAGS_C   "/external:W0 /external:env:INCLUDE /external:I${CMAKE_SOURCE_DIR}/thirdparty /Wall" )
-    set( WARN_FLAGS_CXX "/external:W0 /external:env:INCLUDE /external:I${CMAKE_SOURCE_DIR}/thirdparty /Wall" )
+    # set( WARN_FLAGS_C   "/external:W0 /external:env:INCLUDE /external:I${CMAKE_SOURCE_DIR}/thirdparty /W4" )
+    set( WARN_FLAGS_CXX "/external:W0 /external:env:INCLUDE /external:I${CMAKE_SOURCE_DIR}/thirdparty /W4" )
 
-    # disable 'type' : class 'type1' needs to have dll-interface to be used by clients of class 'type2'
+    # The one exception. C4251 "needs to have dll-interface" warns when an exported class has a member or base
+    # of a type that is not exported, such as a standard-library container. That matters only when modules are
+    # built with different toolsets or C runtimes. Every KiCad module is built in one configure, with one
+    # toolset and the dynamic CRT, which is where Microsoft documents C4251 as safe to ignore. See #43.
     string( APPEND WARN_FLAGS_CXX " /wd4251" )
-    # disable "function not inlined"
-    string( APPEND WARN_FLAGS_CXX " /wd4710" )
-    # disable "function selected for inline expansion"
-    string( APPEND WARN_FLAGS_CXX " /wd4711" )
-    # disable "bytes padding added"
-    string( APPEND WARN_FLAGS_CXX " /wd4820" )
-    # disable "unreferenced formal parameter"
-    string( APPEND WARN_FLAGS_CXX " /wd4100" )
-    # disable default/copy/move constructor/assignment implicitly defined as deleted
-    string( APPEND WARN_FLAGS_CXX " /wd4623 /wd4625 /wd5026 /wd4626 /wd5027" )
-    # disable "compiler will insert Spectre mitigation for..."
-    string( APPEND WARN_FLAGS_CXX " /wd5045" )
-    # disable "enumerator in switch for enum is not explicitly handled"
-    string( APPEND WARN_FLAGS_CXX " /wd4061" )
-    # disable "conversion from 'type_1' to 'type_2', signed/unsigned mismatch"
-    string( APPEND WARN_FLAGS_CXX " /wd4245 /wd4365" )
-    # disable "conversion from 'type1' to 'type2', possible loss of data"
-    string( APPEND WARN_FLAGS_CXX " /wd4242 /wd5219" )
-    # disable "member function does not override any base class virtual member function"
-    string( APPEND WARN_FLAGS_CXX " /wd4263" )
-    # disable "no override available for virtual member function from base 'class'; function is hidden"
-    string( APPEND WARN_FLAGS_CXX " /wd4264" )
-    # disable "no override available for virtual member function, function is hidden"
-    string( APPEND WARN_FLAGS_CXX " /wd4266" )
-    # disable "class has virtual functions, but its (non)trivial destructor is not virtual"
-    string( APPEND WARN_FLAGS_CXX " /wd5204 /wd4265" )
-    # disable "layout of class may have changed from a previous version of the compiler"
-    string( APPEND WARN_FLAGS_CXX " /wd4371" )
-    # disable "'this': used in base member initializer list"
-    string( APPEND WARN_FLAGS_CXX " /wd4355" )
-    # disable "relative include path contains '..'"
-    string( APPEND WARN_FLAGS_CXX " /wd4464" )
-    # disable "'const' variable is not used"
-    string( APPEND WARN_FLAGS_CXX " /wd5264" )
-    # disable "implicit fall-through occurs here" in case statement
-    string( APPEND WARN_FLAGS_CXX " /wd5262" )
-    # disable "unreferenced inline function has been removed"
-    string( APPEND WARN_FLAGS_CXX " /wd4514" )
-    # disable "compiler may not enforce left-to-right evaluation order in ..."
-    string( APPEND WARN_FLAGS_CXX " /wd4868 /wd4866" )
-    # disable "XXX is not defined as a preprocessor macro, replacing with '0'"
-    string( APPEND WARN_FLAGS_CXX " /wd4668" )
-    # disable "definition of implicit copy constructor for 'X' is deprecated because it has a user-provided destructor"
-    string( APPEND WARN_FLAGS_CXX " /wd5267" )
-    # disable "reinterpret_cast used between related classes"
-    string( APPEND WARN_FLAGS_CXX " /wd4946" )
-    # disable throw() is interpreted as declspec(nothrow)
-    string( APPEND WARN_FLAGS_CXX " /wd4290" )
-    # disable non-bool is explicitly cast to bool, forcing value of 0 or 1
-    string( APPEND WARN_FLAGS_CXX " /wd4800" )
-    # disable volatile access of '<expression>' is subject to /volatile:[iso|ms] setting;
-    string( APPEND WARN_FLAGS_CXX " /wd4746" )
-    # disable "the initialization of a subobject should be wrapped in braces"
-    string( APPEND WARN_FLAGS_CXX " /wd5246" )
-    # disable alignas warning used on structure, class or union
-    string( APPEND WARN_FLAGS_CXX " /wd4324" )
 endif()
 
 
@@ -306,7 +250,7 @@ endif()
 # flags (thirdparty/CMakeLists.txt turns this back off for its directory). This uses the targets'
 # COMPILE_WARNING_AS_ERROR property rather than a -Werror in the flags, so that configure-time feature checks,
 # which compile with CMAKE_CXX_FLAGS, are not turned into failures by a warning.
-if( CMAKE_CXX_COMPILER_ID MATCHES "Clang" )
+if( CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR MSVC )
     set( KICAD_WERROR_DEFAULT ON )
 else()
     set( KICAD_WERROR_DEFAULT OFF )
