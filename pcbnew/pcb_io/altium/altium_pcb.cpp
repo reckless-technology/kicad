@@ -5277,36 +5277,44 @@ void ALTIUM_PCB::ConvertPads6ToFootprintItemOnCopper( FOOTPRINT* aFootprint, con
                 break;
 
             case ALTIUM_PAD_HOLE_SHAPE::SQUARE:
-                if( !m_footprintName.IsEmpty() )
+            {
+                // The hole's side is the hole size; the slot size is not used for a square hole
+                pad->SetDrillShape( PAD_DRILL_SHAPE::RECTANGLE );
+                pad->SetDrillSize( VECTOR2I( aElem.holesize, aElem.holesize ) );
+
+                // KiCad's hole turns with its pad, and a square looks the same at every multiple of
+                // 90 degrees, so only a rotation between those is lost
+                double quarterTurns = aElem.sizeAndShape->slotrotation / 90.0;
+
+                if( std::abs( quarterTurns - std::round( quarterTurns ) ) > 1e-9 )
                 {
+                    EDA_ANGLE holeRotation( aElem.sizeAndShape->slotrotation, DEGREES_T );
+                    holeRotation.Normalize();
+
                     if( m_reporter )
                     {
                         wxString msg;
-                        msg.Printf( _( "Loading library '%s':\n"
-                                       "Footprint %s pad %s has a square hole (not yet supported)." ),
-                                    m_library,
-                                    m_footprintName,
-                                    aElem.name );
-                        m_reporter->Report( msg, RPT_SEVERITY_DEBUG );
-                    }
-                }
-                else
-                {
-                    if( m_reporter )
-                    {
-                        wxString msg;
-                        msg.Printf( _( "Footprint %s pad %s has a square hole (not yet supported)." ),
-                                    aFootprint->GetReference(),
-                                    aElem.name );
+
+                        if( !m_footprintName.IsEmpty() )
+                        {
+                            msg.Printf( _( "Loading library '%s':\n"
+                                           "Footprint %s pad %s has a hole-rotation of %d degrees. "
+                                           "KiCad only supports 90 degree rotations." ),
+                                        m_library, m_footprintName, aElem.name, KiROUND( holeRotation.AsDegrees() ) );
+                        }
+                        else
+                        {
+                            msg.Printf( _( "Footprint %s pad %s has a hole-rotation of %d degrees. "
+                                           "KiCad only supports 90 degree rotations." ),
+                                        aFootprint->GetReference(), aElem.name, KiROUND( holeRotation.AsDegrees() ) );
+                        }
+
                         m_reporter->Report( msg, RPT_SEVERITY_DEBUG );
                     }
                 }
 
-                pad->SetDrillShape( PAD_DRILL_SHAPE::CIRCLE );
-                pad->SetDrillSize( VECTOR2I( aElem.holesize, aElem.holesize ) ); // Workaround
-                // TODO: elem.sizeAndShape->slotsize was 0 in testfile. Either use holesize in
-                //  this case or rect holes have a different id
                 break;
+            }
 
             case ALTIUM_PAD_HOLE_SHAPE::SLOT:
             {
@@ -5588,6 +5596,13 @@ void ALTIUM_PCB::ConvertNpthCopperToSmdPads( FOOTPRINT* aFootprint, PAD* aHole,
                 {
                 case PAD_SHAPE::CIRCLE:
                 case PAD_SHAPE::OVAL:   return size.x > drill.x || size.y > drill.y;
+
+                case PAD_SHAPE::RECTANGLE:
+                    if( aHole->GetDrillShape() == PAD_DRILL_SHAPE::RECTANGLE )
+                        return size.x > drill.x || size.y > drill.y;
+
+                    return true;
+
                 default:                return true;
                 }
             };
@@ -5600,9 +5615,12 @@ void ALTIUM_PCB::ConvertNpthCopperToSmdPads( FOOTPRINT* aFootprint, PAD* aHole,
             copperSides.push_back( layer );
     }
 
-    const PAD_SHAPE holeShape = aHole->GetDrillShape() == PAD_DRILL_SHAPE::OBLONG
-                                        ? PAD_SHAPE::OVAL
-                                        : PAD_SHAPE::CIRCLE;
+    PAD_SHAPE holeShape = PAD_SHAPE::CIRCLE;
+
+    if( aHole->GetDrillShape() == PAD_DRILL_SHAPE::OBLONG )
+        holeShape = PAD_SHAPE::OVAL;
+    else if( aHole->GetDrillShape() == PAD_DRILL_SHAPE::RECTANGLE )
+        holeShape = PAD_SHAPE::RECTANGLE;
 
     // The hole's own size is the KiCad way to say "no copper on this layer"
     auto makeHoleOnly =
