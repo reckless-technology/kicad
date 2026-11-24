@@ -41,7 +41,7 @@ struct SNAP_OBJECT_BOUNDS
 {
     SNAP_STABLE_ID                id;
     BOX2I                         bounds;
-    std::optional<SNAP_TARGET_ID> parent;
+    std::optional<SNAP_TARGET_ID> parent = std::nullopt;
 };
 
 
@@ -50,7 +50,7 @@ struct SNAP_ALIGNMENT_POINT
 {
     SNAP_STABLE_ID                id;
     VECTOR2I                      position;
-    std::optional<SNAP_TARGET_ID> parent;
+    std::optional<SNAP_TARGET_ID> parent = std::nullopt;
 };
 
 

@@ -1202,7 +1202,7 @@ int main( int argc, char** argv )
           wxCMD_LINE_VAL_NUMBER, wxCMD_LINE_PARAM_OPTIONAL },
         { wxCMD_LINE_PARAM, nullptr, nullptr, "board.kicad_pcb", wxCMD_LINE_VAL_STRING,
           wxCMD_LINE_PARAM_OPTIONAL },
-        { wxCMD_LINE_NONE }
+        wxCMD_LINE_DESC_END
     };
 
     wxCmdLineParser parser( argc, argv );

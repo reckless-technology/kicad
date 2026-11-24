@@ -117,7 +117,8 @@ inline KIGIT::GitRepositoryPtr InitGitRepository( const wxString& aPath, const c
                                                   const char* aAuthorName = "QA Test",
                                                   const char* aAuthorEmail = "qa@example.com" )
 {
-    git_repository_init_options options = GIT_REPOSITORY_INIT_OPTIONS_INIT;
+    git_repository_init_options options;
+    BOOST_REQUIRE_EQUAL( git_repository_init_options_init( &options, GIT_REPOSITORY_INIT_OPTIONS_VERSION ), GIT_OK );
     options.flags = GIT_REPOSITORY_INIT_MKPATH;
     options.initial_head = aBranch;
 

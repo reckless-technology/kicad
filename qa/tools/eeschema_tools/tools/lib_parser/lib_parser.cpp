@@ -278,6 +278,8 @@ static const wxCmdLineEntryDesc g_cmdLineDesc[] = {
             "v",
             "verbose",
             _( "print parsing information" ).mb_str(),
+            wxCMD_LINE_VAL_NONE,
+            0,
     },
     {
             wxCMD_LINE_OPTION,
@@ -285,6 +287,7 @@ static const wxCmdLineEntryDesc g_cmdLineDesc[] = {
             "lib-table",
             _( "path to a symbol library table file" ).mb_str(),
             wxCMD_LINE_VAL_STRING,
+            0,
     },
     {
             wxCMD_LINE_OPTION,
@@ -292,6 +295,7 @@ static const wxCmdLineEntryDesc g_cmdLineDesc[] = {
             "loop",
             _( "number of times to loop when parsing from stdin (for AFL)" ).mb_str(),
             wxCMD_LINE_VAL_NUMBER,
+            0,
     },
     {
             wxCMD_LINE_PARAM,
@@ -301,9 +305,7 @@ static const wxCmdLineEntryDesc g_cmdLineDesc[] = {
             wxCMD_LINE_VAL_STRING,
             wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_PARAM_MULTIPLE,
     },
-    {
-            wxCMD_LINE_NONE,
-    }
+    wxCMD_LINE_DESC_END
 };
 
 

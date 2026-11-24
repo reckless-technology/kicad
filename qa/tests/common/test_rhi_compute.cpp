@@ -186,12 +186,12 @@ BOOST_AUTO_TEST_CASE( CheckerboardSpecializations )
         return;
     }
 
-    RESOURCES                     resources{ gpu };
+    RESOURCES                     resources{ .gpu = gpu };
     constexpr uint32_t            width = 37, height = 19;
     const std::array<uint32_t, 2> params{ width, height };
     const auto                    layout = StorageLayout();
     auto                          buffer = resources.Buffer( width * height * sizeof( uint32_t ) );
-    resources.Group( layout, { { 1, buffer } } );
+    resources.Group( layout, { { .binding = 1, .bufferHandle = buffer } } );
 
     for( auto workgroup : { std::array<uint32_t, 2>{ 8, 8 }, std::array<uint32_t, 2>{ 16, 4 } } )
     {
@@ -235,10 +235,10 @@ BOOST_AUTO_TEST_CASE( InjectedWorkgroupSize )
         return;
     }
 
-    RESOURCES  resources{ gpu };
+    RESOURCES  resources{ .gpu = gpu };
     auto       buffer = resources.Buffer( 2 * sizeof( uint32_t ) );
     const auto layout = StorageLayout();
-    resources.Group( layout, { { 1, buffer } } );
+    resources.Group( layout, { { .binding = 1, .bufferHandle = buffer } } );
 
     for( auto size : { std::array<uint32_t, 2>{ 8, 8 }, std::array<uint32_t, 2>{ 16, 4 } } )
     {
@@ -270,7 +270,7 @@ BOOST_AUTO_TEST_CASE( SpecializedSharedReduction )
         return;
     }
 
-    RESOURCES          resources{ gpu };
+    RESOURCES          resources{ .gpu = gpu };
     constexpr uint32_t groups = 16, localSize = 64;
     std::vector<float> input( groups * localSize );
 
@@ -280,7 +280,7 @@ BOOST_AUTO_TEST_CASE( SpecializedSharedReduction )
     auto       in = resources.Buffer( input.size() * sizeof( float ) );
     auto       out = resources.Buffer( groups * sizeof( float ) );
     const auto layout = StorageLayout( true );
-    resources.Group( layout, { { 1, in }, { 2, out } } );
+    resources.Group( layout, { { .binding = 1, .bufferHandle = in }, { .binding = 2, .bufferHandle = out } } );
     RHI_COMPUTE_PIPELINE_DESC desc;
     desc.shader = k_reduction_comp;
     desc.bindGroupLayouts = { layout };
@@ -318,12 +318,12 @@ BOOST_AUTO_TEST_CASE( DependentPassesInOneJob )
         return;
     }
 
-    RESOURCES               resources{ gpu };
+    RESOURCES               resources{ .gpu = gpu };
     constexpr uint32_t      width = 37, height = 19, iterations = 5;
     std::array<uint32_t, 2> params{ width, height };
     auto                    buffer = resources.Buffer( width * height * sizeof( uint32_t ) );
     const auto              layout = StorageLayout();
-    resources.Group( layout, { { 1, buffer } } );
+    resources.Group( layout, { { .binding = 1, .bufferHandle = buffer } } );
     std::array<RHI_ComputePipelineHandle, 3> pipelines;
 
     for( uint32_t pass = 0; pass < pipelines.size(); ++pass )

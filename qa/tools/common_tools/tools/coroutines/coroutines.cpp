@@ -90,7 +90,7 @@ static const wxCmdLineEntryDesc g_cmdLineDesc[] = {
             wxCMD_LINE_VAL_NUMBER,
             wxCMD_LINE_PARAM_OPTIONAL,
     },
-    { wxCMD_LINE_NONE }
+    wxCMD_LINE_DESC_END
 };
 
 

@@ -138,7 +138,8 @@ BOOST_AUTO_TEST_CASE( CollectDiffDeltas_WalksEveryDelta )
     BOOST_REQUIRE( headTree.get() );
 
     git_diff*        diff = nullptr;
-    git_diff_options opts = GIT_DIFF_OPTIONS_INIT;
+    git_diff_options opts;
+    BOOST_REQUIRE_EQUAL( git_diff_options_init( &opts, GIT_DIFF_OPTIONS_VERSION ), GIT_OK );
 
     BOOST_REQUIRE_EQUAL(
             git_diff_tree_to_tree( &diff, repo(), baseTree.get(), headTree.get(), &opts ), 0 );

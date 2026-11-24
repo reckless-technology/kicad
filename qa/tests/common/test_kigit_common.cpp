@@ -1090,7 +1090,8 @@ BOOST_AUTO_TEST_CASE( GetRecentCommitsNamesRefsOnEachCommit )
 BOOST_AUTO_TEST_CASE( StartUnbornBranchNamesTheBranchTheFirstCommitWillCreate )
 {
     git_repository*             repo = nullptr;
-    git_repository_init_options opts = GIT_REPOSITORY_INIT_OPTIONS_INIT;
+    git_repository_init_options opts;
+    BOOST_REQUIRE_EQUAL( git_repository_init_options_init( &opts, GIT_REPOSITORY_INIT_OPTIONS_VERSION ), GIT_OK );
     opts.flags = GIT_REPOSITORY_INIT_MKPATH;
     opts.initial_head = "main";
 

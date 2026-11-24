@@ -159,6 +159,7 @@ BOOST_AUTO_TEST_CASE( NullCtor )
         0,
         0,
         0,
+        {},
     };
 
     CheckArc( arc, null_props );

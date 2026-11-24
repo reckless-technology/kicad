@@ -517,7 +517,7 @@ static std::vector<CANONICAL_SEMANTIC_RECORD> normalizeBinaryModel( const PADS_S
     std::vector<CANONICAL_SEMANTIC_RECORD> out;
     auto add = [&]( CANONICAL_KIND aKind, int aSheet, std::string aKey = {} ) -> CANONICAL_SEMANTIC_RECORD&
     {
-        out.push_back( { aSheet, aKind, std::move( aKey ) } );
+        out.push_back( { .sheet = aSheet, .kind = aKind, .stableKey = std::move( aKey ) } );
         return out.back();
     };
     auto addOwned = [&]( CANONICAL_KIND aKind, const SHEET_REFERENCE& aSheet,
@@ -860,7 +860,7 @@ static std::vector<CANONICAL_SEMANTIC_RECORD> normalizeAsciiModel( const PADS_SC
     std::vector<CANONICAL_SEMANTIC_RECORD> out;
     auto add = [&]( CANONICAL_KIND k, int s, std::string key = {} ) -> CANONICAL_SEMANTIC_RECORD&
     {
-        out.push_back( { s, k, std::move( key ) } );
+        out.push_back( { .sheet = s, .kind = k, .stableKey = std::move( key ) } );
         return out.back();
     };
     const auto& p = aParser.GetParameters();
@@ -1877,7 +1877,7 @@ BOOST_AUTO_TEST_CASE( GlobalRecordCorruption )
 
     PADS_SCH_MODEL    wrongClass = parser.Parse( loadMinimalV13(), wxS( "wrong-class.sch" ) );
     SOURCE_PROVENANCE refSource{ wxS( "wrong-class.sch" ), 0x000D, wxS( "free text" ), 1, 0, 0x100, 32, 0 };
-    wrongClass.texts.push_back( { refSource, { SHEET_ID( 99 ), refSource } } );
+    wrongClass.texts.push_back( { .source = refSource, .sheet = { SHEET_ID( 99 ), refSource } } );
     BOOST_CHECK_EXCEPTION( wrongClass.ValidateOrThrow(), IO_ERROR,
                            []( const IO_ERROR& aError )
                            {
@@ -2000,24 +2000,28 @@ BOOST_AUTO_TEST_CASE( ConnectionEndpointValidation )
     PADS_SCH_MODEL    model;
     model.version = 0x000D;
     model.source = source;
-    model.sheets.push_back( { SHEET_ID( 0 ), 0, source } );
-    model.definitions.push_back( { DEFINITION_ID( 1 ), source } );
-    model.definitions[0].pins.push_back( { PIN_ID( 2 ), source } );
-    model.partTypes.push_back( { PART_TYPE_ID( 3 ), source } );
-    model.partTypes[0].gates.push_back(
-            { GATE_ID( 4 ), source, { DEFINITION_ID( 1 ), source }, 1, { { PIN_ID( 2 ), source } } } );
-    model.placements.push_back( { PLACEMENT_ID( 5 ),
-                                  source,
-                                  { SHEET_ID( 0 ), source },
-                                  { PART_TYPE_ID( 3 ), source },
-                                  GATE_REFERENCE{ GATE_ID( 4 ), source },
-                                  { DEFINITION_ID( 1 ), source },
-                                  { { PIN_ID( 2 ), source } } } );
-    model.nets.push_back( { NET_ID( 6 ), source, { SHEET_ID( 0 ), source } } );
-    model.nets[0].connections.push_back( { source } );
-    model.nets[0].connections[0].endpoints.push_back( { MODEL_ENDPOINT_KIND::PIN, source,
-                                                        PLACEMENT_REFERENCE{ PLACEMENT_ID( 5 ), source },
-                                                        PIN_REFERENCE{ PIN_ID( 2 ), source } } );
+    model.sheets.push_back( { .id = SHEET_ID( 0 ), .index = 0, .source = source } );
+    model.definitions.push_back( { .id = DEFINITION_ID( 1 ), .source = source } );
+    model.definitions[0].pins.push_back( { .id = PIN_ID( 2 ), .source = source } );
+    model.partTypes.push_back( { .id = PART_TYPE_ID( 3 ), .source = source } );
+    model.partTypes[0].gates.push_back( { .id = GATE_ID( 4 ),
+                                          .source = source,
+                                          .definition = { DEFINITION_ID( 1 ), source },
+                                          .unit = 1,
+                                          .pins = { { PIN_ID( 2 ), source } } } );
+    model.placements.push_back( { .id = PLACEMENT_ID( 5 ),
+                                  .source = source,
+                                  .sheet = { SHEET_ID( 0 ), source },
+                                  .partType = { PART_TYPE_ID( 3 ), source },
+                                  .gate = GATE_REFERENCE{ GATE_ID( 4 ), source },
+                                  .definition = { DEFINITION_ID( 1 ), source },
+                                  .pins = { { PIN_ID( 2 ), source } } } );
+    model.nets.push_back( { .id = NET_ID( 6 ), .source = source, .sheet = { SHEET_ID( 0 ), source } } );
+    model.nets[0].connections.push_back( { .source = source } );
+    model.nets[0].connections[0].endpoints.push_back( { .kind = MODEL_ENDPOINT_KIND::PIN,
+                                                        .source = source,
+                                                        .placement = PLACEMENT_REFERENCE{ PLACEMENT_ID( 5 ), source },
+                                                        .pin = PIN_REFERENCE{ PIN_ID( 2 ), source } } );
     BOOST_CHECK_NO_THROW( model.ValidateOrThrow() );
 
     PADS_SCH_MODEL wrongPin = model;
@@ -2029,7 +2033,7 @@ BOOST_AUTO_TEST_CASE( ConnectionEndpointValidation )
     BOOST_CHECK_THROW( wrongUnit.ValidateOrThrow(), IO_ERROR );
 
     PADS_SCH_MODEL empty = model;
-    empty.nets[0].connections[0].endpoints[0] = { MODEL_ENDPOINT_KIND::INVALID, source };
+    empty.nets[0].connections[0].endpoints[0] = { .kind = MODEL_ENDPOINT_KIND::INVALID, .source = source };
     BOOST_CHECK_THROW( empty.ValidateOrThrow(), IO_ERROR );
 
     PADS_SCH_MODEL mixed = model;
@@ -2037,12 +2041,12 @@ BOOST_AUTO_TEST_CASE( ConnectionEndpointValidation )
     BOOST_CHECK_THROW( mixed.ValidateOrThrow(), IO_ERROR );
 
     PADS_SCH_MODEL point = model;
-    point.nets[0].connections[0].endpoints[0] = { MODEL_ENDPOINT_KIND::POINT, source };
+    point.nets[0].connections[0].endpoints[0] = { .kind = MODEL_ENDPOINT_KIND::POINT, .source = source };
     BOOST_CHECK_NO_THROW( point.ValidateOrThrow() );
 
     SOURCE_PROVENANCE topologySource{ wxS( "model.sch" ), 0x000D, wxS( "endpoint" ), 9, 4, 0x280, 16, 1 };
     PADS_SCH_MODEL    crossSheet = model;
-    crossSheet.sheets.push_back( { SHEET_ID( 1 ), 1, topologySource } );
+    crossSheet.sheets.push_back( { .id = SHEET_ID( 1 ), .index = 1, .source = topologySource } );
     crossSheet.nets[0].sheet = { SHEET_ID( 1 ), topologySource };
     crossSheet.nets[0].connections[0].endpoints[0].source = topologySource;
     const wxString endpointError =
@@ -2055,9 +2059,10 @@ BOOST_AUTO_TEST_CASE( ConnectionEndpointValidation )
 
     PADS_SCH_MODEL busModel = model;
     busModel.nets[0].connections.clear();
-    busModel.buses.push_back( { BUS_ID( 7 ), source, { SHEET_ID( 0 ), source } } );
+    busModel.buses.push_back( { .id = BUS_ID( 7 ), .source = source, .sheet = { SHEET_ID( 0 ), source } } );
     busModel.buses[0].memberNets.push_back( { NET_ID( 6 ), source } );
-    busModel.buses[0].entries.push_back( { topologySource, {}, { NET_ID( 6 ), topologySource } } );
+    busModel.buses[0].entries.push_back(
+            { .source = topologySource, .position = {}, .memberNet = { NET_ID( 6 ), topologySource } } );
     BOOST_CHECK_NO_THROW( busModel.ValidateOrThrow() );
 
     PADS_SCH_MODEL missingBusMember = busModel;
@@ -2071,7 +2076,7 @@ BOOST_AUTO_TEST_CASE( ConnectionEndpointValidation )
                            } );
 
     PADS_SCH_MODEL crossSheetBus = busModel;
-    crossSheetBus.sheets.push_back( { SHEET_ID( 1 ), 1, topologySource } );
+    crossSheetBus.sheets.push_back( { .id = SHEET_ID( 1 ), .index = 1, .source = topologySource } );
     crossSheetBus.buses[0].sheet = { SHEET_ID( 1 ), topologySource };
     const wxString busSheetError = FormatParserError( source, wxS( "bus member-net sheet does not match bus sheet" ) );
     BOOST_CHECK_EXCEPTION( crossSheetBus.ValidateOrThrow(), IO_ERROR,
@@ -2087,8 +2092,8 @@ BOOST_AUTO_TEST_CASE( TypedPageGraphicOwnership )
     SOURCE_PROVENANCE source{ wxS( "graphics.sch" ), 0x000D, wxS( "page graphic" ), 5, 6, 0x420, 24, 0 };
     PADS_SCH_MODEL    model;
     model.source = source;
-    model.sheets.push_back( { SHEET_ID( 4 ), 0, source } );
-    model.graphics.push_back( MODEL_PAGE_GRAPHIC{ source, { SHEET_ID( 4 ), source }, { source } } );
+    model.sheets.push_back( { .id = SHEET_ID( 4 ), .index = 0, .source = source } );
+    model.graphics.push_back( MODEL_PAGE_GRAPHIC{ source, { SHEET_ID( 4 ), source }, { .source = source } } );
     BOOST_CHECK_NO_THROW( model.ValidateOrThrow() );
 
     model.graphics[0].sheet.id = SHEET_ID( 99 );
@@ -2115,8 +2120,8 @@ BOOST_AUTO_TEST_CASE( TypedIdDiagnosticProvenance )
     SOURCE_PROVENANCE secondSource{ wxS( "ids.sch" ), 0x000D, wxS( "sheet" ), 3, 2, 0x200, 48, 1 };
     PADS_SCH_MODEL    duplicate;
     duplicate.source = { wxS( "ids.sch" ), 0x000D, wxS( "model" ), -1, 0, 0, 0x300, -1 };
-    duplicate.sheets.push_back( { SHEET_ID( 7 ), 0, firstSource } );
-    duplicate.sheets.push_back( { SHEET_ID( 7 ), 1, secondSource } );
+    duplicate.sheets.push_back( { .id = SHEET_ID( 7 ), .index = 0, .source = firstSource } );
+    duplicate.sheets.push_back( { .id = SHEET_ID( 7 ), .index = 1, .source = secondSource } );
 
     const wxString duplicateDetail =
             wxS( "duplicate sheet ID 7; first at v0x000D sheet controller 3 record 1 sheet 0 offset 0x100" );
@@ -2129,7 +2134,7 @@ BOOST_AUTO_TEST_CASE( TypedIdDiagnosticProvenance )
 
     PADS_SCH_MODEL invalid;
     invalid.source = duplicate.source;
-    invalid.sheets.push_back( { SHEET_ID(), 0, secondSource } );
+    invalid.sheets.push_back( { .id = SHEET_ID(), .index = 0, .source = secondSource } );
     const wxString invalidError = FormatParserError( secondSource, wxS( "invalid sheet ID" ) );
     BOOST_CHECK_EXCEPTION( invalid.ValidateOrThrow(), IO_ERROR,
                            [&]( const IO_ERROR& aError )
@@ -2196,14 +2201,16 @@ BOOST_AUTO_TEST_CASE( SemanticSnapshotAdapterContract )
 {
     SOURCE_PROVENANCE source{ wxS( "snapshot.sch" ), 0x000D, wxS( "sheet" ), 3, 0, 0x250, 48, 0 };
     PADS_SCH_MODEL    binary;
-    binary.sheets.push_back( { SHEET_ID( 1 ),
-                               0,
-                               source,
-                               { { 'M', 'a', 'i', 'n' }, wxS( "Main" ), STRING_ENCODING_STATUS::UTF8, source } } );
-    binary.sheets.push_back( { SHEET_ID( 2 ),
-                               1,
-                               source,
-                               { { 'M', 'a', 'i', 'n' }, wxS( "Main" ), STRING_ENCODING_STATUS::UTF8, source } } );
+    binary.sheets.push_back(
+            { .id = SHEET_ID( 1 ),
+              .index = 0,
+              .source = source,
+              .name = { { 'M', 'a', 'i', 'n' }, wxS( "Main" ), STRING_ENCODING_STATUS::UTF8, source } } );
+    binary.sheets.push_back(
+            { .id = SHEET_ID( 2 ),
+              .index = 1,
+              .source = source,
+              .name = { { 'M', 'a', 'i', 'n' }, wxS( "Main" ), STRING_ENCODING_STATUS::UTF8, source } } );
     BOOST_CHECK_NE( binary.sheets[0].id.Value(), binary.sheets[1].id.Value() );
     BOOST_CHECK( normalizeBinaryModel( binary ) == normalizeBinaryModel( binary ) );
     binary.sheets[0].properties.push_back( { { {}, wxS( "value" ), STRING_ENCODING_STATUS::UTF8, source },
@@ -2262,52 +2269,65 @@ BOOST_AUTO_TEST_CASE( SnapshotAdaptersCoverSemanticVocabulary )
 
     PADS_SCH_MODEL model;
     model.settings.source = source;
-    model.sheets.push_back( { SHEET_ID( 1 ), 0, source, string( wxS( "Main" ) ) } );
+    model.sheets.push_back( { .id = SHEET_ID( 1 ), .index = 0, .source = source, .name = string( wxS( "Main" ) ) } );
 
     MODEL_SYMBOL_DEFINITION definition;
     definition.id = DEFINITION_ID( 2 );
     definition.source = source;
     definition.name = string( wxS( "SYM" ) );
-    definition.graphics.push_back( { source } );
-    definition.pins.push_back( { PIN_ID( 3 ), source, string( wxS( "1" ) ) } );
-    definition.fields.push_back( { FIELD_ID( 10 ), source, string( wxS( "Value" ) ), string( wxS( "R" ) ) } );
+    definition.graphics.push_back( { .source = source } );
+    definition.pins.push_back( { .id = PIN_ID( 3 ), .source = source, .number = string( wxS( "1" ) ) } );
+    definition.fields.push_back( { .id = FIELD_ID( 10 ),
+                                   .source = source,
+                                   .name = string( wxS( "Value" ) ),
+                                   .value = string( wxS( "R" ) ) } );
     model.definitions.push_back( definition );
 
     MODEL_PART_TYPE partType;
     partType.id = PART_TYPE_ID( 4 );
     partType.source = source;
     partType.name = string( wxS( "RES" ) );
-    partType.gates.push_back(
-            { GATE_ID( 5 ), source, { DEFINITION_ID( 2 ), source }, 1, { { PIN_ID( 3 ), source } } } );
-    partType.fields.push_back( { FIELD_ID( 11 ), source, string( wxS( "Tolerance" ) ), string( wxS( "1%" ) ) } );
+    partType.gates.push_back( { .id = GATE_ID( 5 ),
+                                .source = source,
+                                .definition = { DEFINITION_ID( 2 ), source },
+                                .unit = 1,
+                                .pins = { { PIN_ID( 3 ), source } } } );
+    partType.fields.push_back( { .id = FIELD_ID( 11 ),
+                                 .source = source,
+                                 .name = string( wxS( "Tolerance" ) ),
+                                 .value = string( wxS( "1%" ) ) } );
     model.partTypes.push_back( partType );
 
     MODEL_PLACEMENT placement;
     placement.id = PLACEMENT_ID( 6 );
     placement.source = source;
     placement.reference = string( wxS( "R1" ) );
-    placement.fields.push_back( { FIELD_ID( 12 ), source, string( wxS( "Value" ) ), string( wxS( "10k" ) ) } );
+    placement.fields.push_back( { .id = FIELD_ID( 12 ),
+                                  .source = source,
+                                  .name = string( wxS( "Value" ) ),
+                                  .value = string( wxS( "10k" ) ) } );
     model.placements.push_back( placement );
 
     MODEL_NET net;
     net.id = NET_ID( 7 );
     net.source = source;
     net.name = string( wxS( "N" ) );
-    net.connections.push_back( { source } );
+    net.connections.push_back( { .source = source } );
     model.nets.push_back( net );
 
     MODEL_BUS bus;
     bus.id = BUS_ID( 8 );
     bus.source = source;
     bus.name = string( wxS( "D[0..0]" ) );
-    bus.entries.push_back( { source, {}, { NET_ID( 7 ), source } } );
+    bus.entries.push_back( { .source = source, .position = {}, .memberNet = { NET_ID( 7 ), source } } );
     bus.aliases.push_back( string( wxS( "DATA" ) ) );
     bus.memberNets.push_back( { NET_ID( 7 ), source } );
     model.buses.push_back( bus );
-    model.labels.push_back( { source, {}, MODEL_LABEL_KIND::LOCAL, string( wxS( "N" ) ) } );
-    model.junctions.push_back( { source } );
-    model.texts.push_back( { source, {}, string( wxS( "note" ) ) } );
-    model.graphics.push_back( { source, { SHEET_ID( 1 ), source }, { source } } );
+    model.labels.push_back(
+            { .source = source, .sheet = {}, .kind = MODEL_LABEL_KIND::LOCAL, .text = string( wxS( "N" ) ) } );
+    model.junctions.push_back( { .source = source } );
+    model.texts.push_back( { .source = source, .sheet = {}, .text = string( wxS( "note" ) ) } );
+    model.graphics.push_back( { source, { SHEET_ID( 1 ), source }, { .source = source } } );
 
     std::vector<CANONICAL_SEMANTIC_RECORD> binaryRecords = normalizeBinaryModel( model );
     std::set<CANONICAL_KIND>               binaryKinds;
@@ -2380,7 +2400,7 @@ BOOST_AUTO_TEST_CASE( HandbuiltBusAdapterParity )
     binary.settings.defaultLineWidth = 20;
     binary.settings.defaultBusWidth = 50;
 
-    MODEL_SHEET sheet{ SHEET_ID( 1 ), 0, source, string( wxS( "Main" ) ) };
+    MODEL_SHEET sheet{ .id = SHEET_ID( 1 ), .index = 0, .source = source, .name = string( wxS( "Main" ) ) };
     sheet.pageSize = binary.settings.pageSize;
     sheet.defaultLineWidth = 20;
     sheet.defaultBusWidth = 50;
@@ -2406,7 +2426,9 @@ BOOST_AUTO_TEST_CASE( HandbuiltBusAdapterParity )
 
     for( int i = 0; i < 3; ++i )
     {
-        bus.entries.push_back( { source, { 8000 + i * 2000, 14000, source }, { NET_ID( i + 1 ), source } } );
+        bus.entries.push_back( { .source = source,
+                                 .position = { 8000 + i * 2000, 14000, source },
+                                 .memberNet = { NET_ID( i + 1 ), source } } );
         bus.memberNets.push_back( { NET_ID( i + 1 ), source } );
     }
 
@@ -2515,12 +2537,17 @@ BOOST_AUTO_TEST_CASE( GatePinMappingsUseSemanticPinIdentity )
     MODEL_SYMBOL_DEFINITION definition;
     definition.id = DEFINITION_ID( 1 );
     definition.source = source;
-    definition.pins.push_back( { PIN_ID( 91 ), source, string( wxS( "A1" ) ), string( wxS( "CLK" ) ) } );
+    definition.pins.push_back(
+            { .id = PIN_ID( 91 ), .source = source, .number = string( wxS( "A1" ) ), .name = string( wxS( "CLK" ) ) } );
     model.definitions.push_back( definition );
 
     MODEL_PART_TYPE part;
     part.source = source;
-    part.gates.push_back( { GATE_ID( 2 ), source, { definition.id, source }, 1, { { PIN_ID( 91 ), source } } } );
+    part.gates.push_back( { .id = GATE_ID( 2 ),
+                            .source = source,
+                            .definition = { definition.id, source },
+                            .unit = 1,
+                            .pins = { { PIN_ID( 91 ), source } } } );
     model.partTypes.push_back( part );
 
     const auto records = normalizeBinaryModel( model );
@@ -2817,9 +2844,11 @@ BOOST_AUTO_TEST_CASE( PlacementTransforms )
     BOOST_REQUIRE_EQUAL( model.placements.size(), 5 );
 
     const std::array<wxString, 5>     references = { wxS( "R1" ), wxS( "R2" ), wxS( "R3" ), wxS( "R4" ), wxS( "R5" ) };
-    const std::array<SOURCE_POINT, 5> positions = { SOURCE_POINT{ -4800, 18200 }, SOURCE_POINT{ -200, 14800 },
-                                                    SOURCE_POINT{ 2200, 14000 }, SOURCE_POINT{ 3400, 13000 },
-                                                    SOURCE_POINT{ 6000, 10800 } };
+    const std::array<SOURCE_POINT, 5> positions = { SOURCE_POINT{ .x = -4800, .y = 18200 },
+                                                    SOURCE_POINT{ .x = -200, .y = 14800 },
+                                                    SOURCE_POINT{ .x = 2200, .y = 14000 },
+                                                    SOURCE_POINT{ .x = 3400, .y = 13000 },
+                                                    SOURCE_POINT{ .x = 6000, .y = 10800 } };
     const std::array<int, 5>          angles = { 0, 900, 0, 900, 900 };
     const std::array<bool, 5>         mirrored = { false, false, true, true, true };
     const std::array<uint16_t, 5>     mirrorFlags = { 0, 0, 3, 3, 2 };
