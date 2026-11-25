@@ -52,6 +52,21 @@ function( kicad_qa_fail_fast TEST_EXEC_TARGET )
     endif()
 endfunction()
 
+# Give a Windows QA tool that starts a GUI wxApp (qa_utils/test_app_main.cpp) the manifest KiCad's own executables
+# carry: Common Controls v6, the UTF-8 code page and DPI awareness. Without it wxWidgets stops the tool at startup on a
+# modal warning box. Call it at most once per directory, since on MinGW the resource object is named per directory.
+function( kicad_qa_tool_manifest TOOL_EXEC_TARGET )
+    if( WIN32 )
+        if( MINGW )
+            # Sets QA_TOOL_RESOURCES
+            mingw_resource_compiler( qa_tool )
+            target_sources( ${TOOL_EXEC_TARGET} PRIVATE ${QA_TOOL_RESOURCES} )
+        else()
+            target_sources( ${TOOL_EXEC_TARGET} PRIVATE ${CMAKE_SOURCE_DIR}/resources/msw/qa_tool.rc )
+        endif()
+    endif()
+endfunction()
+
 # Add a target as a "QA test" executable:
 #   * Added as a CTest test with the given name
 #   * Excluded from ALL when KICAD_BUILD_QA_TESTS not set
