@@ -413,13 +413,13 @@ BOOST_AUTO_TEST_CASE( SpecctraKeepsOutTheRectangleWithRoundedCorners )
             // Each side's two ends are there, where the arc meets the straight side
             for( const VECTOR2D& end : turnedCorners( 1500.0, 1000.0, degrees ) )
             {
-                int near = 0;
+                int nearbyVertexCount = 0;
 
                 for( const VECTOR2D& vertex : vertices )
-                    near += ( vertex - end ).EuclideanNorm() < clearanceUm + maxErrorUm + 0.01 ? 1 : 0;
+                    nearbyVertexCount += ( vertex - end ).EuclideanNorm() < clearanceUm + maxErrorUm + 0.01 ? 1 : 0;
 
                 // Both ends of the arc and more than the one a bevel would add between them
-                BOOST_CHECK_GE( near, 4 );
+                BOOST_CHECK_GE( nearbyVertexCount, 4 );
             }
 
             // The rounded corners trade the arcs' vertices for the sharp ones, so each corner has several
