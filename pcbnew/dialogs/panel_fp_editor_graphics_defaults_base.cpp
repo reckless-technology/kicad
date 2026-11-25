@@ -36,7 +36,7 @@ PANEL_FP_EDITOR_GRAPHICS_DEFAULTS_BASE::PANEL_FP_EDITOR_GRAPHICS_DEFAULTS_BASE( 
 	m_graphicsGrid = new WX_GRID( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 
 	// Grid
-	m_graphicsGrid->CreateGrid( 6, 5 );
+	m_graphicsGrid->CreateGrid( 6, 6 );
 	m_graphicsGrid->EnableEditing( true );
 	m_graphicsGrid->EnableGridLines( true );
 	m_graphicsGrid->EnableDragGridSize( false );
@@ -48,6 +48,7 @@ PANEL_FP_EDITOR_GRAPHICS_DEFAULTS_BASE::PANEL_FP_EDITOR_GRAPHICS_DEFAULTS_BASE( 
 	m_graphicsGrid->SetColSize( 2, 100 );
 	m_graphicsGrid->SetColSize( 3, 100 );
 	m_graphicsGrid->SetColSize( 4, 60 );
+	m_graphicsGrid->SetColSize( 5, 200 );
 	m_graphicsGrid->EnableDragColMove( false );
 	m_graphicsGrid->EnableDragColSize( true );
 	m_graphicsGrid->SetColLabelValue( 0, _("Line Thickness") );
@@ -55,6 +56,7 @@ PANEL_FP_EDITOR_GRAPHICS_DEFAULTS_BASE::PANEL_FP_EDITOR_GRAPHICS_DEFAULTS_BASE( 
 	m_graphicsGrid->SetColLabelValue( 2, _("Text Height") );
 	m_graphicsGrid->SetColLabelValue( 3, _("Text Thickness") );
 	m_graphicsGrid->SetColLabelValue( 4, _("Italic") );
+	m_graphicsGrid->SetColLabelValue( 5, _("Font") );
 	m_graphicsGrid->SetColLabelSize( wxGRID_AUTOSIZE );
 	m_graphicsGrid->SetColLabelAlignment( wxALIGN_CENTER, wxALIGN_CENTER );
 

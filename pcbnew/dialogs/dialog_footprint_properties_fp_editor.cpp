@@ -957,6 +957,8 @@ void DIALOG_FOOTPRINT_PROPERTIES_FP_EDITOR::OnAddField( wxCommandEvent& event [[
                 newField.SetTextSize( dsnSettings.GetTextSize( newField.GetLayer() ) );
                 newField.SetTextThickness( dsnSettings.GetTextThickness( newField.GetLayer() ) );
                 newField.SetItalic( dsnSettings.GetTextItalic( newField.GetLayer() ) );
+                newField.SetFont( dsnSettings.GetTextFont( newField.GetLayer(), newField.IsBold(), newField.IsItalic(),
+                                                           newField.GetEmbeddedFonts() ) );
 
                 m_fields->push_back( newField );
 
