@@ -304,6 +304,10 @@ FOOTPRINT_EDITOR_SETTINGS::FOOTPRINT_EDITOR_SETTINGS() :
     m_params.emplace_back( new PARAM<bool>( "design_settings.silk_text_italic",
             &m_DesignSettings.m_TextItalic[ LAYER_CLASS_SILK ], false ) );
 
+    // Empty is not set, which new footprint text takes as the stroke font (see BOARD_DESIGN_SETTINGS::m_TextFont)
+    m_params.emplace_back( new PARAM<wxString>( "design_settings.silk_text_font",
+                                                &m_DesignSettings.m_TextFont[LAYER_CLASS_SILK], wxEmptyString ) );
+
     m_params.emplace_back( new PARAM_SCALED<int>( "design_settings.copper_line_width",
             &m_DesignSettings.m_LineThickness[ LAYER_CLASS_COPPER ],
             pcbIUScale.mmToIU( DEFAULT_COPPER_LINE_WIDTH ), minStroke, maxStroke, pcbIUScale.MM_PER_IU ) );
@@ -322,6 +326,9 @@ FOOTPRINT_EDITOR_SETTINGS::FOOTPRINT_EDITOR_SETTINGS() :
 
     m_params.emplace_back( new PARAM<bool>( "design_settings.copper_text_italic",
             &m_DesignSettings.m_TextItalic[ LAYER_CLASS_COPPER ], false ) );
+
+    m_params.emplace_back( new PARAM<wxString>( "design_settings.copper_text_font",
+                                                &m_DesignSettings.m_TextFont[LAYER_CLASS_COPPER], wxEmptyString ) );
 
     m_params.emplace_back( new PARAM_SCALED<int>( "design_settings.edge_line_width",
             &m_DesignSettings.m_LineThickness[ LAYER_CLASS_EDGES ],
@@ -350,6 +357,9 @@ FOOTPRINT_EDITOR_SETTINGS::FOOTPRINT_EDITOR_SETTINGS() :
     m_params.emplace_back( new PARAM<bool>( "design_settings.fab_text_italic",
            &m_DesignSettings.m_TextItalic[ LAYER_CLASS_FAB ], false ) );
 
+    m_params.emplace_back( new PARAM<wxString>( "design_settings.fab_text_font",
+                                                &m_DesignSettings.m_TextFont[LAYER_CLASS_FAB], wxEmptyString ) );
+
     m_params.emplace_back( new PARAM_SCALED<int>( "design_settings.others_line_width",
            &m_DesignSettings.m_LineThickness[ LAYER_CLASS_OTHERS ],
            pcbIUScale.mmToIU( DEFAULT_LINE_WIDTH ), minStroke, maxStroke, pcbIUScale.MM_PER_IU ) );
@@ -368,6 +378,9 @@ FOOTPRINT_EDITOR_SETTINGS::FOOTPRINT_EDITOR_SETTINGS() :
 
     m_params.emplace_back( new PARAM<bool>( "design_settings.others_text_italic",
             &m_DesignSettings.m_TextItalic[ LAYER_CLASS_OTHERS ], false ) );
+
+    m_params.emplace_back( new PARAM<wxString>( "design_settings.others_text_font",
+                                                &m_DesignSettings.m_TextFont[LAYER_CLASS_OTHERS], wxEmptyString ) );
 
 
     // ---------------------------------------------------------------------------------------------

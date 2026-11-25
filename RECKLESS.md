@@ -41,9 +41,14 @@ thickness and italic, stored in `BOARD_DESIGN_SETTINGS` (`defaults.silk_text_fon
 (shown as "(not set)" in the grid); an explicit "KiCad Font", the stroke font; or a face. Not set leaves everything as it
 was: `StyleFromSettings()` keeps the face an existing item has, so restyling a footprint's fields, the netlist update and
 the global edit dialog never strip a face, and the drawing tools give new items no font. An explicit "KiCad Font" or a
-face is applied by `StyleFromSettings()` and by the text, text box and dimension tools. The footprint editor's own
-defaults have no font setting yet. A board with "Embed fonts" on embeds the fonts its items use, and
-`BOARD::GetFonts()` now includes footprint fields and text as well as board drawings.
+face is applied by `StyleFromSettings()` and by the text, text box and dimension tools. A board with "Embed fonts" on
+embeds the fonts its items use, and `BOARD::GetFonts()` now includes footprint fields and text as well as board
+drawings.
+
+The footprint editor's own defaults have the same setting (#85), with the same three states and the same grid column, in
+Preferences > Footprint Editor > Defaults, stored in the footprint editor settings (`design_settings.silk_text_font`,
+`copper`, `fab` and `others`). A new footprint's reference, value and default text items take it, as do fields added
+in the footprint properties and text drawn in the footprint editor. Not set leaves them in the stroke font, as before.
 
 ## Keeping up with upstream
 

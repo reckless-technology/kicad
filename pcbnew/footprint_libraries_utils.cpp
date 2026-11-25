@@ -1396,6 +1396,8 @@ FOOTPRINT* PCB_BASE_FRAME::CreateNewFootprint( wxString aFootprintName, const wx
                     textItem->SetTextThickness( settings.GetTextThickness( layer ) );
                     textItem->SetTextSize( settings.GetTextSize( layer ) );
                     textItem->SetItalic( settings.GetTextItalic( layer ) );
+                    textItem->SetFont( settings.GetTextFont( layer, textItem->IsBold(), textItem->IsItalic(),
+                                                             textItem->GetEmbeddedFonts() ) );
                     textItem->SetKeepUpright( settings.GetTextUpright( layer ) );
                 }
             },

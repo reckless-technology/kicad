@@ -21,7 +21,8 @@
  * @file test_default_font.cpp
  * Test the default font face of new board text, set per layer class in Board Setup > Text & Graphics Defaults:
  * a board that sets none keeps the KiCad stroke font, and new text, text boxes, footprint fields and dimensions
- * take the face their layer class names.
+ * take the face their layer class names. The footprint editor's own defaults (Preferences > Footprint Editor >
+ * Defaults) have the same setting for new footprint text.
  */
 
 #include <qa_utils/file_utils.h>
@@ -34,6 +35,8 @@
 #include <font/fontconfig.h>
 #include <font/kicad_font_name.h>
 #include <footprint.h>
+#include <footprint_editor_settings.h>
+#include <json_common.h>
 #include <pcb_dimension.h>
 #include <pcb_field.h>
 #include <pcb_text.h>
@@ -356,6 +359,193 @@ BOOST_AUTO_TEST_CASE( ExistingBoardRoundTripIsUnchanged )
     BOOST_CHECK_EQUAL( countOccurrences( first, "(face " ), countOccurrences( before, "(face " ) );
     BOOST_CHECK_EQUAL( countOccurrences( first, "(embedded_fonts yes)" ),
                        countOccurrences( before, "(embedded_fonts yes)" ) );
+}
+
+
+BOOST_AUTO_TEST_SUITE_END()
+
+
+namespace
+{
+const char* const FP_EDITOR_FONT_KEYS[] = { "silk_text_font", "copper_text_font", "fab_text_font", "others_text_font" };
+
+
+/// The footprint editor settings file written by SaveToFile() into @a aDirectory
+std::filesystem::path fpEditorSettingsFile( const std::filesystem::path& aDirectory )
+{
+    return aDirectory / "fpedit.json";
+}
+
+
+nlohmann::json readJson( const std::filesystem::path& aPath )
+{
+    std::ifstream file( aPath );
+    return nlohmann::json::parse( file );
+}
+
+
+void writeJson( const std::filesystem::path& aPath, const nlohmann::json& aJson )
+{
+    std::ofstream file( aPath );
+    file << aJson.dump( 2 );
+}
+} // namespace
+
+
+/**
+ * The default font face of new footprint text, set per layer class in Preferences > Footprint Editor > Defaults
+ * and kept in the footprint editor settings, with the same three states as the board's (not set, the stroke font,
+ * a face).
+ */
+BOOST_AUTO_TEST_SUITE( FootprintEditorDefaultFont )
+
+
+BOOST_AUTO_TEST_CASE( NothingSetKeepsTheStrokeFont )
+{
+    FOOTPRINT_EDITOR_SETTINGS    cfg;
+    const BOARD_DESIGN_SETTINGS& bds = cfg.m_DesignSettings;
+
+    for( int layerClass = 0; layerClass < LAYER_CLASS_COUNT; ++layerClass )
+        BOOST_CHECK( bds.m_TextFont[layerClass].IsEmpty() );
+
+    BOOST_CHECK( bds.GetTextFont( F_SilkS, false, false ) == nullptr );
+    BOOST_CHECK( bds.GetTextFont( F_Cu, false, false ) == nullptr );
+    BOOST_CHECK( bds.GetTextFont( F_Fab, false, true ) == nullptr );
+    BOOST_CHECK( bds.GetTextFont( Cmts_User, false, false ) == nullptr );
+}
+
+
+/// The footprint editor puts its defaults on the board it edits on, and new text takes the face from there.
+BOOST_AUTO_TEST_CASE( NewFootprintTextTakesTheFace, *boost::unit_test::precondition( hasInstalledFamily ) )
+{
+    const wxString family = installedFamily();
+
+    BOOST_REQUIRE( !family.IsEmpty() );
+    BOOST_TEST_MESSAGE( "Default font family used: " << family );
+
+    FOOTPRINT_EDITOR_SETTINGS cfg;
+
+    cfg.m_DesignSettings.m_TextFont[LAYER_CLASS_SILK] = family;
+    cfg.m_DesignSettings.m_TextFont[LAYER_CLASS_FAB] = KICAD_FONT_NAME;
+
+    BOARD board;
+    board.GetDesignSettings() = cfg.m_DesignSettings;
+
+    const BOARD_DESIGN_SETTINGS& bds = board.GetDesignSettings();
+
+    FOOTPRINT* footprint = new FOOTPRINT( &board );
+    board.Add( footprint );
+
+    auto newText = [&]( PCB_LAYER_ID aLayer ) -> PCB_TEXT*
+    {
+        PCB_TEXT* text = new PCB_TEXT( footprint );
+        text->SetLayer( aLayer );
+        footprint->Add( text );
+        text->SetFont( bds.GetTextFont( aLayer, text->IsBold(), text->IsItalic(), text->GetEmbeddedFonts() ) );
+        return text;
+    };
+
+    // A face
+    PCB_TEXT* silkText = newText( F_SilkS );
+
+    BOOST_REQUIRE( silkText->GetFont() );
+    BOOST_CHECK( silkText->GetFont()->IsOutline() );
+    BOOST_CHECK_EQUAL( silkText->GetFont()->GetName(), family );
+
+    // The stroke font, chosen explicitly
+    BOOST_CHECK( newText( F_Fab )->GetFont() == nullptr );
+
+    // Not set
+    BOOST_CHECK( newText( F_Cu )->GetFont() == nullptr );
+
+    // A footprint's fields restyled to the defaults take the face too
+    PCB_FIELD* field = new PCB_FIELD( footprint, FIELD_T::USER, wxT( "Extra" ) );
+    field->SetLayer( B_SilkS );
+    footprint->Add( field );
+    field->StyleFromSettings( bds, true );
+
+    BOOST_REQUIRE( field->GetFont() );
+    BOOST_CHECK_EQUAL( field->GetFont()->GetName(), family );
+}
+
+
+/// Each state is saved and loaded back, per layer class; a face this machine lacks is kept as a name
+BOOST_AUTO_TEST_CASE( SettingsRoundTrip )
+{
+    KI_TEST::SCOPED_TEMP_DIR tempDir( "kicad_qa_fp_editor_default_font" );
+
+    {
+        FOOTPRINT_EDITOR_SETTINGS cfg;
+
+        cfg.m_DesignSettings.m_TextFont[LAYER_CLASS_SILK] = wxS( "Some Family" );
+        cfg.m_DesignSettings.m_TextFont[LAYER_CLASS_COPPER].clear();
+        cfg.m_DesignSettings.m_TextFont[LAYER_CLASS_FAB] = KICAD_FONT_NAME;
+        cfg.m_DesignSettings.m_TextFont[LAYER_CLASS_OTHERS] = wxS( "Another Family" );
+
+        cfg.SaveToFile( tempDir.PathStr(), true );
+    }
+
+    const nlohmann::json  saved = readJson( fpEditorSettingsFile( tempDir.Path() ) );
+    const nlohmann::json& designSettings = saved["design_settings"];
+
+    BOOST_CHECK_EQUAL( designSettings.value( "silk_text_font", "x" ), "Some Family" );
+    BOOST_CHECK_EQUAL( designSettings.value( "copper_text_font", "x" ), "" );
+    BOOST_CHECK_EQUAL( designSettings.value( "fab_text_font", "x" ), "KiCad Font" );
+    BOOST_CHECK_EQUAL( designSettings.value( "others_text_font", "x" ), "Another Family" );
+
+    FOOTPRINT_EDITOR_SETTINGS loaded;
+    loaded.LoadFromFile( tempDir.PathStr() );
+
+    BOOST_CHECK_EQUAL( loaded.m_DesignSettings.m_TextFont[LAYER_CLASS_SILK], wxString( "Some Family" ) );
+    BOOST_CHECK( loaded.m_DesignSettings.m_TextFont[LAYER_CLASS_COPPER].IsEmpty() );
+    BOOST_CHECK_EQUAL( loaded.m_DesignSettings.m_TextFont[LAYER_CLASS_FAB], wxString( KICAD_FONT_NAME ) );
+    BOOST_CHECK_EQUAL( loaded.m_DesignSettings.m_TextFont[LAYER_CLASS_OTHERS], wxString( "Another Family" ) );
+
+    // Saving what was loaded writes the same design settings again
+    loaded.SaveToFile( tempDir.PathStr(), true );
+
+    const nlohmann::json resaved = readJson( fpEditorSettingsFile( tempDir.Path() ) )["design_settings"];
+
+    BOOST_CHECK_MESSAGE( resaved == designSettings,
+                         "changed on the second save: " << nlohmann::json::diff( designSettings, resaved ).dump() );
+}
+
+
+/// Settings saved before the default font existed load with no face in any layer class, and the rest as it was
+BOOST_AUTO_TEST_CASE( SettingsWithoutTheFontKeysStayUnset )
+{
+    KI_TEST::SCOPED_TEMP_DIR tempDir( "kicad_qa_fp_editor_default_font_old" );
+
+    {
+        FOOTPRINT_EDITOR_SETTINGS cfg;
+
+        cfg.m_DesignSettings.m_TextItalic[LAYER_CLASS_SILK] = true;
+        cfg.SaveToFile( tempDir.PathStr(), true );
+    }
+
+    const std::filesystem::path file = fpEditorSettingsFile( tempDir.Path() );
+    nlohmann::json              old = readJson( file );
+
+    for( const char* key : FP_EDITOR_FONT_KEYS )
+    {
+        BOOST_REQUIRE( old["design_settings"].contains( key ) );
+        old["design_settings"].erase( key );
+    }
+
+    writeJson( file, old );
+
+    FOOTPRINT_EDITOR_SETTINGS loaded;
+
+    // Something to overwrite, so the load is seen to set the font and not just leave it alone
+    for( int layerClass = 0; layerClass < LAYER_CLASS_COUNT; ++layerClass )
+        loaded.m_DesignSettings.m_TextFont[layerClass] = wxS( "Left Over" );
+
+    loaded.LoadFromFile( tempDir.PathStr() );
+
+    for( int layerClass : { LAYER_CLASS_SILK, LAYER_CLASS_COPPER, LAYER_CLASS_FAB, LAYER_CLASS_OTHERS } )
+        BOOST_CHECK( loaded.m_DesignSettings.m_TextFont[layerClass].IsEmpty() );
+
+    BOOST_CHECK( loaded.m_DesignSettings.m_TextItalic[LAYER_CLASS_SILK] );
 }
 
 

@@ -30,6 +30,7 @@
 #include <bitmaps.h>
 #include <confirm.h>
 #include <kidialog.h>
+#include <dialogs/default_font_choices.h>
 
 
 // Columns of graphics grid
@@ -39,7 +40,8 @@ enum
     COL_TEXT_WIDTH,
     COL_TEXT_HEIGHT,
     COL_TEXT_THICKNESS,
-    COL_TEXT_ITALIC
+    COL_TEXT_ITALIC,
+    COL_TEXT_FONT
 };
 
 enum
@@ -102,6 +104,9 @@ void PANEL_FP_EDITOR_GRAPHICS_DEFAULTS::loadFPSettings( const FOOTPRINT_EDITOR_S
         m_graphicsGrid->SetCellBackgroundColour( row, col, disabledColour );
     };
 
+    // Not set first (new text takes the stroke font), then the stroke font, then every installed family
+    const wxArrayString fontNames = DefaultFontChoices();
+
     for( int i = 0; i < ROW_COUNT; ++i )
     {
         m_graphicsGrid->SetUnitValue( i, COL_LINE_THICKNESS,
@@ -113,6 +118,7 @@ void PANEL_FP_EDITOR_GRAPHICS_DEFAULTS::loadFPSettings( const FOOTPRINT_EDITOR_S
             disableCell( i, COL_TEXT_HEIGHT );
             disableCell( i, COL_TEXT_THICKNESS );
             disableCell( i, COL_TEXT_ITALIC );
+            disableCell( i, COL_TEXT_FONT );
         }
         else
         {
@@ -131,6 +137,9 @@ void PANEL_FP_EDITOR_GRAPHICS_DEFAULTS::loadFPSettings( const FOOTPRINT_EDITOR_S
             attr->SetReadOnly(); // not really; we delegate interactivity to GRID_TRICKS
             attr->SetAlignment( wxALIGN_CENTER, wxALIGN_CENTER );
             m_graphicsGrid->SetAttr( i, COL_TEXT_ITALIC, attr );
+
+            m_graphicsGrid->SetCellValue( i, COL_TEXT_FONT, DefaultFontToCell( aCfg->m_DesignSettings.m_TextFont[i] ) );
+            m_graphicsGrid->SetAttr( i, COL_TEXT_FONT, DefaultFontCellAttr( fontNames ) );
         }
     }
 
@@ -270,6 +279,8 @@ bool PANEL_FP_EDITOR_GRAPHICS_DEFAULTS::TransferDataFromWindow()
 
         wxString msg = m_graphicsGrid->GetCellValue( i, COL_TEXT_ITALIC );
         cfg.m_TextItalic[i] = wxGridCellBoolEditor::IsTrueValue( msg );
+
+        cfg.m_TextFont[i] = DefaultFontFromCell( m_graphicsGrid->GetCellValue( i, COL_TEXT_FONT ) );
     }
 
     m_dimensionsPanel->TransferDataFromWindow();
