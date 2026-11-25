@@ -86,13 +86,13 @@ static const TOP_LEVEL_SHEET_INFO* findDeclaredTopLevelSheet(
 }
 
 
-SCHEMATIC* EESCHEMA_HELPERS::LoadSchematic( const wxString& aFileName,
-                                            SCH_IO_MGR::SCH_FILE_T aFormat,
-                                            bool aSetActive,
-                                            bool aForceDefaultProject,
-                                            PROJECT* aProject,
-                                            bool aCalculateConnectivity, REPORTER* aRootReporter )
+SCHEMATIC* EESCHEMA_HELPERS::LoadSchematic( const wxString& aFileName, SCH_IO_MGR::SCH_FILE_T aFormat, bool aSetActive,
+                                            bool aForceDefaultProject, PROJECT* aProject, bool aCalculateConnectivity,
+                                            REPORTER* aRootReporter, wxString* aLoadErrors )
 {
+    if( aLoadErrors )
+        aLoadErrors->clear();
+
     wxFileName pro = aFileName;
     pro.SetExt( FILEEXT::ProjectFileExtension );
     pro.MakeAbsolute();
@@ -264,6 +264,9 @@ SCHEMATIC* EESCHEMA_HELPERS::LoadSchematic( const wxString& aFileName,
                     rootSheet->SetName( _( "Root" ) );
             }
         }
+
+        if( aLoadErrors )
+            *aLoadErrors = pi->GetError();
     }
     catch( ... )
     {
