@@ -24,6 +24,7 @@ include_directories(
     )
 
 set( PCBNEW_DIALOGS
+    dialogs/default_font_choices.cpp
     dialogs/dialog_constraint_value.cpp
     dialogs/dialog_constraint_value_base.cpp
     dialogs/dialog_constraint_list.cpp
