@@ -27,9 +27,7 @@
 #include <eda_text.h>
 
 #include <kidialog.h>
-#include <font/fontconfig.h>
-#include <font/kicad_font_name.h>
-#include <pgm_base.h>
+#include <dialogs/default_font_choices.h>
 
 
 // Columns of layer classes grid
@@ -136,19 +134,7 @@ bool PANEL_SETUP_TEXT_AND_GRAPHICS::TransferDataToWindow()
     m_grid->SetReadOnly( row, col ); m_grid->SetCellBackgroundColour( row, col, disabledColour );
 
     // Not set first (existing text keeps its face), then the stroke font, then every installed family
-    const wxString notSet = _( "(not set)" );
-
-    std::vector<std::string> families;
-    Fontconfig()->ListFonts( families, std::string( Pgm().GetLanguageTag().utf8_str() ) );
-
-    wxArrayString fontNames;
-
-    for( const std::string& family : families )
-        fontNames.Add( wxString::FromUTF8( family ) );
-
-    fontNames.Sort();
-    fontNames.Insert( KICAD_FONT_NAME, 0 );
-    fontNames.Insert( notSet, 0 );
+    const wxArrayString fontNames = DefaultFontChoices();
 
     for( int i = 0; i < ROW_COUNT; ++i )
     {
@@ -185,13 +171,8 @@ bool PANEL_SETUP_TEXT_AND_GRAPHICS::TransferDataToWindow()
             attr->SetAlignment( wxALIGN_CENTER, wxALIGN_CENTER );
             m_grid->SetAttr( i, COL_TEXT_UPRIGHT, attr );
 
-            m_grid->SetCellValue( i, COL_TEXT_FONT,
-                                  m_BrdSettings->m_TextFont[i].IsEmpty() ? notSet : m_BrdSettings->m_TextFont[i] );
-
-            // Allow other names so a face that is not installed here, but is named by the board, is kept
-            attr = new wxGridCellAttr;
-            attr->SetEditor( new wxGridCellChoiceEditor( fontNames, true ) );
-            m_grid->SetAttr( i, COL_TEXT_FONT, attr );
+            m_grid->SetCellValue( i, COL_TEXT_FONT, DefaultFontToCell( m_BrdSettings->m_TextFont[i] ) );
+            m_grid->SetAttr( i, COL_TEXT_FONT, DefaultFontCellAttr( fontNames ) );
         }
     }
 
@@ -300,9 +281,7 @@ bool PANEL_SETUP_TEXT_AND_GRAPHICS::TransferDataFromWindow()
         m_BrdSettings->m_TextUpright[ i ] =
                 wxGridCellBoolEditor::IsTrueValue( m_grid->GetCellValue( i, COL_TEXT_UPRIGHT ) );
 
-        wxString fontName = m_grid->GetCellValue( i, COL_TEXT_FONT ).Trim().Trim( false );
-
-        m_BrdSettings->m_TextFont[i] = fontName == _( "(not set)" ) ? wxString() : fontName;
+        m_BrdSettings->m_TextFont[i] = DefaultFontFromCell( m_grid->GetCellValue( i, COL_TEXT_FONT ) );
     }
 
     if( errorsMsg.IsEmpty() )
