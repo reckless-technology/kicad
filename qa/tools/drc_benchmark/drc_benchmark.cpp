@@ -1139,7 +1139,13 @@ int main( int argc, char** argv )
 
     // Line-buffer stdout so per-board progress streams to a redirected log during a long sweep
     // instead of materializing only at exit.
+#ifdef _WIN32
+    // The Microsoft C runtime has no line buffering: _IOLBF is full buffering there, and a size of 0
+    // with it is an invalid parameter that ends the process. Unbuffered streams the progress instead.
+    std::setvbuf( stdout, nullptr, _IONBF, 0 );
+#else
     std::setvbuf( stdout, nullptr, _IOLBF, 0 );
+#endif
 
     // The self-check exercises the trace parser alone and needs no engine, project, or
     // board, so handle it before any heavier initialization.
