@@ -206,6 +206,10 @@ static POINT mapPt( const VECTOR2I& pt, FOOTPRINT* aFootprint )
  */
 static bool isRoundKeepout( PAD* aPad )
 {
+    // A rectangular hole is never round: see isRectangularKeepout()
+    if( aPad->GetDrillShape() == PAD_DRILL_SHAPE::RECTANGLE )
+        return false;
+
     std::vector<PCB_LAYER_ID> layers = aPad->Padstack().UniqueLayers();
 
     // Any layer with real copper makes this a pad, not a keepout.  An empty padstack passes
@@ -226,6 +230,131 @@ static bool isRoundKeepout( PAD* aPad )
 
     return aPad->GetShape( aPad->Padstack().EffectiveLayerFor( F_Cu ) ) == PAD_SHAPE::CIRCLE
            && !( aPad->GetLayerSet() & LSET::AllCuMask() ).any();
+}
+
+
+/**
+ * Decide if the pad is a rectangular hole with no copper outside it, which needs to be made into
+ * a rectangular keepout.  The rectangular counterpart of isRoundKeepout(): a Specctra padstack
+ * describes copper only and has no hole, so a hole is known to the router only as a keepout.
+ */
+static bool isRectangularKeepout( PAD* aPad )
+{
+    if( aPad->GetDrillShape() != PAD_DRILL_SHAPE::RECTANGLE )
+        return false;
+
+    if( !( aPad->GetLayerSet() & LSET::AllCuMask() ).any() )
+        return true;
+
+    std::vector<PCB_LAYER_ID> layers = aPad->Padstack().UniqueLayers();
+
+    // An empty padstack would pass the test below vacuously, so it does not count
+    if( layers.empty() )
+        return false;
+
+    const VECTOR2I drill = aPad->GetDrillSize();
+
+    // The copper turns with the hole, so it is swallowed when it fits inside the rectangle
+    for( PCB_LAYER_ID layer : layers )
+    {
+        const VECTOR2I size = aPad->GetSize( layer );
+
+        if( aPad->GetOffset( layer ) != VECTOR2I( 0, 0 ) )
+            return false;
+
+        switch( aPad->GetShape( layer ) )
+        {
+        case PAD_SHAPE::CIRCLE:
+            if( size.x > std::min( drill.x, drill.y ) )
+                return false;
+
+            break;
+
+        case PAD_SHAPE::RECTANGLE:
+        case PAD_SHAPE::ROUNDRECT:
+        case PAD_SHAPE::OVAL:
+            if( size.x > drill.x || size.y > drill.y )
+                return false;
+
+            break;
+
+        default: return false;
+        }
+    }
+
+    return true;
+}
+
+
+/**
+ * Make one keepout of @p aImage per layer in @p aLayerIds for the rectangular hole of @p aPad,
+ * grown on every side by @p aClearance.  A rectangle square to the image is written as a rect,
+ * any other as a four-cornered polygon, since a Specctra rect is always square to its axes.
+ */
+static std::vector<KEEPOUT*> makeRectangularHoleKeepouts( IMAGE* aImage, PAD* aPad, FOOTPRINT* aFootprint,
+                                                          int aClearance, const std::vector<std::string>& aLayerIds )
+{
+    std::vector<KEEPOUT*> keepouts;
+    const VECTOR2I        halfSize = aPad->GetDrillSize() / 2 + VECTOR2I( aClearance, aClearance );
+    SHAPE_LINE_CHAIN      corners;
+
+    // The same rectangle PAD::BuildEffectiveShapes() makes the hole, grown by the clearance
+    corners.Append( -halfSize.x, -halfSize.y );
+    corners.Append( halfSize.x, -halfSize.y );
+    corners.Append( halfSize.x, halfSize.y );
+    corners.Append( -halfSize.x, halfSize.y );
+    corners.Rotate( aPad->GetOrientation() );
+    corners.Move( aPad->GetPosition() );
+
+    std::vector<POINT> vertices;
+
+    for( int ii = 0; ii < corners.PointCount(); ++ii )
+        vertices.push_back( mapPt( corners.CPoint( ii ), aFootprint ) );
+
+    EDA_ANGLE angle = aPad->GetOrientation() - aFootprint->GetOrientation();
+    bool      isSquareToImage = angle.Normalize().IsCardinal();
+
+    for( const std::string& layerId : aLayerIds )
+    {
+        KEEPOUT* keepout = new KEEPOUT( aImage, T_keepout );
+
+        keepouts.push_back( keepout );
+
+        if( isSquareToImage )
+        {
+            POINT lowerLeft = vertices[0];
+            POINT upperRight = vertices[0];
+
+            for( const POINT& vertex : vertices )
+            {
+                lowerLeft.x = std::min( lowerLeft.x, vertex.x );
+                lowerLeft.y = std::min( lowerLeft.y, vertex.y );
+                upperRight.x = std::max( upperRight.x, vertex.x );
+                upperRight.y = std::max( upperRight.y, vertex.y );
+            }
+
+            RECTANGLE* rect = new RECTANGLE( keepout );
+
+            keepout->SetShape( rect );
+            rect->SetLayerId( layerId );
+            rect->SetCorners( lowerLeft, upperRight );
+        }
+        else
+        {
+            PATH* polygon = new PATH( keepout, T_polygon );
+
+            keepout->SetShape( polygon );
+            polygon->SetLayerId( layerId );
+
+            for( const POINT& vertex : vertices )
+                polygon->AppendPoint( vertex );
+
+            // Close the polygon, as the board outline's keepouts are
+            polygon->AppendPoint( vertices[0] );
+        }
+    }
+
+    return keepouts;
 }
 
 
@@ -680,8 +809,19 @@ IMAGE* SPECCTRA_DB::makeIMAGE( BOARD* aBoard, FOOTPRINT* aFootprint )
     {
         PAD* pad = (PAD*) fpItems[p];
 
+        // see if this pad is a rectangular hole with no copper outside it
+        if( isRectangularKeepout( pad ) )
+        {
+            std::vector<std::string> layerIds( m_layerIds.begin(), m_layerIds.begin() + aBoard->GetCopperLayerCount() );
+
+            for( KEEPOUT* keepout : makeRectangularHoleKeepouts(
+                         image, pad, aFootprint, aBoard->GetDesignSettings().m_HoleClearance, layerIds ) )
+            {
+                image->m_keepouts.push_back( keepout );
+            }
+        }
         // see if this pad is a through hole with no copper on its perimeter
-        if( isRoundKeepout( pad ) )
+        else if( isRoundKeepout( pad ) )
         {
             double  diameter = scale( pad->GetDrillSize().x );
             POINT   vertex   = mapPt( pad->GetFPRelativePosition() );

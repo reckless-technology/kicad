@@ -29,6 +29,7 @@
 
 class BOARD;
 class FOOTPRINT;
+class REPORTER;
 
 /**
  * Export board to GenCAD file format.
@@ -71,7 +72,13 @@ public:
     /// Store origin coordinate in GenCAD file.
     void StoreOriginCoordsInFile( bool aStore ) { m_storeOriginCoords = aStore; }
 
+    /// Send the export's warnings to @p aReporter; without one they go to the wxWidgets log.
+    void SetReporter( REPORTER* aReporter ) { m_reporter = aReporter; }
+
 private:
+    /// Report, once, the rectangular pad holes written as round holes.
+    void reportRoundedHoles();
+
     /// Creates the header section
     bool createHeaderInfoData();
     void createArtworksSection();
@@ -162,4 +169,6 @@ private:
 
     // These are the export origin (the auxiliary axis)
     VECTOR2I m_gencadOffset;
+
+    REPORTER* m_reporter = nullptr;
 };

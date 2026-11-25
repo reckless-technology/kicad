@@ -22,10 +22,13 @@
 #include <wx/string.h>
 
 class BOARD;
+class REPORTER;
 
 /**
  * Write @p aBoard to @p aFullFilename in Hyperlynx .hyp format.
  *
+ * @param aReporter receives the warnings, such as a hole the format cannot express; without one
+ *                  they go to the wxWidgets log.
  * @return true on success.
  */
-bool ExportBoardToHyperlynxFile( BOARD* aBoard, const wxString& aFullFilename );
+bool ExportBoardToHyperlynxFile( BOARD* aBoard, const wxString& aFullFilename, REPORTER* aReporter = nullptr );

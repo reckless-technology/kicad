@@ -26,6 +26,7 @@
 #include <pcb_shape.h>
 #include <footprint.h>
 #include <pad.h>
+#include <reporter.h>
 #include <pcb_track.h>
 #include <string_utils.h>
 #include <macros.h>
@@ -33,6 +34,8 @@
 #include <set>
 #include <unordered_map>
 #include <fmt.h>
+
+#include <wx/log.h>
 
 
 /// Layer names for GenCAD export.
@@ -219,6 +222,9 @@ bool GENCAD_EXPORTER::WriteFile( const wxString& aFullFileName )
 
     fclose( m_file );
 
+    if( success )
+        reportRoundedHoles();
+
     // Undo the footprints modifications (flipped footprints)
     for( FOOTPRINT* footprint : pcb->Footprints() )
     {
@@ -233,6 +239,34 @@ bool GENCAD_EXPORTER::WriteFile( const wxString& aFullFileName )
     shapeNames.clear();
 
     return success;
+}
+
+
+void GENCAD_EXPORTER::reportRoundedHoles()
+{
+    int roundedHoleCount = 0;
+
+    // A GenCAD pad and padstack carry a single drill size, so a rectangular hole is written round
+    for( FOOTPRINT* footprint : m_board->Footprints() )
+    {
+        for( PAD* pad : footprint->Pads() )
+        {
+            if( pad->GetDrillShape() == PAD_DRILL_SHAPE::RECTANGLE && pad->GetDrillSize().x > 0 )
+                roundedHoleCount++;
+        }
+    }
+
+    if( roundedHoleCount == 0 )
+        return;
+
+    wxString msg = wxString::Format( _( "GenCAD has no rectangular hole: %d rectangular pad holes have been "
+                                        "exported as round holes of their X size." ),
+                                     roundedHoleCount );
+
+    if( m_reporter )
+        m_reporter->Report( msg, RPT_SEVERITY_WARNING );
+    else
+        wxLogWarning( msg );
 }
 
 

@@ -2041,6 +2041,7 @@ int PCBNEW_JOBS_HANDLER::JobExportGencad( JOB* aJob )
     exporter.UseIndividualShapes( aGencadJob->m_useIndividualShapes );
     exporter.SetPlotOffet( GencadOffset );
     exporter.StoreOriginCoordsInFile( aGencadJob->m_storeOriginCoords );
+    exporter.SetReporter( m_reporter );
 
     if( aGencadJob->GetConfiguredOutputPath().IsEmpty() )
     {
@@ -3311,7 +3312,7 @@ int PCBNEW_JOBS_HANDLER::JobExportHyperlynx( JOB* aJob )
         return CLI::EXIT_CODES::ERR_INVALID_OUTPUT_CONFLICT;
     }
 
-    if( !ExportBoardToHyperlynxFile( brd, outPath ) )
+    if( !ExportBoardToHyperlynxFile( brd, outPath, m_reporter ) )
     {
         m_reporter->Report( wxString::Format( _( "Failed to write Hyperlynx file '%s'.\n" ), outPath ),
                             RPT_SEVERITY_ERROR );
