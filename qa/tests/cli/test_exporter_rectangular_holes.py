@@ -21,7 +21,7 @@
 
 rectangular_holes/fab.kicad_pcb holds four rectangular holes, a round hole and an oval slot.
 VRML and Specctra write the rectangle; HyperLynx and GenCAD, whose drill is one diameter, write it
-round and say so once.
+round and say so once; the same goes for the oval slot.
 """
 
 import math
@@ -92,7 +92,9 @@ def test_specctra_keeps_out_the_unplated_rectangle(kitest: KiTestFixture):
     image = re.search(r'\(image "?probe:NR"?(.*?)(?=\(image |\(padstack )', dsn, re.S)
     assert image, "no image for the unplated rectangle"
     assert "(pin " not in image.group(1)
-    assert len(re.findall(r'\(keepout "" \(rect ', image.group(1))) == 2
+    # With a hole clearance the keepout is a polygon with rounded corners, not a rect
+    assert len(re.findall(r'\(keepout "" \(polygon ', image.group(1))) == 2
+    assert '(rect ' not in image.group(1)
 
 
 def test_hyperlynx_reports_the_rectangle_once(kitest: KiTestFixture):
@@ -100,6 +102,18 @@ def test_hyperlynx_reports_the_rectangle_once(kitest: KiTestFixture):
     assert exitcode == 0, output
     assert target.exists()
     assert output.count("Hyperlynx has no rectangular hole: 4 rectangular pad holes") == 1, output
+
+
+def test_hyperlynx_reports_the_slot_once(kitest: KiTestFixture):
+    target, output, exitcode = _export(kitest, "hyperlynx", "slot.hyp")
+    assert exitcode == 0, output
+    assert output.count("Hyperlynx has no oval slot: 1 oval pad slots") == 1, output
+
+
+def test_gencad_reports_the_slot_once(kitest: KiTestFixture):
+    target, output, exitcode = _export(kitest, "gencad", "slot.cad")
+    assert exitcode == 0, output
+    assert output.count("GenCAD has no oval slot: 1 oval pad slots") == 1, output
 
 
 def test_gencad_reports_the_rectangle_once(kitest: KiTestFixture):

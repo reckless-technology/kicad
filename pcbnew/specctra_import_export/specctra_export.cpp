@@ -288,23 +288,40 @@ static bool isRectangularKeepout( PAD* aPad )
 
 /**
  * Make one keepout of @p aImage per layer in @p aLayerIds for the rectangular hole of @p aPad,
- * grown on every side by @p aClearance.  A rectangle square to the image is written as a rect,
- * any other as a four-cornered polygon, since a Specctra rect is always square to its axes.
+ * grown on every side by @p aClearance.  The true outline of that clearance is the rectangle with
+ * its corners rounded to a radius of @p aClearance, so with a clearance it is written as a polygon
+ * whose corners are arcs approximated to within @p aMaxError, on the outside of the arc.  With no
+ * clearance the outline is the rectangle itself: a rect when square to the image, since a Specctra
+ * rect is always square to its axes, any other as a four-cornered polygon.
  */
 static std::vector<KEEPOUT*> makeRectangularHoleKeepouts( IMAGE* aImage, PAD* aPad, FOOTPRINT* aFootprint,
-                                                          int aClearance, const std::vector<std::string>& aLayerIds )
+                                                          int aClearance, int aMaxError,
+                                                          const std::vector<std::string>& aLayerIds )
 {
     std::vector<KEEPOUT*> keepouts;
-    const VECTOR2I        halfSize = aPad->GetDrillSize() / 2 + VECTOR2I( aClearance, aClearance );
     SHAPE_LINE_CHAIN      corners;
 
-    // The same rectangle PAD::BuildEffectiveShapes() makes the hole, grown by the clearance
-    corners.Append( -halfSize.x, -halfSize.y );
-    corners.Append( halfSize.x, -halfSize.y );
-    corners.Append( halfSize.x, halfSize.y );
-    corners.Append( -halfSize.x, halfSize.y );
-    corners.Rotate( aPad->GetOrientation() );
-    corners.Move( aPad->GetPosition() );
+    if( aClearance > 0 )
+    {
+        SHAPE_POLY_SET outline;
+
+        TransformRoundChamferedRectToPolygon( outline, aPad->GetPosition(),
+                                              aPad->GetDrillSize() + VECTOR2I( 2 * aClearance, 2 * aClearance ),
+                                              aPad->GetOrientation(), aClearance, 0.0, 0, 0, aMaxError, ERROR_OUTSIDE );
+        corners = outline.Outline( 0 );
+    }
+    else
+    {
+        const VECTOR2I halfSize = aPad->GetDrillSize() / 2;
+
+        // The same rectangle PAD::BuildEffectiveShapes() makes the hole
+        corners.Append( -halfSize.x, -halfSize.y );
+        corners.Append( halfSize.x, -halfSize.y );
+        corners.Append( halfSize.x, halfSize.y );
+        corners.Append( -halfSize.x, halfSize.y );
+        corners.Rotate( aPad->GetOrientation() );
+        corners.Move( aPad->GetPosition() );
+    }
 
     std::vector<POINT> vertices;
 
@@ -312,7 +329,7 @@ static std::vector<KEEPOUT*> makeRectangularHoleKeepouts( IMAGE* aImage, PAD* aP
         vertices.push_back( mapPt( corners.CPoint( ii ), aFootprint ) );
 
     EDA_ANGLE angle = aPad->GetOrientation() - aFootprint->GetOrientation();
-    bool      isSquareToImage = angle.Normalize().IsCardinal();
+    bool      isSquareToImage = aClearance <= 0 && angle.Normalize().IsCardinal();
 
     for( const std::string& layerId : aLayerIds )
     {
@@ -814,8 +831,9 @@ IMAGE* SPECCTRA_DB::makeIMAGE( BOARD* aBoard, FOOTPRINT* aFootprint )
         {
             std::vector<std::string> layerIds( m_layerIds.begin(), m_layerIds.begin() + aBoard->GetCopperLayerCount() );
 
-            for( KEEPOUT* keepout : makeRectangularHoleKeepouts(
-                         image, pad, aFootprint, aBoard->GetDesignSettings().m_HoleClearance, layerIds ) )
+            for( KEEPOUT* keepout :
+                 makeRectangularHoleKeepouts( image, pad, aFootprint, aBoard->GetDesignSettings().m_HoleClearance,
+                                              pad->GetMaxError(), layerIds ) )
             {
                 image->m_keepouts.push_back( keepout );
             }
