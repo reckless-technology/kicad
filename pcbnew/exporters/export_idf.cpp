@@ -32,6 +32,7 @@
 #include <io/idf/idf_parser.h>
 #include <pad.h>
 #include <pcb_shape.h>
+#include <geometry/shape_simple.h>
 #include <build_version.h>
 #include <project_pcb.h>
 #include <reporter.h>
@@ -826,9 +827,9 @@ void IDF_EXPORTER::exportFootprint( FOOTPRINT* aFootprint, IDF3_BOARD& aIDFBoard
             // hole type
             tstr = TO_UTF8( pad->GetNumber() );
 
-            if( tstr.empty() || !tstr.compare( "0" ) || !tstr.compare( "~" )
-                || ( kplate == IDF3::KEY_PLATING::NPTH )
-                || ( pad->GetDrillShape() == PAD_DRILL_SHAPE::OBLONG ) )
+            if( tstr.empty() || !tstr.compare( "0" ) || !tstr.compare( "~" ) || ( kplate == IDF3::KEY_PLATING::NPTH )
+                || ( pad->GetDrillShape() == PAD_DRILL_SHAPE::OBLONG )
+                || ( pad->GetDrillShape() == PAD_DRILL_SHAPE::RECTANGLE ) )
                 pintype = "MTG";
             else
                 pintype = "PIN";
@@ -875,6 +876,39 @@ void IDF_EXPORTER::exportFootprint( FOOTPRINT* aFootprint, IDF3_BOARD& aIDFBoard
                 dlength -= drill;
 
                 aIDFBoard.AddSlot( drill, dlength, angle, x, y );
+            }
+            else if( pad->GetDrillShape() == PAD_DRILL_SHAPE::RECTANGLE )
+            {
+                // NOTE: as for a slot, IDF has no rectangular hole, so the rectangle is a
+                // board cutout, and its plating and reference designator are not represented.
+                // A square is a rectangle too: a DRILLED_HOLES entry would make it round.
+                std::shared_ptr<SHAPE>  hole = pad->GetEffectiveHoleShape();
+                const SHAPE_LINE_CHAIN& corners = static_cast<SHAPE_SIMPLE*>( hole.get() )->Vertices();
+                IDF_OUTLINE*            cutout = new IDF_OUTLINE;
+
+                for( int ii = 0; ii < corners.PointCount(); ++ii )
+                {
+                    const VECTOR2I& start = corners.CPoint( ii );
+                    const VECTOR2I& end = corners.CPoint( ( ii + 1 ) % corners.PointCount() );
+
+                    cutout->push( new IDF_SEGMENT( IDF_POINT( start.x * scale + dx, -start.y * scale + dy ),
+                                                   IDF_POINT( end.x * scale + dx, -end.y * scale + dy ) ) );
+                }
+
+                // ownership transfers only on success
+                if( !aIDFBoard.AddBoardOutline( cutout ) )
+                {
+                    delete cutout;
+
+                    if( m_reporter )
+                    {
+                        m_reporter->Report( wxString::Format( "Error exporting footprint %s: %s",
+                                                              aFootprint->GetReference(),
+                                                              _( "could not add the cutout for a "
+                                                                 "rectangular pad hole" ) ),
+                                            RPT_SEVERITY_ERROR );
+                    }
+                }
             }
             else
             {

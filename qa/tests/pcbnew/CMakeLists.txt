@@ -150,6 +150,7 @@ set( QA_PCBNEW_SRCS
     test_padstack_clone.cpp
     test_gencad_export.cpp
     test_idf_export.cpp
+    test_exporter_rectangular_holes.cpp
     test_d356_export.cpp
     test_specctra_export.cpp
     test_step_model_color_transfer.cpp

@@ -48,6 +48,7 @@
 
 #include <convert_basic_shapes_to_polygon.h>
 #include <geometry/geometry_utils.h>
+#include <trigo.h>
 #include <macros.h>
 
 #include <exporter_vrml.h>
@@ -900,7 +901,45 @@ void EXPORTER_PCB_VRML::ExportVrmlPadHole( PAD* aPad )
         if( ( aPad->GetAttribute() != PAD_ATTRIB::NPTH ) )
             pth = true;
 
-        if( aPad->GetDrillShape() == PAD_DRILL_SHAPE::OBLONG )
+        if( aPad->GetDrillShape() == PAD_DRILL_SHAPE::RECTANGLE )
+        {
+            // Rectangular hole, grown, as a slot is, by aGrowth on its full width and height
+            auto addRectangle = [&]( VRML_LAYER& aLayer, double aGrowth, bool aPlatedHole )
+            {
+                int contour = aLayer.NewContour( aPlatedHole );
+
+                if( contour < 0 )
+                    return;
+
+                double halfX = hole_drill_w + aGrowth / 2.0;
+                double halfY = hole_drill_h + aGrowth / 2.0;
+
+                // The corners in the order PAD::BuildEffectiveShapes() makes them, turned
+                // with the pad in board coordinates, then Y flipped as every hole is here
+                for( const auto& [cornerX, cornerY] : { std::pair( -halfX, -halfY ), std::pair( halfX, -halfY ),
+                                                        std::pair( halfX, halfY ), std::pair( -halfX, halfY ) } )
+                {
+                    double x = cornerX;
+                    double y = cornerY;
+
+                    RotatePoint( &x, &y, aPad->GetOrientation() );
+                    aLayer.AddVertex( contour, hole_x + x, -( hole_y + y ) );
+                }
+
+                aLayer.EnsureWinding( contour, true );
+            };
+
+            if( pth )
+            {
+                addRectangle( m_holes, PLATE_OFFSET, true );
+                addRectangle( m_plated_holes, 0.0, false );
+            }
+            else
+            {
+                addRectangle( m_holes, 0.0, false );
+            }
+        }
+        else if( aPad->GetDrillShape() == PAD_DRILL_SHAPE::OBLONG )
         {
             // Oblong hole (slot)
 
