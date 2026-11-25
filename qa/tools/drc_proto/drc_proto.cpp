@@ -110,8 +110,7 @@ int runDRCProto( PROJECT_CONTEXT project, std::shared_ptr<KIGFX::VIEW_OVERLAY> a
     drcEngine->SetProgressReporter( new CONSOLE_PROGRESS_REPORTER ( &consoleLog ) );
 
     drcEngine->SetViolationHandler(
-            [&]( const std::shared_ptr<DRC_ITEM>& aItem, const VECTOR2I& aPos, int aLayer,
-                 const std::function<void( PCB_MARKER* )>& aPathGenerator )
+            [&]( const std::shared_ptr<DRC_ITEM>&, const VECTOR2I&, int, const std::function<void( PCB_MARKER* )>& )
             {
                 // fixme
             } );
@@ -120,13 +119,8 @@ int runDRCProto( PROJECT_CONTEXT project, std::shared_ptr<KIGFX::VIEW_OVERLAY> a
     drcEngine->InitEngine( project.rulesFilePath );
     drcEngine->SetDebugOverlay( aDebugOverlay );
 
-    for( auto provider : drcEngine->GetTestProviders() )
-    {
-        //if( provider->GetName() == "diff_pair_coupling" )
-          //  provider->Enable(true);
-        //else
-          //  provider->Enable(false);
-    }
+    // To run a single provider, loop over drcEngine->GetTestProviders() here and call Enable() on
+    // the provider whose GetName() matches (for example "diff_pair_coupling") and on no other.
 
     try
     {

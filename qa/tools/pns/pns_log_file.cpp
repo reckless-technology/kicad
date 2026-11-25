@@ -51,7 +51,7 @@ std::vector<BOARD_CONNECTED_ITEM*> PNS_LOG_FILE::ItemsById( const PNS::LOGGER::E
 
     for( BOARD_CONNECTED_ITEM* item : m_board->AllConnectedItems() )
     {
-        for( int i = 0; i < evt.uuids.size(); i++ )
+        for( size_t i = 0; i < evt.uuids.size(); i++ )
         {
             if( item->m_Uuid == evt.uuids[i] )
             {
@@ -130,7 +130,7 @@ std::shared_ptr<SHAPE> PNS_LOG_FILE::parseShape( const nlohmann::json& aJSON )
 }
 
 
-std::shared_ptr<SHAPE> PNS_LOG_FILE::parseLegacyShape( SHAPE_TYPE expectedType, wxStringTokenizer& aTokens )
+std::shared_ptr<SHAPE> PNS_LOG_FILE::parseLegacyShape( SHAPE_TYPE, wxStringTokenizer& aTokens )
 {
     SHAPE_TYPE type = static_cast<SHAPE_TYPE> ( wxAtoi( aTokens.GetNextToken() ) );
 
@@ -469,8 +469,8 @@ bool PNS_LOG_FILE::COMMIT_STATE::Compare( const PNS_LOG_FILE::COMMIT_STATE& aOth
     {
         if( m_heads.size() != check.m_heads.size() )
             return false;
-        
-        for( int headIdx = 0; headIdx < m_heads.size(); headIdx ++)
+
+        for( size_t headIdx = 0; headIdx < m_heads.size(); headIdx++ )
         {
             const SHAPE_LINE_CHAIN& headRef = static_cast<const PNS::LINE*> ( m_heads[ headIdx ] )->CLine();
             const SHAPE_LINE_CHAIN& headChk = static_cast<const PNS::LINE*> ( aOther.m_heads[ headIdx ] )->CLine();
@@ -659,12 +659,12 @@ bool PNS_LOG_FILE::loadJsonLog( const wxString& aFilename, REPORTER* aRpt, bool 
 
         for( const nlohmann::json& event : logJson.at( "events" ) )
         {
-            m_events.push_back( std::move( PNS::LOGGER::ParseEventFromJSON( event ) ) );
+            m_events.push_back( PNS::LOGGER::ParseEventFromJSON( event ) );
         }
 
         for( const nlohmann::json& addedItem : logJson.at( "addedItems" ) )
         {
-            m_parsed_items.push_back( std::move( parseItem( addedItem ) ) );
+            m_parsed_items.push_back( parseItem( addedItem ) );
 
             if( m_parsed_items.back() )
                 m_commitState.m_addedItems.push_back( m_parsed_items.back().get() );
@@ -733,11 +733,11 @@ bool PNS_LOG_FILE::loadLegacyLog( const wxString& aFilename, REPORTER* aRpt )
             }
             else if( cmd == wxT( "event" ) )
             {
-                m_events.push_back( std::move( PNS::LOGGER::ParseEvent( line ) ) );
+                m_events.push_back( PNS::LOGGER::ParseEvent( line ) );
             }
             else if( cmd == wxT( "added" ) )
             {
-                m_parsed_items.push_back( std::move( parseLegacyItemFromString( tokens ) ) );
+                m_parsed_items.push_back( parseLegacyItemFromString( tokens ) );
 
                 if( m_parsed_items.back() )
                     m_commitState.m_addedItems.push_back( m_parsed_items.back().get() );

@@ -97,7 +97,7 @@ public:
 
     virtual void Clear() override{};
 
-    int GetStageCount() const { return m_stages.size(); }
+    int GetStageCount() const { return static_cast<int>( m_stages.size() ); }
 
     PNS_DEBUG_STAGE* GetStage( int index ) { return m_stages[index]; }
 

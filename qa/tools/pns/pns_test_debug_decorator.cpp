@@ -153,10 +153,8 @@ PNS_DEBUG_STAGE* PNS_TEST_DEBUG_DECORATOR::currentStage()
 }
 
 
-void PNS_TEST_DEBUG_DECORATOR::BeginGroup( const wxString& name, int aLevel,
-                                           const SRC_LOCATION_INFO& aSrcLoc )
+void PNS_TEST_DEBUG_DECORATOR::BeginGroup( const wxString& name, int aLevel, const SRC_LOCATION_INFO& )
 {
-    PNS_DEBUG_STAGE* stage = currentStage();
     PNS_DEBUG_SHAPE* ent = new PNS_DEBUG_SHAPE();
 
     ent->m_name = name;
@@ -171,7 +169,7 @@ void PNS_TEST_DEBUG_DECORATOR::BeginGroup( const wxString& name, int aLevel,
 }
 
 
-void PNS_TEST_DEBUG_DECORATOR::EndGroup( const SRC_LOCATION_INFO& aSrcLoc )
+void PNS_TEST_DEBUG_DECORATOR::EndGroup( const SRC_LOCATION_INFO& )
 {
     if( !m_activeEntry )
         return;
@@ -185,7 +183,6 @@ void PNS_TEST_DEBUG_DECORATOR::EndGroup( const SRC_LOCATION_INFO& aSrcLoc )
 
 void PNS_TEST_DEBUG_DECORATOR::addEntry( PNS_DEBUG_SHAPE* ent )
 {
-    auto st = currentStage();
     m_activeEntry->AddChild( ent );
 }
 
@@ -265,8 +262,7 @@ void PNS_TEST_DEBUG_DECORATOR::Message( const wxString& msg, const SRC_LOCATION_
 }
 
 
-void PNS_TEST_DEBUG_DECORATOR::NewStage( const wxString& name, int iter,
-                                         const SRC_LOCATION_INFO& aSrcLoc )
+void PNS_TEST_DEBUG_DECORATOR::NewStage( const wxString& name, int iter, const SRC_LOCATION_INFO& )
 {
     PNS_DEBUG_STAGE* stage = new PNS_DEBUG_STAGE();
     stage->m_name = name;
@@ -306,6 +302,8 @@ BOX2I PNS_TEST_DEBUG_DECORATOR::GetStageExtents( int stage ) const
 
                 return true;
             };
+
+    st->m_entries->IterateTree( visitor );
 
     return bb;
 }

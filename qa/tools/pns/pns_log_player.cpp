@@ -93,8 +93,7 @@ const PNS_LOG_FILE::COMMIT_STATE PNS_LOG_PLAYER::GetRouterUpdatedItems()
     return state;
 }
 
-void PNS_LOG_PLAYER::ReplayLog( PNS_LOG_FILE* aLog, int aStartEventIndex, int aFrom, int aTo,
-                                bool aUpdateExpectedResult )
+void PNS_LOG_PLAYER::ReplayLog( PNS_LOG_FILE* aLog, int, int aFrom, int aTo, bool aUpdateExpectedResult )
 {
     m_board = aLog->GetBoard();
 
@@ -103,7 +102,7 @@ void PNS_LOG_PLAYER::ReplayLog( PNS_LOG_FILE* aLog, int aStartEventIndex, int aF
     m_router->LoadSettings( aLog->GetRoutingSettings() );
 
     int eventIdx = 0;
-    int totalEvents = aLog->Events().size();
+    int totalEvents = static_cast<int>( aLog->Events().size() );
 
     m_router->SetMode( aLog->GetMode() );
 
@@ -191,7 +190,7 @@ void PNS_LOG_PLAYER::ReplayLog( PNS_LOG_FILE* aLog, int aStartEventIndex, int aF
         
 
             PROF_TIMER tmr("drag-start");
-            bool rv = m_router->StartDragging( evt.p, ritems, 0 );
+            m_router->StartDragging( evt.p, ritems, 0 );
             tmr.Stop();
             double msecs = tmr.msecs();
 
@@ -269,9 +268,9 @@ void PNS_LOG_PLAYER::ReplayLog( PNS_LOG_FILE* aLog, int aStartEventIndex, int aF
         default: break;
         }
 
+#if 0
         PNS::NODE* node = nullptr;
 
-#if 0
         if( m_router->GetState() == PNS::ROUTER::ROUTE_TRACK )
         {
             m_debugDecorator->BeginGroup( "current route", 0 );
@@ -344,8 +343,6 @@ void PNS_LOG_PLAYER::ReplayLog( PNS_LOG_FILE* aLog, int aStartEventIndex, int aF
             myOwnedItems.emplace_back( head );
 
         aLog->SetExpectedResult( routerCommitState, std::move( myOwnedItems ) );
-
-        int test = 0;
     }
 }
 
@@ -372,8 +369,7 @@ void PNS_LOG_PLAYER_KICAD_IFACE::HideItem( PNS::ITEM* aItem )
     m_viewTracker->HideItem( aItem );
 }
 
-void PNS_LOG_PLAYER_KICAD_IFACE::DisplayItem( const PNS::ITEM* aItem, int aClearance, bool aEdit,
-                                              int aFlags )
+void PNS_LOG_PLAYER_KICAD_IFACE::DisplayItem( const PNS::ITEM* aItem, int, bool, int )
 {
     //printf("DBG disp %p\n", aItem);
     m_viewTracker->DisplayItem( aItem );

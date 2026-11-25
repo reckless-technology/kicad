@@ -65,7 +65,7 @@ using namespace KIGFX;
 void PCB_TEST_FRAME_BASE::SetBoard( std::shared_ptr<BOARD> b )
 {
     m_board = b;
-    printf("TestFrameBase::SetBoard %p\n", b.get() );
+    printf( "TestFrameBase::SetBoard %p\n", static_cast<void*>( b.get() ) );
 
     PROF_TIMER cntConnectivity( "connectivity-build" );
     m_board->BuildListOfNets();

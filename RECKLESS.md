@@ -65,7 +65,8 @@ lands in the middle of fixes in progress (#24). When it is:
 
 As for KiCad (dev-docs.kicad.org, "Building on Linux"), with clang-20. We configure with
 `-DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=/opt/kicad-reckless -DKICAD_VERSION_EXTRA=reckless
--DCMAKE_C_COMPILER=clang-20 -DCMAKE_CXX_COMPILER=clang++-20` and set `CMAKE_INSTALL_RPATH` to the prefix's `lib` and
+-DCMAKE_C_COMPILER=clang-20 -DCMAKE_CXX_COMPILER=clang++-20 -DKICAD_BUILD_PNS_DEBUG_TOOL=ON
+-DKICAD_BUILD_PEGTL_DEBUG_TOOL=ON` and set `CMAKE_INSTALL_RPATH` to the prefix's `lib` and
 `lib/kicad/plugins/3d`, so the programs run without wrapper scripts.
 
 The experimental Vulkan render engine (`common/rhi/`, "RHI Vulkan (Experimental)" in Preferences > Common >
@@ -90,9 +91,11 @@ modules are built with different toolsets or C runtimes. Every KiCad module is b
 toolset and the dynamic CRT, which is where Microsoft documents C4251 as safe to ignore. The one pragma is a `#pragma
 warning( disable : 4324 )` between `push` and `pop` around `qa/tests/common/test_ki_any.cpp`'s `X3`, whose
 over-alignment is what that test tests.
-With `KICAD_WERROR` on, turning on an opt-in tool that the default build leaves out, such as the PNS debug tool
-(`KICAD_BUILD_PNS_DEBUG_TOOL`, about 120 C4100 sites), fails the MSVC build, because those tools have been outside
-every warning check so far (#78). Build them with `-DKICAD_WERROR=OFF` until then.
+
+The opt-in tools are inside the checks too (#78). `KICAD_BUILD_PNS_DEBUG_TOOL` (`pns_debug_tool` and the
+`qa_pns_regressions` test) and `KICAD_BUILD_PEGTL_DEBUG_TOOL` stay OFF in CMakeLists.txt, as upstream has them, and our
+Linux build turns them on with `-DKICAD_BUILD_PNS_DEBUG_TOOL=ON -DKICAD_BUILD_PEGTL_DEBUG_TOOL=ON`, so a warning in
+their code fails that build like any other, on MSVC as well as clang.
 
 ## Commits
 

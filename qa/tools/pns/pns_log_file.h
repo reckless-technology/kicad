@@ -51,13 +51,6 @@ public:
 
     struct COMMIT_STATE
     {
-        COMMIT_STATE(){};
-        COMMIT_STATE( const COMMIT_STATE& aOther ) :
-                m_removedIds( aOther.m_removedIds ), m_addedItems( aOther.m_addedItems ),
-                m_heads( aOther.m_heads )
-        {
-        }
-
         std::set<KIID>          m_removedIds;
         std::vector<PNS::ITEM*> m_addedItems;
         std::vector<PNS::ITEM*> m_heads;

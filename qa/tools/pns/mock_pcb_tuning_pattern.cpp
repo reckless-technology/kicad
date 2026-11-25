@@ -75,106 +75,6 @@
 #include <properties/property_mgr.h>
 
 
-
-
-static LENGTH_TUNING_MODE tuningFromString( const std::string& aStr )
-{
-    if( aStr == "single" )
-        return LENGTH_TUNING_MODE::SINGLE;
-    else if( aStr == "diff_pair" )
-        return LENGTH_TUNING_MODE::DIFF_PAIR;
-    else if( aStr == "diff_pair_skew" )
-        return LENGTH_TUNING_MODE::DIFF_PAIR_SKEW;
-    else
-    {
-        wxFAIL_MSG( wxS( "Unknown length tuning token" ) );
-        return LENGTH_TUNING_MODE::SINGLE;
-    }
-}
-
-
-static std::string tuningToString( const LENGTH_TUNING_MODE aTuning )
-{
-    switch( aTuning )
-    {
-    case LENGTH_TUNING_MODE::SINGLE:         return "single";
-    case LENGTH_TUNING_MODE::DIFF_PAIR:      return "diff_pair";
-    case LENGTH_TUNING_MODE::DIFF_PAIR_SKEW: return "diff_pair_skew";
-    default:            wxFAIL;              return "";
-    }
-}
-
-
-static LENGTH_TUNING_MODE fromPNSMode( PNS::ROUTER_MODE aRouterMode )
-{
-    switch( aRouterMode )
-    {
-    case PNS::PNS_MODE_TUNE_SINGLE:         return LENGTH_TUNING_MODE::SINGLE;
-    case PNS::PNS_MODE_TUNE_DIFF_PAIR:      return LENGTH_TUNING_MODE::DIFF_PAIR;
-    case PNS::PNS_MODE_TUNE_DIFF_PAIR_SKEW: return LENGTH_TUNING_MODE::DIFF_PAIR_SKEW;
-    default:                                return LENGTH_TUNING_MODE::SINGLE;
-    }
-}
-
-
-static PNS::MEANDER_SIDE sideFromString( const std::string& aStr )
-{
-    if( aStr == "default" )
-        return PNS::MEANDER_SIDE_DEFAULT;
-    else if( aStr == "left" )
-        return PNS::MEANDER_SIDE_LEFT;
-    else if( aStr == "right" )
-        return PNS::MEANDER_SIDE_RIGHT;
-    else
-    {
-        wxFAIL_MSG( wxS( "Unknown length-tuning side token" ) );
-        return PNS::MEANDER_SIDE_DEFAULT;
-    }
-}
-
-
-static std::string statusToString( const PNS::MEANDER_PLACER_BASE::TUNING_STATUS aStatus )
-{
-    switch( aStatus )
-    {
-    case PNS::MEANDER_PLACER_BASE::TOO_LONG:  return "too_long";
-    case PNS::MEANDER_PLACER_BASE::TOO_SHORT: return "too_short";
-    case PNS::MEANDER_PLACER_BASE::TUNED:     return "tuned";
-    default:           wxFAIL;                return "";
-    }
-}
-
-
-static PNS::MEANDER_PLACER_BASE::TUNING_STATUS statusFromString( const std::string& aStr )
-{
-    if( aStr == "too_long" )
-        return PNS::MEANDER_PLACER_BASE::TOO_LONG;
-    else if( aStr == "too_short" )
-        return PNS::MEANDER_PLACER_BASE::TOO_SHORT;
-    else if( aStr == "tuned" )
-        return PNS::MEANDER_PLACER_BASE::TUNED;
-    else
-    {
-        wxFAIL_MSG( wxS( "Unknown tuning status token" ) );
-        return PNS::MEANDER_PLACER_BASE::TUNED;
-    }
-}
-
-
-static std::string sideToString( const PNS::MEANDER_SIDE aValue )
-{
-    switch( aValue )
-    {
-    case PNS::MEANDER_SIDE_DEFAULT: return "default";
-    case PNS::MEANDER_SIDE_LEFT:    return "left";
-    case PNS::MEANDER_SIDE_RIGHT:   return "right";
-    default:        wxFAIL;         return "";
-    }
-}
-
-
-
-
 PCB_TUNING_PATTERN::PCB_TUNING_PATTERN( BOARD_ITEM* aParent, PCB_LAYER_ID aLayer,
                                         LENGTH_TUNING_MODE aMode ) :
         PCB_GENERATOR( aParent, aLayer ),
@@ -191,10 +91,8 @@ PCB_TUNING_PATTERN::PCB_TUNING_PATTERN( BOARD_ITEM* aParent, PCB_LAYER_ID aLayer
     m_settings.m_initialSide = PNS::MEANDER_SIDE_LEFT;
 }
 
-PCB_TUNING_PATTERN* PCB_TUNING_PATTERN::CreateNew( GENERATOR_TOOL* aTool,
-                                                   PCB_BASE_EDIT_FRAME* aFrame,
-                                                   BOARD_CONNECTED_ITEM* aStartItem,
-                                                   LENGTH_TUNING_MODE aMode )
+PCB_TUNING_PATTERN* PCB_TUNING_PATTERN::CreateNew( GENERATOR_TOOL*, PCB_BASE_EDIT_FRAME*, BOARD_CONNECTED_ITEM*,
+                                                   LENGTH_TUNING_MODE )
 {
     return nullptr;
 }
@@ -206,97 +104,79 @@ bool PCB_TUNING_PATTERN::baselineValid()
 }
 
 
-void PCB_TUNING_PATTERN::EditStart( GENERATOR_TOOL* aTool, BOARD* aBoard, BOARD_COMMIT* aCommit )
+void PCB_TUNING_PATTERN::EditStart( GENERATOR_TOOL*, BOARD*, BOARD_COMMIT* )
 {
 }
 
 
-static PNS::LINKED_ITEM* pickSegment( PNS::ROUTER* aRouter, const VECTOR2I& aWhere, int aLayer,
-                                      VECTOR2I&               aPointOut,
-                                      const SHAPE_LINE_CHAIN& aBaseline = SHAPE_LINE_CHAIN() )
-{
-    return nullptr;
-}
-
-
-static std::optional<PNS::LINE> getPNSLine( const VECTOR2I& aStart, const VECTOR2I& aEnd,
-                                            PNS::ROUTER* router, int layer, VECTOR2I& aStartOut,
-                                            VECTOR2I& aEndOut )
-{
-    return std::nullopt;
-}
-
-
-bool PCB_TUNING_PATTERN::initBaseLine( PNS::ROUTER* aRouter, int aPNSLayer, BOARD* aBoard,
-                                       VECTOR2I& aStart, VECTOR2I& aEnd, NETINFO_ITEM* aNet,
-                                       std::optional<SHAPE_LINE_CHAIN>& aBaseLine )
+bool PCB_TUNING_PATTERN::initBaseLine( PNS::ROUTER*, int, BOARD*, VECTOR2I&, VECTOR2I&, NETINFO_ITEM*,
+                                       std::optional<SHAPE_LINE_CHAIN>& )
 {
     return true;
 }
 
 
-bool PCB_TUNING_PATTERN::initBaseLines( PNS::ROUTER* aRouter, int aPNSLayer, BOARD* aBoard )
+bool PCB_TUNING_PATTERN::initBaseLines( PNS::ROUTER*, int, BOARD* )
 {
     return true;
 }
 
 
-bool PCB_TUNING_PATTERN::removeToBaseline( PNS::ROUTER* aRouter, int aPNSLayer, SHAPE_LINE_CHAIN& aBaseLine )
+bool PCB_TUNING_PATTERN::removeToBaseline( PNS::ROUTER*, int, SHAPE_LINE_CHAIN& )
 {
  
     return true;
 }
 
 
-void PCB_TUNING_PATTERN::Remove( GENERATOR_TOOL* aTool, BOARD* aBoard, BOARD_COMMIT* aCommit )
+void PCB_TUNING_PATTERN::Remove( GENERATOR_TOOL*, BOARD*, BOARD_COMMIT* )
 {
     
 }
 
 
-bool PCB_TUNING_PATTERN::recoverBaseline( PNS::ROUTER* aRouter, int aPNSLayer )
+bool PCB_TUNING_PATTERN::recoverBaseline( PNS::ROUTER*, int )
 {
     return true;
 }
 
 
-bool PCB_TUNING_PATTERN::resetToBaseline( GENERATOR_TOOL* aTool, int aPNSLayer, SHAPE_LINE_CHAIN& aBaseLine,
-                                          bool aPrimary )
+bool PCB_TUNING_PATTERN::resetToBaseline( GENERATOR_TOOL*, int, SHAPE_LINE_CHAIN&, bool )
 {
     return true;
 }
 
 
-bool PCB_TUNING_PATTERN::Update( GENERATOR_TOOL* aTool, BOARD* aBoard, BOARD_COMMIT* aCommit )
+bool PCB_TUNING_PATTERN::Update( GENERATOR_TOOL*, BOARD*, BOARD_COMMIT* )
 {
     return true;
 }
 
 
-void PCB_TUNING_PATTERN::EditFinish( GENERATOR_TOOL* aTool, BOARD* aBoard, BOARD_COMMIT* aCommit  )
+void PCB_TUNING_PATTERN::EditFinish( GENERATOR_TOOL*, BOARD*, BOARD_COMMIT* )
 {
 }
 
 
-void PCB_TUNING_PATTERN::EditCancel( GENERATOR_TOOL* aTool, BOARD* aBoard, BOARD_COMMIT* aCommit )
+void PCB_TUNING_PATTERN::EditCancel( GENERATOR_TOOL*, BOARD*, BOARD_COMMIT* )
 {
 }
 
 
-bool PCB_TUNING_PATTERN::MakeEditPoints( EDIT_POINTS& aPoints ) const
+bool PCB_TUNING_PATTERN::MakeEditPoints( EDIT_POINTS& ) const
 {
     return true;
 }
 
 
-bool PCB_TUNING_PATTERN::UpdateFromEditPoints( EDIT_POINTS& aEditPoints )
+bool PCB_TUNING_PATTERN::UpdateFromEditPoints( EDIT_POINTS& )
 {
  
     return true;
 }
 
 
-bool PCB_TUNING_PATTERN::UpdateEditPoints( EDIT_POINTS& aEditPoints )
+bool PCB_TUNING_PATTERN::UpdateEditPoints( EDIT_POINTS& )
 {
  
     return true;
@@ -309,7 +189,7 @@ SHAPE_LINE_CHAIN PCB_TUNING_PATTERN::getOutline() const
 }
 
 
-void PCB_TUNING_PATTERN::ViewDraw( int aLayer, KIGFX::VIEW* aView ) const
+void PCB_TUNING_PATTERN::ViewDraw( int, KIGFX::VIEW* ) const
 {
 }
 
@@ -320,31 +200,29 @@ const STRING_ANY_MAP PCB_TUNING_PATTERN::GetProperties() const
 }
 
 
-void PCB_TUNING_PATTERN::SetProperties( const STRING_ANY_MAP& aProps )
+void PCB_TUNING_PATTERN::SetProperties( const STRING_ANY_MAP& )
 {
     
 }
 
 
-void PCB_TUNING_PATTERN::Serialize( google::protobuf::Any& aContainer ) const
+void PCB_TUNING_PATTERN::Serialize( google::protobuf::Any& ) const
 {
 }
 
 
-bool PCB_TUNING_PATTERN::Deserialize( const google::protobuf::Any& aContainer )
+bool PCB_TUNING_PATTERN::Deserialize( const google::protobuf::Any& )
 {
     return false;
 }
 
 
-void PCB_TUNING_PATTERN::ShowPropertiesDialog( PCB_BASE_EDIT_FRAME* aEditFrame )
+void PCB_TUNING_PATTERN::ShowPropertiesDialog( PCB_BASE_EDIT_FRAME* )
 {
 }
 
 
-std::vector<EDA_ITEM*> PCB_TUNING_PATTERN::GetPreviewItems( GENERATOR_TOOL* aTool,
-                                                            PCB_BASE_EDIT_FRAME* aFrame,
-                                                            bool aStatusItemsOnly )
+std::vector<EDA_ITEM*> PCB_TUNING_PATTERN::GetPreviewItems( GENERATOR_TOOL*, PCB_BASE_EDIT_FRAME*, bool )
 {
     std::vector<EDA_ITEM*> previewItems;
 
@@ -352,8 +230,7 @@ std::vector<EDA_ITEM*> PCB_TUNING_PATTERN::GetPreviewItems( GENERATOR_TOOL* aToo
 }
 
 
-void PCB_TUNING_PATTERN::GetMsgPanelInfo( EDA_DRAW_FRAME* aFrame,
-                                          std::vector<MSG_PANEL_ITEM>& aList )
+void PCB_TUNING_PATTERN::GetMsgPanelInfo( EDA_DRAW_FRAME*, std::vector<MSG_PANEL_ITEM>& )
 {
 }
 
@@ -368,7 +245,7 @@ using SCOPED_DRAW_MODE = SCOPED_SET_RESET<DRAWING_TOOL::MODE>;
 #define HITTEST_THRESHOLD_PIXELS 5
 
 
-int DRAWING_TOOL::PlaceTuningPattern( const TOOL_EVENT& aEvent )
+int DRAWING_TOOL::PlaceTuningPattern( const TOOL_EVENT& )
 {
     return 0;
 }

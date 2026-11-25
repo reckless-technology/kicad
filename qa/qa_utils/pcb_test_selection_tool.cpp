@@ -22,7 +22,7 @@ bool PCB_TEST_SELECTION_TOOL::Init()
     return true;
 }
 
-void PCB_TEST_SELECTION_TOOL::Reset( RESET_REASON aReason )
+void PCB_TEST_SELECTION_TOOL::Reset( RESET_REASON )
 {
 }
 
@@ -192,7 +192,7 @@ void PCB_TEST_SELECTION_TOOL::unselect( EDA_ITEM* aItem )
     unhighlight( aItem, SELECTED, &m_selection );
 }
 
-int PCB_TEST_SELECTION_TOOL::Main( const TOOL_EVENT& aEvent )
+int PCB_TEST_SELECTION_TOOL::Main( const TOOL_EVENT& )
 {
     // Main loop: keep receiving events
     while( TOOL_EVENT* evt = Wait() )
