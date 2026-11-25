@@ -45,12 +45,12 @@ public:
                                             PROJECT* aProject = nullptr,
                                             bool aCalculateConnectivity = true,
                                             REPORTER* aRootReporter = nullptr );
-    static SCHEMATIC*        LoadSchematic( const wxString& aFileName,
-                                            SCH_IO_MGR::SCH_FILE_T aFormat,
-                                            bool aSetActive, bool aForceDefaultProject,
-                                            PROJECT* aProject = nullptr,
-                                            bool aCalculateConnectivity = true,
-                                            REPORTER* aRootReporter = nullptr );
+    // The loader keeps going past a sub-sheet it cannot read and leaves an empty screen in its
+    // place. aLoadErrors, when given, receives what it collected, empty when every sheet loaded.
+    static SCHEMATIC* LoadSchematic( const wxString& aFileName, SCH_IO_MGR::SCH_FILE_T aFormat, bool aSetActive,
+                                     bool aForceDefaultProject, PROJECT* aProject = nullptr,
+                                     bool aCalculateConnectivity = true, REPORTER* aRootReporter = nullptr,
+                                     wxString* aLoadErrors = nullptr );
 
 private:
     static SCH_EDIT_FRAME*   s_SchEditFrame;

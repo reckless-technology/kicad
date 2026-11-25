@@ -2502,13 +2502,25 @@ int EESCHEMA_JOBS_HANDLER::linkImportedFootprints( JOB_SCH_IMPORT& aJob )
         projectFile.m_SchematicSettings = nullptr;
     }
 
-    std::unique_ptr<SCHEMATIC> schematic( EESCHEMA_HELPERS::LoadSchematic( aJob.m_inputFile, SCH_IO_MGR::SCH_KICAD,
-                                                                           false, false, project, true ) );
+    wxString                   loadErrors;
+    std::unique_ptr<SCHEMATIC> schematic( EESCHEMA_HELPERS::LoadSchematic(
+            aJob.m_inputFile, SCH_IO_MGR::SCH_KICAD, false, false, project, true, nullptr, &loadErrors ) );
 
     if( !schematic )
     {
         m_reporter->Report( wxString::Format( _( "Could not reopen '%s' to link its footprints\n" ),
                                               aJob.m_inputFile ),
+                            RPT_SEVERITY_ERROR );
+        return CLI::EXIT_CODES::ERR_INVALID_INPUT_FILE;
+    }
+
+    // As in the downgrade job: a sheet that did not load is an empty screen here, and saving the
+    // hierarchy would write it out as an empty schematic over the file its link names
+    if( !loadErrors.IsEmpty() )
+    {
+        m_reporter->Report( wxString::Format( _( "Cannot link footprints: the schematic did not load "
+                                                 "completely.\n%s\n" ),
+                                              loadErrors ),
                             RPT_SEVERITY_ERROR );
         return CLI::EXIT_CODES::ERR_INVALID_INPUT_FILE;
     }
