@@ -665,7 +665,7 @@ void DRC_TEST_PROVIDER_COPPER_CLEARANCE::testTrackClearances()
     std::atomic<size_t>         done( 0 );
     size_t                      count = m_board->Tracks().size();
 
-    REPORT_AUX( wxString::Format( wxT( "Testing %d tracks & vias..." ), count ) );
+    REPORT_AUX( wxString::Format( wxT( "Testing %zu tracks & vias..." ), count ) );
 
     LSET boardCopperLayers = LSET::AllCuMask( m_board->GetCopperLayerCount() );
 

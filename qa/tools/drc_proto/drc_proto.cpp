@@ -54,14 +54,14 @@
 
 PROJECT_CONTEXT loadKicadProject( const wxString& filename, std::optional<wxString> rulesFilePath )
 {
-   PROJECT_CONTEXT rv;
+    PROJECT_CONTEXT rv;
 
-    auto &manager = Pgm().GetSettingsManager();
+    auto& manager = Pgm().GetSettingsManager();
 
     wxFileName pro( filename );
-    wxFileName brdName ( filename );
-    wxFileName schName ( filename );
-    wxFileName ruleFileName ( filename );
+    wxFileName brdName( filename );
+    wxFileName schName( filename );
+    wxFileName ruleFileName( filename );
 
     pro.SetExt( FILEEXT::ProjectFileExtension );
     brdName.SetExt( FILEEXT::KiCadPcbFileExtension );
@@ -76,8 +76,20 @@ PROJECT_CONTEXT loadKicadProject( const wxString& filename, std::optional<wxStri
     manager.LoadProject( pro.GetFullPath() );
 
     rv.project = &manager.Prj();
-    rv.board.reset( KI_TEST::ReadBoardFromFileOrStream(
-                            std::string( brdName.GetFullPath().ToUTF8() ) ).release() );
+
+    // A missing or unreadable board file leaves rv.board null: the caller reports it.
+    try
+    {
+        rv.board.reset( KI_TEST::ReadBoardFromFileOrStream( std::string( brdName.GetFullPath().ToUTF8() ) ).release() );
+    }
+    catch( const std::exception& e )
+    {
+        fprintf( stderr, "Could not read board '%s': %s\n", (const char*) brdName.GetFullPath().ToUTF8(), e.what() );
+    }
+
+    if( !rv.board )
+        return rv;
+
     rv.board->SetProject( rv.project );
 
     if( rulesFilePath )
@@ -106,8 +118,8 @@ int runDRCProto( PROJECT_CONTEXT project, std::shared_ptr<KIGFX::VIEW_OVERLAY> a
 
     drcEngine->SetBoard( project.board.get() );
     drcEngine->SetDesignSettings( &project.board->GetDesignSettings() );
-    drcEngine->SetLogReporter( new CONSOLE_MSG_REPORTER ( &consoleLog ) );
-    drcEngine->SetProgressReporter( new CONSOLE_PROGRESS_REPORTER ( &consoleLog ) );
+    drcEngine->SetLogReporter( new CONSOLE_MSG_REPORTER( &consoleLog ) );
+    drcEngine->SetProgressReporter( new CONSOLE_PROGRESS_REPORTER( &consoleLog ) );
 
     drcEngine->SetViolationHandler(
             [&]( const std::shared_ptr<DRC_ITEM>&, const VECTOR2I&, int, const std::function<void( PCB_MARKER* )>& )
