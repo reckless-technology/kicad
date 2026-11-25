@@ -223,7 +223,12 @@ IMPLEMENT_APP_NO_MAIN(APP_TEST);
 
 int main( int argc, char** argv )
 {
-    wxInitialize( argc, argv );
+    // Initialize wxWidgets exactly once.  wxEntryStart() creates the wxApp (whose constructor
+    // registers the PGM_BASE, so Pgm() is usable afterwards) and brings wx up, which InitPgm()
+    // needs.  Calling wxInitialize() and then wxEntry() would initialize wx twice, which a
+    // debug-asserting wx build stops on ("initializing twice?").  The rest mirrors wxEntry().
+    if( !wxEntryStart( argc, argv ) )
+        return -1;
 
 #ifdef TEST_APP_GUI
     Pgm().InitPgm( false );
@@ -231,11 +236,17 @@ int main( int argc, char** argv )
     Pgm().InitPgm( true );
 #endif
 
-    auto ret = wxEntry( argc, argv );
+    int ret = -1;
+
+    if( wxTheApp->CallOnInit() )
+    {
+        ret = wxTheApp->OnRun();
+        wxTheApp->OnExit();
+    }
 
     // This causes some glib warnings on GTK3 (http://trac.wxwidgets.org/ticket/18274)
     // but without it, Valgrind notices a lot of leaks from WX
-    wxUninitialize();
+    wxEntryCleanup();
 
     return ret;
 }
