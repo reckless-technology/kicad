@@ -158,9 +158,16 @@ bool HEADLESS_PCB_CONTEXT::SaveBoardAs( const wxString& aFileName )
     wxFileName pro( boardPath );
     pro.SetExt( FILEEXT::ProjectFileExtension );
 
+    // The project is read-only when another process holds the lock on the old location. That
+    // says nothing about the new one, which nobody has opened, so it must not stop the project
+    // file being written there.
+    if( PROJECT* project = m_board->GetProject() )
+        project->SetReadOnly( false );
+
     Pgm().GetSettingsManager().SaveProjectAs( pro.GetFullPath(), m_board->GetProject() );
 
-    return true;
+    // Report a project file that was not written rather than claim the save worked
+    return pro.FileExists();
 }
 
 
