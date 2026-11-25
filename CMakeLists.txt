@@ -32,6 +32,12 @@ if (POLICY CMP0141)
   cmake_policy(SET CMP0141 NEW)
 endif (POLICY CMP0141)
 
+#  Find Boost through the BoostConfig.cmake that Boost 1.70 and newer install, which is what every find_package( Boost )
+#  here already finds, and not through the FindBoost module that CMake 3.30 deprecates (it warns at every call)
+if (POLICY CMP0167)
+  cmake_policy(SET CMP0167 NEW)
+endif (POLICY CMP0167)
+
 #  Drop repeated libraries from link lines on linkers that resolve archives in any order
 #  (Apple ld, MSVC), which warn about the repeats; GNU ld keeps them, as it needs them
 if (POLICY CMP0156)
