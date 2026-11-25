@@ -64,6 +64,9 @@ const char* const FAB_BOARD = "rectangular_holes/fab.kicad_pcb";
 /// The number of rectangular holes in FAB_BOARD.
 const int FAB_RECTANGULAR_HOLE_COUNT = 4;
 
+/// The number of oval slots in FAB_BOARD.
+const int FAB_SLOT_COUNT = 1;
+
 
 std::string slurp( const std::filesystem::path& aPath )
 {
@@ -175,14 +178,34 @@ bool containsPoint( const std::vector<VECTOR2D>& aPoints, const VECTOR2D& aPoint
 }
 
 
-/// The keepouts of the unplated 3 x 2 mm rectangle's image, exported with that pad turned @p aDegrees.
-std::vector<DSN_KEEPOUT> exportUnplatedRectangleKeepouts( double aDegrees, double& aClearanceUm, bool& aHasPin )
+/// The distance from @p aPoint to the rectangle of half size @p aHalfX by @p aHalfY turned @p aDegrees
+/// about the origin, zero inside it.
+double distanceToTurnedRectangle( const VECTOR2D& aPoint, double aHalfX, double aHalfY, double aDegrees )
+{
+    const double angle = -aDegrees * M_PI / 180.0;
+    const double x = aPoint.x * std::cos( angle ) - aPoint.y * std::sin( angle );
+    const double y = aPoint.x * std::sin( angle ) + aPoint.y * std::cos( angle );
+
+    return std::hypot( std::max( std::abs( x ) - aHalfX, 0.0 ), std::max( std::abs( y ) - aHalfY, 0.0 ) );
+}
+
+
+/// The keepouts of the unplated 3 x 2 mm rectangle's image, exported with that pad turned @p aDegrees
+/// and the board's hole clearance set to @p aClearanceUm, or left as the board has it when that is
+/// negative.  Returns the clearance used in @p aClearanceUm and the board's arc error in @p aMaxErrorUm.
+std::vector<DSN_KEEPOUT> exportUnplatedRectangleKeepouts( double aDegrees, double& aClearanceUm, double& aMaxErrorUm,
+                                                          bool& aHasPin )
 {
     LOCALE_IO              toggle;
     std::unique_ptr<BOARD> board = KI_TEST::RequireBoardFromPcbnewQAData( FAB_BOARD );
 
     padOf( *board, wxT( "NR" ) )->SetFPRelativeOrientation( EDA_ANGLE( aDegrees, DEGREES_T ) );
+
+    if( aClearanceUm >= 0.0 )
+        board->GetDesignSettings().m_HoleClearance = pcbIUScale.mmToIU( aClearanceUm / 1000.0 );
+
     aClearanceUm = pcbIUScale.IUTomm( board->GetDesignSettings().m_HoleClearance ) * 1000.0;
+    aMaxErrorUm = pcbIUScale.IUTomm( padOf( *board, wxT( "NR" ) )->GetMaxError() ) * 1000.0;
 
     KI_TEST::SCOPED_TEMP_DIR    outDir( wxS( "kicad_rect_hole_dsn" ) );
     const std::filesystem::path dsnPath = outDir.Path() / "fab.dsn";
@@ -256,29 +279,29 @@ BOOST_AUTO_TEST_SUITE( ExporterRectangularHoles )
 
 
 // Specctra's padstack describes copper and has no hole, so a hole reaches the router only as an
-// image keepout.  A rectangle with no copper outside it is that keepout, grown by the hole
-// clearance as the round one is, instead of a padstack of the copper inside the hole.
+// image keepout.  A rectangle with no copper outside it is that keepout instead of a padstack of the
+// copper inside the hole.  With no hole clearance it is the rectangle itself, a rect when square
+// to the image.
 BOOST_AUTO_TEST_CASE( SpecctraKeepsOutTheRectangle )
 {
     double clearanceUm = 0.0;
+    double maxErrorUm = 0.0;
     bool   hasPin = true;
 
-    std::vector<DSN_KEEPOUT> keepouts = exportUnplatedRectangleKeepouts( 0.0, clearanceUm, hasPin );
+    std::vector<DSN_KEEPOUT> keepouts = exportUnplatedRectangleKeepouts( 0.0, clearanceUm, maxErrorUm, hasPin );
 
     BOOST_CHECK_MESSAGE( !hasPin, "the unplated rectangle is still a pin" );
     BOOST_REQUIRE_EQUAL( keepouts.size(), 2 ); // one per copper layer
-
-    const double halfX = 1500.0 + clearanceUm;
-    const double halfY = 1000.0 + clearanceUm;
+    BOOST_REQUIRE_EQUAL( clearanceUm, 0.0 );
 
     for( const DSN_KEEPOUT& keepout : keepouts )
     {
         BOOST_CHECK_EQUAL( keepout.m_shape, "rect" );
         BOOST_REQUIRE_EQUAL( keepout.m_numbers.size(), 4 );
-        BOOST_CHECK_CLOSE( keepout.m_numbers[0], -halfX, 1e-6 );
-        BOOST_CHECK_CLOSE( keepout.m_numbers[1], -halfY, 1e-6 );
-        BOOST_CHECK_CLOSE( keepout.m_numbers[2], halfX, 1e-6 );
-        BOOST_CHECK_CLOSE( keepout.m_numbers[3], halfY, 1e-6 );
+        BOOST_CHECK_CLOSE( keepout.m_numbers[0], -1500.0, 1e-6 );
+        BOOST_CHECK_CLOSE( keepout.m_numbers[1], -1000.0, 1e-6 );
+        BOOST_CHECK_CLOSE( keepout.m_numbers[2], 1500.0, 1e-6 );
+        BOOST_CHECK_CLOSE( keepout.m_numbers[3], 1000.0, 1e-6 );
     }
 
     BOOST_CHECK( keepouts[0].m_layer != keepouts[1].m_layer );
@@ -289,15 +312,16 @@ BOOST_AUTO_TEST_CASE( SpecctraKeepsOutTheRectangle )
 BOOST_AUTO_TEST_CASE( SpecctraKeepsOutTheTurnedRectangle )
 {
     double clearanceUm = 0.0;
+    double maxErrorUm = 0.0;
     bool   hasPin = true;
 
-    std::vector<DSN_KEEPOUT> keepouts = exportUnplatedRectangleKeepouts( 30.0, clearanceUm, hasPin );
+    std::vector<DSN_KEEPOUT> keepouts = exportUnplatedRectangleKeepouts( 30.0, clearanceUm, maxErrorUm, hasPin );
 
     BOOST_CHECK_MESSAGE( !hasPin, "the unplated rectangle is still a pin" );
     BOOST_REQUIRE_EQUAL( keepouts.size(), 2 );
 
     // KiCad's 30 degrees is counterclockwise as seen, so in the DSN's Y-up frame too
-    std::vector<VECTOR2D> expected = turnedCorners( 1500.0 + clearanceUm, 1000.0 + clearanceUm, 30.0 );
+    std::vector<VECTOR2D> expected = turnedCorners( 1500.0, 1000.0, 30.0 );
 
     for( const DSN_KEEPOUT& keepout : keepouts )
     {
@@ -318,6 +342,92 @@ BOOST_AUTO_TEST_CASE( SpecctraKeepsOutTheTurnedRectangle )
         {
             BOOST_CHECK_MESSAGE( containsPoint( vertices, corner, 0.05 ),
                                  "corner (" << corner.x << ", " << corner.y << ") missing from the keepout" );
+        }
+    }
+}
+
+
+// With a hole clearance the outline is the rectangle with its corners rounded to the clearance, written
+// as a polygon whose arcs are approximated on the outside, within the board's arc error
+BOOST_AUTO_TEST_CASE( SpecctraKeepsOutTheRectangleWithRoundedCorners )
+{
+    for( double degrees : { 0.0, 30.0 } )
+    {
+        double clearanceUm = -1.0; // as the board has it
+        double maxErrorUm = 0.0;
+        bool   hasPin = true;
+
+        std::vector<DSN_KEEPOUT> keepouts = exportUnplatedRectangleKeepouts( degrees, clearanceUm, maxErrorUm, hasPin );
+
+        BOOST_REQUIRE_GT( clearanceUm, 0.0 );
+        BOOST_REQUIRE_GT( maxErrorUm, 0.0 );
+        BOOST_CHECK_MESSAGE( !hasPin, "the unplated rectangle is still a pin" );
+        BOOST_REQUIRE_EQUAL( keepouts.size(), 2 );
+
+        for( const DSN_KEEPOUT& keepout : keepouts )
+        {
+            // Even square to the image it is no longer a rect: a rect has sharp corners
+            BOOST_CHECK_EQUAL( keepout.m_shape, "polygon" );
+            BOOST_REQUIRE_GT( keepout.m_numbers.size(), 1 + 2 * 12 );
+            BOOST_CHECK_EQUAL( keepout.m_numbers[0], 0.0 );
+
+            std::vector<VECTOR2D> vertices;
+
+            for( size_t ii = 1; ii + 1 < keepout.m_numbers.size(); ii += 2 )
+                vertices.emplace_back( keepout.m_numbers[ii], keepout.m_numbers[ii + 1] );
+
+            BOOST_CHECK_SMALL( ( vertices.front() - vertices.back() ).EuclideanNorm(), 1e-9 );
+            vertices.pop_back();
+
+            // Every vertex is on the clearance, and the chords between them are outside it by at most
+            // the arc error: the polygon covers the true outline and exceeds it by no more than that
+            const double slack = 0.01;
+
+            for( size_t ii = 0; ii < vertices.size(); ++ii )
+            {
+                const VECTOR2D& vertex = vertices[ii];
+                const VECTOR2D& next = vertices[( ii + 1 ) % vertices.size()];
+                const VECTOR2D  middle = ( vertex + next ) / 2.0;
+
+                const double vertexDistance = distanceToTurnedRectangle( vertex, 1500.0, 1000.0, degrees );
+                const double middleDistance = distanceToTurnedRectangle( middle, 1500.0, 1000.0, degrees );
+
+                BOOST_CHECK_MESSAGE( vertexDistance >= clearanceUm - slack
+                                             && vertexDistance <= clearanceUm + maxErrorUm + slack,
+                                     "vertex (" << vertex.x << ", " << vertex.y << ") is " << vertexDistance
+                                                << " um from the hole" );
+                BOOST_CHECK_MESSAGE( middleDistance >= clearanceUm - slack
+                                             && middleDistance <= clearanceUm + maxErrorUm + slack,
+                                     "edge midpoint (" << middle.x << ", " << middle.y << ") is " << middleDistance
+                                                       << " um from the hole" );
+            }
+
+            // The straight sides are at the clearance: the four sharp corners of the old outline,
+            // which lay sqrt(2) times the clearance out, are not in the polygon
+            for( const VECTOR2D& sharp : turnedCorners( 1500.0 + clearanceUm, 1000.0 + clearanceUm, degrees ) )
+            {
+                BOOST_CHECK_MESSAGE( !containsPoint( vertices, sharp, clearanceUm / 4.0 ),
+                                     "the sharp corner (" << sharp.x << ", " << sharp.y << ") is still there" );
+            }
+
+            // Each side's two ends are there, where the arc meets the straight side
+            for( const VECTOR2D& end : turnedCorners( 1500.0, 1000.0, degrees ) )
+            {
+                int near = 0;
+
+                for( const VECTOR2D& vertex : vertices )
+                    near += ( vertex - end ).EuclideanNorm() < clearanceUm + maxErrorUm + 0.01 ? 1 : 0;
+
+                // Both ends of the arc and more than the one a bevel would add between them
+                BOOST_CHECK_GE( near, 4 );
+            }
+
+            // The rounded corners trade the arcs' vertices for the sharp ones, so each corner has several
+            BOOST_CHECK_MESSAGE( vertices.size() % 4 == 0 && vertices.size() / 4 >= 3,
+                                 "vertex count " << vertices.size() << " is not at least three per corner" );
+            BOOST_TEST_MESSAGE( "turned " << degrees << " degrees: " << vertices.size() << " vertices, "
+                                          << vertices.size() / 4 << " per corner at a clearance of " << clearanceUm
+                                          << " um and an arc error of " << maxErrorUm << " um" );
         }
     }
 }
@@ -381,9 +491,9 @@ BOOST_AUTO_TEST_CASE( IdfCutsOutTheRectangle )
 }
 
 
-// A HyperLynx padstack's drill is one diameter, so the rectangles are written round and reported
-// once for the export
-BOOST_AUTO_TEST_CASE( HyperlynxReportsTheRectangleOnce )
+// A HyperLynx padstack's drill is one diameter, so the rectangles and the slot are written round and
+// reported once each for the export
+BOOST_AUTO_TEST_CASE( HyperlynxReportsTheRectangleAndSlotOnce )
 {
     LOCALE_IO              toggle;
     std::unique_ptr<BOARD> board = KI_TEST::RequireBoardFromPcbnewQAData( FAB_BOARD );
@@ -396,6 +506,10 @@ BOOST_AUTO_TEST_CASE( HyperlynxReportsTheRectangleOnce )
     BOOST_CHECK_EQUAL( countOccurrences( reporter.GetMessages(), wxT( "Hyperlynx has no rectangular hole" ) ), 1 );
     BOOST_CHECK( reporter.GetMessages().Contains(
             wxString::Format( wxT( ": %d rectangular pad holes" ), FAB_RECTANGULAR_HOLE_COUNT ) ) );
+
+    // The oval slot is written round too, and reported once, apart from the rectangles
+    BOOST_CHECK_EQUAL( countOccurrences( reporter.GetMessages(), wxT( "Hyperlynx has no oval slot" ) ), 1 );
+    BOOST_CHECK( reporter.GetMessages().Contains( wxString::Format( wxT( ": %d oval pad slots" ), FAB_SLOT_COUNT ) ) );
 
     // Without a rectangular hole there is nothing to report
     for( FOOTPRINT* footprint : board->Footprints() )
@@ -411,12 +525,27 @@ BOOST_AUTO_TEST_CASE( HyperlynxReportsTheRectangleOnce )
 
     BOOST_REQUIRE( ExportBoardToHyperlynxFile( board.get(), outDir.PathStr() + wxT( "/oval.hyp" ), &roundReporter ) );
     BOOST_CHECK( !roundReporter.GetMessages().Contains( wxT( "rectangular hole" ) ) );
+
+    // The three rectangles that are not square are slots now, with the oval one; the square is a round hole
+    BOOST_CHECK( roundReporter.GetMessages().Contains( wxString::Format( wxT( ": %d oval pad slots" ), 4 ) ) );
+
+    // With only round holes there is nothing to report
+    for( FOOTPRINT* footprint : board->Footprints() )
+    {
+        for( PAD* pad : footprint->Pads() )
+            pad->SetDrillShape( PAD_DRILL_SHAPE::CIRCLE );
+    }
+
+    WX_STRING_REPORTER silentReporter;
+
+    BOOST_REQUIRE( ExportBoardToHyperlynxFile( board.get(), outDir.PathStr() + wxT( "/round.hyp" ), &silentReporter ) );
+    BOOST_CHECK_MESSAGE( silentReporter.GetMessages().IsEmpty(), silentReporter.GetMessages() );
 }
 
 
-// GenCAD's pads and padstacks carry one drill size, so the rectangles are written round and
-// reported once for the export
-BOOST_AUTO_TEST_CASE( GencadReportsTheRectangleOnce )
+// GenCAD's pads and padstacks carry one drill size, so the rectangles and the slot are written round and
+// reported once each for the export
+BOOST_AUTO_TEST_CASE( GencadReportsTheRectangleAndSlotOnce )
 {
     LOCALE_IO              toggle;
     std::unique_ptr<BOARD> board = KI_TEST::RequireBoardFromPcbnewQAData( FAB_BOARD );
@@ -432,6 +561,10 @@ BOOST_AUTO_TEST_CASE( GencadReportsTheRectangleOnce )
     BOOST_CHECK( reporter.GetMessages().Contains(
             wxString::Format( wxT( ": %d rectangular pad holes" ), FAB_RECTANGULAR_HOLE_COUNT ) ) );
 
+    // The oval slot is written round too, and reported once, apart from the rectangles
+    BOOST_CHECK_EQUAL( countOccurrences( reporter.GetMessages(), wxT( "GenCAD has no oval slot" ) ), 1 );
+    BOOST_CHECK( reporter.GetMessages().Contains( wxString::Format( wxT( ": %d oval pad slots" ), FAB_SLOT_COUNT ) ) );
+
     for( FOOTPRINT* footprint : board->Footprints() )
     {
         for( PAD* pad : footprint->Pads() )
@@ -446,6 +579,22 @@ BOOST_AUTO_TEST_CASE( GencadReportsTheRectangleOnce )
     roundExporter.SetReporter( &roundReporter );
     BOOST_REQUIRE( roundExporter.WriteFile( outDir.PathStr() + wxT( "/oval.cad" ) ) );
     BOOST_CHECK( !roundReporter.GetMessages().Contains( wxT( "rectangular hole" ) ) );
+
+    // The three rectangles that are not square are slots now, with the oval one; the square is a round hole
+    BOOST_CHECK( roundReporter.GetMessages().Contains( wxString::Format( wxT( ": %d oval pad slots" ), 4 ) ) );
+
+    // With only round holes there is nothing to report
+    for( FOOTPRINT* footprint : board->Footprints() )
+    {
+        for( PAD* pad : footprint->Pads() )
+            pad->SetDrillShape( PAD_DRILL_SHAPE::CIRCLE );
+    }
+
+    WX_STRING_REPORTER silentReporter;
+    GENCAD_EXPORTER    silentExporter( board.get() );
+    silentExporter.SetReporter( &silentReporter );
+    BOOST_REQUIRE( silentExporter.WriteFile( outDir.PathStr() + wxT( "/round.cad" ) ) );
+    BOOST_CHECK_MESSAGE( silentReporter.GetMessages().IsEmpty(), silentReporter.GetMessages() );
 }
 
 

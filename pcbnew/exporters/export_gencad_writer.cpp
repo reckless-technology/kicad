@@ -245,28 +245,45 @@ bool GENCAD_EXPORTER::WriteFile( const wxString& aFullFileName )
 void GENCAD_EXPORTER::reportRoundedHoles()
 {
     int roundedHoleCount = 0;
+    int roundedSlotCount = 0;
 
-    // A GenCAD pad and padstack carry a single drill size, so a rectangular hole is written round
+    // A GenCAD pad and padstack carry a single drill size, so a rectangular hole or an oval slot
+    // is written round
     for( FOOTPRINT* footprint : m_board->Footprints() )
     {
         for( PAD* pad : footprint->Pads() )
         {
-            if( pad->GetDrillShape() == PAD_DRILL_SHAPE::RECTANGLE && pad->GetDrillSize().x > 0 )
+            const VECTOR2I drill = pad->GetDrillSize();
+
+            if( pad->GetDrillShape() == PAD_DRILL_SHAPE::RECTANGLE && drill.x > 0 )
                 roundedHoleCount++;
+            else if( pad->GetDrillShape() == PAD_DRILL_SHAPE::OBLONG && drill.x > 0 && drill.y > 0
+                     && drill.x != drill.y )
+                roundedSlotCount++;
         }
     }
 
-    if( roundedHoleCount == 0 )
-        return;
+    auto report = [this]( const wxString& aMessage )
+    {
+        if( m_reporter )
+            m_reporter->Report( aMessage, RPT_SEVERITY_WARNING );
+        else
+            wxLogWarning( aMessage );
+    };
 
-    wxString msg = wxString::Format( _( "GenCAD has no rectangular hole: %d rectangular pad holes have been "
-                                        "exported as round holes of their X size." ),
-                                     roundedHoleCount );
+    if( roundedHoleCount > 0 )
+    {
+        report( wxString::Format( _( "GenCAD has no rectangular hole: %d rectangular pad holes have been "
+                                     "exported as round holes of their X size." ),
+                                  roundedHoleCount ) );
+    }
 
-    if( m_reporter )
-        m_reporter->Report( msg, RPT_SEVERITY_WARNING );
-    else
-        wxLogWarning( msg );
+    if( roundedSlotCount > 0 )
+    {
+        report( wxString::Format( _( "GenCAD has no oval slot: %d oval pad slots have been exported as "
+                                     "round holes of their X size." ),
+                                  roundedSlotCount ) );
+    }
 }
 
 

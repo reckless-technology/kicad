@@ -450,6 +450,7 @@ bool HYPERLYNX_EXPORTER::writeDevices()
 bool HYPERLYNX_EXPORTER::writePadStacks()
 {
     int roundedHoleCount = 0;
+    int roundedSlotCount = 0;
 
     for( FOOTPRINT* footprint : m_board->Footprints() )
     {
@@ -461,6 +462,11 @@ bool HYPERLYNX_EXPORTER::writePadStacks()
             // A padstack's drill is a single diameter, so a rectangular hole can only be written round
             if( pad->GetDrillShape() == PAD_DRILL_SHAPE::RECTANGLE && pad->GetDrillSize().x > 0 && !ps->IsEmpty() )
                 roundedHoleCount++;
+
+            // Likewise an oval slot, whose two sizes differ, is written round of its X size
+            if( pad->GetDrillShape() == PAD_DRILL_SHAPE::OBLONG && pad->GetDrillSize().x > 0
+                && pad->GetDrillSize().y > 0 && pad->GetDrillSize().x != pad->GetDrillSize().y && !ps->IsEmpty() )
+                roundedSlotCount++;
         }
     }
 
@@ -469,6 +475,18 @@ bool HYPERLYNX_EXPORTER::writePadStacks()
         wxString msg = wxString::Format( _( "Hyperlynx has no rectangular hole: %d rectangular pad holes have been "
                                             "exported as round holes of their X size." ),
                                          roundedHoleCount );
+
+        if( m_reporter )
+            m_reporter->Report( msg, RPT_SEVERITY_WARNING );
+        else
+            wxLogWarning( msg );
+    }
+
+    if( roundedSlotCount > 0 )
+    {
+        wxString msg = wxString::Format( _( "Hyperlynx has no oval slot: %d oval pad slots have been exported as "
+                                            "round holes of their X size." ),
+                                         roundedSlotCount );
 
         if( m_reporter )
             m_reporter->Report( msg, RPT_SEVERITY_WARNING );
