@@ -63,8 +63,7 @@ PNS_LOG_VIEWER_OVERLAY::PNS_LOG_VIEWER_OVERLAY( KIGFX::GAL* aGal )
 }
 
 
-void PNS_LOG_VIEWER_OVERLAY::AnnotatedPolyset( const SHAPE_POLY_SET& aPolyset, std::string aName,
-                                               bool aShowVertexNumbers )
+void PNS_LOG_VIEWER_OVERLAY::AnnotatedPolyset( const SHAPE_POLY_SET& aPolyset, std::string aName, bool )
 {
     for( int i = 0; i < aPolyset.OutlineCount(); i++ )
     {
@@ -100,7 +99,7 @@ void PNS_LOG_VIEWER_OVERLAY::ClearAnnotations()
 }
 
 
-void PNS_LOG_VIEWER_OVERLAY::AnnotatedPoint( const VECTOR2I p, int size, std::string name, bool aShowVertexNumbers )
+void PNS_LOG_VIEWER_OVERLAY::AnnotatedPoint( const VECTOR2I p, int size, std::string name, bool )
 {
     Line( p + VECTOR2D( size, size ), p - VECTOR2D( size, size ) );
     Line( p + VECTOR2D( -size, size ), p - VECTOR2D( -size, size ) );
@@ -278,7 +277,7 @@ void PNS_LOG_VIEWER_FRAME::drawSimpleShape( SHAPE* aShape, bool aIsSelected, con
 }
 
 
-void PNS_LOG_VIEWER_FRAME::drawLoggedItems( int iter )
+void PNS_LOG_VIEWER_FRAME::drawLoggedItems( int )
 {
     if( !m_logPlayer )
         return;
@@ -306,7 +305,6 @@ void PNS_LOG_VIEWER_FRAME::drawLoggedItems( int iter )
         for( auto& sh : ent->m_shapes )
         {
             COLOR4D color = ent->m_color;
-            int lineWidth = ent->m_width;
 
             m_overlay->SetIsStroke( true );
             m_overlay->SetIsFill( false );
@@ -388,10 +386,7 @@ void PNS_LOG_VIEWER_FRAME::SetLogFile( PNS_LOG_FILE* aLog )
     auto extents = m_board->GetBoundingBox();
 
 
-    BOX2D bbd;
-    bbd.SetOrigin( extents.GetOrigin() );
-    bbd.SetWidth( extents.GetWidth() );
-    bbd.SetHeight( extents.GetHeight() );
+    BOX2D bbd( VECTOR2D( extents.GetOrigin() ), VECTOR2D( extents.GetSize() ) );
     bbd.Inflate( std::min( bbd.GetWidth(), bbd.GetHeight() ) / 5 );
 
     m_galPanel->GetView()->SetViewport( bbd );
@@ -409,10 +404,7 @@ void PNS_LOG_VIEWER_FRAME::SetBoard2( std::shared_ptr<BOARD> aBoard )
     updateViewerIface();
     auto extents = m_board->GetBoundingBox();
 
-    BOX2D bbd;
-    bbd.SetOrigin( extents.GetOrigin() );
-    bbd.SetWidth( extents.GetWidth() );
-    bbd.SetHeight( extents.GetHeight() );
+    BOX2D bbd( VECTOR2D( extents.GetOrigin() ), VECTOR2D( extents.GetSize() ) );
     bbd.Inflate( std::min( bbd.GetWidth(), bbd.GetHeight() ) / 5 );
 
     m_galPanel->GetView()->SetViewport( bbd );
@@ -422,7 +414,7 @@ void PNS_LOG_VIEWER_FRAME::SetBoard2( std::shared_ptr<BOARD> aBoard )
 }
 
 
-void PNS_LOG_VIEWER_FRAME::onOpen( wxCommandEvent& event )
+void PNS_LOG_VIEWER_FRAME::onOpen( wxCommandEvent& )
 {
     wxFileDialog dlg( this, "Select Log File", m_mruPath, wxEmptyString,
                       "PNS log files" + AddFileExtListToFilter( { "log" } ),
@@ -439,7 +431,7 @@ void PNS_LOG_VIEWER_FRAME::onOpen( wxCommandEvent& event )
 }
 
 
-void PNS_LOG_VIEWER_FRAME::onSaveAs( wxCommandEvent& event )
+void PNS_LOG_VIEWER_FRAME::onSaveAs( wxCommandEvent& )
 {
     if( !m_logFile )
     {
@@ -475,13 +467,13 @@ void PNS_LOG_VIEWER_FRAME::onSaveAs( wxCommandEvent& event )
 }
 
 
-void PNS_LOG_VIEWER_FRAME::onExit( wxCommandEvent& event )
+void PNS_LOG_VIEWER_FRAME::onExit( wxCommandEvent& )
 {
     Close();
 }
 
 
-void PNS_LOG_VIEWER_FRAME::onListChecked( wxTreeListEvent& event )
+void PNS_LOG_VIEWER_FRAME::onListChecked( wxTreeListEvent& )
 {
     syncModel();
     drawLoggedItems( m_rewindIter );
@@ -520,7 +512,7 @@ void PNS_LOG_VIEWER_FRAME::onRewindScroll( wxScrollEvent& event )
 }
 
 
-void PNS_LOG_VIEWER_FRAME::onBtnRewindLeft( wxCommandEvent& event )
+void PNS_LOG_VIEWER_FRAME::onBtnRewindLeft( wxCommandEvent& )
 {
     if( m_rewindIter > 0 )
     {
@@ -534,7 +526,7 @@ void PNS_LOG_VIEWER_FRAME::onBtnRewindLeft( wxCommandEvent& event )
 }
 
 
-void PNS_LOG_VIEWER_FRAME::onBtnRewindRight( wxCommandEvent& event )
+void PNS_LOG_VIEWER_FRAME::onBtnRewindRight( wxCommandEvent& )
 {
     auto dbgd = m_logPlayer->GetDebugDecorator();
     int  count = dbgd->GetStageCount();
@@ -550,7 +542,7 @@ void PNS_LOG_VIEWER_FRAME::onBtnRewindRight( wxCommandEvent& event )
     }
 }
 
-void PNS_LOG_VIEWER_FRAME::onFilterText( wxCommandEvent& event )
+void PNS_LOG_VIEWER_FRAME::onFilterText( wxCommandEvent& )
 {
     m_searchString = m_filterString->GetValue();
     updateDumpPanel( m_rewindIter );
@@ -613,7 +605,7 @@ void runCommand( const wxString& aCommand )
 }
 
 
-void PNS_LOG_VIEWER_FRAME::onListRightClick( wxMouseEvent& event )
+void PNS_LOG_VIEWER_FRAME::onListRightClick( wxMouseEvent& )
 {
     auto sel = m_itemList->GetPopupMenuSelectionFromUser( *m_listPopupMenu );
 
@@ -899,18 +891,6 @@ static void expandAllChildren( wxTreeListCtrl* tree, int maxLevel = -1 )
     }
 }
 
-static void collapseAllChildren( wxTreeListCtrl* tree )
-{
-    wxTreeListItem child = tree->GetFirstItem ();
-
-    while( child.IsOk() )
-    {
-        tree->Collapse ( child );
-        child = tree->GetNextItem( child );
-    }
-}
-
-
 static void forceSelected( wxTreeListCtrl* tree, PNS_DEBUG_SHAPE* aEntry )
 {
     wxTreeListItem child = tree->GetFirstItem ();
@@ -1016,7 +996,7 @@ void PNS_LOG_VIEWER_FRAME::updatePnsPreviewItems( int iter )
     view->SetVisible( m_previewItems.get(), true );
 
     view->Update( m_previewItems.get() );
-    printf("DBG vgrp %p total %d\n", m_previewItems.get(), m_previewItems->GetSize() );
+    printf( "DBG vgrp %p total %d\n", static_cast<void*>( m_previewItems.get() ), m_previewItems->GetSize() );
 
 
     //view->UpdateAllItems( KIGFX::ALL );

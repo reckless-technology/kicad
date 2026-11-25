@@ -45,7 +45,9 @@ static bool g_updateGolden = false;
 
 struct PNS_TEST_CASE
 {
-    PNS_TEST_CASE( const wxString & aName, const wxString& aPath ) : m_name( aName ), m_dataPath( aPath ){};
+    PNS_TEST_CASE( const wxString& aName, const wxString& aPath ) :
+            m_dataPath( aPath ),
+            m_name( aName ) {};
 
     wxString GetDataPath() const { return m_dataPath; }
     wxString GetName() const { return m_name; }

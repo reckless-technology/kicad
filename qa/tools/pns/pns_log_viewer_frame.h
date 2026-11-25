@@ -54,28 +54,26 @@ public:
     ~PNS_VIEWER_IFACE() override{};
 
     void EraseView() override {};
-    void SyncWorld( PNS::NODE* aWorld ) override {};
-    bool IsAnyLayerVisible( const PNS_LAYER_RANGE& aLayer ) const override { return true; };
-    bool IsFlashedOnLayer( const PNS::ITEM* aItem, int aLayer ) const override { return false; };
-    bool IsFlashedOnLayer( const PNS::ITEM* aItem, const PNS_LAYER_RANGE& aLayer ) const override { return false; };
-    bool IsItemVisible( const PNS::ITEM* aItem ) const override { return true; };
-    bool IsPNSCopperLayer( int aLayer ) const override { return false; };
-    void HideItem( PNS::ITEM* aItem ) override {}
-    void DisplayItem( const PNS::ITEM* aItem, int aClearance, bool aEdit = false,
-                      int aFlags = 0 ) override {}
-    void DisplayPathLine( const SHAPE_LINE_CHAIN& aLine, int aImportance ) override {}
-    void DisplayRatline( const SHAPE_LINE_CHAIN& aRatline, PNS::NET_HANDLE aNet ) override {}
-    void AddItem( PNS::ITEM* aItem ) override {}
-    void UpdateItem( PNS::ITEM* aItem ) override {}
-    void RemoveItem( PNS::ITEM* aItem ) override {}
+    void SyncWorld( PNS::NODE* ) override {};
+    bool IsAnyLayerVisible( const PNS_LAYER_RANGE& ) const override { return true; };
+    bool IsFlashedOnLayer( const PNS::ITEM*, int ) const override { return false; };
+    bool IsFlashedOnLayer( const PNS::ITEM*, const PNS_LAYER_RANGE& ) const override { return false; };
+    bool IsItemVisible( const PNS::ITEM* ) const override { return true; };
+    bool IsPNSCopperLayer( int ) const override { return false; };
+    void HideItem( PNS::ITEM* ) override {}
+    void DisplayItem( const PNS::ITEM*, int, bool = false, int = 0 ) override {}
+    void DisplayPathLine( const SHAPE_LINE_CHAIN&, int ) override {}
+    void DisplayRatline( const SHAPE_LINE_CHAIN&, PNS::NET_HANDLE ) override {}
+    void AddItem( PNS::ITEM* ) override {}
+    void UpdateItem( PNS::ITEM* ) override {}
+    void RemoveItem( PNS::ITEM* ) override {}
     void Commit() override {}
-    bool ImportSizes( PNS::SIZES_SETTINGS& aSizes, PNS::ITEM* aStartItem,
-                      PNS::NET_HANDLE aNet, VECTOR2D aStartPosition ) override { return false; }
-    int StackupHeight( int aFirstLayer, int aSecondLayer ) const override { return 0; }
+    bool ImportSizes( PNS::SIZES_SETTINGS&, PNS::ITEM*, PNS::NET_HANDLE, VECTOR2D ) override { return false; }
+    int  StackupHeight( int, int ) const override { return 0; }
 
-    int GetNetCode( PNS::NET_HANDLE aNet ) const override { return -1; }
-    wxString GetNetName( PNS::NET_HANDLE aNet ) const override { return wxEmptyString; }
-    void UpdateNet( PNS::NET_HANDLE aNet ) override {}
+    int             GetNetCode( PNS::NET_HANDLE ) const override { return -1; }
+    wxString        GetNetName( PNS::NET_HANDLE ) const override { return wxEmptyString; }
+    void            UpdateNet( PNS::NET_HANDLE ) override {}
     PNS::NET_HANDLE GetOrphanedNetHandle() override { return nullptr; }
 
     virtual PNS::NODE* GetWorld() const override { return nullptr; };

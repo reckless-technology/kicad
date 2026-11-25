@@ -42,8 +42,8 @@ static const wxChar tracePnsPlayground[] = wxT( "KICAD_PNS_PLAYGROUND" );
 std::shared_ptr<PNS_LOG_VIEWER_OVERLAY> overlay;
 
 
-static inline bool collide( const SHAPE_LINE_CHAIN& aLhs, const SHAPE_LINE_CHAIN& aRhs,
-                            int aClearance, int* aDistance = nullptr, VECTOR2I* aPt1 = nullptr )
+static inline bool collide( const SHAPE_LINE_CHAIN& aLhs, const SHAPE_LINE_CHAIN& aRhs, int, int* aDistance = nullptr,
+                            VECTOR2I* aPt1 = nullptr )
 {
     wxCHECK( aLhs.PointCount() && aRhs.PointCount(), false );
 
@@ -199,7 +199,7 @@ bool collideArc2Arc( const SHAPE_ARC& a1, const SHAPE_ARC& a2, int clearance, SE
 }
 
 
-int playground_main_func( int argc, char* argv[] )
+int playground_main_func( int, char*[] )
 {
     auto frame = new PNS_LOG_VIEWER_FRAME( nullptr );
     Pgm().App().SetTopWindow( frame );      // wxApp gets a face.
@@ -314,7 +314,7 @@ int playground_main_func( int argc, char* argv[] )
     LABEL_MANAGER labelMgr( frame->GetPanel()->GetGAL() );
     frame->GetPanel()->GetView()->SetViewport( BOX2D( vp.GetOrigin(), vp.GetSize() ) );
 
-    for( int i = 0; i < arcs.size(); i+= 2 )
+    for( size_t i = 0; i < arcs.size(); i += 2 )
     {
         SEG closestDist;
         std::vector<VECTOR2I> ips;
@@ -367,7 +367,7 @@ int playground_main_func( int argc, char* argv[] )
 
     wxLogTrace( tracePnsPlayground, wxS( "Pad 2 has %d outlines." ), pad2Outline.OutlineCount() );
 
-    VECTOR2I pt1, pt2;
+    VECTOR2I pt1;
     int dist = std::numeric_limits<int>::max();
 
     collide( pad1Outline, pad2Outline.Outline( 0 ), dist, &dist, &pt1 );
@@ -388,8 +388,7 @@ int playground_main_func( int argc, char* argv[] )
 }
 
 
-
-int drawShapes( int argc, char* argv[] )
+int drawShapes( int, char*[] )
 {
     SHAPE_ARC arc( VECTOR2I( 206000000, 140110000 ), VECTOR2I( 201574617, 139229737 ),
                    VECTOR2I( 197822958, 136722959 ), 250000 );

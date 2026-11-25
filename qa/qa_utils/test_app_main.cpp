@@ -55,15 +55,11 @@ static struct IFACE : public KIFACE_BASE
             KIFACE_BASE( aName, aType )
     {}
 
-    bool OnKifaceStart( PGM_BASE* aProgram, int aCtlBits, KIWAY* aKiway ) override
-    {
-        return true;
-    }
+    bool OnKifaceStart( PGM_BASE*, int, KIWAY* ) override { return true; }
 
     void OnKifaceEnd() override {}
 
-    wxWindow* CreateKiWindow( wxWindow* aParent, int aClassId, KIWAY* aKiway,
-                              int aCtlBits = 0 ) override
+    wxWindow* CreateKiWindow( wxWindow*, int, KIWAY*, int = 0 ) override
     {
         assert( false );
         return nullptr;
@@ -79,10 +75,7 @@ static struct IFACE : public KIFACE_BASE
      * @param aDataId identifies which object you want the address of.
      * @return the requested object which must be cast into the know type.
      */
-    void* IfaceOrAddress( int aDataId ) override
-    {
-        return nullptr;
-    }
+    void* IfaceOrAddress( int ) override { return nullptr; }
 }
 kiface( "pcb_test_frame", KIWAY::FACE_PCB );
 
