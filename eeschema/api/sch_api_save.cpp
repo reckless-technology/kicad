@@ -244,7 +244,8 @@ bool SaveSchematicAs( SCHEMATIC& aSchematic, PROJECT& aProject, const wxString& 
 
     Pgm().GetSettingsManager().SaveProjectAs( projectFile.GetFullPath(), &aProject );
 
-    return true;
+    // Report a project file that was not written rather than claim the save worked
+    return projectFile.FileExists();
 }
 
 } // namespace SCH_API_SAVE

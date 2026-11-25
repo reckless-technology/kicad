@@ -26,6 +26,9 @@
 
 #include <magic_enum.hpp>
 
+#include <kiplatform/io.h>
+#include <lockfile.h>
+#include <wildcards_and_files_ext.h>
 #include <wx/filefn.h>
 #include <wx/filename.h>
 
@@ -984,6 +987,52 @@ BOOST_FIXTURE_TEST_CASE( SaveDocumentAsSwitchesProject, API_SERVER_E2E_FIXTURE )
 
     Client().CloseAllDocuments();
 }
+
+BOOST_FIXTURE_TEST_CASE( SaveDocumentAsWritesProjectWhenOldProjectIsLocked, API_SERVER_E2E_FIXTURE )
+{
+    BOOST_REQUIRE_MESSAGE( Start(), LastError() );
+
+    TEMP_KITCHEN_SINK_COPY fixtureCopy;
+    wxString               copyError;
+    BOOST_REQUIRE_MESSAGE( fixtureCopy.Create( &copyError ), copyError );
+
+    wxString sourcePath = fixtureCopy.BoardPath();
+
+    // Hold the project's lock on a separate open file, as a second KiCad would, before the board
+    // is opened. The project then opens read-only.
+    wxFileName projectFile( sourcePath );
+    projectFile.SetExt( FILEEXT::ProjectFileExtension );
+
+    KIPLATFORM::IO::FILE_LOCK otherHolder;
+    bool                      created = false;
+    BOOST_REQUIRE( otherHolder.Acquire( LOCKFILE::LockPathFor( projectFile.GetFullPath() ), created )
+                   == KIPLATFORM::IO::FILE_LOCK::STATE::HELD );
+
+    KI_TEST::SCOPED_TEMP_DIR tempDir( "kicad_api_e2e_saveas_locked" );
+
+    kiapi::common::types::DocumentSpecifier document;
+
+    BOOST_REQUIRE_MESSAGE( Client().OpenDocument( sourcePath, &document ),
+                           "OpenDocument failed: " + Client().LastError() );
+
+    // The new location is not locked by anyone, so its project file must be written there
+    wxString subdir = tempDir.CreateChildDirStr( "subdir" );
+
+    kiapi::common::commands::SaveDocumentAs saveAs;
+    saveAs.mutable_document()->CopyFrom( document );
+    saveAs.set_path( ( subdir + wxS( "/moved" ) ).ToStdString() );
+
+    kiapi::common::ApiResponse response;
+    BOOST_REQUIRE_MESSAGE( Client().SendCommand( saveAs, &response ),
+                           "SaveDocumentAs failed to send: " + Client().LastError() );
+
+    BOOST_CHECK( wxFileName( subdir + wxS( "/moved.kicad_pcb" ) ).FileExists() );
+    BOOST_CHECK( wxFileName( subdir + wxS( "/moved.kicad_pro" ) ).FileExists() );
+    BOOST_CHECK( response.status().status() == kiapi::common::AS_OK );
+
+    Client().CloseAllDocuments();
+}
+
 
 BOOST_AUTO_TEST_SUITE_END()
 
