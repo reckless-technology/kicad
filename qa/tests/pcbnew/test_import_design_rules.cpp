@@ -96,6 +96,9 @@ BOOST_AUTO_TEST_CASE( RulesFileFollowsRenamedNets )
     wxString changed;
     wxFile   reread( rulesPath.GetFullPath() );
     BOOST_REQUIRE( reread.ReadAll( &changed, wxConvUTF8 ) );
+
+    // Windows will not delete a file that is still open, so the folder would be left behind
+    reread.Close();
     BOOST_CHECK( changed.Contains( wxS( "A.NetName == 'Net-(R1-Pad1)'" ) ) );
 
     // nothing is left to rename the second time, and a board with no rules has nothing to change
@@ -103,8 +106,8 @@ BOOST_AUTO_TEST_CASE( RulesFileFollowsRenamedNets )
     BOOST_CHECK( !RenameNetsInDesignRulesFile( wxFileName( dir.GetPath(), wxS( "none" ), wxS( "kicad_dru" ) ), names,
                                                NULL_REPORTER::GetInstance() ) );
 
-    wxRemoveFile( rulesPath.GetFullPath() );
-    wxFileName::Rmdir( dir.GetPath() );
+    BOOST_CHECK( wxRemoveFile( rulesPath.GetFullPath() ) );
+    BOOST_CHECK( wxFileName::Rmdir( dir.GetPath() ) );
 }
 
 
