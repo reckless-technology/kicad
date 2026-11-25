@@ -43,18 +43,20 @@
  * Project hole clearance constraint = 0.2 mm -- violated on both copper
  * layers.
  *
- * Pad-allocation order is asserted at fixture creation time so the bug
- * deterministically manifests on common allocators (glibc/msvcrt): the
- * NPTH pad is listed first in the .kicad_pcb so the parser allocates it
- * at a lower address than the PTH, which is the direction the dedup
- * picks and the buggy code short-circuits.
+ * Which direction runs is decided by the dedup, which now compares the two
+ * pads' UUIDs (it compared heap addresses when the bug was fixed, so the
+ * direction then depended on the allocator). The fixture's NPTH pad has the
+ * lower UUID, so the NPTH pad is the iterator: the direction the buggy code
+ * short-circuited. Both directions are tested, the second by swapping the
+ * two pads' UUIDs, and each test asserts the order it relies on.
  *
- * Expected: 2 DRCE_HOLE_CLEARANCE violations (one per shared copper layer;
- * per-layer pad violation behavior is intentional in DRC_TEST_PROVIDER_
- * COPPER_CLEARANCE::testPadClearances).
+ * Expected in both directions: 2 DRCE_HOLE_CLEARANCE violations (one per
+ * shared copper layer; per-layer pad violation behavior is intentional in
+ * DRC_TEST_PROVIDER_COPPER_CLEARANCE::testPadClearances).
  *
- * Pre-fix: 0 violations (the only direction tested gets short-circuited).
- * Post-fix: 2 violations (the swapped direction runs and finds them).
+ * Pre-fix: 0 violations with the NPTH pad as the iterator (the only direction
+ * tested gets short-circuited); 2 with the PTH pad as the iterator.
+ * Post-fix: 2 violations in both directions.
  */
 
 #include <qa_utils/wx_utils/unit_test_utils.h>
@@ -68,6 +70,8 @@
 #include <drc/drc_engine.h>
 #include <settings/settings_manager.h>
 #include <widgets/report_severity.h>
+
+#include <utility>
 
 
 struct DRC_HOLE_CLEARANCE_FIXTURE
@@ -91,31 +95,34 @@ struct DRC_HOLE_CLEARANCE_FIXTURE
 };
 
 
-BOOST_FIXTURE_TEST_CASE( HoleClearanceIssue24355, DRC_HOLE_CLEARANCE_FIXTURE )
+namespace
 {
-    KI_TEST::LoadBoard( m_settingsManager, "issue24355/issue24355", m_board );
+/// Load the fixture and return its NPTH and PTH pads
+std::pair<PAD*, PAD*> loadPads( SETTINGS_MANAGER& aSettingsManager, std::unique_ptr<BOARD>& aBoard )
+{
+    KI_TEST::LoadBoard( aSettingsManager, "issue24355/issue24355", aBoard );
 
-    BOOST_REQUIRE_MESSAGE( m_board, "Failed to load board issue24355" );
-    BOOST_REQUIRE_EQUAL( m_board->Footprints().size(), 1 );
+    BOOST_REQUIRE_MESSAGE( aBoard, "Failed to load board issue24355" );
+    BOOST_REQUIRE_EQUAL( aBoard->Footprints().size(), 1 );
 
-    FOOTPRINT* fp = m_board->Footprints().front();
+    FOOTPRINT* fp = aBoard->Footprints().front();
     BOOST_REQUIRE_EQUAL( fp->Pads().size(), 2 );
 
-    // The bug is direction-sensitive; the fixture deliberately lists the
-    // NPTH pad first so the parser allocates it at the lower heap address.
-    // If a future allocator change flips this, the test may pass on buggy
-    // code by accident -- flag it so the failure mode is obvious.
-    PAD* first = fp->Pads()[0];
-    PAD* second = fp->Pads()[1];
-    BOOST_REQUIRE_MESSAGE( first->GetAttribute() == PAD_ATTRIB::NPTH,
+    PAD* npth = fp->Pads()[0];
+    PAD* pth = fp->Pads()[1];
+    BOOST_REQUIRE_MESSAGE( npth->GetAttribute() == PAD_ATTRIB::NPTH,
                            "Fixture pad order changed: expected NPTH first." );
-    BOOST_REQUIRE_MESSAGE( second->GetAttribute() == PAD_ATTRIB::PTH,
-                           "Fixture pad order changed: expected PTH second." );
-    BOOST_WARN_MESSAGE( static_cast<void*>( first ) < static_cast<void*>( second ),
-                        "Heap put PTH below NPTH; the bug may not trigger in this run." );
+    BOOST_REQUIRE_MESSAGE( pth->GetAttribute() == PAD_ATTRIB::PTH, "Fixture pad order changed: expected PTH second." );
 
+    return { npth, pth };
+}
+
+
+/// Run DRC with only hole clearance enabled and count its violations
+int countHoleClearanceViolations( BOARD& aBoard )
+{
     int                    holeClearanceCount = 0;
-    BOARD_DESIGN_SETTINGS& bds = m_board->GetDesignSettings();
+    BOARD_DESIGN_SETTINGS& bds = aBoard.GetDesignSettings();
 
     BOOST_REQUIRE_MESSAGE( bds.m_DRCEngine, "DRC engine not initialized" );
 
@@ -138,6 +145,34 @@ BOOST_FIXTURE_TEST_CASE( HoleClearanceIssue24355, DRC_HOLE_CLEARANCE_FIXTURE )
 
     BOOST_TEST_MESSAGE( wxString::Format( "Hole clearance violations: %d", holeClearanceCount ) );
 
+    return holeClearanceCount;
+}
+} // namespace
+
+
+// The NPTH pad is the iterator: the direction the bug short-circuited
+BOOST_FIXTURE_TEST_CASE( HoleClearanceIssue24355, DRC_HOLE_CLEARANCE_FIXTURE )
+{
+    auto [npth, pth] = loadPads( m_settingsManager, m_board );
+
+    // testPadClearances keeps the pair from the pad with the lower UUID
+    BOOST_REQUIRE_MESSAGE( npth->m_Uuid < pth->m_Uuid, "Fixture UUIDs changed: expected the NPTH pad's to be lower." );
+
     // One violation per shared copper layer (F.Cu, B.Cu) for a 2-layer board.
-    BOOST_CHECK_EQUAL( holeClearanceCount, 2 );
+    BOOST_CHECK_EQUAL( countHoleClearanceViolations( *m_board ), 2 );
+}
+
+
+// The PTH pad is the iterator: the pads' UUIDs swapped, so the other direction is the one kept
+BOOST_FIXTURE_TEST_CASE( HoleClearanceIssue24355PthIterated, DRC_HOLE_CLEARANCE_FIXTURE )
+{
+    auto [npth, pth] = loadPads( m_settingsManager, m_board );
+
+    const KIID npthUuid = npth->m_Uuid;
+    const_cast<KIID&>( npth->m_Uuid ) = pth->m_Uuid;
+    const_cast<KIID&>( pth->m_Uuid ) = npthUuid;
+
+    BOOST_REQUIRE_MESSAGE( pth->m_Uuid < npth->m_Uuid, "Swapping the UUIDs did not put the PTH pad's lower." );
+
+    BOOST_CHECK_EQUAL( countHoleClearanceViolations( *m_board ), 2 );
 }
