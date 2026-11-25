@@ -115,3 +115,15 @@ target_link_libraries( drc_proto
     ${GDI_PLUS_LIBRARIES}
     ${PCBNEW_EXTRA_LIBS}    # -lrt must follow Boost
 )
+
+# Command-line behavior: help is not a board, a missing board is an error and not a crash, and a real board runs to the end
+# (a wx assert dialog used to block it for ever when nobody could dismiss it). Like the other tests, run under xvfb-run.
+add_test( NAME drc_proto_help COMMAND drc_proto --help )
+set_tests_properties( drc_proto_help PROPERTIES PASS_REGULAR_EXPRESSION "usage:" )
+
+add_test( NAME drc_proto_missing_board COMMAND drc_proto ${CMAKE_CURRENT_BINARY_DIR}/no_such_board.kicad_pcb )
+set_tests_properties( drc_proto_missing_board PROPERTIES PASS_REGULAR_EXPRESSION "cannot load a board" TIMEOUT 60 )
+
+add_test( NAME drc_proto_runs_to_completion
+          COMMAND drc_proto ${CMAKE_SOURCE_DIR}/qa/data/pcbnew/issue18839.kicad_pcb )
+set_tests_properties( drc_proto_runs_to_completion PROPERTIES TIMEOUT 300 )
