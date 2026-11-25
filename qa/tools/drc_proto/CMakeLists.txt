@@ -61,6 +61,9 @@ add_executable( drc_proto
     ../../qa_utils/stdstream_line_reader.cpp
 )
 
+# A GUI wxApp: without the manifest, wxWidgets stops it at startup on Windows
+kicad_qa_tool_manifest( drc_proto )
+
 add_dependencies( drc_proto pnsrouter pcbcommon ${PCBNEW_IO_LIBRARIES} )
 
 include_directories( BEFORE ${INC_BEFORE} )

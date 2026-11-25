@@ -74,6 +74,9 @@ add_executable( pns_debug_tool
     pns_debug_tool_main.cpp
   )
 
+# A GUI wxApp: without the manifest, wxWidgets stops it at startup on Windows
+kicad_qa_tool_manifest( pns_debug_tool )
+
 add_executable( qa_pns_regressions
   ${COMMON_SRCS}
   ../../qa_utils/pcb_test_frame.cpp
