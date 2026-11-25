@@ -1160,7 +1160,7 @@ void DRC_TEST_PROVIDER_COPPER_CLEARANCE::testGraphicClearances()
     for( FOOTPRINT* footprint : m_board->Footprints() )
         count += footprint->GraphicalItems().size() + footprint->GetFields().size();
 
-    REPORT_AUX( wxString::Format( wxT( "Testing %d graphics..." ), count ) );
+    REPORT_AUX( wxString::Format( wxT( "Testing %zu graphics..." ), count ) );
 
     auto isKnockoutText =
             []( BOARD_ITEM* item )

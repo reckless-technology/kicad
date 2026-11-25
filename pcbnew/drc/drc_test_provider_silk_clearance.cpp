@@ -154,7 +154,7 @@ bool DRC_TEST_PROVIDER_SILK_CLEARANCE::Run()
     silkTree.Build();
     targetTree.Build();
 
-    REPORT_AUX( wxString::Format( wxT( "Testing %d silkscreen features against %d board items." ),
+    REPORT_AUX( wxString::Format( wxT( "Testing %zu silkscreen features against %zu board items." ),
                                   silkTree.size(),
                                   targetTree.size() ) );
 
