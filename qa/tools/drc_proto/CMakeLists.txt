@@ -86,7 +86,6 @@ include_directories(
 
 target_link_libraries( drc_proto
     qa_pcbnew_utils
-    3d-viewer
     connectivity
     pcbcommon
     pnsrouter
@@ -98,8 +97,17 @@ target_link_libraries( drc_proto
     tinyspline_lib
     nanosvg
     markdown_lib
+    # A static library only resolves symbols from the libraries after it, and these three refer to one another in a
+    # circle: pcbcommon's settings need EDA_3D_VIEWER_SETTINGS from 3d-viewer, 3d-viewer's board adapter needs
+    # PROJECT_PCB from pcbcommon, and that pulls in PCB_IO_MGR, which needs every PCB_IO_* in the IO libraries, which
+    # in turn need S3D_CACHE from 3d-viewer. So the order is pcbcommon, 3d-viewer, pcbcommon, the IO libraries, then
+    # 3d-viewer again. Do not collapse the repeats, and do not drop a library: the link is order-sensitive with
+    # GNU ld, though MSVC does not mind.
+    3d-viewer
+    pcbcommon
     Boost::headers
     ${PCBNEW_IO_LIBRARIES}
+    3d-viewer
     ${wxWidgets_LIBRARIES}
     ${GDI_PLUS_LIBRARIES}
     ${PCBNEW_EXTRA_LIBS}    # -lrt must follow Boost
