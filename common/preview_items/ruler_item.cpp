@@ -126,7 +126,7 @@ void drawTicksAlongLine( KIGFX::VIEW* aView, const VECTOR2D& aOrigin, const VECT
                          bool aDrawingDropShadows )
 {
     KIGFX::GAL*   gal = aView->GetGAL();
-    KIFONT::FONT* font = KIFONT::FONT::GetFont();
+    KIFONT::FONT* font = GetLabelFont( gal );
     double        tickSpace;
     TICK_FORMAT   tickFormat = getTickFormatForScale( gal->GetWorldScale(), tickSpace, aUnits );
     double        majorTickLen = aMinorTickLen * ( majorTickLengthFactor + 1 );
@@ -174,7 +174,10 @@ void drawTicksAlongLine( KIGFX::VIEW* aView, const VECTOR2D& aOrigin, const VECT
     if( aDrawingDropShadows )
     {
         labelDims.StrokeWidth += 2 * labelDims.ShadowWidth;
-        shadowXoffset = labelDims.ShadowWidth;
+
+        // An outline face's shadow surrounds the glyphs evenly, so it needs no offset
+        if( !font->IsOutline() )
+            shadowXoffset = labelDims.ShadowWidth;
 
         // Due to the fact a shadow text is drawn left or right aligned,
         // it needs an offset = shadowXoffset to be drawn at the same place as normal text
@@ -274,7 +277,8 @@ void drawTicksAlongLine( KIGFX::VIEW* aView, const VECTOR2D& aOrigin, const VECT
         if( drawLabel )
         {
             wxString label = DimensionLabel( "", tickSpace * i, aIuScale, aUnits, false );
-            font->Draw( gal, label, tickPos + labelOffset, labelAttrs, KIFONT::METRICS::Default() );
+            DrawLabel( gal, font, label, tickPos + labelOffset, labelAttrs,
+                       aDrawingDropShadows ? labelDims.ShadowWidth : 0.0 );
         }
     }
 }
@@ -396,7 +400,7 @@ void RULER_ITEM::ViewDraw( int aLayer, KIGFX::VIEW* aView ) const
     double      scale = gal->GetWorldScale();
 
     TEXT_DIMS     dims = GetConstantGlyphHeight( gal );
-    KIFONT::FONT* font = KIFONT::FONT::GetFont();
+    KIFONT::FONT* font = GetLabelFont( gal );
     double        width = 0.0;
 
     for( const wxString& s : cursorStrings )

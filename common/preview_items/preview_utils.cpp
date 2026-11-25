@@ -23,6 +23,8 @@
 #include <gal/painter.h>
 #include <view/view.h>
 #include <gal/hidpi_gl_canvas.h>
+#include <callback_gal.h>
+#include <font/font.h>
 
 double KIGFX::PREVIEW::PreviewOverlayDeemphAlpha( bool aDeemph )
 {
@@ -120,6 +122,57 @@ KIGFX::COLOR4D KIGFX::PREVIEW::GetShadowColor( const KIGFX::COLOR4D& aColor )
 }
 
 
+KIFONT::FONT* KIGFX::PREVIEW::GetLabelFont( KIGFX::GAL* aGal )
+{
+    // The bold face, whose weight is nearest the stroke font's at these sizes
+    if( KIFONT::FONT* overlayFont = aGal->GetOverlayFont( true ) )
+        return overlayFont;
+
+    return KIFONT::FONT::GetFont();
+}
+
+
+void KIGFX::PREVIEW::DrawLabel( KIGFX::GAL* aGal, KIFONT::FONT* aFont, const wxString& aText, const VECTOR2D& aPosition,
+                                const TEXT_ATTRIBUTES& aAttrs, double aShadowWidth )
+{
+    if( !aFont->IsOutline() )
+    {
+        aFont->Draw( aGal, aText, aPosition, aAttrs, KIFONT::METRICS::Default() );
+        return;
+    }
+
+    GAL_SCOPED_ATTRS scopedAttrs( *aGal, GAL_SCOPED_ATTRS::STROKE_FILL );
+
+    if( aShadowWidth > 0.0 )
+    {
+        // An outline stroked twice the shadow's width reaches the shadow's width beyond the glyph
+        KIGFX::GAL_DISPLAY_OPTIONS noOptions;
+        CALLBACK_GAL               outlineGal(
+                noOptions,
+                [&]( const VECTOR2I& aPt1, const VECTOR2I& aPt2 )
+                {
+                    aGal->DrawLine( aPt1, aPt2 );
+                },
+                [&]( const SHAPE_LINE_CHAIN& aPoly )
+                {
+                    aGal->DrawPolygon( aPoly );
+                } );
+
+        aGal->SetLineWidth( 2.0 * aShadowWidth );
+        aGal->SetIsFill( false );
+        aGal->SetIsStroke( true );
+        aFont->Draw( &outlineGal, aText, aPosition, aAttrs, KIFONT::METRICS::Default() );
+    }
+    else
+    {
+        aGal->SetFillColor( aGal->GetStrokeColor() );
+        aGal->SetIsFill( true );
+        aGal->SetIsStroke( false );
+        aFont->Draw( aGal, aText, aPosition, aAttrs, KIFONT::METRICS::Default() );
+    }
+}
+
+
 void KIGFX::PREVIEW::DrawTextNextToCursor( KIGFX::VIEW* aView, const VECTOR2D& aCursorPos,
                                            const VECTOR2D& aTextQuadrant,
                                            const wxArrayString& aStrings,
@@ -129,7 +182,7 @@ void KIGFX::PREVIEW::DrawTextNextToCursor( KIGFX::VIEW* aView, const VECTOR2D& a
 
     GAL_SCOPED_ATTRS settings( *gal, GAL_SCOPED_ATTRS::STROKE_FILL );
 
-    KIFONT::FONT*    font = KIFONT::FONT::GetFont();
+    KIFONT::FONT* font = GetLabelFont( gal );
 
     // constant text size on screen
     TEXT_DIMS        textDims = GetConstantGlyphHeight( gal );
@@ -166,7 +219,8 @@ void KIGFX::PREVIEW::DrawTextNextToCursor( KIGFX::VIEW* aView, const VECTOR2D& a
 
     // text is left (or right) aligned, so a shadow text need a small offset to be draw
     // around the basic text
-    int shadowXoffset = aDrawingDropShadows ? textDims.ShadowWidth : 0;
+    // An outline face's shadow surrounds the glyphs evenly, so it needs no offset
+    int shadowXoffset = aDrawingDropShadows && !font->IsOutline() ? textDims.ShadowWidth : 0;
 
     // Due to the fact a shadow text is drawn left or right aligned,
     // it needs an offset = shadowWidth/2 to be drawn at the same place as normal text
@@ -197,6 +251,6 @@ void KIGFX::PREVIEW::DrawTextNextToCursor( KIGFX::VIEW* aView, const VECTOR2D& a
     for( const wxString& str : aStrings )
     {
         textPos.y += textDims.LinePitch;
-        font->Draw( gal, str, textPos, textAttrs, KIFONT::METRICS::Default() );
+        DrawLabel( gal, font, str, textPos, textAttrs, aDrawingDropShadows ? textDims.ShadowWidth : 0.0 );
     }
 }

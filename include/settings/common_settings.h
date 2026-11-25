@@ -79,6 +79,10 @@ public:
         bool       grid_striping;
         bool       use_custom_cursors;
         double     zoom_correction_factor;
+
+        /// Face of the canvas overlay text: pad numbers, net names and the measurement labels.
+        /// "KiCad Font" draws the built-in fonts (the bitmap font on OpenGL, the stroke font on Cairo).
+        wxString overlay_font;
     };
 
     struct AUTO_BACKUP
@@ -278,6 +282,15 @@ private:
                                   std::vector<LEGACY_3D_SEARCH_PATH>& aSearchPaths );
 
 public:
+    /// The face the house build prefers for overlay text.
+    static wxString PreferredOverlayFont();
+
+    /**
+     * The overlay face to ship: PreferredOverlayFont() if \a aInstalledFonts lists it, else "KiCad Font", since a
+     * family that is not installed would be replaced by whatever fontconfig likes best.
+     */
+    static wxString ChooseOverlayFont( const std::vector<std::string>& aInstalledFonts );
+
     APPEARANCE          m_Appearance;
     AUTO_BACKUP         m_Backup;
     ENVIRONMENT         m_Env;

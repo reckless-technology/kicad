@@ -23,10 +23,10 @@
 #include <gal/gal.h>
 #include <dpi_scaling.h>
 #include <core/observable.h>
+#include <wx/string.h>
 
 class COMMON_SETTINGS;
 struct WINDOW_SETTINGS;
-class wxString;
 class wxWindow;
 
 #if defined( _MSC_VER )
@@ -115,6 +115,9 @@ namespace KIGFX
 
         /// The pixel scale factor (>1 for hi-DPI scaled displays)
         double m_scaleFactor;
+
+        /// Face of the overlay text (see GAL::GetOverlayFont()); empty or "KiCad Font" for the built-in fonts
+        wxString m_overlayFontName;
 
         void SetCursorMode( CROSS_HAIR_MODE aMode ) { m_crossHairMode = aMode; }
 

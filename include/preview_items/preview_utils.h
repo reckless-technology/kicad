@@ -24,6 +24,13 @@
 #include <gal/color4d.h>
 #include <math/vector2d.h>
 
+class TEXT_ATTRIBUTES;
+
+namespace KIFONT
+{
+class FONT;
+}
+
 namespace KIGFX
 {
 class GAL;
@@ -64,6 +71,23 @@ wxString DimensionLabel( const wxString& prefix, double aVal, const EDA_IU_SCALE
 TEXT_DIMS GetConstantGlyphHeight( KIGFX::GAL* aGal, int aRelativeSize = 0 );
 
 COLOR4D GetShadowColor( const COLOR4D& aColor );
+
+/**
+ * The face of the measurement labels: the canvas's overlay face in bold (see GAL::GetOverlayFont()), else the stroke
+ * font.
+ */
+KIFONT::FONT* GetLabelFont( KIGFX::GAL* aGal );
+
+/**
+ * Draw one measurement label in the current stroke color.
+ *
+ * The stroke font strokes it at the attributes' stroke width, which the caller widens for a drop shadow. An outline
+ * face fills its glyphs, or for a drop shadow strokes their outlines so the shadow reaches \a aShadowWidth beyond them.
+ *
+ * @param aShadowWidth is the drop shadow's width when this draws the shadow, else 0.
+ */
+void DrawLabel( KIGFX::GAL* aGal, KIFONT::FONT* aFont, const wxString& aText, const VECTOR2D& aPosition,
+                const TEXT_ATTRIBUTES& aAttrs, double aShadowWidth );
 
 /**
  * Draw strings next to the cursor.

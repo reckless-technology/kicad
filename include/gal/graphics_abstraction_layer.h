@@ -693,12 +693,35 @@ public:
      * Draw a text using a bitmap font. It should be faster than StrokeText(), but can be used
      * only for non-Gerber elements.
      *
+     * When an overlay face is set (see GetOverlayFont()), the text is drawn in its regular weight instead.
+     *
      * @param aText is the text to be drawn.
      * @param aPosition is the text position in world coordinates.
      * @param aAngle is the text rotation angle.
      */
     virtual void BitmapText( const wxString& aText, const VECTOR2I& aPosition,
                              const EDA_ANGLE& aAngle );
+
+    /**
+     * The face of the canvas overlay text, which BitmapText() draws and the measurement labels use, as chosen by
+     * GAL_DISPLAY_OPTIONS::m_overlayFontName.
+     *
+     * @param aBold selects the bold face.
+     * @return the outline font, or nullptr when the overlay text is drawn in the built-in fonts.
+     */
+    KIFONT::FONT* GetOverlayFont( bool aBold = false ) const
+    {
+        if( !m_isOverlayFontEnabled )
+            return nullptr;
+
+        return aBold ? m_overlayFontBold : m_overlayFont;
+    }
+
+    /**
+     * Turn the overlay face off, so BitmapText() draws the built-in fonts, for text that is not overlay text.
+     */
+    void SetOverlayFontEnabled( bool aEnabled ) { m_isOverlayFontEnabled = aEnabled; }
+    bool IsOverlayFontEnabled() const { return m_isOverlayFontEnabled; }
 
     /**
      * Reset text attributes to default styling.  FONT TODO: do we need any of this in GAL anymore?
@@ -1538,6 +1561,18 @@ protected:
     virtual bool updatedGalDisplayOptions( const GAL_DISPLAY_OPTIONS& aOptions );
 
     /**
+     * Resolve the overlay face from the display options.
+     *
+     * @return true if it changed.
+     */
+    bool updateOverlayFont();
+
+    /**
+     * Draw overlay text in an outline face, sized and colored as BitmapText() draws it in the built-in font.
+     */
+    void overlayText( KIFONT::FONT& aFont, const wxString& aText, const VECTOR2I& aPosition, const EDA_ANGLE& aAngle );
+
+    /**
      * Ensure that the first element is smaller than the second.
      */
     template <typename T>
@@ -1553,6 +1588,11 @@ protected:
 
     GAL_DISPLAY_OPTIONS& m_options;
     UTIL::LINK           m_observerLink;
+
+    wxString      m_overlayFontName;      ///< The face GetOverlayFont() was resolved from
+    KIFONT::FONT* m_overlayFont;          ///< Overlay face, or nullptr for the built-in fonts
+    KIFONT::FONT* m_overlayFontBold;      ///< Its bold face
+    bool          m_isOverlayFontEnabled; ///< See SetOverlayFontEnabled()
 
     std::stack<double>   m_depthStack;         ///< Stored depth values
     VECTOR2I             m_screenSize;         ///< Screen size in screen (wx logical) coordinates

@@ -655,7 +655,12 @@ static void bitmapText( KIGFX::GAL& aGal, const wxString& aText, const VECTOR2D&
     aGal.SetHorizontalJustify( aAttrs.m_Halign );
     aGal.SetVerticalJustify( aAttrs.m_Valign );
 
+    // This stands in, quickly, for an item's own text where it is too small to read. It is not overlay text, so it
+    // keeps the built-in bitmap font, which is what makes it quick, whatever the overlay face.
+    const bool overlayFontWasEnabled = aGal.IsOverlayFontEnabled();
+    aGal.SetOverlayFontEnabled( false );
     aGal.BitmapText( aText, aPosition, aAttrs.m_Angle.GetAngle() );
+    aGal.SetOverlayFontEnabled( overlayFontWasEnabled );
 }
 
 

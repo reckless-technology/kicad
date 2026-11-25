@@ -2082,6 +2082,13 @@ bool GAL_MODERN::drawBitmapGlyphs( const wxString& aText, const VECTOR2I& aPosit
 
 void GAL_MODERN::BitmapText( const wxString& aText, const VECTOR2I& aPosition, const EDA_ANGLE& aAngle )
 {
+    // An overlay face is drawn as outline glyphs, which the generic path does
+    if( GetOverlayFont() )
+    {
+        GAL::BitmapText( aText, aPosition, aAngle );
+        return;
+    }
+
     if( drawBitmapGlyphs( aText, aPosition, aAngle ) )
         return;
 

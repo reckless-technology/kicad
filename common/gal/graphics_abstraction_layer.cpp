@@ -41,6 +41,9 @@ using namespace KIGFX;
 
 GAL::GAL( GAL_DISPLAY_OPTIONS& aDisplayOptions ) :
         m_options( aDisplayOptions ),
+        m_overlayFont( nullptr ),
+        m_overlayFontBold( nullptr ),
+        m_isOverlayFontEnabled( true ),
 
         // m_currentNativeCursor is initialized with KICURSOR::DEFAULT value to avoid
         // if comparison with uninitialized value on SetNativeCursorStyle method.
@@ -92,6 +95,7 @@ GAL::GAL( GAL_DISPLAY_OPTIONS& aDisplayOptions ) :
 
     // Initialize text properties
     ResetTextAttributes();
+    updateOverlayFont();
 
     // subscribe for settings updates
     m_observerLink = m_options.Subscribe( this );
@@ -133,6 +137,32 @@ void GAL::DrawEllipseArc( const VECTOR2D& aCenterPoint, double aMajorRadius, dou
 
     SHAPE_LINE_CHAIN chain = e.ConvertToPolyline( std::max( 1, KiROUND( aMajorRadius / 500.0 ) ) );
     DrawPolyline( chain );
+}
+
+
+bool GAL::updateOverlayFont()
+{
+    if( m_options.m_overlayFontName == m_overlayFontName )
+        return false;
+
+    m_overlayFontName = m_options.m_overlayFontName;
+    m_overlayFont = nullptr;
+    m_overlayFontBold = nullptr;
+
+    if( !KIFONT::FONT::IsStroke( m_overlayFontName ) )
+    {
+        KIFONT::FONT* regular = KIFONT::FONT::GetFont( m_overlayFontName, false, false );
+        KIFONT::FONT* bold = KIFONT::FONT::GetFont( m_overlayFontName, true, false );
+
+        // A face fontconfig could not load comes back as the stroke font, which the built-in path draws better
+        if( regular && regular->IsOutline() && bold && bold->IsOutline() )
+        {
+            m_overlayFont = regular;
+            m_overlayFontBold = bold;
+        }
+    }
+
+    return true;
 }
 
 
@@ -185,6 +215,9 @@ bool GAL::updatedGalDisplayOptions( const GAL_DISPLAY_OPTIONS& aOptions [[maybe_
         m_crossHairMode = m_options.GetCursorMode();
         refresh = true;
     }
+
+    if( updateOverlayFont() )
+        refresh = true;
 
     // tell the derived class if the base class needs an update or not
     return refresh;
@@ -450,10 +483,18 @@ COLOR4D GAL::getCursorColor() const
 
 void GAL::BitmapText( const wxString& aText, const VECTOR2I& aPosition, const EDA_ANGLE& aAngle )
 {
-    KIFONT::FONT* font = KIFONT::FONT::GetFont();
-
     if( aText.IsEmpty() )
         return;
+
+    // The regular face, as the bitmap font has one weight: the bold face fills its counters at the few pixels pad
+    // text often gets
+    if( KIFONT::FONT* overlayFont = GetOverlayFont() )
+    {
+        overlayText( *overlayFont, aText, aPosition, aAngle );
+        return;
+    }
+
+    KIFONT::FONT* font = KIFONT::FONT::GetFont();
 
     TEXT_ATTRIBUTES attrs = m_attributes;
     attrs.m_Angle = aAngle;
@@ -465,6 +506,38 @@ void GAL::BitmapText( const wxString& aText, const VECTOR2I& aPosition, const ED
     attrs.m_StrokeWidth = GetLineWidth() * 0.74;
 
     font->Draw( this, aText, aPosition, attrs, KIFONT::METRICS::Default() );
+}
+
+
+void GAL::overlayText( KIFONT::FONT& aFont, const wxString& aText, const VECTOR2I& aPosition, const EDA_ANGLE& aAngle )
+{
+    // The painters size overlay text for the built-in bitmap font and lay it out by character count, so an
+    // outline face is scaled to give its glyphs the bitmap font's advance and the text the width the painters made
+    // room for. For Monaspace Xenon on the OpenGL canvas that is 0.92 of the glyph height, measured from the ink of
+    // rendered pad numbers; its capitals then stand about 0.9 of the bitmap font's narrower, taller ones. Like the
+    // bitmap font, it ignores the glyph width.
+    constexpr double emScale = 0.92;
+
+    TEXT_ATTRIBUTES attrs = m_attributes;
+    attrs.m_Font = &aFont;
+    attrs.m_Angle = aAngle;
+    attrs.m_Mirrored = m_globalFlipX; // Prevent text flipping when view is flipped
+    attrs.m_Size = VECTOR2I( KiROUND( m_attributes.m_Size.y * emScale ), KiROUND( m_attributes.m_Size.y * emScale ) );
+
+    // Outline glyphs are filled in the fill color; overlay text is given a stroke color
+    const COLOR4D fillColor = m_fillColor;
+    const bool    isFill = m_isFillEnabled;
+    const bool    isStroke = m_isStrokeEnabled;
+
+    SetFillColor( m_strokeColor );
+    SetIsFill( true );
+    SetIsStroke( false );
+
+    aFont.Draw( this, aText, aPosition, attrs, KIFONT::METRICS::Default() );
+
+    SetFillColor( fillColor );
+    SetIsFill( isFill );
+    SetIsStroke( isStroke );
 }
 
 
