@@ -109,6 +109,9 @@ wxString readFile( const wxString& aDir, const wxString& aName )
     wxFFile  stream( file.GetFullPath(), wxT( "rb" ) );
     wxString contents;
     BOOST_REQUIRE( stream.ReadAll( &contents ) );
+
+    // The writers open their files in text mode, so on Windows every line ends in CRLF
+    contents.Replace( wxT( "\r\n" ), wxT( "\n" ) );
     return contents;
 }
 
