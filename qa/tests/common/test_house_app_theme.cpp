@@ -39,7 +39,7 @@ BOOST_AUTO_TEST_CASE( FreshConfigurationDefault )
 #endif
 }
 
-#if defined( __WXMSW__ ) || ( defined( __WXGTK__ ) && defined( KICAD_HOUSE_THEME ) )
+#if defined( __WXMSW__ ) || defined( KICAD_HOUSE_THEME )
 
 BOOST_AUTO_TEST_CASE( ChosenThemeIsKept )
 {

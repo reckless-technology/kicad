@@ -90,7 +90,7 @@ PANEL_COMMON_SETTINGS::PANEL_COMMON_SETTINGS( wxWindow* aParent ) :
 #endif
 
     // It's common on Windows to have separate app and system settings for light/dark
-#if !defined( __WXMSW__ ) && !( defined( __WXGTK__ ) && defined( KICAD_HOUSE_THEME ) )
+#if !defined( __WXMSW__ ) && !defined( KICAD_HOUSE_THEME )
     m_stAppTheme->Show( false );
     m_rbAppThemeLight->Show( false );
     m_rbAppThemeDark->Show( false );

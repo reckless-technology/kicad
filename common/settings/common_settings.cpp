@@ -83,7 +83,7 @@ COMMON_SETTINGS::COMMON_SETTINGS() :
     constexpr APP_THEME defaultAppTheme = APP_THEME::AUTO;
 #endif
 
-#if defined( __WXMSW__ ) || ( defined( __WXGTK__ ) && defined( KICAD_HOUSE_THEME ) )
+#if defined( __WXMSW__ ) || defined( KICAD_HOUSE_THEME )
     m_params.emplace_back( new PARAM_ENUM<APP_THEME>( "appearance.app_theme", &m_Appearance.app_theme,
                                                        defaultAppTheme, APP_THEME::LIGHT, APP_THEME::AUTO ) );
 #else
