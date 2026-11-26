@@ -461,9 +461,28 @@ target_include_directories( kigit
         ${CMAKE_SOURCE_DIR}/libs/core/include
     )
 
+# The built-in Reckless color theme, from the JSON file that tools/reckless/reckless_color_theme.py writes
+add_custom_command(
+    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/reckless_color_theme_json.h
+    COMMAND ${CMAKE_COMMAND}
+        -DinputFile=${CMAKE_CURRENT_SOURCE_DIR}/settings/reckless_color_theme.json
+        -DoutputFile=${CMAKE_CURRENT_BINARY_DIR}/reckless_color_theme_json.h
+        -P ${KICAD_CMAKE_MODULE_PATH}/BuildSteps/Text2CString.cmake
+    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/settings/reckless_color_theme.json
+        ${KICAD_CMAKE_MODULE_PATH}/BuildSteps/Text2CString.cmake
+    COMMENT "Creating reckless_color_theme_json.h from settings/reckless_color_theme.json"
+    )
+
 add_library( kicommon SHARED
     ${KICOMMON_SRCS}
+    ${CMAKE_CURRENT_BINARY_DIR}/reckless_color_theme_json.h
     )
+
+target_include_directories( kicommon PRIVATE ${CMAKE_CURRENT_BINARY_DIR} )
+
+if( KICAD_HOUSE_THEME )
+    target_compile_definitions( kicommon PRIVATE KICAD_HOUSE_THEME )
+endif()
 
 if( KICAD_USE_PCH )
     target_precompile_headers( kicommon

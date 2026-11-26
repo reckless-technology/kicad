@@ -192,11 +192,20 @@ APP_SETTINGS_BASE::APP_SETTINGS_BASE( const std::string& aFilename, int aSchemaV
     m_params.emplace_back( new PARAM<double>( "printing.scale",
             &m_Printing.scale, 1.0 ) );
 
+#ifdef KICAD_HOUSE_THEME
+    // The house theme is dark, and a print is on white paper: a color print starts in KiCad Default, as upstream's
+    // does, until another theme is chosen for printing.
+    m_params.emplace_back( new PARAM<bool>( "printing.use_theme", &m_Printing.use_theme, true ) );
+
+    m_params.emplace_back( new PARAM<wxString>( "printing.color_theme", &m_Printing.color_theme,
+                                                COLOR_SETTINGS::COLOR_BUILTIN_DEFAULT ) );
+#else
     m_params.emplace_back( new PARAM<bool>( "printing.use_theme",
             &m_Printing.use_theme, false ) );
 
     m_params.emplace_back( new PARAM<wxString>( "printing.color_theme",
             &m_Printing.color_theme, wxS( "" ) ) );
+#endif
 
     m_params.emplace_back( new PARAM<bool>( "printing.title_block",
             &m_Printing.title_block, false ) );
@@ -294,8 +303,8 @@ APP_SETTINGS_BASE::APP_SETTINGS_BASE( const std::string& aFilename, int aSchemaV
             },
             nlohmann::json::array() ) );
 
-    m_params.emplace_back( new PARAM<wxString>( "appearance.color_theme",
-            &m_ColorTheme, COLOR_SETTINGS::COLOR_BUILTIN_DEFAULT ) );
+    m_params.emplace_back(
+            new PARAM<wxString>( "appearance.color_theme", &m_ColorTheme, COLOR_SETTINGS::DefaultBuiltinTheme() ) );
 
     m_params.emplace_back( new PARAM<bool>( "appearance.custom_toolbars",
             &m_CustomToolbars, false ) );

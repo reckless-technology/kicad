@@ -179,16 +179,23 @@ cmake_dependent_option( KICAD_WAYLAND
     ON "UNIX_NOT_APPLE"
     OFF )
 
-# Reckless build: house fixed-width font through the desktop entries (see resources/CMakeLists.txt).
-# On for our builds only.
+# Reckless build: the house look's defaults. On for our builds only.
 if( KICAD_VERSION_EXTRA STREQUAL "reckless" )
-    set( _KICAD_HOUSE_FONTS_DEFAULT ON )
+    set( _KICAD_HOUSE_DEFAULT ON )
 else()
-    set( _KICAD_HOUSE_FONTS_DEFAULT OFF )
+    set( _KICAD_HOUSE_DEFAULT OFF )
 endif()
+
+# House fixed-width font through the desktop entries (see resources/CMakeLists.txt).
 option( KICAD_HOUSE_FONTS
     "Linux: make fixed-width text Monaspace Xenon in KiCad's programs started from the desktop entries"
-    ${_KICAD_HOUSE_FONTS_DEFAULT} )
+    ${_KICAD_HOUSE_DEFAULT} )
+
+# The built-in Reckless color theme is in every build; this makes it the one a new configuration starts in
+# (common/CMakeLists.txt defines KICAD_HOUSE_THEME for kicommon, the only library that reads it).
+option( KICAD_HOUSE_THEME
+    "Make the built-in Reckless color theme the default for a new configuration"
+    ${_KICAD_HOUSE_DEFAULT} )
 
 # The interface font is set in code (PGM_BASE::InitPgm), so the build carries the choice however a program is started.
 if( KICAD_HOUSE_FONTS )

@@ -90,6 +90,13 @@ public:
     // Names for the built-in color settings
     static const wxString COLOR_BUILTIN_DEFAULT;
     static const wxString COLOR_BUILTIN_CLASSIC;
+    static const wxString COLOR_BUILTIN_RECKLESS;
+
+    /**
+     * The built-in theme a new configuration starts in: Reckless in a build with KICAD_HOUSE_THEME, KiCad Default
+     * otherwise.
+     */
+    static const wxString& DefaultBuiltinTheme();
 
 private:
     bool migrateSchema0to1();

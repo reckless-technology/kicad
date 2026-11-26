@@ -19,6 +19,7 @@
  */
 
 #include <layer_ids.h>
+#include <locale_io.h>
 #include <settings/color_settings.h>
 #include <settings/json_settings_internals.h>
 #include <settings/parameters.h>
@@ -33,6 +34,23 @@
 const int colorsSchemaVersion = 6;
 const wxString COLOR_SETTINGS::COLOR_BUILTIN_DEFAULT = "_builtin_default";
 const wxString COLOR_SETTINGS::COLOR_BUILTIN_CLASSIC = "_builtin_classic";
+const wxString COLOR_SETTINGS::COLOR_BUILTIN_RECKLESS = "_builtin_reckless";
+
+/// The Reckless theme, built in from common/settings/reckless_color_theme.json, which
+/// tools/reckless/reckless_color_theme.py writes from the Reckless look's colors and measured contrast.
+static const char s_recklessThemeJson[] =
+#include "reckless_color_theme_json.h"
+        ;
+
+
+const wxString& COLOR_SETTINGS::DefaultBuiltinTheme()
+{
+#ifdef KICAD_HOUSE_THEME
+    return COLOR_BUILTIN_RECKLESS;
+#else
+    return COLOR_BUILTIN_DEFAULT;
+#endif
+}
 
 
 COLOR_SETTINGS::COLOR_SETTINGS( const wxString& aFilename, bool aAbsolutePath ) :
@@ -491,10 +509,36 @@ std::vector<COLOR_SETTINGS*> COLOR_SETTINGS::CreateBuiltinColorSettings()
     for( const std::pair<int, COLOR4D> entry : s_classicTheme )
         classicTheme->m_colors[entry.first] = entry.second;
 
+    // The Reckless theme is read through a theme with every parameter, so a color its file does not name is KiCad
+    // Default's, then held as the classic theme is, with no parameters, so that reloading or resetting the settings
+    // never puts KiCad Default's colors back.
+    COLOR_SETTINGS recklessSource( COLOR_BUILTIN_RECKLESS );
+
+    {
+        LOCALE_IO toggle;
+        bool      loaded = recklessSource.LoadFromBuffer( s_recklessThemeJson );
+
+        // A theme that does not parse would load as KiCad Default's colors with no other sign
+        wxASSERT_MSG( loaded, wxS( "The built-in Reckless color theme did not parse" ) );
+        wxLogTrace( traceSettings, wxS( "Built-in Reckless theme parsed: %d" ), loaded );
+    }
+
+    COLOR_SETTINGS* recklessTheme = new COLOR_SETTINGS( COLOR_BUILTIN_RECKLESS );
+    recklessTheme->SetName( wxS( "Reckless" ) );
+    recklessTheme->m_writeFile = false;
+
+    for( PARAM_BASE* param : recklessTheme->m_params )
+        delete param;
+
+    recklessTheme->m_params.clear(); // Disable load/store
+    recklessTheme->m_colors = recklessSource.m_colors;
+    recklessTheme->m_defaultColors = recklessSource.m_colors;
+
     std::vector<COLOR_SETTINGS*> ret;
 
     ret.push_back( defaultTheme );
     ret.push_back( classicTheme );
+    ret.push_back( recklessTheme );
 
     return ret;
 }

@@ -294,7 +294,8 @@ COLOR_SETTINGS* SETTINGS_MANAGER::GetColorSettings( const wxString& aName )
         if( !ret )
         {
             ret = registerColorSettings( aName );
-            *ret = *m_color_settings.at( COLOR_SETTINGS::COLOR_BUILTIN_DEFAULT );
+            // A theme made here (the 3D viewer's "user", on a new configuration) starts from the build's default
+            *ret = *m_color_settings.at( COLOR_SETTINGS::DefaultBuiltinTheme() );
             ret->SetFilename( DEFAULT_THEME );
             ret->SetReadOnly( false );
         }
@@ -471,8 +472,8 @@ void SETTINGS_MANAGER::loadAllColorSettings()
     // disambiguate any colliding user theme by appending its filename.
     std::set<wxString> builtinNames;
 
-    for( const wxString& builtin : { COLOR_SETTINGS::COLOR_BUILTIN_DEFAULT,
-                                     COLOR_SETTINGS::COLOR_BUILTIN_CLASSIC } )
+    for( const wxString& builtin : { COLOR_SETTINGS::COLOR_BUILTIN_DEFAULT, COLOR_SETTINGS::COLOR_BUILTIN_CLASSIC,
+                                     COLOR_SETTINGS::COLOR_BUILTIN_RECKLESS } )
     {
         if( m_color_settings.count( builtin ) )
             builtinNames.insert( m_color_settings.at( builtin )->GetName() );
@@ -482,9 +483,8 @@ void SETTINGS_MANAGER::loadAllColorSettings()
     {
         COLOR_SETTINGS* settings = entry.second;
 
-        if( entry.first != COLOR_SETTINGS::COLOR_BUILTIN_DEFAULT
-            && entry.first != COLOR_SETTINGS::COLOR_BUILTIN_CLASSIC
-            && builtinNames.count( settings->GetName() ) )
+        if( entry.first != COLOR_SETTINGS::COLOR_BUILTIN_DEFAULT && entry.first != COLOR_SETTINGS::COLOR_BUILTIN_CLASSIC
+            && entry.first != COLOR_SETTINGS::COLOR_BUILTIN_RECKLESS && builtinNames.count( settings->GetName() ) )
         {
             // Absolute-path themes store a full path as their filename, so reduce it to a basename.
             settings->SetName( wxString::Format( wxS( "%s (%s)" ), settings->GetName(),
