@@ -20,6 +20,8 @@
 
 #include <kiplatform/app.h>
 
+#import <AppKit/AppKit.h>
+
 #include <pthread.h>
 #include <unistd.h>
 
@@ -31,12 +33,22 @@ bool KIPLATFORM::APP::Init()
 {
     // KiCad relies on showing the file type selector in a few places; force it to be shown
     wxSystemOptions::SetOption( wxS( "osx.openfiledialog.always-show-types" ), 1 );
+
+    // Start in the light appearance. The programs call EnableDarkMode() for the DARK theme (forced) and for AUTO
+    // (follow the system) but make no call for LIGHT, so this light start is what LIGHT gets - as on Windows, where
+    // light is what a program gets unless it asks for dark. It runs before the first window. NSApp is nil in a
+    // console program (kicad-cli, the QA test modules), where this does nothing.
+    [NSApp setAppearance:[NSAppearance appearanceNamed:NSAppearanceNameAqua]];
+
     return true;
 }
 
 
-void KIPLATFORM::APP::EnableDarkMode( bool aForce [[maybe_unused]] )
+void KIPLATFORM::APP::EnableDarkMode( bool aForce )
 {
+    // Forced: the dark appearance whatever the system's. Not forced: no appearance of our own, so the program follows
+    // the system's and changes with it while running.
+    [NSApp setAppearance:aForce ? [NSAppearance appearanceNamed:NSAppearanceNameDarkAqua] : nil];
 }
 
 
