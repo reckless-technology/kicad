@@ -23,10 +23,6 @@
 #include <chrono>
 #include <utility>
 
-#if !defined( _WIN32 )
-#include <time.h>
-#endif
-
 namespace KI_TEST
 {
 /**
@@ -47,20 +43,9 @@ inline bool TimingBoundsApply()
 /**
  * CPU time used so far by this process, including helper threads such as the solver's std::async workers.
  *
- * Other processes on the machine do not inflate it.  Windows ticks its CPU clocks every 15.6 ms, too coarse for
- * the bounds, so it falls back to wall time there.
+ * Other processes on the machine do not inflate it.  Its zero is arbitrary, so only differences mean anything.
  */
-inline std::chrono::nanoseconds ProcessCpuTime()
-{
-#if defined( _WIN32 )
-    return std::chrono::steady_clock::now().time_since_epoch();
-#else
-    timespec ts;
-    clock_gettime( CLOCK_PROCESS_CPUTIME_ID, &ts );
-
-    return std::chrono::seconds( ts.tv_sec ) + std::chrono::nanoseconds( ts.tv_nsec );
-#endif
-}
+std::chrono::nanoseconds ProcessCpuTime();
 
 /// Run a block and return the process CPU time it used.
 template <typename FUNC>
