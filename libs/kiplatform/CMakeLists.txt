@@ -123,6 +123,11 @@ target_compile_definitions( kiplatform PRIVATE
     ${PLATFORM_COMPILE_DEFS}
     )
 
+# The Reckless window colors (reckless_palette.h) are applied only in a build that asks for the house theme.
+if( KICAD_HOUSE_THEME )
+    target_compile_definitions( kiplatform PRIVATE KICAD_HOUSE_THEME )
+endif()
+
 target_include_directories( kiplatform PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     )
