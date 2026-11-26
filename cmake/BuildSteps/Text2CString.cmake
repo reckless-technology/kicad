@@ -3,6 +3,8 @@
 # treat specially) come through unchanged, and it escapes backslashes and double quotes.
 
 file( READ ${inputFile} content )
+# Drop carriage returns, so a CRLF copy of the file never puts a raw CR into the literal
+string( REPLACE "\r" "" content "${content}" )
 string( REPLACE "\\" "\\\\" content "${content}" )
 string( REPLACE "\"" "\\\"" content "${content}" )
 string( REPLACE "\n" "\\n\"\n\"" content "${content}" )

@@ -327,7 +327,7 @@ kicad_add_boost_test( qa_common qa_common )
 
 # The theme file is written by its script; fail when the two have drifted apart
 add_test( NAME reckless_color_theme_is_current
-          COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tools/reckless/reckless_color_theme.py
+          COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tools/reckless/reckless_color_theme.py
                   --check ${CMAKE_SOURCE_DIR}/common/settings/reckless_color_theme.json )
 
 setup_qa_env( qa_common )
