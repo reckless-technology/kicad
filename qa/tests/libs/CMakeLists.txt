@@ -20,3 +20,4 @@
 add_subdirectory( sexpr )
 add_subdirectory( kimath )
 add_subdirectory( kinng )
+add_subdirectory( kiplatform )
