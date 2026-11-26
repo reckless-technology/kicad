@@ -44,6 +44,7 @@ set( QA_COMMON_SRCS
     test_compatibility_report.cpp
     test_coroutine.cpp
     test_filter_kruskal.cpp
+    test_house_app_theme.cpp
     test_database_lib_settings.cpp
     test_database_value.cpp
     test_design_block_io.cpp
@@ -307,6 +308,7 @@ set_property( SOURCE test_reckless_color_theme.cpp APPEND PROPERTY COMPILE_DEFIN
 
 if( KICAD_HOUSE_THEME )
     set_property( SOURCE test_reckless_color_theme.cpp APPEND PROPERTY COMPILE_DEFINITIONS KICAD_HOUSE_THEME )
+    set_property( SOURCE test_house_app_theme.cpp APPEND PROPERTY COMPILE_DEFINITIONS KICAD_HOUSE_THEME )
 endif()
 
 # Give the desktop-id test the same launcher identifiers pgm_base.cpp is built with so it can

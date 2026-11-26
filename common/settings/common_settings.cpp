@@ -76,11 +76,18 @@ COMMON_SETTINGS::COMMON_SETTINGS() :
     m_Appearance.icon_theme = ICON_THEME::AUTO;
 #endif
 
-#if defined( __WXMSW__ )
-    m_params.emplace_back( new PARAM_ENUM<APP_THEME>( "appearance.app_theme", &m_Appearance.app_theme,
-                                                       APP_THEME::AUTO, APP_THEME::LIGHT, APP_THEME::AUTO ) );
+#ifdef KICAD_HOUSE_THEME
+    // The house look is dark: a new configuration starts in the Dark app theme, and one that has chosen keeps it.
+    constexpr APP_THEME defaultAppTheme = APP_THEME::DARK;
 #else
-    m_Appearance.app_theme = APP_THEME::AUTO;
+    constexpr APP_THEME defaultAppTheme = APP_THEME::AUTO;
+#endif
+
+#if defined( __WXMSW__ ) || ( defined( __WXGTK__ ) && defined( KICAD_HOUSE_THEME ) )
+    m_params.emplace_back( new PARAM_ENUM<APP_THEME>( "appearance.app_theme", &m_Appearance.app_theme,
+                                                       defaultAppTheme, APP_THEME::LIGHT, APP_THEME::AUTO ) );
+#else
+    m_Appearance.app_theme = defaultAppTheme;
 #endif
 
     /*
