@@ -55,6 +55,11 @@ protected:
     void OnCanvasScaleAuto( wxCommandEvent& aEvent ) override;
 
 private:
+    /**
+     * The overlay faces offered: "KiCad Font", then \a aCurrent if the machine lacks it, then the installed families.
+     */
+    static wxArrayString overlayFontChoices( const wxString& aCurrent );
+
     void ShowFileManagerWidgets( bool aBool );
     void setPdfViewerPathState();
 

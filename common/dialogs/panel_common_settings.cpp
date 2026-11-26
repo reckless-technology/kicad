@@ -24,6 +24,8 @@
 #include <class_draw_panel_gal.h>
 #include <dpi_scaling_common.h>
 #include <eda_draw_frame.h>
+#include <font/fontconfig.h>
+#include <font/kicad_font_name.h>
 #include <gal/graphics_abstraction_layer.h>
 #include <kiface_base.h>
 #include <kiplatform/ui.h>
@@ -197,6 +199,7 @@ bool PANEL_COMMON_SETTINGS::TransferDataFromWindow()
     commonSettings->m_System.file_history_size = m_fileHistorySize->GetValue();
 
     commonSettings->m_Graphics.aa_mode = m_antialiasing->GetSelection();
+    commonSettings->m_Appearance.overlay_font = m_overlayFont->GetStringSelection();
 
     const std::vector<CANVAS_CHOICE> choices = canvasChoices();
     int                              sel = m_canvasType->GetSelection();
@@ -302,11 +305,39 @@ void PANEL_COMMON_SETTINGS::ResetPanel()
 }
 
 
+wxArrayString PANEL_COMMON_SETTINGS::overlayFontChoices( const wxString& aCurrent )
+{
+    std::vector<std::string> families;
+    Fontconfig()->ListFonts( families, std::string( Pgm().GetLanguageTag().utf8_str() ) );
+
+    wxArrayString choices;
+
+    for( const std::string& family : families )
+        choices.Add( wxString::FromUTF8( family ) );
+
+    choices.Sort();
+
+    // A face the machine lacks stays chosen rather than being silently replaced
+    if( !aCurrent.IsEmpty() && aCurrent != KICAD_FONT_NAME && choices.Index( aCurrent ) == wxNOT_FOUND )
+        choices.Insert( aCurrent, 0 );
+
+    choices.Insert( KICAD_FONT_NAME, 0 );
+
+    return choices;
+}
+
+
 void PANEL_COMMON_SETTINGS::applySettingsToPanel( COMMON_SETTINGS& aSettings )
 {
     m_fileHistorySize->SetValue( aSettings.m_System.file_history_size );
 
     m_antialiasing->SetSelection( aSettings.m_Graphics.aa_mode );
+
+    m_overlayFont->Set( overlayFontChoices( aSettings.m_Appearance.overlay_font ) );
+    m_overlayFont->SetStringSelection( aSettings.m_Appearance.overlay_font );
+
+    if( m_overlayFont->GetSelection() == wxNOT_FOUND )
+        m_overlayFont->SetSelection( 0 );
 
     // A canvas this platform does not offer shows as the first entry
     const std::vector<CANVAS_CHOICE> choices = canvasChoices();

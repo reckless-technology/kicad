@@ -63,6 +63,19 @@ PANEL_COMMON_SETTINGS_BASE::PANEL_COMMON_SETTINGS_BASE( wxWindow* parent, wxWind
 	m_antialiasing->SetSelection( 0 );
 	gbSizer11->Add( m_antialiasing, wxGBPosition( 2, 1 ), wxGBSpan( 1, 1 ), wxALIGN_CENTER_VERTICAL|wxRIGHT, 5 );
 
+	wxStaticText* overlayFontLabel;
+	overlayFontLabel = new wxStaticText( this, wxID_ANY, _("Overlay font:"), wxDefaultPosition, wxDefaultSize, 0 );
+	overlayFontLabel->Wrap( -1 );
+	gbSizer11->Add( overlayFontLabel, wxGBPosition( 3, 0 ), wxGBSpan( 1, 1 ), wxALIGN_CENTER_VERTICAL|wxLEFT, 5 );
+
+	wxString m_overlayFontChoices[] = { _("KiCad Font") };
+	int m_overlayFontNChoices = sizeof( m_overlayFontChoices ) / sizeof( wxString );
+	m_overlayFont = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_overlayFontNChoices, m_overlayFontChoices, 0 );
+	m_overlayFont->SetSelection( 0 );
+	m_overlayFont->SetToolTip( _("Face of the canvas overlay text: pad numbers, net names and the measure tool's labels. KiCad Font draws the built-in fonts. A fixed-width face fits pads best.") );
+
+	gbSizer11->Add( m_overlayFont, wxGBPosition( 3, 1 ), wxGBSpan( 1, 1 ), wxALIGN_CENTER_VERTICAL|wxRIGHT, 5 );
+
 
 	gbSizer11->AddGrowableCol( 1 );
 

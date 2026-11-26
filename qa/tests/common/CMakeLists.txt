@@ -196,6 +196,7 @@ set( QA_COMMON_SRCS
     test_gal_cursor.cpp
     test_gal_xor_mode.cpp
     test_gal_resize_strategy.cpp
+    test_overlay_font.cpp
 
     # Preview item / drawing utility tests
     test_construction_geom.cpp

@@ -50,6 +50,15 @@ Preferences > Footprint Editor > Defaults, stored in the footprint editor settin
 `copper`, `fab` and `others`). A new footprint's reference, value and default text items take it, as do fields added
 in the footprint properties and text drawn in the footprint editor. Not set leaves them in the stroke font, as before.
 
+Editor overlay text has a face too (#50): `appearance.overlay_font` in `kicad_common.json`, the "Overlay font" choice
+in Preferences > Common. It covers pad numbers and net names on pads, tracks and vias, and the measure tool's labels.
+The house build ships it as Monaspace Xenon when fontconfig lists that family; otherwise, and in any build without
+`KICAD_HOUSE_FONTS`, it ships as "KiCad Font", which keeps the built-in fonts (the bitmap font on the OpenGL and Vulkan
+canvases, the stroke font on Cairo). With a face set, pad numbers and net names are drawn as outline glyphs in its
+regular weight, scaled to the bitmap font's advance so the painters' sizing still fits, and the measure labels in its
+bold weight. Outline glyphs cost more than the bitmap font: on the demos/video board a full repaint of every item took
+about six times as long. The schematic's bitmap stand-in for selected text too small to read keeps the built-in font.
+
 The canvases have a Reckless color theme (#65, piece 1), a built-in theme named "Reckless" beside KiCad Default and
 KiCad Classic, for the schematic, symbol, PCB and footprint editors, gerbview and the 3D viewer. It is dark, on the
 near-black plate of the Reckless apps, with cream ink for text and amber for selection and highlight in the schematic

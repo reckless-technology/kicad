@@ -50,6 +50,7 @@ class PANEL_COMMON_SETTINGS_BASE : public RESETTABLE_PANEL
 		wxFlexGridSizer* m_renderingSizer;
 		wxChoice* m_canvasType;
 		wxChoice* m_antialiasing;
+		wxChoice* m_overlayFont;
 		wxStaticText* m_staticText21;
 		wxStaticLine* m_staticline2;
 		wxTextCtrl* m_textEditorPath;
