@@ -64,6 +64,10 @@ void KIPLATFORM::UI::RegisterPrivateFonts( const wxString& )
 }
 
 
+// The family SetInterfaceFontFamily() applied, for GetInterfaceFontFamily()
+static wxString s_interfaceFontFamily;
+
+
 void KIPLATFORM::UI::SetInterfaceFontFamily( const char* aFamily )
 {
     GtkSettings* settings = gtk_settings_get_default();
@@ -87,6 +91,8 @@ void KIPLATFORM::UI::SetInterfaceFontFamily( const char* aFamily )
     if( !isInstalled )
         return;
 
+    s_interfaceFontFamily = wxString::FromUTF8( aFamily );
+
     gchar* currentName = nullptr;
     g_object_get( settings, "gtk-font-name", &currentName, nullptr );
 
@@ -101,6 +107,18 @@ void KIPLATFORM::UI::SetInterfaceFontFamily( const char* aFamily )
     // g_object_set() on a GtkSettings property has application priority, above the desktop's XSETTINGS
     g_object_set( settings, "gtk-font-name", newName, nullptr );
     g_free( newName );
+}
+
+
+void KIPLATFORM::UI::ApplyInterfaceFont( wxWindow* )
+{
+    // The family is GTK's own default font (gtk-font-name), which every window already takes
+}
+
+
+wxString KIPLATFORM::UI::GetInterfaceFontFamily()
+{
+    return s_interfaceFontFamily;
 }
 
 

@@ -205,6 +205,11 @@ DIALOG_SHIM::DIALOG_SHIM( wxWindow* aParent, wxWindowID id, const wxString& titl
 
     KIPLATFORM::APP::SetCaptionColors( this );
 
+#ifdef KICAD_HOUSE_FONTS
+    // Before the derived class makes the controls, so they inherit the house font
+    KIPLATFORM::UI::ApplyInterfaceFont( this );
+#endif
+
     wxString msg = wxString::Format( "Opening dialog %s", GetTitle() );
     APP_MONITOR::AddNavigationBreadcrumb( msg, "dialog.open" );
 }

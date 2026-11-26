@@ -29,6 +29,10 @@
 #include <wx/toplevel.h>
 #include <wx/button.h>
 #include <wx/settings.h>
+#include <wx/dir.h>
+#include <wx/filename.h>
+#include <wx/osx/core/cfref.h>
+#include <wx/osx/core/cfstring.h>
 
 
 bool KIPLATFORM::UI::IsDarkTheme()
@@ -83,15 +87,76 @@ wxWindow* KIPLATFORM::UI::CreateCanvasOverlay( wxWindow* aCanvas [[maybe_unused]
 }
 
 
-void KIPLATFORM::UI::RegisterPrivateFonts( const wxString& )
+// The family SetInterfaceFontFamily() resolved, for ApplyInterfaceFont() and GetInterfaceFontFamily()
+static wxString s_interfaceFontFamily;
+
+
+void KIPLATFORM::UI::RegisterPrivateFonts( const wxString& aDirectory )
 {
-    // TODO(house fonts): wxFont::AddPrivateFont() each .ttf and .otf in the directory
+    // wxFont::AddPrivateFont() registers nothing on wxOSX: it only accepts a file already in the bundle's
+    // Resources/Fonts, listed ahead of time in Info.plist. CoreText registers a file for this process alone, and
+    // a face registered that way is found by its family name, by CoreText and so by wxFont.
+    wxDir directory( aDirectory );
+
+    if( !directory.IsOpened() )
+        return;
+
+    for( const wxString& pattern : { wxString( wxS( "*.ttf" ) ), wxString( wxS( "*.otf" ) ) } )
+    {
+        wxString name;
+
+        for( bool found = directory.GetFirst( &name, pattern, wxDIR_FILES ); found;
+             found = directory.GetNext( &name ) )
+        {
+            wxFileName file( aDirectory, name );
+            NSURL*     url = [NSURL fileURLWithPath:wxCFStringRef( file.GetFullPath() ).AsNSString()];
+            CFErrorRef error = nullptr;
+
+            // A face already registered (a second call in one process) reports an error and stays registered
+            if( !CTFontManagerRegisterFontsForURL( (__bridge CFURLRef) url, kCTFontManagerScopeProcess, &error )
+                && error )
+            {
+                CFRelease( error );
+            }
+        }
+    }
 }
 
 
-void KIPLATFORM::UI::SetInterfaceFontFamily( const char* )
+void KIPLATFORM::UI::SetInterfaceFontFamily( const char* aFamily )
 {
-    // TODO(house fonts): make the GUI default font this family at the system size
+    // Leave the system font alone if the family did not resolve: CoreText answers an unknown name with a
+    // substitute, so compare the family it gave back
+    wxCFRef<CTFontRef> font( CTFontCreateWithName( wxCFStringRef( wxString::FromUTF8( aFamily ) ), 0.0, nullptr ) );
+    wxCFStringRef      resolved( CTFontCopyFamilyName( font ) );
+
+    if( resolved.AsString().CmpNoCase( wxString::FromUTF8( aFamily ) ) != 0 )
+        return;
+
+    // wxOSX has no GUI default font to set: ApplyInterfaceFont() gives it to each top-level window instead
+    s_interfaceFontFamily = resolved.AsString();
+}
+
+
+void KIPLATFORM::UI::ApplyInterfaceFont( wxWindow* aTopLevel )
+{
+    if( !aTopLevel || s_interfaceFontFamily.IsEmpty() )
+        return;
+
+    // A control made without a font of its own inherits its parent's (wxWindowMac::MacPostControlCreate calls
+    // InheritAttributes() before falling back to the system font), so a font set here, before the window's
+    // children are made, reaches all of them. The size is the one those controls would have had.
+    wxFont font( wxOSX_SYSTEM_FONT_NORMAL );
+    font.SetFaceName( s_interfaceFontFamily );
+
+    if( font.IsOk() )
+        aTopLevel->SetFont( font );
+}
+
+
+wxString KIPLATFORM::UI::GetInterfaceFontFamily()
+{
+    return s_interfaceFontFamily;
 }
 
 

@@ -43,6 +43,7 @@
 #include <settings/common_settings.h>
 #include <bitmaps/bitmap_types.h>
 #include <string_utils.h>
+#include <kiplatform/ui.h>
 
 
 const wxString KIUI::s_FocusStealableInputName = wxS( "KI_NOFOCUS" );
@@ -116,6 +117,12 @@ wxFont getGUIFont( wxWindow* aWindow, int aRelativeSize )
 
     if( Pgm().GetCommonSettings() && Pgm().GetCommonSettings()->m_Appearance.apply_icon_scale_to_fonts )
         font.SetPointSize( KiROUND( KiIconScale( aWindow ) * font.GetPointSize() / 4.0 ) );
+
+#ifdef KICAD_HOUSE_FONTS
+    // The house interface family, at the size worked out above, also for a window that did not inherit it
+    if( const wxString family = KIPLATFORM::UI::GetInterfaceFontFamily(); !family.IsEmpty() )
+        font.SetFaceName( family );
+#endif
 
 #ifdef __WXMAC__
     // https://trac.wxwidgets.org/ticket/19210

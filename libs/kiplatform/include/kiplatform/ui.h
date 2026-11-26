@@ -67,12 +67,32 @@ namespace KIPLATFORM
          *
          * Only for the Reckless build's house font (see KICAD_HOUSE_FONTS).
          *
-         * wxMSW and wxOSX: TODO(house fonts), the implementation is still empty. Make the GUI default font
-         * (wxSystemSettings and the controls' default) this family at the system size.
+         * wxOSX: there is no GUI default font to set, so this only resolves the family and remembers it for
+         * ApplyInterfaceFont() and GetInterfaceFontFamily().
+         * wxMSW: TODO(house fonts), the implementation is still empty.
          *
          * @param aFamily is the font family, for example "Noto Serif".
          */
         void SetInterfaceFontFamily( const char* aFamily );
+
+        /**
+         * Give a top-level window the interface font chosen by SetInterfaceFontFamily(), at the system size, so
+         * the controls made in it afterwards inherit it. Call it in the window's constructor, before its
+         * children are made. Does nothing if no family was set or it did not resolve.
+         *
+         * wxGTK: nothing to do, because the family is the toolkit's own default font already.
+         * wxOSX: needed, because a control without a font of its own takes the system font when it is made,
+         * unless its parent passes one down.
+         *
+         * @param aTopLevel is the frame or dialog being constructed.
+         */
+        void ApplyInterfaceFont( wxWindow* aTopLevel );
+
+        /**
+         * @return the interface font family SetInterfaceFontFamily() applied, or an empty string if none did
+         *         (not called, or the family did not resolve).
+         */
+        wxString GetInterfaceFontFamily();
 
         /**
          * Pass the current focus to the window. On OSX this will forcefully give the focus to

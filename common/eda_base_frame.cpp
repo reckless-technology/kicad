@@ -206,6 +206,11 @@ void EDA_BASE_FRAME::commonInit( FRAME_T aFrameType )
     KIPLATFORM::UI::SetWMClass( this, Pgm().GetDesktopAppId() );
     KIPLATFORM::APP::SetCaptionColors( this );
 
+#ifdef KICAD_HOUSE_FONTS
+    // Before the derived class makes the controls, so they inherit the house font
+    KIPLATFORM::UI::ApplyInterfaceFont( this );
+#endif
+
     initExitKey();
 }
 
