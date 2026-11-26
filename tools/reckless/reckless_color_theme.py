@@ -50,7 +50,7 @@ SOURCES = {
     "bad": ("#e2705f", "amphitheater-chess src/app/Theme.h:33 kMinus (AppTheme bad)"),
     "blue": ("#5bb3dc", "amphitheater-chess src/app/Theme.h:34 kSeriesBlue"),
     "violet": ("#b996e2", "amphitheater-chess src/app/Theme.h:35 kSeriesViolet"),
-    "phase": ("#7fb8c9", "vst-plugins ir-capture/src/app/Theme.h:30 kPhase"),
+    "phase": ("#7fb8c9", "Reckless IR Capture, its app theme's kPhase (the phase strip)"),
 }
 
 # The canvas of every editor: the near-black of the series' plates and screens.
