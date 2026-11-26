@@ -85,6 +85,7 @@ if( APPLE )
     set_source_files_properties( "${CMAKE_CURRENT_SOURCE_DIR}/pcb_calculator.icns" PROPERTIES
         MACOSX_PACKAGE_LOCATION Resources
         )
+    kicad_house_app_icns( PCB_CALCULATOR_RESOURCES pcb_calculator )
     set( MACOSX_BUNDLE_ICON_FILE pcb_calculator.icns )
     set( MACOSX_BUNDLE_GUI_IDENTIFIER org.kicad.kicad )
     set( MACOSX_BUNDLE_NAME pcb_calculator )

@@ -398,6 +398,74 @@ wxImage BITMAP_STORE::getImage( BITMAPS aBitmapId, int aHeight )
 }
 
 
+#ifdef KICAD_HOUSE_ICONS
+int BITMAP_STORE::HouseAppIconHeight( BITMAPS aBitmapId, int aHeight )
+{
+    // The windows' own icons. The nightly icon, the plugin manager's (a glyph, not a window's) and the toolbar
+    // and menu images keep theirs.
+    switch( aBitmapId )
+    {
+    case BITMAPS::icon_kicad_16:
+    case BITMAPS::icon_eeschema_16:
+    case BITMAPS::icon_libedit_16:
+    case BITMAPS::icon_pcbnew_16:
+    case BITMAPS::icon_modedit_16:
+    case BITMAPS::icon_gerbview_16:
+    case BITMAPS::icon_pcbcalculator_16:
+    case BITMAPS::icon_pagelayout_editor_16: return 16;
+
+    case BITMAPS::icon_kicad_32:
+    case BITMAPS::icon_eeschema_32:
+    case BITMAPS::icon_libedit_32:
+    case BITMAPS::icon_pcbnew_32:
+    case BITMAPS::icon_modedit_32:
+    case BITMAPS::icon_gerbview_32:
+    case BITMAPS::icon_pcbcalculator_32:
+    case BITMAPS::icon_pagelayout_editor_32: return 32;
+
+    case BITMAPS::icon_kicad:
+    case BITMAPS::icon_eeschema:
+    case BITMAPS::icon_libedit:
+    case BITMAPS::icon_pcbnew:
+    case BITMAPS::icon_modedit:
+    case BITMAPS::icon_gerbview:
+    case BITMAPS::icon_pcbcalculator:
+    case BITMAPS::icon_pagelayout_editor:
+    case BITMAPS::icon_cvpcb:
+    case BITMAPS::icon_3d:
+        switch( aHeight )
+        {
+        case 16:
+        case 32:
+        case 48:
+        case 64:
+        case 128:
+        case 256: return aHeight;
+        default: return 48;
+        }
+
+    default: return 0;
+    }
+}
+
+
+wxBitmap BITMAP_STORE::GetHouseAppIcon( int aHeight )
+{
+    const unsigned char* data = nullptr;
+    const wxString       name = wxString::Format( wxT( "reckless_app_icon_%d.png" ), aHeight );
+    const long           count = m_archive->GetFilePointer( name, &data );
+
+    if( count < 0 )
+        return wxBitmap();
+
+    wxMemoryInputStream is( data, count );
+    wxImage             image( is, wxBITMAP_TYPE_PNG );
+
+    return image.IsOk() ? wxBitmap( image ) : wxBitmap();
+}
+#endif
+
+
 void BITMAP_STORE::ThemeChanged()
 {
     BITMAP_INFO::THEME oldTheme = m_theme;

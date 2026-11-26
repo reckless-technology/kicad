@@ -1,6 +1,10 @@
 #include "resource.h"
 
+#ifdef KICAD_HOUSE_ICONS
+IDI_APP_PCBCALC_ICON ICON "../resources/reckless/app-icon/windows/icon_pcbcalculator.ico"
+#else
 IDI_APP_PCBCALC_ICON ICON "../resources/bitmaps_png/icons/icon_pcbcalculator.ico"
+#endif
 
 #define RC_VER_FILE_DESCRIPTION "KiCad PCB Calculator " KICAD_WIN32_RC_PRODVER_STR
 #define RC_VER_INTERNALNAME "pcb_calculator"

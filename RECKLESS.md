@@ -78,6 +78,22 @@ the theme it names. To go back to upstream's look, pick KiCad Default in Prefere
 PCB and footprint editors, selection and net highlight are not theme colors: KiCad brightens the item's own color and
 dims the rest, so they are not amber there.
 
+The programs carry the Reckless logo as their application icon (#65, piece 4), behind the `KICAD_HOUSE_ICONS` option, on
+when `KICAD_VERSION_EXTRA` is `reckless`; a build without it keeps upstream's icons byte for byte. It is one mark for
+the whole suite, not one glyph per program. Upstream gives each program its own icon, which helps tell the Schematic
+Editor from the PCB Editor in a taskbar or Dock; the window titles still tell them apart, and the project manager's
+launcher buttons, the menus, the toolbars and every file-type icon (the `.desktop` MIME icons, the `*_doc.icns` and
+`fileicon_*.ico` files) keep their own images, so nothing inside KiCad loses its glyph. The nightly icon is left alone
+too. The picture is `tools/reckless/app_icon/RecklessAppIcon.png`, the 1024 px icon the Reckless toolkit's
+`assets/logos/make_app_icon.py` makes (the logo at 90% fill), and `tools/reckless/reckless_app_icons.py` scales it to
+every size and writes `resources/reckless/app-icon/`: the Linux `hicolor` icons the desktop entries name (PNG at 16 to
+128, and an SVG that wraps the 256 px picture, since the source is a raster), the macOS `.icns` and Windows `.ico` for
+each bundle and executable, and the window icons the programs set on their frames (`reckless_app_icon_<n>.png`, added
+to `images.tar.gz`, read by `KiBitmap()` for a program's own icon ids and for those only). The files are committed
+because a build cannot be asked for Pillow; `--check` (the `reckless_app_icons_are_current` test, which is made only
+when Pillow is installed) fails when they drift from the script. On Windows the resource scripts pick the house `.ico`
+through the `KICAD_HOUSE_ICONS` definition, and on macOS `kicad_house_app_icns()` swaps each bundle's `.icns`.
+
 ## Keeping up with upstream
 
 `reckless/main` is rebased onto upstream `master` only when Jonny asks for it, never on a schedule, so a rebase never

@@ -128,6 +128,7 @@ if( APPLE )
     set_source_files_properties( "${CMAKE_CURRENT_SOURCE_DIR}/kicad_doc.icns"  PROPERTIES
         MACOSX_PACKAGE_LOCATION Resources
         )
+    kicad_house_app_icns( KICAD_RESOURCES kicad )
     set( MACOSX_BUNDLE_ICON_FILE kicad.icns )
     set( MACOSX_BUNDLE_GUI_IDENTIFIER ${KICAD_BUNDLE_ID} )
     set( MACOSX_BUNDLE_NAME kicad )

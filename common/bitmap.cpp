@@ -99,6 +99,17 @@ BITMAP_STORE* GetBitmapStore()
 
 wxBitmap KiBitmap( BITMAPS aBitmap, int aHeightTag )
 {
+#ifdef KICAD_HOUSE_ICONS
+    // A program's own window icon is the house icon; the same ids as bundles (launcher buttons) keep their images
+    if( int houseHeight = BITMAP_STORE::HouseAppIconHeight( aBitmap, aHeightTag ) )
+    {
+        wxBitmap houseIcon = GetBitmapStore()->GetHouseAppIcon( houseHeight );
+
+        if( houseIcon.IsOk() )
+            return houseIcon;
+    }
+#endif
+
     return GetBitmapStore()->GetBitmap( aBitmap, aHeightTag );
 }
 

@@ -1104,10 +1104,25 @@ add_custom_target( bitmap_archive_bundle ALL )
 
 # We use a custom command here because it will avoid running the command
 # on every cmake build if there are no depends changes
+set( HOUSE_ICON_TAR_ARGS "" )
+set( HOUSE_ICON_PNGS "" )
+
+if( KICAD_HOUSE_ICONS )
+    # The programs' window icons in the house build: the Reckless logo, next to the stock images
+    # (BITMAP_STORE::GetHouseAppIcon reads them). The stock images are unchanged.
+    file( GLOB HOUSE_ICON_PNGS ${KICAD_HOUSE_ICON_DIR}/png/reckless_app_icon_*.png )
+    set( HOUSE_ICON_TAR_ARGS -C ${KICAD_HOUSE_ICON_DIR}/png )
+
+    foreach( _house_png ${HOUSE_ICON_PNGS} )
+        get_filename_component( _house_png_name ${_house_png} NAME )
+        list( APPEND HOUSE_ICON_TAR_ARGS ${_house_png_name} )
+    endforeach()
+endif()
+
 add_custom_command(
     OUTPUT ${BITMAP_ARCHIVE_PATH}
-    COMMAND ${TAR} ${TAR_LOCAL_FLAG} ${TARFLAGS} "${TAR_OUTPUT_FILE}" .
-    DEPENDS bitmap_archive_bundle ${ALL_PNGS}
+    COMMAND ${TAR} ${TAR_LOCAL_FLAG} ${TARFLAGS} "${TAR_OUTPUT_FILE}" . ${HOUSE_ICON_TAR_ARGS}
+    DEPENDS bitmap_archive_bundle ${ALL_PNGS} ${HOUSE_ICON_PNGS}
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/png
     COMMENT "Creating image archive ${TAR_OUTPUT_FILE}"
     VERBATIM

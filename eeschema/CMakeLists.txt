@@ -671,6 +671,7 @@ if( APPLE )
         "${CMAKE_CURRENT_SOURCE_DIR}/libedit_doc.icns"
         PROPERTIES MACOSX_PACKAGE_LOCATION Resources
         )
+    kicad_house_app_icns( EESCHEMA_RESOURCES eeschema libedit )
     set( MACOSX_BUNDLE_ICON_FILE eeschema.icns )
     set( MACOSX_BUNDLE_GUI_IDENTIFIER org.kicad.kicad )
     set( MACOSX_BUNDLE_NAME eeschema )

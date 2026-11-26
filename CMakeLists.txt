@@ -199,6 +199,37 @@ option( KICAD_HOUSE_THEME
     "Make the built-in Reckless color theme the default for a new configuration"
     ${_KICAD_HOUSE_DEFAULT} )
 
+# House application icons: the Reckless logo for every program's launcher, bundle, executable and window icon, instead
+# of KiCad's own (resources/reckless/app-icon, made by tools/reckless/reckless_app_icons.py). Off keeps upstream's icons
+# byte for byte.
+option( KICAD_HOUSE_ICONS
+    "House application icons: the Reckless logo in place of each program's own icon"
+    ${_KICAD_HOUSE_DEFAULT} )
+
+if( KICAD_HOUSE_ICONS )
+    # Read by the Windows resource scripts (resources/msw/*.rc) and by the bitmap store, which loads the window icons
+    add_compile_definitions( KICAD_HOUSE_ICONS )
+    set( KICAD_HOUSE_ICON_DIR "${CMAKE_SOURCE_DIR}/resources/reckless/app-icon" )
+endif()
+
+# Swaps the named macOS application icons in a bundle's resource list for the house ones. The bundle keeps the file's
+# name, so MACOSX_BUNDLE_ICON_FILE and the Info.plist still find it. A no-op without KICAD_HOUSE_ICONS.
+function( kicad_house_app_icns aResourcesVar )
+    if( NOT KICAD_HOUSE_ICONS )
+        return()
+    endif()
+
+    set( _resources ${${aResourcesVar}} )
+
+    foreach( _name ${ARGN} )
+        set( _icon "${KICAD_HOUSE_ICON_DIR}/macos/${_name}.icns" )
+        list( TRANSFORM _resources REPLACE "^${_name}\\.icns$" "${_icon}" )
+        set_source_files_properties( "${_icon}" PROPERTIES MACOSX_PACKAGE_LOCATION Resources )
+    endforeach()
+
+    set( ${aResourcesVar} ${_resources} PARENT_SCOPE )
+endfunction()
+
 # The interface font is set in code (PGM_BASE::InitPgm), so the build carries the choice however a program is started.
 if( KICAD_HOUSE_FONTS )
     add_compile_definitions( KICAD_HOUSE_FONTS )

@@ -707,6 +707,7 @@ if( APPLE )
         "${CMAKE_CURRENT_SOURCE_DIR}/fpedit_doc.icns"
         PROPERTIES MACOSX_PACKAGE_LOCATION Resources
         )
+    kicad_house_app_icns( PCBNEW_RESOURCES pcbnew fpedit )
     set( MACOSX_BUNDLE_ICON_FILE pcbnew.icns )
     set( MACOSX_BUNDLE_GUI_IDENTIFIER org.kicad.kicad )
     set( MACOSX_BUNDLE_NAME pcbnew )

@@ -220,6 +220,7 @@ set( QA_COMMON_SRCS
     test_component_class_settings.cpp
     test_project_local_settings.cpp
     test_reckless_color_theme.cpp
+    test_reckless_app_icons.cpp
     test_remote_provider_metadata.cpp
     test_remote_provider_client.cpp
     test_remote_provider_settings.cpp
@@ -343,3 +344,16 @@ kicad_add_shaders( TARGET qa_common SHADERS
     rhi_compute/reduction.comp
     rhi_compute/multipass.comp
 )
+
+# The house application icons are written by their script from the Reckless logo; fail when the two have drifted apart.
+# The script needs Pillow, which a build is not otherwise asked for, so without it the check is left out.
+execute_process( COMMAND ${PYTHON_EXECUTABLE} -c "import PIL"
+                 RESULT_VARIABLE _KICAD_PILLOW_RESULT OUTPUT_QUIET ERROR_QUIET )
+
+if( _KICAD_PILLOW_RESULT EQUAL 0 )
+    add_test( NAME reckless_app_icons_are_current
+              COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tools/reckless/reckless_app_icons.py
+                      --check ${CMAKE_SOURCE_DIR}/resources/reckless/app-icon )
+else()
+    message( STATUS "Pillow not found: the reckless_app_icons_are_current test is not made" )
+endif()

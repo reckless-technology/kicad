@@ -6,7 +6,11 @@
 #if KICAD_IS_NIGHTLY
 IDI_APP_KICAD_ICON ICON "../resources/bitmaps_png/icons/icon_kicad_nightly.ico"
 #else
+#ifdef KICAD_HOUSE_ICONS
+IDI_APP_KICAD_ICON ICON "../resources/reckless/app-icon/windows/icon_kicad.ico"
+#else
 IDI_APP_KICAD_ICON ICON "../resources/bitmaps_png/icons/icon_kicad.ico"
+#endif
 #endif
 IDI_FILE_FOOTPRINT_ICON ICON "../resources/bitmaps_png/icons/fileicon_footprint.ico"
 IDI_FILE_PCB_ICON ICON "../resources/bitmaps_png/icons/fileicon_pcb.ico"

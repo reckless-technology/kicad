@@ -62,6 +62,7 @@ if( APPLE )
     set_source_files_properties( "${CMAKE_CURRENT_SOURCE_DIR}/pagelayout_editor_doc.icns" PROPERTIES
         MACOSX_PACKAGE_LOCATION Resources
         )
+    kicad_house_app_icns( PL_EDITOR_RESOURCES pagelayout_editor )
     set( MACOSX_BUNDLE_ICON_FILE pagelayout_editor.icns )
     set( MACOSX_BUNDLE_GUI_IDENTIFIER org.kicad.kicad )
     set( MACOSX_BUNDLE_NAME pl_editor )

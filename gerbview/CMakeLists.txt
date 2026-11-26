@@ -94,6 +94,7 @@ if( APPLE )
     set_source_files_properties( "${CMAKE_CURRENT_SOURCE_DIR}/gerbview_doc.icns" PROPERTIES
         MACOSX_PACKAGE_LOCATION Resources
         )
+    kicad_house_app_icns( GERBVIEW_RESOURCES gerbview )
     set( MACOSX_BUNDLE_ICON_FILE gerbview.icns )
     set( MACOSX_BUNDLE_GUI_IDENTIFIER org.kicad.kicad )
     set( MACOSX_BUNDLE_NAME gerbview )

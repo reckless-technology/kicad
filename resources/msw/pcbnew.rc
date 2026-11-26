@@ -1,6 +1,10 @@
 #include "resource.h"
 
+#ifdef KICAD_HOUSE_ICONS
+IDI_APP_PCBNEW_ICON ICON "../resources/reckless/app-icon/windows/icon_pcbnew.ico"
+#else
 IDI_APP_PCBNEW_ICON ICON "../resources/bitmaps_png/icons/icon_pcbnew.ico"
+#endif
 IDI_FILE_FOOTPRINT_ICON ICON "../resources/bitmaps_png/icons/fileicon_footprint.ico"
 IDI_FILE_PCB_ICON ICON "../resources/bitmaps_png/icons/fileicon_pcb.ico"
 

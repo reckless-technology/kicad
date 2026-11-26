@@ -126,6 +126,23 @@ public:
 
     bool IsDarkTheme() const { return m_theme == BITMAP_INFO::THEME::DARK; }
 
+#ifdef KICAD_HOUSE_ICONS
+    /**
+     * The height in pixels of the house (Reckless) window icon that stands for a program's own icon, for a lookup
+     * of that icon (KiBitmap with its id, its 16 pixel or 32 pixel id, or its id at 48, 128 or 256).
+     * @param aBitmapId is from the BITMAPS enum in bitmaps_list.h
+     * @param aHeight is the height tag the caller passed to KiBitmap, or -1 for none
+     * @return the height of the house icon, or 0 when the id is not a program's window icon and keeps its own image.
+     */
+    static int HouseAppIconHeight( BITMAPS aBitmapId, int aHeight );
+
+    /**
+     * Retrieves the house window icon of the given height, as HouseAppIconHeight() answers.
+     * @return the bitmap, or an invalid one when the archive does not carry it.
+     */
+    wxBitmap GetHouseAppIcon( int aHeight );
+#endif
+
 private:
 
     wxImage getImage( BITMAPS aBitmapId, int aHeight = -1 );

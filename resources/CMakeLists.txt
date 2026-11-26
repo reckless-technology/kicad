@@ -118,6 +118,16 @@ elseif( UNIX )
           PATTERN "*.svg"
           )
 
+    if( KICAD_HOUSE_ICONS )
+        # The Reckless logo over each program's own launcher icon. The file-type icons (mimetypes) stay KiCad's.
+        file( COPY ${KICAD_HOUSE_ICON_DIR}/hicolor/
+              DESTINATION ${PROJECT_BINARY_DIR}/resources/linux/icons/hicolor
+              FILES_MATCHING
+              PATTERN "*.png"
+              PATTERN "*.svg"
+              )
+    endif()
+
     if( KICAD_BUILD_FLATPAK )
         # Rename all icons to start with KICAD_ICON_PREFIX
         file( GLOB_RECURSE _ALL_ICONS
