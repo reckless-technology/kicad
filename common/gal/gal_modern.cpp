@@ -3525,13 +3525,55 @@ bool GAL_MODERN::assignSlicesByOrder( std::vector<LAYER_RANGE>& aRanges, size_t 
     const float base = lowest - 1.0f;
     const float span = highest - lowest + 2.0f;
 
+    // A range beyond the retained layers, in front of the nearest or behind the farthest, would clamp to
+    // an empty slice at the end of the depth range, and everything out there would tie, whatever the
+    // order of its depths. The OpenGL canvas orders such ranges by depth, nearer first, and the one drawn
+    // first keeps the pixels two of them share. So each takes a slice of its own in the half unit of
+    // margin before the first layer or after the last, which the layers' slices leave free.
+    std::vector<size_t> inFront;
+    std::vector<size_t> behind;
+
     for( size_t ii = aFirst; ii < aRanges.size(); ++ii )
     {
         LAYER_RANGE& range = aRanges[ii];
 
         range.depthNear = std::clamp( ( range.depth - 0.5f - base ) / span, 0.0f, 1.0f );
         range.depthFar  = std::clamp( ( range.depth + 0.5f - base ) / span, 0.0f, 1.0f );
+
+        if( !range.HasGeometry() )
+            continue;
+
+        if( range.depth + 0.5f - base <= 0.0f )
+            inFront.push_back( ii );
+        else if( range.depth - 0.5f - base >= span )
+            behind.push_back( ii );
     }
+
+    const float margin = 0.5f / span;
+
+    auto spreadOverMargin = [&]( std::vector<size_t>& aIndices, float aNearEdge )
+    {
+        // Stable, so the range drawn first is the nearer of two at one depth
+        std::ranges::stable_sort( aIndices,
+                                  [&]( size_t aLeft, size_t aRight )
+                                  {
+                                      return aRanges[aLeft].depth < aRanges[aRight].depth;
+                                  } );
+
+        const float width = margin / static_cast<float>( aIndices.size() );
+
+        for( size_t rank = 0; rank < aIndices.size(); ++rank )
+        {
+            aRanges[aIndices[rank]].depthNear = aNearEdge + width * static_cast<float>( rank );
+            aRanges[aIndices[rank]].depthFar = aNearEdge + width * static_cast<float>( rank + 1 );
+        }
+    };
+
+    if( !inFront.empty() )
+        spreadOverMargin( inFront, 0.0f );
+
+    if( !behind.empty() )
+        spreadOverMargin( behind, 1.0f - margin );
 
     return true;
 }

@@ -105,6 +105,9 @@ As for KiCad (dev-docs.kicad.org, "Building on Linux"), with clang-20. We config
 The experimental Vulkan render engine (`common/rhi/`, "RHI Vulkan (Experimental)" in Preferences > Common >
 Graphics) is only compiled when the Vulkan headers and `glslc` are present (Ubuntu: `libvulkan-dev`, `glslc`). We
 build it in (#40); OpenGL stays the default canvas, and the engine loads the system Vulkan library only when selected.
+Overlay items drawn at one depth, as the measure tool draws its label and the shadow behind it, keep the order the
+OpenGL canvas gives them, nearer first and the one drawn first on top (#122): `GAL_MODERN::assignSlicesByOrder` gives
+each range beyond the retained layers a slice of its own, where they had all clamped to one and the last drawn won.
 
 ### Warnings are errors
 
