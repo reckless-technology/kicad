@@ -18,5 +18,6 @@
     <key>LSRequiresCarbon</key>                <true/>
     <key>NSHumanReadableCopyright</key>        <string>Copyright The KiCad Developers</string>
     <key>NSHighResolutionCapable</key>         <true/>
+    @KICAD_MACOS_ACCENT_COLOR_ENTRY@
 </dict>
 </plist>

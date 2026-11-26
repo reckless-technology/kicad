@@ -53,5 +53,6 @@
     <key>NSHumanReadableCopyright</key>         <string>Copyright The KiCad Developers</string>
     <key>NSLocalNetworkUsageDescription</key>   <string>KiCad connects to version control servers on your local network.</string>
     <key>NSHighResolutionCapable</key>          <true/>
+    @KICAD_MACOS_ACCENT_COLOR_ENTRY@
 </dict>
 </plist>

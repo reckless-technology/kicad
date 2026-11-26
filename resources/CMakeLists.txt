@@ -2,6 +2,9 @@
 # Generate platform metadata files
 #################################################
 if( APPLE )
+    # The house accent color (KICAD_HOUSE_THEME) sets a variable the Info.plist templates use, so it comes first
+    include( ${KICAD_CMAKE_MODULE_PATH}/KiCadMacAccentColor.cmake )
+
     #TODO Generate this at runtime as well
     include( ${KICAD_CMAKE_MODULE_PATH}/WritePlatformMetadata_macos.cmake )
 elseif( UNIX )
