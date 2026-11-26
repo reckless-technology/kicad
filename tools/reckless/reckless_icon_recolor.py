@@ -20,7 +20,7 @@
 built into KiCad.
 
     reckless_icon_recolor.py census                  # count the colors of the dark set, grouped by role
-    reckless_icon_recolor.py recolor OUT_DIR         # write the recolored copy of sources/dark/ (every SVG)
+    reckless_icon_recolor.py generate [--check]      # write (or check) sources/reckless/, the recolored dark set
     reckless_icon_recolor.py report                  # clean versus special-case counts for the whole set
     reckless_icon_recolor.py preview OUT_DIR         # contact sheets and toolbar strips for the toolbar icons
 
@@ -32,8 +32,12 @@ a color alone, with these classes (OKLab chroma C and hue h of the source color)
                                           from a monotonic piecewise-linear map: black stays black, the dark set's main
                                           glyph (#ded3dd) lands on cream, white stays white.
   blue family hue in BLUE_HUE_RANGE       the dark set's accent. Amber hue and chroma at the source luminance.
-  the rest    red, green, orange, purple  the colors that carry meaning. Hue and chroma kept, luminance kept (so the
-                                          source's luminance differences between them survive), and nothing else.
+  red         hue 340 to 40, luminance    the pink red of delete and error. Hue and chroma kept, luminance clamped into
+              at least 0.10               the band that is at least 2.1:1 darker than amber and at least 3.1:1 on the
+                                          panel (RED_LOW, RED_HIGH). Darker reds (outlines) are left.
+  pale yellow orange family, hue from 95, amber itself: otherwise it is within a few percent of cream.
+              luminance at least 0.60
+  the rest    green, other orange, purple Hue, chroma and luminance kept.
 
 Because luminance is kept for the chromatic classes and the neutrals' map is monotonic, the contrast between any two colors of an icon
 changes only through the cream scale factor and the cap. A per-icon check then compares every pair of colors before and
@@ -71,6 +75,17 @@ NAMED = {"white": "#ffffff", "black": "#000000", "red": "#ff0000", "green": "#00
          "yellow": "#ffff00", "gray": "#808080", "grey": "#808080", "orange": "#ffa500", "lime": "#00ff00",
          "silver": "#c0c0c0", "cyan": "#00ffff", "magenta": "#ff00ff", "purple": "#800080", "maroon": "#800000",
          "navy": "#000080", "teal": "#008080", "olive": "#808000"}
+
+
+def read_text(path):
+    """An SVG as text, byte for byte: no newline translation, bytes that are not UTF-8 carried through."""
+    with open(path, encoding="utf8", errors="surrogateescape", newline="") as handle:
+        return handle.read()
+
+
+def write_text(path, text):
+    with open(path, "w", encoding="utf8", errors="surrogateescape", newline="") as handle:
+        handle.write(text)
 
 
 def palette_color(name):
@@ -159,6 +174,20 @@ CREAM = theme.parse_hex(INK)
 AMBER_RGB = theme.parse_hex(AMBER)
 
 
+# The reds that carry meaning are moved darker so that they separate from amber by luminance (Jonny, 2026-11-26): at
+# least RED_VERSUS_AMBER to 1 below amber, and at least RED_ON_PANEL to 1 on the panel. The band is derived from the
+# palette, so a palette change moves it. Reds darker than RED_FLOOR_LUMINANCE are outlines and shadows, left alone.
+RED_VERSUS_AMBER = 2.1
+RED_ON_PANEL = 3.1
+RED_FLOOR_LUMINANCE = 0.10
+RED_HIGH = (theme.luminance(theme.parse_hex(AMBER)) + 0.05) / RED_VERSUS_AMBER - 0.05
+RED_LOW = RED_ON_PANEL * (theme.luminance(theme.parse_hex(PANEL)) + 0.05) - 0.05
+# A pale yellow (orange family at or above this luminance) is the dark set's highlight on a light part. Left as it is
+# it sits within a few percent of cream, so it becomes amber itself, the look's accent, which is 1.6 to 1 below cream.
+PALE_LUMINANCE = 0.60
+YELLOW_HUE = 95.0  # OKLab hue from which an orange-family color is yellow, not gold: #efc75e is gold, #f2eda1 yellow
+
+
 def neutral_luminance(source_luminance):
     """Piecewise linear and monotonic: 0 stays 0, the stock glyph luminance becomes cream's, white stays white."""
     glyph = theme.luminance(theme.parse_hex(STOCK_MAIN_GLYPH))
@@ -170,7 +199,7 @@ def neutral_luminance(source_luminance):
     return cream + (source_luminance - glyph) * (1.0 - cream) / (1.0 - glyph)
 
 
-def map_color(rgb, neutrals_only=False):
+def map_color(rgb, keep_blue=False, dark_orange=False):
     """The one rule: a color to a color. See the module text."""
     kind = color_class(rgb)
     source_luminance = theme.luminance(rgb)
@@ -178,8 +207,17 @@ def map_color(rgb, neutrals_only=False):
     if kind == "neutral":
         return at_luminance(CREAM, neutral_luminance(source_luminance))
 
-    if kind == "blue" and not neutrals_only:
+    if kind == "blue" and not keep_blue:
         return at_luminance(AMBER_RGB, source_luminance)
+
+    if kind == "red" and source_luminance >= RED_FLOOR_LUMINANCE:
+        return at_luminance(rgb, min(max(source_luminance, RED_LOW), RED_HIGH))
+
+    if kind == "orange" and source_luminance >= PALE_LUMINANCE and oklch(rgb)[1] >= YELLOW_HUE:
+        return AMBER_RGB
+
+    if kind == "orange" and dark_orange and source_luminance >= RED_FLOOR_LUMINANCE:
+        return at_luminance(rgb, min(source_luminance, RED_HIGH))
 
     return rgb
 
@@ -189,7 +227,7 @@ def properties(svg_text):
     return [(m.group(1) or m.group(3), m.group(5)) for m in PROPERTY.finditer(svg_text)]
 
 
-def recolor_text(svg_text, neutrals_only=False):
+def recolor_text(svg_text, keep_blue=False, dark_orange=False):
     """The SVG with every color value rewritten by the rule, and nothing else touched."""
 
     def replace(match):
@@ -198,7 +236,7 @@ def recolor_text(svg_text, neutrals_only=False):
         if rgb is None:
             return match.group(0)
 
-        return match.group(0)[: match.start(5) - match.start(0)] + hex_of(map_color(rgb, neutrals_only))
+        return match.group(0)[: match.start(5) - match.start(0)] + hex_of(map_color(rgb, keep_blue, dark_orange))
 
     return PROPERTY.sub(replace, svg_text)
 
@@ -236,7 +274,16 @@ def distinguishable(first, second, luminance_floor=PAIR_LUMINANCE_CONTRAST):
     return math.dist(theme.to_oklab(first), theme.to_oklab(second)) >= PAIR_HUE_DISTANCE
 
 
-def collisions(svg_text, neutrals_only=False):
+# The rule's variants, tried in this order for each icon; the first that loses no distinction is the icon's.
+VARIANTS = (
+    ("clean", {}),
+    ("dark-orange", {"dark_orange": True}),  # orange goes as dark as red, where it would merge with amber beside it
+    ("keep-blue", {"keep_blue": True}),  # blue stays blue where it would merge with something else beside it
+    ("keep-blue+dark-orange", {"keep_blue": True, "dark_orange": True}),
+)
+
+
+def collisions(svg_text, **options):
     """Pairs of colors in this icon that can be told apart in the source and not after the rule."""
     colors = [theme.parse_hex(h) for h in colors_of(svg_text)]
     lost = []
@@ -246,7 +293,7 @@ def collisions(svg_text, neutrals_only=False):
             if not distinguishable(first, second):
                 continue
 
-            mapped = (map_color(first, neutrals_only), map_color(second, neutrals_only))
+            mapped = (map_color(first, **options), map_color(second, **options))
 
             if not distinguishable(*mapped, luminance_floor=PAIR_LUMINANCE_AFTER):
                 lost.append((hex_of(first), hex_of(second)))
@@ -254,19 +301,33 @@ def collisions(svg_text, neutrals_only=False):
     return lost
 
 
+def choose(svg_text):
+    """(variant name, its options, the pairs it still loses) for this icon: the first variant that loses none, else
+    the one that loses fewest, named 'review'."""
+    results = [(name, options, collisions(svg_text, **options)) for name, options in VARIANTS]
+
+    for name, options, lost in results:
+        if not lost:
+            return name, options, lost
+
+    name, options, lost = min(results, key=lambda r: len(r[2]))
+    return "review", options, lost
+
+
 def classify(svg_text):
-    """'clean', 'fallback' (neutrals-only rule resolves it) or 'review' (still loses a distinction)."""
-    if not collisions(svg_text):
-        return "clean"
-
-    if not collisions(svg_text, neutrals_only=True):
-        return "fallback"
-
-    return "review"
+    return choose(svg_text)[0]
 
 
-def recolor_icon(svg_text):
-    return recolor_text(svg_text, neutrals_only=classify(svg_text) == "fallback")
+def is_branding(path):
+    """KiCad's own application icons (icon_*.svg) are its branding, which stays KiCad's: copied, never recolored."""
+    return os.path.basename(path).startswith("icon_")
+
+
+def recolor_icon(svg_text, path=""):
+    if path and is_branding(path):
+        return svg_text
+
+    return recolor_text(svg_text, **choose(svg_text)[1])
 
 
 def dark_svgs():
@@ -304,7 +365,7 @@ def command_census(_args):
     files = dark_svgs()
 
     for path in files:
-        text = open(path, encoding="utf8", errors="replace").read()
+        text = read_text(path)
 
         for prop, value in properties(text):
             rgb = parse_color(value)
@@ -347,22 +408,23 @@ def command_census(_args):
 def command_report(_args):
     counts = collections.Counter()
     review = []
-    plain = 0
+    plain = branding = 0
 
     for path in dark_svgs():
-        text = open(path, encoding="utf8", errors="replace").read()
+        text = read_text(path)
         kind = classify(text)
         counts[kind] += 1
+        branding += is_branding(path)
 
         if not colors_of(text):
             plain += 1
 
         if kind == "review":
-            review.append((os.path.relpath(path, SOURCES), collisions(text, neutrals_only=True)))
+            review.append((os.path.relpath(path, SOURCES), choose(text)[2]))
 
     total = sum(counts.values())
-    print("dark SVGs: %d  clean: %d  fallback (neutrals only): %d  review: %d  with no plain color at all: %d"
-          % (total, counts["clean"], counts["fallback"], counts["review"], plain))
+    print("dark SVGs: %d  with no plain color: %d  branding copied unchanged: %d" % (total, plain, branding))
+    print("variants: %s" % dict(counts))
 
     for name, lost in review:
         print("    review: %s  %s" % (name, lost[:3]))
@@ -380,8 +442,8 @@ def command_verify(_args):
                             if parse_color(m.group(5)) is not None else m.group(0), text)
 
     for path in dark_svgs():
-        text = open(path, encoding="utf8", errors="replace").read()
-        after = recolor_icon(text)
+        text = read_text(path)
+        after = recolor_icon(text, path)
 
         if blank(text) != blank(after):
             bad_text += 1
@@ -396,22 +458,43 @@ def command_verify(_args):
           % (bad_text, bad_alpha, len(dark_svgs())))
 
 
-def command_recolor(args):
-    os.makedirs(args.out, exist_ok=True)
-    written = 0
+def generated():
+    """Relative path to text of every file of the Reckless set, made from the dark set."""
+    return {os.path.relpath(path, os.path.join(SOURCES, "dark")): recolor_icon(read_text(path), path)
+            for path in dark_svgs()}
 
-    for path in dark_svgs():
-        relative = os.path.relpath(path, os.path.join(SOURCES, "dark"))
-        target = os.path.join(args.out, relative)
-        os.makedirs(os.path.dirname(target), exist_ok=True)
-        text = open(path, encoding="utf8", errors="replace").read()
 
-        with open(target, "w", encoding="utf8", newline="") as handle:
-            handle.write(recolor_icon(text))
+def command_generate(args):
+    """Write sources/reckless/, or with --check fail when what is there differs from what the script makes."""
+    target = args.out or os.path.join(SOURCES, "reckless")
+    wanted = generated()
 
-        written += 1
+    if args.check:
+        present = {os.path.relpath(path, target) for path in glob.glob(os.path.join(target, "**", "*.svg"),
+                                                                       recursive=True)}
+        stale = sorted(name for name in wanted if name not in present
+                       or read_text(os.path.join(target, name)) != wanted[name])
+        extra = sorted(present - set(wanted))
 
-    print("wrote %d recolored SVGs under %s" % (written, args.out))
+        for name in stale + extra:
+            print("stale or extra: %s" % name, file=sys.stderr)
+
+        print("%d files checked, %d stale or missing, %d extra" % (len(wanted), len(stale), len(extra)))
+        sys.exit(1 if stale or extra else 0)
+
+    changed = 0
+
+    for name, text in wanted.items():
+        path = os.path.join(target, name)
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+
+        if os.path.exists(path) and read_text(path) == text:
+            continue  # leave the file, and its timestamp, so the PNG build does not remake its picture
+
+        write_text(path, text)
+        changed += 1
+
+    print("%d SVGs under %s, %d written" % (len(wanted), target, changed))
 
 
 # --- toolbars and the preview -------------------------------------------------------------------------------------------
@@ -431,7 +514,7 @@ def action_icons():
     icons = {}
 
     for path in sorted(set(ACTION_FILES)):
-        text = open(path, encoding="utf8", errors="replace").read()
+        text = read_text(path)
 
         for match in re.finditer(r"TOOL_ACTION\s+(\w+::\w+)\s*\(\s*TOOL_ACTION_ARGS\(\)(.*?)\)\s*;", text, re.S):
             icon = re.search(r"\.Icon\(\s*BITMAPS::(\w+)\s*\)", match.group(2))
@@ -487,7 +570,7 @@ def read_svg(theme_name, icon):
     if not os.path.exists(path):
         return None
 
-    return open(path, encoding="utf8", errors="replace").read()
+    return read_text(path)
 
 
 def on(background, icon_image):
@@ -496,6 +579,24 @@ def on(background, icon_image):
     base = Image.new("RGBA", icon_image.size, background)
     base.alpha_composite(icon_image)
     return base
+
+
+def reckless_svg(name):
+    """The Reckless set's SVG for an icon: the generated file if there is one, else what the script would make."""
+    generated_file = read_svg("reckless", name)
+
+    if generated_file is not None:
+        return generated_file
+
+    dark = read_svg("dark", name)
+    return recolor_icon(dark) if dark else None
+
+
+# Icons the rule treats specially, to see them beside the stock sets: the pale yellows (three constraint pictures and
+# lock_unlock), the two the rule still loses a distinction in (ercerr, lock_unlock), and meaning reds.
+SPECIAL_ICONS = ["lock_unlock", "constraint_minimum_soldermask_sliver", "constraint_silk_to_silk_clearance",
+                 "constraint_silk_to_soldermask_clearance", "ercerr", "erc", "drc", "delete_sheet", "general_deletions",
+                 "delete_cursor", "add_zone", "show_ratsnest", "icon_kicad_24", "icon_pcm_24"]
 
 
 def command_preview(args):
@@ -526,33 +627,36 @@ def command_preview(args):
     def variants(name):
         light = read_svg("light", name)
         dark = read_svg("dark", name)
-        return [("light", light), ("dark", dark), ("reckless", recolor_icon(dark) if dark else None)]
+        return [("light", light), ("dark", dark), ("reckless", reckless_svg(name))]
 
-    columns = 4
-    per_column = math.ceil(len(sample) / columns)
-    label_width = 150
-    block = label_width + 3 * cell + 12
-    sheet = Image.new("RGBA", (columns * block + 8, 34 + per_column * (cell + 2) + 8), window)
-    draw = ImageDraw.Draw(sheet)
-    draw.text((8, 8), "stock light | stock dark | Reckless recolor, each on the panel color, 24 px shown 3x (nearest)",
-              font=big, fill=ink)
+    def contact(names, columns, filename, title):
+        per_column = math.ceil(len(names) / columns)
+        label_width = 150
+        block = label_width + 3 * cell + 12
+        sheet = Image.new("RGBA", (columns * block + 8, 34 + per_column * (cell + 2) + 8), window)
+        draw = ImageDraw.Draw(sheet)
+        draw.text((8, 8), title, font=big, fill=ink)
 
-    for index, name in enumerate(sample):
-        column, row = divmod(index, per_column)
-        x0, y0 = 8 + column * block, 34 + row * (cell + 2)
-        draw.text((x0, y0 + cell // 2 - 6), name[:21], font=font, fill=ink)
+        for index, name in enumerate(names):
+            column, row = divmod(index, per_column)
+            x0, y0 = 8 + column * block, 34 + row * (cell + 2)
+            draw.text((x0, y0 + cell // 2 - 6), name[:21], font=font, fill=ink)
 
-        for slot, (_, svg) in enumerate(variants(name)):
-            x = x0 + label_width + slot * cell
-            tile = Image.new("RGBA", (cell - 2, cell - 2), panel)
+            for slot, (_, svg) in enumerate(variants(name)):
+                x = x0 + label_width + slot * cell
+                tile = Image.new("RGBA", (cell - 2, cell - 2), panel)
 
-            if svg:
-                small = on(panel, render(svg, 24))
-                tile.paste(small.resize((24 * zoom, 24 * zoom), Image.NEAREST), (4, 4))
+                if svg:
+                    small = on(panel, render(svg, 24))
+                    tile.paste(small.resize((24 * zoom, 24 * zoom), Image.NEAREST), (4, 4))
 
-            sheet.paste(tile, (x, y0))
+                sheet.paste(tile, (x, y0))
 
-    sheet.convert("RGB").save(os.path.join(args.out, "contact-sheet.png"))
+        sheet.convert("RGB").save(os.path.join(args.out, filename))
+
+    title = "stock light | stock dark | Reckless, each on the panel color, 24 px shown 3x (nearest)"
+    contact(sample, 4, "contact-sheet.png", title)
+    contact(SPECIAL_ICONS, 2, "special-cases.png", title)
 
     # The toolbars at their normal size (24 px, 1x) and doubled, three ways, on the toolbar plate.
     for frame, location, names in toolbars:
@@ -563,7 +667,7 @@ def command_preview(args):
 
             for name in names:
                 dark = read_svg("dark", name)
-                svg = recolor_icon(dark) if source == "reckless" and dark else read_svg(source, name)
+                svg = reckless_svg(name) if source == "reckless" else read_svg(source, name)
                 icons.append(render(svg, 24) if svg else None)
 
             rows.append((label, icons))
@@ -616,12 +720,12 @@ def command_preview(args):
         for i, name in enumerate(top):
             svg = read_svg("dark", name)
             if svg:
-                mock.alpha_composite(render(recolor_icon(svg), 24), (6 + i * 34, 6))
+                mock.alpha_composite(render(reckless_svg(name), 24), (6 + i * 34, 6))
 
         for i, name in enumerate(left):
             svg = read_svg("dark", name)
             if svg:
-                mock.alpha_composite(render(recolor_icon(svg), 24), (6, 42 + i * 30))
+                mock.alpha_composite(render(reckless_svg(name), 24), (6, 42 + i * 30))
 
         mock.convert("RGB").save(os.path.join(args.out, "mock-%s-1x.png" % frame))
 
@@ -639,7 +743,7 @@ def command_preview(args):
 
             for color in sorted(colors_of(dark)):
                 rgb = theme.parse_hex(color)
-                target = map_color(rgb, neutrals_only=classify(dark) == "fallback")
+                target = map_color(rgb, **choose(dark)[1])
                 pairs.append("%s %.2f -> %s %.2f" % (color, theme.contrast(rgb, theme.parse_hex(PANEL)), hex_of(target),
                                                     theme.contrast(target, theme.parse_hex(PANEL))))
 
@@ -654,9 +758,10 @@ def main():
     sub.add_parser("census").set_defaults(run=command_census)
     sub.add_parser("report").set_defaults(run=command_report)
     sub.add_parser("verify").set_defaults(run=command_verify)
-    recolor = sub.add_parser("recolor")
-    recolor.add_argument("out")
-    recolor.set_defaults(run=command_recolor)
+    generate = sub.add_parser("generate")
+    generate.add_argument("--out", help="default: resources/bitmaps_png/sources/reckless")
+    generate.add_argument("--check", action="store_true", help="exit 1 if the files there are not what the script makes")
+    generate.set_defaults(run=command_generate)
     preview = sub.add_parser("preview")
     preview.add_argument("out")
     preview.add_argument("--all", action="store_true", help="every distinct toolbar icon, not 40 spread evenly across them")
