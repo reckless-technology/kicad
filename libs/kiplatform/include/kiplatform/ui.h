@@ -24,6 +24,7 @@
 #include <functional>
 
 #include <wx/cursor.h>
+#include <wx/string.h>
 
 class wxChoice;
 class wxDataViewColumn;
@@ -47,18 +48,31 @@ namespace KIPLATFORM
 
         wxColour GetDialogBGColour();
 
-#ifdef __WXGTK__
         /**
-         * Use the given family for the interface font of this process, keeping the size and style the desktop
-         * chose. The setting has application priority, so it holds over the desktop's own (XSETTINGS) font. Does
-         * nothing if the family is not installed or if there is no display.
+         * Make the font files in a directory available to the toolkit for this process, without installing them.
+         * Called before SetInterfaceFontFamily() with the bundled house fonts (see KICAD_HOUSE_FONTS).
+         *
+         * wxGTK: nothing to do, because Pango reads the fontconfig that KiCad has already added the directory to.
+         * wxMSW and wxOSX: TODO(house fonts), register each .ttf and .otf in the directory with
+         * wxFont::AddPrivateFont() (the OS font system does not read fontconfig).
+         *
+         * @param aDirectory is the directory of the bundled fonts, with a trailing separator.
+         */
+        void RegisterPrivateFonts( const wxString& aDirectory );
+
+        /**
+         * Use the given family for the interface font of this process, keeping the size and style the system
+         * chose. On wxGTK the setting has application priority, so it holds over the desktop's own (XSETTINGS)
+         * font. Does nothing if the family is not available or if there is no display.
          *
          * Only for the Reckless build's house font (see KICAD_HOUSE_FONTS).
+         *
+         * wxMSW and wxOSX: TODO(house fonts), the implementation is still empty. Make the GUI default font
+         * (wxSystemSettings and the controls' default) this family at the system size.
          *
          * @param aFamily is the font family, for example "Noto Serif".
          */
         void SetInterfaceFontFamily( const char* aFamily );
-#endif
 
         /**
          * Pass the current focus to the window. On OSX this will forcefully give the focus to

@@ -62,6 +62,7 @@
 #include <macros.h>
 #include <notifications_manager.h>
 #include <paths.h>
+#include <font/fontconfig.h>
 #include <pgm_base.h>
 #include <design_block_library_adapter.h>
 #include <policy_keys.h>
@@ -522,11 +523,15 @@ bool PGM_BASE::InitPgm( bool aHeadless, bool aIsUnitTest )
     if( commonSettings->m_Api.enable_server )
         m_plugin_manager->ReloadPlugins();
 
-#if defined( KICAD_HOUSE_FONTS ) && defined( __WXGTK__ )
+#ifdef KICAD_HOUSE_FONTS
     // Reckless build: the interface uses the house serif, at the size the desktop chose. Every GUI program passes
-    // here before it makes a window.
+    // here before it makes a window. Fontconfig first, because it registers the bundled faces for this process.
     if( !aHeadless )
+    {
+        Fontconfig();
+        KIPLATFORM::UI::RegisterPrivateFonts( PATHS::GetBundledFontsPath() );
         KIPLATFORM::UI::SetInterfaceFontFamily( "Noto Serif" );
+    }
 #endif
 
     // This sets the maximum tooltip display duration to 10s (up from 5) but only affects

@@ -58,6 +58,12 @@ const wxString traceWayland = wxS( "KICAD_WAYLAND" );
 static const wxChar traceRhi[] = wxT( "KICAD_RHI" );
 
 
+void KIPLATFORM::UI::RegisterPrivateFonts( const wxString& )
+{
+    // KiCad has added the bundled directory to the process's fontconfig, which Pango reads
+}
+
+
 void KIPLATFORM::UI::SetInterfaceFontFamily( const char* aFamily )
 {
     GtkSettings* settings = gtk_settings_get_default();

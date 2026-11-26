@@ -190,3 +190,19 @@ endif()
 
 add_subdirectory(bitmaps_png)
 add_subdirectory(project_template)
+# House fonts (Reckless build): Noto Serif and Monaspace Xenon, with their OFL texts, install into KiCad's data
+# directory on every platform (inside the bundle's SharedSupport on macOS), where KiCad registers them with its own
+# fontconfig at startup (FONTCONFIG::AddApplicationFontDirectory). A build without the option installs none.
+if( KICAD_HOUSE_FONTS )
+    file( GLOB _KICAD_HOUSE_FONT_FILES
+          ${PROJECT_SOURCE_DIR}/resources/fonts/house/*.ttf
+          ${PROJECT_SOURCE_DIR}/resources/fonts/house/*.otf
+          ${PROJECT_SOURCE_DIR}/resources/fonts/house/OFL-*.txt )
+
+    install( FILES ${_KICAD_HOUSE_FONT_FILES}
+             DESTINATION ${KICAD_DATA}/fonts/house
+             COMPONENT resources )
+
+    # A build tree run from its own directory (KICAD_RUN_FROM_BUILD_DIR, and the tests) finds data in the build root
+    file( COPY ${_KICAD_HOUSE_FONT_FILES} DESTINATION ${PROJECT_BINARY_DIR}/fonts/house )
+endif()

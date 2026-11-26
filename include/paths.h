@@ -144,6 +144,14 @@ public:
     static wxString GetStockDemosPath();
 
     /**
+     * Get the directory of the fonts bundled with the Reckless build (Noto Serif and Monaspace Xenon), which
+     * exists only in a build with KICAD_HOUSE_FONTS.
+     *
+     * @return the directory, with a trailing separator. It may not exist.
+     */
+    static wxString GetBundledFontsPath();
+
+    /**
      * Gets the stock (install) templates path
      */
     static wxString GetStockTemplatesPath();

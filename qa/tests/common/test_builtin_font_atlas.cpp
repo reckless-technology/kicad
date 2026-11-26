@@ -35,7 +35,6 @@
 #include <vector>
 
 #ifdef KICAD_HOUSE_FONTS
-#include <font/fontconfig.h>
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -164,21 +163,14 @@ BOOST_AUTO_TEST_CASE( HouseAtlasIsMonospacedAtXenonsAdvance )
 BOOST_AUTO_TEST_CASE( HouseAtlasDrawsXenonsShapes )
 {
     // The atlas's inside, decoded as the shaders decode it, against Xenon Regular rasterized by FreeType at the
-    // atlas's 48 pixels per em
-    wxString fontFile;
-    int      faceIndex = 0;
-
-    if( Fontconfig()->FindFont( wxS( "Monaspace Xenon" ), fontFile, faceIndex, false, false )
-        != fontconfig::FONTCONFIG::FF_RESULT::FF_OK )
-    {
-        BOOST_TEST_MESSAGE( "Monaspace Xenon is not installed; skipped" );
-        return;
-    }
+    // atlas's 48 pixels per em. The font is the one the build bundles, so no installed copy is needed.
+    const std::string fontFile = std::string( QA_HOUSE_FONTS_DIR ) + "/MonaspaceXenon-Regular.otf";
+    const int         faceIndex = 0;
 
     FT_Library library = nullptr;
     FT_Face    face = nullptr;
     BOOST_REQUIRE( FT_Init_FreeType( &library ) == 0 );
-    BOOST_REQUIRE( FT_New_Face( library, fontFile.utf8_str(), faceIndex, &face ) == 0 );
+    BOOST_REQUIRE( FT_New_Face( library, fontFile.c_str(), faceIndex, &face ) == 0 );
     BOOST_REQUIRE( FT_Set_Pixel_Sizes( face, 0, 48 ) == 0 );
 
     for( char32_t ch : std::u32string( U"0OagM&@R1lI" ) )

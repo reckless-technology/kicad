@@ -28,6 +28,16 @@ stock KiCad:
   keeping its size, at application priority, which holds over the desktop's XSETTINGS font. If Noto Serif is not
   installed the desktop font is left alone.
 
+Bundled (#127): the house build carries Noto Serif and Monaspace Xenon (Regular and Bold, with their OFL texts, from
+`resources/fonts/house/`, whose README names the source commit) and installs them in KiCad's data directory
+(`share/kicad/fonts/house`; `Contents/SharedSupport/fonts/house` in the macOS bundle), on all three platforms. The
+first use of `Fontconfig()` adds that directory to the process's own fontconfig (`FcConfigAppFontAddDir`, in
+`FONTCONFIG::AddApplicationFontDirectory`), so `FindFont( "Noto Serif" )` and `FindFont( "Monaspace Xenon" )` succeed
+with nothing installed on the system, whatever started the program, and the schematic default (#48) and the overlay font
+(#50) find the faces. The Linux `FONTCONFIG_FILE` launcher entry is now needed only for the `monospace` alias. The
+interface font on Windows and macOS is the platform sessions' part: `KIPLATFORM::UI::RegisterPrivateFonts()` and
+`SetInterfaceFontFamily()` are called on every platform and are empty on wxMSW and wxOSX until they add it.
+
 Schematic text defaults to Noto Serif (#48): `appearance.default_font` ships as Noto Serif when fontconfig lists that
 family, and as the KiCad stroke font otherwise. New text carries no font of its own, so it follows the setting when
 drawn. The choice is made when the settings object is built, because fontconfig answers a missing family with some other

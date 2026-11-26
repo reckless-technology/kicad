@@ -43,6 +43,15 @@ public:
 
     static wxString Version();
 
+    /**
+     * Make the fonts in a directory available to this process's fontconfig, without installing them. Fontconfig
+     * scans the directory and its subdirectories, and the faces then answer FindFont() like installed ones.
+     *
+     * @param aDirectory is the directory to add.
+     * @return true if fontconfig took the directory.
+     */
+    static bool AddApplicationFontDirectory( const wxString& aDirectory );
+
     enum class FF_RESULT
     {
         FF_OK,

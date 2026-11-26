@@ -425,6 +425,18 @@ wxString PATHS::GetStockDemosPath()
 }
 
 
+wxString PATHS::GetBundledFontsPath()
+{
+    wxFileName fn;
+
+    fn.AssignDir( PATHS::GetStockDataPath() );
+    fn.AppendDir( wxT( "fonts" ) );
+    fn.AppendDir( wxT( "house" ) );
+
+    return fn.GetPathWithSep();
+}
+
+
 wxString PATHS::GetUserCachePath()
 {
     wxString   envPath;

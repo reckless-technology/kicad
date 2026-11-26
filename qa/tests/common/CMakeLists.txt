@@ -200,6 +200,7 @@ set( QA_COMMON_SRCS
     test_gal_resize_strategy.cpp
     test_overlay_font.cpp
     test_builtin_font_atlas.cpp
+    test_house_fonts.cpp
 
     # Preview item / drawing utility tests
     test_construction_geom.cpp
@@ -313,6 +314,12 @@ set_property( SOURCE test_reckless_color_theme.cpp APPEND PROPERTY COMPILE_DEFIN
 # The icon theme test reads the PNG files the cache names
 set_property( SOURCE test_house_icon_theme.cpp APPEND PROPERTY COMPILE_DEFINITIONS
     "QA_SRC_ROOT=(\"${CMAKE_SOURCE_DIR}\")" )
+
+# The house fonts the build bundles, read from the source tree
+if( KICAD_HOUSE_FONTS )
+    set_property( SOURCE test_house_fonts.cpp test_builtin_font_atlas.cpp APPEND PROPERTY COMPILE_DEFINITIONS
+        "QA_HOUSE_FONTS_DIR=(\"${CMAKE_SOURCE_DIR}/resources/fonts/house\")" )
+endif()
 
 if( KICAD_HOUSE_THEME )
     set_property( SOURCE test_house_icon_theme.cpp APPEND PROPERTY COMPILE_DEFINITIONS KICAD_HOUSE_THEME )

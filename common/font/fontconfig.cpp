@@ -28,6 +28,8 @@
 #include <cstdint>
 #include <reporter.h>
 #include <embedded_files.h>
+#include <paths.h>
+#include <wx/dir.h>
 
 #ifdef __WIN32__
 #include <windows.h>
@@ -107,11 +109,29 @@ static void bootstrapFc()
 }
 
 
+bool FONTCONFIG::AddApplicationFontDirectory( const wxString& aDirectory )
+{
+    if( !g_fcInitSuccess || !wxDir::Exists( aDirectory ) )
+        return false;
+
+    std::lock_guard lock( g_fontConfigMutex );
+
+    return FcConfigAppFontAddDir( FcConfigGetCurrent(), (const FcChar8*) aDirectory.utf8_str().data() ) == FcTrue;
+}
+
+
 FONTCONFIG* Fontconfig()
 {
     if( !g_config )
     {
         bootstrapFc();
+
+#ifdef KICAD_HOUSE_FONTS
+        // Reckless build: the house fonts come with KiCad, so they answer FindFont() and the interface on every
+        // platform with nothing installed, however the program was started.
+        FONTCONFIG::AddApplicationFontDirectory( PATHS::GetBundledFontsPath() );
+#endif
+
         g_config = new FONTCONFIG();
     }
 

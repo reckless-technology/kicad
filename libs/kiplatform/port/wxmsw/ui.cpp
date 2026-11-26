@@ -309,6 +309,18 @@ void KIPLATFORM::UI::GetNativeWindowHandles( wxWindow* aWindow, void** aHandle, 
 }
 
 
+void KIPLATFORM::UI::RegisterPrivateFonts( const wxString& )
+{
+    // TODO(house fonts): wxFont::AddPrivateFont() each .ttf and .otf in the directory
+}
+
+
+void KIPLATFORM::UI::SetInterfaceFontFamily( const char* )
+{
+    // TODO(house fonts): make the GUI default font this family at the system size
+}
+
+
 void KIPLATFORM::UI::PrepareForExternalRendering( wxWindow* )
 {
     // The GPU API owns Win32 surfaces natively
