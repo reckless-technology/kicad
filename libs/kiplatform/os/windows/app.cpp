@@ -28,6 +28,11 @@
 #include <wx/msw/darkmode.h>
 #endif
 
+#ifdef KICAD_HOUSE_THEME
+#include <kiplatform/reckless_palette.h>
+#include <wx/pen.h>
+#endif
+
 #include <windows.h>
 #include <strsafe.h>
 #include <config.h>
@@ -81,6 +86,95 @@ public:
         }
     }
 };
+
+#ifdef KICAD_HOUSE_THEME
+/**
+ * The house build's dark look, used when the application theme is set to dark.  Every color comes from the
+ * shared palette, so the Windows chrome matches what the other platforms draw.
+ */
+class RECKLESS_DARK_MODE_SETTINGS : public wxDarkModeSettings
+{
+public:
+    wxColour GetColour( wxSystemColour index ) override
+    {
+        using namespace KIPLATFORM::RECKLESS_PALETTE;
+
+        switch( index )
+        {
+        case wxSYS_COLOUR_WINDOW:
+        case wxSYS_COLOUR_LISTBOX:
+        case wxSYS_COLOUR_APPWORKSPACE: return toColour( PANEL );
+
+        case wxSYS_COLOUR_BTNFACE:
+        case wxSYS_COLOUR_MENU:
+        case wxSYS_COLOUR_MENUBAR:
+        case wxSYS_COLOUR_ACTIVECAPTION:
+        case wxSYS_COLOUR_INACTIVECAPTION:
+        case wxSYS_COLOUR_GRADIENTACTIVECAPTION:
+        case wxSYS_COLOUR_GRADIENTINACTIVECAPTION: return toColour( WINDOW );
+
+        case wxSYS_COLOUR_3DLIGHT:
+        case wxSYS_COLOUR_BTNHIGHLIGHT:
+        case wxSYS_COLOUR_SCROLLBAR: return toColour( PLATE );
+
+        case wxSYS_COLOUR_BTNSHADOW:
+        case wxSYS_COLOUR_3DDKSHADOW:
+        case wxSYS_COLOUR_ACTIVEBORDER:
+        case wxSYS_COLOUR_INACTIVEBORDER:
+        case wxSYS_COLOUR_WINDOWFRAME:
+        case wxSYS_COLOUR_GRIDLINES: return toColour( RULE );
+
+        case wxSYS_COLOUR_WINDOWTEXT:
+        case wxSYS_COLOUR_BTNTEXT:
+        case wxSYS_COLOUR_MENUTEXT:
+        case wxSYS_COLOUR_CAPTIONTEXT:
+        case wxSYS_COLOUR_LISTBOXTEXT:
+        case wxSYS_COLOUR_HIGHLIGHTTEXT:
+        case wxSYS_COLOUR_LISTBOXHIGHLIGHTTEXT:
+        case wxSYS_COLOUR_INFOTEXT: return toColour( INK );
+
+        case wxSYS_COLOUR_INACTIVECAPTIONTEXT: return toColour( MUTED );
+        case wxSYS_COLOUR_GRAYTEXT: return toColour( DISABLED_TEXT );
+
+        case wxSYS_COLOUR_HIGHLIGHT:
+        case wxSYS_COLOUR_LISTBOXHIGHLIGHT:
+        case wxSYS_COLOUR_MENUHILIGHT: return toColour( SELECT );
+
+        case wxSYS_COLOUR_HOTLIGHT: return toColour( AMBER );
+
+        // Tooltips and info bars float over the window color, so they sit a step lighter
+        case wxSYS_COLOUR_INFOBK: return toColour( RULE );
+
+        default: return wxDarkModeSettings::GetColour( index );
+        }
+    }
+
+    wxColour GetMenuColour( wxMenuColour which ) override
+    {
+        using namespace KIPLATFORM::RECKLESS_PALETTE;
+
+        switch( which )
+        {
+        case wxMenuColour::StandardFg: return toColour( INK );
+        case wxMenuColour::StandardBg: return toColour( WINDOW );
+        case wxMenuColour::DisabledFg: return toColour( DISABLED_TEXT );
+        case wxMenuColour::HotBg: return toColour( SELECT );
+        }
+
+        return wxDarkModeSettings::GetMenuColour( which );
+    }
+
+    wxPen GetBorderPen() override { return wxPen( toColour( KIPLATFORM::RECKLESS_PALETTE::AMBER_DIM ) ); }
+
+private:
+    // The palette is written as 0xRRGGBB, the way the colors are usually given, while wxColour's single-value
+    // constructor expects 0xBBGGRR
+    static wxColour toColour( unsigned aRgb )
+    {
+        return wxColour( ( aRgb >> 16 ) & 0xFF, ( aRgb >> 8 ) & 0xFF, aRgb & 0xFF );
+    }
+};
+#endif // KICAD_HOUSE_THEME
 #endif
 
 
@@ -132,6 +226,15 @@ bool KIPLATFORM::APP::Init()
 void KIPLATFORM::APP::EnableDarkMode( bool aForce )
 {
 #if wxCHECK_VERSION( 3, 3, 0 )
+#ifdef KICAD_HOUSE_THEME
+    // A forced dark mode is the application theme set to dark, which is the house look.  Following the system
+    // keeps the stock dark colors.
+    if( aForce )
+    {
+        wxTheApp->MSWEnableDarkMode( wxApp::DarkMode_Always, new RECKLESS_DARK_MODE_SETTINGS() );
+        return;
+    }
+#endif
     wxTheApp->MSWEnableDarkMode( aForce ? wxApp::DarkMode_Always : wxApp::DarkMode_Auto, new KICAD_DARK_MODE_SETTINGS() );
 #endif
 }
