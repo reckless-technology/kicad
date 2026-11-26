@@ -50,14 +50,19 @@ Preferences > Footprint Editor > Defaults, stored in the footprint editor settin
 `copper`, `fab` and `others`). A new footprint's reference, value and default text items take it, as do fields added
 in the footprint properties and text drawn in the footprint editor. Not set leaves them in the stroke font, as before.
 
-Editor overlay text has a face too (#50): `appearance.overlay_font` in `kicad_common.json`, the "Overlay font" choice
-in Preferences > Common. It covers pad numbers and net names on pads, tracks and vias, and the measure tool's labels.
-The house build ships it as Monaspace Xenon when fontconfig lists that family; otherwise, and in any build without
-`KICAD_HOUSE_FONTS`, it ships as "KiCad Font", which keeps the built-in fonts (the bitmap font on the OpenGL and Vulkan
-canvases, the stroke font on Cairo). With a face set, pad numbers and net names are drawn as outline glyphs in its
-regular weight, scaled to the bitmap font's advance so the painters' sizing still fits, and the measure labels in its
-bold weight. Outline glyphs cost more than the bitmap font: on the demos/video board a full repaint of every item took
-about six times as long. The schematic's bitmap stand-in for selected text too small to read keeps the built-in font.
+Editor overlay text is in the house font too (#50): pad numbers and net names on pads, tracks and vias, drawn by the
+OpenGL and Vulkan canvases from a built-in bitmap font (a multichannel signed distance field atlas). The house build
+compiles that atlas from Monaspace Xenon Regular (`common/gal/opengl/bitmap_font_xenon_*.c`, OFL text beside them)
+instead of upstream's Ubuntu Mono, which a build without `KICAD_HOUSE_FONTS` keeps byte for byte. It has upstream's
+1235 codepoints and encoding; the 548 Xenon lacks (Greek Extended, most of Latin Extended-B, some Cyrillic, private-use
+symbols) keep Ubuntu Mono's glyphs, centered in Xenon's advance. `tools/gal_bitmap_font/make_house_atlas.py` rebuilds
+it, and its README names the tool, the font and the command. The measure tool's labels, which need a drop shadow the
+bitmap font cannot draw, use Xenon Bold as outlines in the house build when Xenon is installed.
+
+`appearance.overlay_font` in `kicad_common.json` ("Overlay font" in Preferences > Common) can put the overlay text in
+any other installed face instead, drawn as outline glyphs, which costs more: on the demos/video board a full repaint
+of every item took about six times as long. It ships as "KiCad Font", the built-in font. The schematic's bitmap
+stand-in for selected text too small to read always keeps the built-in font.
 
 The canvases have a Reckless color theme (#65, piece 1), a built-in theme named "Reckless" beside KiCad Default and
 KiCad Classic, for the schematic, symbol, PCB and footprint editors, gerbview and the 3D viewer. It is dark, on the

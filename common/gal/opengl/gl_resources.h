@@ -37,8 +37,12 @@ namespace KIGFX {
             unsigned int width, height;
             unsigned int char_border;
             unsigned int spacing;
-            // Height must match the atlas in bitmap_font_img.c
+            // Must match the atlas compiled in: bitmap_font_xenon_img.c in the house build, else bitmap_font_img.c
+#ifdef KICAD_HOUSE_FONTS
+            unsigned char pixels[1024 * 1295 * 3];
+#else
             unsigned char pixels[1024 * 1107 * 3];
+#endif
         };
 
         struct FONT_INFO_TYPE

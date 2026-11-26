@@ -73,8 +73,9 @@ TEXT_DIMS GetConstantGlyphHeight( KIGFX::GAL* aGal, int aRelativeSize = 0 );
 COLOR4D GetShadowColor( const COLOR4D& aColor );
 
 /**
- * The face of the measurement labels: the canvas's overlay face in bold (see GAL::GetOverlayFont()), else the stroke
- * font.
+ * The face of the measurement labels: the canvas's overlay face in bold (see GAL::GetOverlayFont()). Without one, the
+ * house build uses Monaspace Xenon Bold, the face its built-in bitmap font is drawn from, when it is installed; else
+ * the stroke font.
  */
 KIFONT::FONT* GetLabelFont( KIGFX::GAL* aGal );
 

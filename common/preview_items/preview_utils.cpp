@@ -25,6 +25,10 @@
 #include <gal/hidpi_gl_canvas.h>
 #include <callback_gal.h>
 #include <font/font.h>
+#include <font/fontconfig.h>
+
+#include <string>
+#include <vector>
 
 double KIGFX::PREVIEW::PreviewOverlayDeemphAlpha( bool aDeemph )
 {
@@ -122,11 +126,48 @@ KIGFX::COLOR4D KIGFX::PREVIEW::GetShadowColor( const KIGFX::COLOR4D& aColor )
 }
 
 
+#ifdef KICAD_HOUSE_FONTS
+namespace
+{
+// The face the house build's bitmap font is drawn from, as an outline font in bold, or nullptr if it is not installed.
+// A family fontconfig lacks would come back as some other face, so the family is looked for first.
+KIFONT::FONT* houseLabelFont()
+{
+    static KIFONT::FONT* const font = []() -> KIFONT::FONT*
+    {
+        const wxString           family = wxS( "Monaspace Xenon" );
+        std::vector<std::string> families;
+        Fontconfig()->ListFonts( families, std::string() );
+
+        for( const std::string& installed : families )
+        {
+            if( wxString::FromUTF8( installed ) == family )
+            {
+                KIFONT::FONT* bold = KIFONT::FONT::GetFont( family, true, false );
+                return bold && bold->IsOutline() ? bold : nullptr;
+            }
+        }
+
+        return nullptr;
+    }();
+
+    return font;
+}
+} // namespace
+#endif
+
+
 KIFONT::FONT* KIGFX::PREVIEW::GetLabelFont( KIGFX::GAL* aGal )
 {
     // The bold face, whose weight is nearest the stroke font's at these sizes
     if( KIFONT::FONT* overlayFont = aGal->GetOverlayFont( true ) )
         return overlayFont;
+
+#ifdef KICAD_HOUSE_FONTS
+    // The labels need a drop shadow, which the bitmap font cannot draw, so they take its face as outlines
+    if( KIFONT::FONT* houseFont = houseLabelFont() )
+        return houseFont;
+#endif
 
     return KIFONT::FONT::GetFont();
 }

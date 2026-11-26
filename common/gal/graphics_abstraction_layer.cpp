@@ -513,8 +513,9 @@ void GAL::overlayText( KIFONT::FONT& aFont, const wxString& aText, const VECTOR2
 {
     // The painters size overlay text for the built-in bitmap font and lay it out by character count, so an
     // outline face is scaled to give its glyphs the bitmap font's advance and the text the width the painters made
-    // room for. For Monaspace Xenon on the OpenGL canvas that is 0.92 of the glyph height, measured from the ink of
-    // rendered pad numbers; its capitals then stand about 0.9 of the bitmap font's narrower, taller ones. Like the
+    // room for. For Monaspace Xenon against the Ubuntu Mono bitmap font on the OpenGL canvas that is 0.92 of the
+    // glyph height, measured from the ink of rendered pad numbers; its capitals then stand about 0.9 of Ubuntu Mono's
+    // narrower, taller ones. The house build's bitmap font, baked from Xenon, draws its ink a few percent larger. Like the
     // bitmap font, it ignores the glyph width.
     constexpr double emScale = 0.92;
 

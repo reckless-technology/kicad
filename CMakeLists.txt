@@ -186,9 +186,11 @@ else()
     set( _KICAD_HOUSE_DEFAULT OFF )
 endif()
 
-# House fixed-width font through the desktop entries (see resources/CMakeLists.txt).
+# House fonts. Fixed-width text is Monaspace Xenon through the desktop entries (see resources/CMakeLists.txt), the
+# interface font is Noto Serif, and the canvas's built-in bitmap font is baked from Monaspace Xenon
+# (common/gal/opengl/bitmap_font_xenon_*.c) instead of Ubuntu Mono.
 option( KICAD_HOUSE_FONTS
-    "Linux: make fixed-width text Monaspace Xenon in KiCad's programs started from the desktop entries"
+    "House fonts: Monaspace Xenon for fixed-width text and the canvas's built-in font, Noto Serif for the interface"
     ${_KICAD_HOUSE_DEFAULT} )
 
 # The built-in Reckless color theme is in every build; this makes it the one a new configuration starts in

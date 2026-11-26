@@ -30,8 +30,13 @@
 namespace KIGFX {
 namespace BUILTIN_FONT {
 
+#ifdef KICAD_HOUSE_FONTS
+#include "bitmap_font_xenon_img.c" // the house build's, from tools/gal_bitmap_font/make_house_atlas.py
+#include "bitmap_font_xenon_desc.c"
+#else
 #include "bitmap_font_img.c"
 #include "bitmap_font_desc.c"
+#endif
 
 const FONT_GLYPH_TYPE* LookupGlyph( unsigned int aCodepoint )
 {

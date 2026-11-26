@@ -24,7 +24,6 @@
 
 #include <class_draw_panel_gal.h>
 #include <env_vars.h>
-#include <font/fontconfig.h>
 #include <font/kicad_font_name.h>
 #include <paths.h>
 #include <richio.h>
@@ -51,43 +50,6 @@ const wxRegEx versionedEnvVarRegex( wxS( "KICAD[0-9]+_[A-Z0-9_]+(_DIR)?" ) );
 const int commonSchemaVersion = 7;
 
 COMMON_SETTINGS::~COMMON_SETTINGS() = default;
-
-wxString COMMON_SETTINGS::PreferredOverlayFont()
-{
-    return wxS( "Monaspace Xenon" );
-}
-
-
-wxString COMMON_SETTINGS::ChooseOverlayFont( const std::vector<std::string>& aInstalledFonts )
-{
-    const wxString preferred = PreferredOverlayFont();
-
-    for( const std::string& family : aInstalledFonts )
-    {
-        if( wxString::FromUTF8( family ).CmpNoCase( preferred ) == 0 )
-            return preferred;
-    }
-
-    return KICAD_FONT_NAME;
-}
-
-
-namespace
-{
-// The shipped overlay face: the house face in the house build when it is installed, else the built-in fonts
-wxString installedOverlayFont()
-{
-#ifdef KICAD_HOUSE_FONTS
-    std::vector<std::string> families;
-    Fontconfig()->ListFonts( families, std::string() );
-
-    return COMMON_SETTINGS::ChooseOverlayFont( families );
-#else
-    return KICAD_FONT_NAME;
-#endif
-}
-} // namespace
-
 
 COMMON_SETTINGS::COMMON_SETTINGS() :
         JSON_SETTINGS( "kicad_common", SETTINGS_LOC::USER, commonSchemaVersion ),
@@ -174,7 +136,7 @@ COMMON_SETTINGS::COMMON_SETTINGS() :
             &m_Appearance.zoom_correction_factor, 1.0, 0.1, 10.0 ) );
 
     m_params.emplace_back(
-            new PARAM<wxString>( "appearance.overlay_font", &m_Appearance.overlay_font, installedOverlayFont() ) );
+            new PARAM<wxString>( "appearance.overlay_font", &m_Appearance.overlay_font, KICAD_FONT_NAME ) );
 
     m_params.emplace_back( new PARAM<bool>( "auto_backup.enabled", &m_Backup.enabled, true ) );
 

@@ -46,11 +46,11 @@ std::vector<std::string> installedFamilies()
 }
 
 
-// An installed family that loads as an outline font, the house face first, or empty if there is none
+// An installed family that loads as an outline font, Monaspace Xenon first, or empty if there is none
 wxString installedOutlineFamily()
 {
     std::vector<std::string> families = installedFamilies();
-    std::vector<wxString>    candidates = { COMMON_SETTINGS::PreferredOverlayFont() };
+    std::vector<wxString>    candidates = { wxS( "Monaspace Xenon" ) };
 
     for( const std::string& family : families )
         candidates.push_back( wxString::FromUTF8( family ) );
@@ -103,45 +103,13 @@ void drawOverlayText( KIGFX::GAL_DISPLAY_OPTIONS& aOptions, const wxString& aTex
 BOOST_AUTO_TEST_SUITE( OverlayFont )
 
 
-BOOST_AUTO_TEST_CASE( PreferredOverlayFontIsMonaspaceXenon )
+BOOST_AUTO_TEST_CASE( SettingsDefaultIsTheBuiltInFont )
 {
-    BOOST_CHECK_EQUAL( COMMON_SETTINGS::PreferredOverlayFont(), wxString( "Monaspace Xenon" ) );
-}
-
-
-BOOST_AUTO_TEST_CASE( ChooseOverlayFontUsesXenonWhenInstalled )
-{
-    std::vector<std::string> fonts = { "DejaVu Sans Mono", "Monaspace Xenon", "Monaspace Neon" };
-
-    BOOST_CHECK_EQUAL( COMMON_SETTINGS::ChooseOverlayFont( fonts ), wxString( "Monaspace Xenon" ) );
-
-    // Family names are compared without regard to case, and the canonical spelling is what is returned
-    fonts = { "monaspace xenon" };
-    BOOST_CHECK_EQUAL( COMMON_SETTINGS::ChooseOverlayFont( fonts ), wxString( "Monaspace Xenon" ) );
-}
-
-
-BOOST_AUTO_TEST_CASE( ChooseOverlayFontFallsBackToKiCadFont )
-{
-    // Not installed: an empty list, or one holding only other families, including ones that merely share words
-    std::vector<std::string> fonts;
-    BOOST_CHECK_EQUAL( COMMON_SETTINGS::ChooseOverlayFont( fonts ), wxString( KICAD_FONT_NAME ) );
-
-    fonts = { "Monaspace Neon", "Monaspace Xenon Var", "MonaspiceXe Nerd Font", "Noto Serif" };
-    BOOST_CHECK_EQUAL( COMMON_SETTINGS::ChooseOverlayFont( fonts ), wxString( KICAD_FONT_NAME ) );
-}
-
-
-BOOST_AUTO_TEST_CASE( SettingsDefaultMatchesTheBuildAndTheMachine )
-{
+    // The built-in bitmap font is the default in every build; in the house build it is drawn from Monaspace Xenon
     COMMON_SETTINGS settings;
     settings.ResetToDefaults();
 
-#ifdef KICAD_HOUSE_FONTS
-    BOOST_CHECK_EQUAL( settings.m_Appearance.overlay_font, COMMON_SETTINGS::ChooseOverlayFont( installedFamilies() ) );
-#else
     BOOST_CHECK_EQUAL( settings.m_Appearance.overlay_font, wxString( KICAD_FONT_NAME ) );
-#endif
 }
 
 

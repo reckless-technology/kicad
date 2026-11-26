@@ -12,6 +12,27 @@ new shelf-band so the existing atlas stays byte-identical. Edit its SOURCES map
 to choose codepoints, then update the pixels[] height it prints in
 common/gal/opengl/gl_resources.h.
 
+The house atlas (Monaspace Xenon)
+---------------------------------
+The house build (KICAD_HOUSE_FONTS) compiles common/gal/opengl/bitmap_font_xenon_img.c and
+bitmap_font_xenon_desc.c instead of the Ubuntu Mono atlas, which every other build keeps unchanged.
+make_house_atlas.py writes them from Monaspace Xenon Regular, keeping the upstream atlas's codepoints
+and encoding: 48 texels per em, a 3-texel MSDF range, 1-texel borders, cells stored upside down.
+Codepoints Xenon lacks keep the upstream glyph, centered in Xenon's 0.62 em advance.
+
+The committed files were made with:
+    msdf-atlas-gen v1.4 (github.com/Chlumsky/msdf-atlas-gen, MIT; tag v1.4, commit 2ede2543),
+    built with -DMSDF_ATLAS_USE_VCPKG=OFF -DMSDF_ATLAS_USE_SKIA=OFF -DMSDFGEN_USE_VCPKG=OFF
+    -DMSDFGEN_USE_SKIA=OFF -DMSDFGEN_DISABLE_SVG=ON -DMSDF_ATLAS_NO_ARTERY_FONT=ON
+    MonaspaceXenon-Regular.otf from Monaspace 1.400 (github.com/githubnext/monaspace, OFL 1.1)
+
+and this command, from the repository root:
+    python3 tools/gal_bitmap_font/make_house_atlas.py \
+        --font MonaspaceXenon-Regular.otf --msdf-atlas-gen msdf-atlas-gen
+
+It prints the atlas height, which the house branch of pixels[] in common/gal/opengl/gl_resources.h
+must match. With the same tool and font it reproduces the committed files byte for byte.
+
 To create a new bitmap font atlas for Graphics Abstraction Layer, follow these steps:
 
  * Download Bitmap Font Generator [1] (runs well under wine)
