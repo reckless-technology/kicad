@@ -27,13 +27,15 @@ namespace
 {
 namespace P = KIPLATFORM::RECKLESS_PALETTE;
 
-unsigned rgbOf( const wxColour& aColour )
+// Only the palette cases read colors back, and a platform can have none of them: clang's -Wunused-function would stop a
+// -Werror build there
+[[maybe_unused]] unsigned rgbOf( const wxColour& aColour )
 {
     return ( static_cast<unsigned>( aColour.Red() ) << 16 ) | ( static_cast<unsigned>( aColour.Green() ) << 8 )
            | static_cast<unsigned>( aColour.Blue() );
 }
 
-unsigned systemColour( wxSystemColour aIndex )
+[[maybe_unused]] unsigned systemColour( wxSystemColour aIndex )
 {
     return rgbOf( wxSystemSettings::GetColour( aIndex ) );
 }
