@@ -25,10 +25,15 @@
 
 #include <qa_utils/wx_utils/unit_test_utils.h>
 
+#include <dialog_shim.h>
 #include <font/fontconfig.h>
+#include <kiplatform/ui.h>
 #include <paths.h>
+#include <widgets/ui_common.h>
 
 #include <wx/filename.h>
+#include <wx/stattext.h>
+#include <wx/textctrl.h>
 
 #ifdef KICAD_HOUSE_FONTS
 
@@ -114,6 +119,48 @@ BOOST_AUTO_TEST_CASE( StartupRegistersTheBundledDirectory )
         }
     }
 }
+
+
+#ifdef __WXMAC__
+// wxOSX has no GUI default font, so the house family reaches the controls only through DIALOG_SHIM's constructor
+// (KIPLATFORM::UI::ApplyInterfaceFont), which they inherit from as they are made. The dialog is made, not shown.
+BOOST_AUTO_TEST_CASE( DialogControlsTakeTheInterfaceFont )
+{
+    if( !KI_TEST::CanDoDisplayTests() )
+        return;
+
+    KIPLATFORM::UI::RegisterPrivateFonts( PATHS::GetBundledFontsPath() );
+    KIPLATFORM::UI::SetInterfaceFontFamily( "Noto Serif" );
+    BOOST_REQUIRE_EQUAL( KIPLATFORM::UI::GetInterfaceFontFamily(), wxS( "Noto Serif" ) );
+
+    struct TEST_DIALOG : public DIALOG_SHIM
+    {
+        TEST_DIALOG() : DIALOG_SHIM( nullptr, wxID_ANY, wxS( "House font" ) )
+        {
+            m_label = new wxStaticText( this, wxID_ANY, wxS( "Label" ) );
+            m_text = new wxTextCtrl( this, wxID_ANY );
+        }
+
+        wxStaticText* m_label;
+        wxTextCtrl*   m_text;
+    };
+
+    // Heap-allocated and released with Destroy(): deleting a top-level window here, with no event loop, crashes
+    TEST_DIALOG* dialog = new TEST_DIALOG();
+
+    BOOST_CHECK_EQUAL( dialog->GetFont().GetFaceName(), wxS( "Noto Serif" ) );
+    BOOST_CHECK_EQUAL( dialog->m_label->GetFont().GetFaceName(), wxS( "Noto Serif" ) );
+    BOOST_CHECK_EQUAL( dialog->m_text->GetFont().GetFaceName(), wxS( "Noto Serif" ) );
+
+    // At the size a control has without the house font
+    BOOST_CHECK_EQUAL( dialog->m_text->GetFont().GetPointSize(), wxFont( wxOSX_SYSTEM_FONT_NORMAL ).GetPointSize() );
+
+    // The KIUI getters follow the family
+    BOOST_CHECK_EQUAL( KIUI::GetControlFont( dialog->m_text ).GetFaceName(), wxS( "Noto Serif" ) );
+
+    dialog->Destroy();
+}
+#endif
 
 
 BOOST_AUTO_TEST_SUITE_END()
