@@ -52,6 +52,19 @@ void KIPLATFORM::APP::EnableDarkMode( bool aForce )
 }
 
 
+bool KIPLATFORM::APP::GetCaptionColors( unsigned& aCaption [[maybe_unused]], unsigned& aText [[maybe_unused]],
+                                        unsigned& aBorder [[maybe_unused]] )
+{
+    // The title bar is the system's, and follows the appearance EnableDarkMode() sets
+    return false;
+}
+
+
+void KIPLATFORM::APP::SetCaptionColors( wxWindow* aWindow [[maybe_unused]] )
+{
+}
+
+
 bool KIPLATFORM::APP::AttachConsole( bool aTryAlloc [[maybe_unused]] )
 {
     // Not implemented on this platform

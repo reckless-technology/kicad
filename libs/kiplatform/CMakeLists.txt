@@ -79,6 +79,7 @@ elseif( WIN32 )
         "wintrust"
         "imm32"
         "windowsapp"
+        "dwmapi"
         )
 elseif( UNIX )
     list( APPEND PLATFORM_SRCS

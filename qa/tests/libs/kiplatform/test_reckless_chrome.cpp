@@ -21,6 +21,7 @@
 #include <kiplatform/app.h>
 #include <kiplatform/reckless_palette.h>
 
+#include <wx/frame.h>
 #include <wx/settings.h>
 
 namespace
@@ -93,6 +94,30 @@ BOOST_AUTO_TEST_CASE( EnableDarkModeCanBeCalledTwice )
     KIPLATFORM::APP::EnableDarkMode( true );
 
     BOOST_CHECK( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ).IsOk() );
+}
+
+BOOST_AUTO_TEST_CASE( CaptionColorsFollowTheForcedDarkTheme )
+{
+    KIPLATFORM::APP::EnableDarkMode( true );
+
+    unsigned   caption = 0, text = 0, border = 0;
+    const bool any = KIPLATFORM::APP::GetCaptionColors( caption, text, border );
+
+#if defined( KICAD_HOUSE_THEME ) && defined( __WXMSW__ )
+    BOOST_REQUIRE( any );
+    BOOST_CHECK_EQUAL( caption, P::WINDOW );
+    BOOST_CHECK_EQUAL( text, P::INK );
+    BOOST_CHECK_EQUAL( border, P::AMBER_DIM );
+#else
+    // Only the house build on Windows colors the title bar: everywhere else it stays the system's
+    BOOST_CHECK( !any );
+#endif
+
+    // A window that is never shown takes the colors without complaint, on every platform
+    wxFrame* frame = new wxFrame( nullptr, wxID_ANY, wxS( "caption" ) );
+    KIPLATFORM::APP::SetCaptionColors( frame );
+    KIPLATFORM::APP::SetCaptionColors( nullptr );
+    frame->Destroy();
 }
 
 BOOST_AUTO_TEST_SUITE_END()

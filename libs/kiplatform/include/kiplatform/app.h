@@ -39,6 +39,20 @@ namespace KIPLATFORM
         void EnableDarkMode( bool aForce );
 
         /**
+         * The title bar colors a window gets from SetCaptionColors(), as 0xRRGGBB.
+         *
+         * @return true when there are any to set: on Windows in the house build, once EnableDarkMode() has forced the
+         *         dark theme.  False everywhere else, where the title bar is the system's own.
+         */
+        bool GetCaptionColors( unsigned& aCaption, unsigned& aText, unsigned& aBorder );
+
+        /**
+         * Color a top-level window's title bar, caption text and border to match the application theme.  Does
+         * nothing when GetCaptionColors() has none, or on a Windows version without colored title bars.
+         */
+        void SetCaptionColors( wxWindow* aWindow );
+
+        /**
          * Tries to attach a console window with stdout, stderr and stdin.
          *
          * @param aTryAlloc try to allocate the console if cannot attach to it.

@@ -33,6 +33,7 @@
 #include <property_holder.h>
 #include <settings/settings_manager.h>
 #include <tool/tool_manager.h>
+#include <kiplatform/app.h>
 #include <kiplatform/ui.h>
 #include <widgets/text_ctrl_eval.h>
 #include <widgets/unit_binder.h>
@@ -201,6 +202,8 @@ DIALOG_SHIM::DIALOG_SHIM( wxWindow* aParent, wxWindowID id, const wxString& titl
 #endif
 
     Bind( wxEVT_PAINT, &DIALOG_SHIM::OnPaint, this );
+
+    KIPLATFORM::APP::SetCaptionColors( this );
 
     wxString msg = wxString::Format( "Opening dialog %s", GetTitle() );
     APP_MONITOR::AddNavigationBreadcrumb( msg, "dialog.open" );

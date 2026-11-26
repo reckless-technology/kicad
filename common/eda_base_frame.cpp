@@ -204,6 +204,7 @@ void EDA_BASE_FRAME::commonInit( FRAME_T aFrameType )
           } );
 
     KIPLATFORM::UI::SetWMClass( this, Pgm().GetDesktopAppId() );
+    KIPLATFORM::APP::SetCaptionColors( this );
 
     initExitKey();
 }

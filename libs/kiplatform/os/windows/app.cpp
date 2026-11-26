@@ -34,6 +34,7 @@
 #endif
 
 #include <windows.h>
+#include <dwmapi.h>
 #include <strsafe.h>
 #include <config.h>
 #include <versionhelpers.h>
@@ -223,6 +224,12 @@ bool KIPLATFORM::APP::Init()
 }
 
 
+#ifdef KICAD_HOUSE_THEME
+// Set once the house dark look is in force, so the windows created after it get a title bar to match
+static bool s_houseCaption = false;
+#endif
+
+
 void KIPLATFORM::APP::EnableDarkMode( bool aForce )
 {
 #if wxCHECK_VERSION( 3, 3, 0 )
@@ -232,11 +239,57 @@ void KIPLATFORM::APP::EnableDarkMode( bool aForce )
     if( aForce )
     {
         wxTheApp->MSWEnableDarkMode( wxApp::DarkMode_Always, new RECKLESS_DARK_MODE_SETTINGS() );
+        s_houseCaption = true;
         return;
     }
 #endif
     wxTheApp->MSWEnableDarkMode( aForce ? wxApp::DarkMode_Always : wxApp::DarkMode_Auto, new KICAD_DARK_MODE_SETTINGS() );
 #endif
+}
+
+
+bool KIPLATFORM::APP::GetCaptionColors( unsigned& aCaption [[maybe_unused]], unsigned& aText [[maybe_unused]],
+                                        unsigned& aBorder [[maybe_unused]] )
+{
+#ifdef KICAD_HOUSE_THEME
+    if( s_houseCaption )
+    {
+        using namespace KIPLATFORM::RECKLESS_PALETTE;
+
+        aCaption = WINDOW;
+        aText = INK;
+        aBorder = AMBER_DIM;
+        return true;
+    }
+#endif
+
+    return false;
+}
+
+
+void KIPLATFORM::APP::SetCaptionColors( wxWindow* aWindow )
+{
+    unsigned caption = 0, text = 0, border = 0;
+
+    if( !aWindow || !GetCaptionColors( caption, text, border ) )
+        return;
+
+    HWND hwnd = aWindow->GetHWND();
+
+    if( !hwnd )
+        return;
+
+    auto setColor = [hwnd]( DWORD aAttribute, unsigned aRgb )
+    {
+        COLORREF ref = RGB( ( aRgb >> 16 ) & 0xff, ( aRgb >> 8 ) & 0xff, aRgb & 0xff );
+
+        // Windows 10 has none of these attributes and returns an error, leaving its own title bar, which is fine
+        ::DwmSetWindowAttribute( hwnd, aAttribute, &ref, sizeof( ref ) );
+    };
+
+    setColor( DWMWA_CAPTION_COLOR, caption );
+    setColor( DWMWA_TEXT_COLOR, text );
+    setColor( DWMWA_BORDER_COLOR, border );
 }
 
 

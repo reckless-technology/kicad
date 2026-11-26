@@ -219,6 +219,19 @@ void KIPLATFORM::APP::EnableDarkMode( bool aForce [[maybe_unused]] )
 }
 
 
+bool KIPLATFORM::APP::GetCaptionColors( unsigned& aCaption [[maybe_unused]], unsigned& aText [[maybe_unused]],
+                                        unsigned& aBorder [[maybe_unused]] )
+{
+    // The title bar is the window manager's
+    return false;
+}
+
+
+void KIPLATFORM::APP::SetCaptionColors( wxWindow* aWindow [[maybe_unused]] )
+{
+}
+
+
 bool KIPLATFORM::APP::AttachConsole( bool aTryAlloc [[maybe_unused]] )
 {
     // Not implemented on this platform
