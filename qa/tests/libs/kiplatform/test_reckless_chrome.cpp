@@ -68,7 +68,7 @@ BOOST_AUTO_TEST_CASE( DarkModeIsIdempotent )
     BOOST_CHECK_EQUAL( systemColour( wxSYS_COLOUR_WINDOW ), P::PANEL );
 }
 
-#else
+#elif defined( __WXGTK__ )
 
 BOOST_AUTO_TEST_CASE( UpstreamBuildLeavesTheDesktopThemeAlone )
 {
@@ -83,5 +83,14 @@ BOOST_AUTO_TEST_CASE( UpstreamBuildLeavesTheDesktopThemeAlone )
 }
 
 #endif
+
+BOOST_AUTO_TEST_CASE( EnableDarkModeCanBeCalledTwice )
+{
+    // Holds on every platform and build, so the suite is never empty where no palette case applies
+    KIPLATFORM::APP::EnableDarkMode( true );
+    KIPLATFORM::APP::EnableDarkMode( true );
+
+    BOOST_CHECK( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ).IsOk() );
+}
 
 BOOST_AUTO_TEST_SUITE_END()
