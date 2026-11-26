@@ -5668,7 +5668,7 @@ void ALTIUM_PCB::ConvertNpthCopperToSmdPads( FOOTPRINT* aFootprint, PAD* aHole,
         copper->SetNumber( aElem.name );
         copper->SetPosition( aHole->GetPosition() );
         copper->SetOrientation( aHole->GetOrientation() );
-        copper->SetThermalSpokeAngle( aHole->GetThermalSpokeAngle() );
+        copper->SetThermalSpokeAngle( PADSTACK::ALL_LAYERS, aHole->GetThermalSpokeAngle( layer ) );
         copper->Padstack().SetMode( PADSTACK::MODE::NORMAL );
         copper->Padstack().CopperLayer( PADSTACK::ALL_LAYERS ) = ps.CopperLayer( layer );
 
