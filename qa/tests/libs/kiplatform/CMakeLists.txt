@@ -29,6 +29,9 @@ target_link_libraries( qa_kiplatform
     ${wxWidgets_LIBRARIES}
     )
 
+# It starts wx, which on Windows stops at a modal warning box without the Common Controls v6 manifest
+kicad_qa_tool_manifest( qa_kiplatform )
+
 if( KICAD_HOUSE_THEME )
     target_compile_definitions( qa_kiplatform PRIVATE KICAD_HOUSE_THEME )
 endif()
