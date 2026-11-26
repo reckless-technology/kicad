@@ -45,6 +45,7 @@ set( QA_COMMON_SRCS
     test_coroutine.cpp
     test_filter_kruskal.cpp
     test_house_app_theme.cpp
+    test_house_icon_theme.cpp
     test_database_lib_settings.cpp
     test_database_value.cpp
     test_design_block_io.cpp
@@ -309,7 +310,12 @@ set_source_files_properties( test_remote_provider_metadata.cpp test_remote_provi
 set_property( SOURCE test_reckless_color_theme.cpp APPEND PROPERTY COMPILE_DEFINITIONS
     "QA_SRC_ROOT=(\"${CMAKE_SOURCE_DIR}\")" )
 
+# The icon theme test reads the PNG files the cache names
+set_property( SOURCE test_house_icon_theme.cpp APPEND PROPERTY COMPILE_DEFINITIONS
+    "QA_SRC_ROOT=(\"${CMAKE_SOURCE_DIR}\")" )
+
 if( KICAD_HOUSE_THEME )
+    set_property( SOURCE test_house_icon_theme.cpp APPEND PROPERTY COMPILE_DEFINITIONS KICAD_HOUSE_THEME )
     set_property( SOURCE test_reckless_color_theme.cpp APPEND PROPERTY COMPILE_DEFINITIONS KICAD_HOUSE_THEME )
     set_property( SOURCE test_house_app_theme.cpp APPEND PROPERTY COMPILE_DEFINITIONS KICAD_HOUSE_THEME )
 endif()
@@ -334,6 +340,10 @@ kicad_add_boost_test( qa_common qa_common )
 add_test( NAME reckless_color_theme_is_current
           COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tools/reckless/reckless_color_theme.py
                   --check ${CMAKE_SOURCE_DIR}/common/settings/reckless_color_theme.json )
+
+# The Reckless icon SVGs are written by their script; fail when the two have drifted apart
+add_test( NAME reckless_icon_set_is_current
+          COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tools/reckless/reckless_icon_recolor.py generate --check )
 
 setup_qa_env( qa_common )
 

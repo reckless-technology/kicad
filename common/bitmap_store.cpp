@@ -96,6 +96,13 @@ static const wxString traceBitmaps = wxT( "KICAD_BITMAPS" );
 static const wxString IMAGE_ARCHIVE = wxT( "images.tar.gz" );
 
 
+// How bright a greyed icon is made. The Reckless set is drawn for a dark ground, so it is greyed as the dark set is.
+static int disabledBrightness( BITMAP_INFO::THEME aTheme )
+{
+    return ( KIPLATFORM::UI::IsDarkTheme() || aTheme == BITMAP_INFO::THEME::RECKLESS ) ? 70 : 255;
+}
+
+
 size_t std::hash<std::pair<BITMAPS, int>>::operator()( const std::pair<BITMAPS, int>& aPair ) const
 {
     std::size_t seed = 0xa82de1c0;
@@ -289,8 +296,7 @@ wxBitmapBundle BITMAP_STORE::GetDisabledBitmapBundle( BITMAPS aBitmapId, int aMi
         if( aMinHeight > 0 && info.height < aMinHeight )
             continue;
 
-        wxBitmap bmp( getImage( info.id, info.height )
-                              .ConvertToDisabled( KIPLATFORM::UI::IsDarkTheme() ? 70 : 255 ) );
+        wxBitmap bmp( getImage( info.id, info.height ).ConvertToDisabled( disabledBrightness( m_theme ) ) );
         bmps.push_back( bmp );
     }
 
@@ -310,7 +316,7 @@ wxBitmapBundle BITMAP_STORE::GetDisabledBitmapBundleDef( BITMAPS aBitmapId, int 
         if( info.theme != m_theme )
             continue;
 
-        wxImage img = getImage( info.id, info.height ).ConvertToDisabled( KIPLATFORM::UI::IsDarkTheme() ? 70 : 255 );
+        wxImage img = getImage( info.id, info.height ).ConvertToDisabled( disabledBrightness( m_theme ) );
 
         int effectiveHeight = info.height < 0 ? std::numeric_limits<int>::max() : info.height;
 
@@ -408,6 +414,7 @@ void BITMAP_STORE::ThemeChanged()
         {
         case ICON_THEME::LIGHT: m_theme = BITMAP_INFO::THEME::LIGHT; break;
         case ICON_THEME::DARK:  m_theme = BITMAP_INFO::THEME::DARK; break;
+        case ICON_THEME::RECKLESS: m_theme = BITMAP_INFO::THEME::RECKLESS; break;
         case ICON_THEME::AUTO:  m_theme = KIPLATFORM::UI::IsDarkTheme() ? BITMAP_INFO::THEME::DARK : BITMAP_INFO::THEME::LIGHT; break;
         }
     }

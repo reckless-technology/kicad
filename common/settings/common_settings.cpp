@@ -70,11 +70,18 @@ COMMON_SETTINGS::COMMON_SETTINGS() :
     /*
      * Automatic dark mode detection works fine on Mac.
      */
-#if defined( __WXGTK__ ) || defined( __WXMSW__ )
-    m_params.emplace_back( new PARAM_ENUM<ICON_THEME>( "appearance.icon_theme",
-            &m_Appearance.icon_theme, ICON_THEME::AUTO, ICON_THEME::LIGHT, ICON_THEME::AUTO ) );
+#ifdef KICAD_HOUSE_THEME
+    // The house look has its own icon set: a new configuration starts in it, and one that has chosen keeps its choice.
+    constexpr ICON_THEME defaultIconTheme = ICON_THEME::RECKLESS;
 #else
-    m_Appearance.icon_theme = ICON_THEME::AUTO;
+    constexpr ICON_THEME defaultIconTheme = ICON_THEME::AUTO;
+#endif
+
+#if defined( __WXGTK__ ) || defined( __WXMSW__ ) || defined( KICAD_HOUSE_THEME )
+    m_params.emplace_back( new PARAM_ENUM<ICON_THEME>( "appearance.icon_theme", &m_Appearance.icon_theme,
+                                                       defaultIconTheme, ICON_THEME::LIGHT, ICON_THEME::RECKLESS ) );
+#else
+    m_Appearance.icon_theme = defaultIconTheme;
 #endif
 
 #ifdef KICAD_HOUSE_THEME

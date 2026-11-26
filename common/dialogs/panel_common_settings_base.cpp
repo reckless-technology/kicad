@@ -227,6 +227,11 @@ PANEL_COMMON_SETTINGS_BASE::PANEL_COMMON_SETTINGS_BASE( wxWindow* parent, wxWind
 
 	bSizerIconsTheme->Add( m_rbIconThemeDark, 0, wxALL, 5 );
 
+	m_rbIconThemeReckless = new wxRadioButton( this, wxID_ANY, _("Reckless"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_rbIconThemeReckless->SetToolTip( _("Use the Reckless icons: the dark set in the Reckless colors") );
+
+	bSizerIconsTheme->Add( m_rbIconThemeReckless, 0, wxALL, 5 );
+
 	m_rbIconThemeAuto = new wxRadioButton( this, wxID_ANY, _("Automatic"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_rbIconThemeAuto->SetValue( true );
 	m_rbIconThemeAuto->SetToolTip( _("Automatically choose light or dark icons based on the system color theme") );

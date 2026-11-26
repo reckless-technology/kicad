@@ -47,7 +47,7 @@ fallback rule (neutrals only, the chromatic colors left as they are). Contrast i
 
 import argparse
 import collections
-import colorsys
+import functools
 import glob
 import math
 import os
@@ -199,6 +199,7 @@ def neutral_luminance(source_luminance):
     return cream + (source_luminance - glyph) * (1.0 - cream) / (1.0 - glyph)
 
 
+@functools.lru_cache(maxsize=None)
 def map_color(rgb, keep_blue=False, dark_orange=False):
     """The one rule: a color to a color. See the module text."""
     kind = color_class(rgb)

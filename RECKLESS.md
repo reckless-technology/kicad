@@ -78,6 +78,23 @@ the theme it names. To go back to upstream's look, pick KiCad Default in Prefere
 PCB and footprint editors, selection and net highlight are not theme colors: KiCad brightens the item's own color and
 dims the rest, so they are not amber there.
 
+The icons have a third set, "Reckless" (#65, piece 3), beside Light and Dark in Preferences > Common > Icon theme
+(`appearance.icon_theme`, `ICON_THEME::RECKLESS`, `BITMAP_INFO::THEME::RECKLESS`). It is KiCad's own dark set recolored
+by `tools/reckless/reckless_icon_recolor.py`, never by hand: the script writes `resources/bitmaps_png/sources/reckless/`
+(709 SVGs, 6.2 MB, one for each dark one) and CMake's `THEMES` list makes the PNGs from them the way it does for Light and Dark
+(`MAINTAIN_PNGS`, Inkscape, zopflipng), named `*_reckless_<size>.png` (2725 files, 2.6 MiB, one for each dark PNG the icon table names). The rule changes color values only: a gray
+becomes cream's hue at a monotonic luminance map (the dark set's glyph color `#ded3dd` becomes the look's cream
+`#e8dcc8`), the blue accent becomes amber at the same luminance, a yellow highlight becomes amber, and green and gold
+keep their hue and luminance. The pink red that means delete or error is moved darker, `#f2647e` becoming `#cb3f5e`,
+so that it is at least 2.1:1 below amber by luminance and 3.1:1 above the panel (3.64:1 on `#1b1a1d`), because
+luminance, not hue, is how these icons are told apart. Where a rule would merge two colors that stood apart in one
+icon, the script tries the variants named in `VARIANTS` for that icon, and `generate --check` (the
+`reckless_icon_set_is_current` test) fails when a file is not what the script makes. KiCad's own application icons
+(`icon_*.svg`) are copied unchanged: they are its branding and carry no Reckless mark. The set is the default for a new
+configuration under `KICAD_HOUSE_THEME`; Light, Dark and Automatic keep their meaning and an existing configuration
+keeps the choice it names. An upstream build keeps the Reckless PNGs out of `images.tar.gz`, hides the Reckless
+choice, and is otherwise unchanged; the committed Light and Dark SVGs and PNGs are untouched.
+
 ## Keeping up with upstream
 
 `reckless/main` is rebased onto upstream `master` only when Jonny asks for it, never on a schedule, so a rebase never

@@ -84,11 +84,17 @@ PANEL_COMMON_SETTINGS::PANEL_COMMON_SETTINGS( wxWindow* aParent ) :
     /*
      * Automatic dark mode detection works fine on Mac, so no need for the explicit options.
      */
-#ifdef __WXMAC__
+#if defined( __WXMAC__ ) && !defined( KICAD_HOUSE_THEME )
     m_stIconTheme->Show( false );
     m_rbIconThemeLight->Show( false );
     m_rbIconThemeDark->Show( false );
     m_rbIconThemeAuto->Show( false );
+    m_rbIconThemeReckless->Show( false );
+#endif
+
+    // The Reckless icon set is the house build's; an upstream build offers only Light, Dark and Automatic.
+#ifndef KICAD_HOUSE_THEME
+    m_rbIconThemeReckless->Show( false );
 #endif
 
     // It's common on Windows to have separate app and system settings for light/dark
@@ -219,6 +225,8 @@ bool PANEL_COMMON_SETTINGS::TransferDataFromWindow()
         commonSettings->m_Appearance.icon_theme = ICON_THEME::LIGHT;
     else if( m_rbIconThemeDark->GetValue() )
         commonSettings->m_Appearance.icon_theme = ICON_THEME::DARK;
+    else if( m_rbIconThemeReckless->GetValue() )
+        commonSettings->m_Appearance.icon_theme = ICON_THEME::RECKLESS;
     else if( m_rbIconThemeAuto->GetValue() )
         commonSettings->m_Appearance.icon_theme = ICON_THEME::AUTO;
 
@@ -359,6 +367,7 @@ void PANEL_COMMON_SETTINGS::applySettingsToPanel( COMMON_SETTINGS& aSettings )
     case ICON_THEME::LIGHT: m_rbIconThemeLight->SetValue( true );   break;
     case ICON_THEME::DARK:  m_rbIconThemeDark->SetValue( true );    break;
     case ICON_THEME::AUTO:  m_rbIconThemeAuto->SetValue( true );    break;
+    case ICON_THEME::RECKLESS: m_rbIconThemeReckless->SetValue( true ); break;
     }
 
     switch( aSettings.m_Appearance.app_theme )

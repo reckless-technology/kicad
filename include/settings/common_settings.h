@@ -34,7 +34,8 @@ enum class ICON_THEME
 {
     LIGHT,
     DARK,
-    AUTO
+    AUTO,
+    RECKLESS ///< The house set; appended so the stored numbers stay
 };
 
 enum class APP_THEME

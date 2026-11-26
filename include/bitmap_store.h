@@ -124,7 +124,8 @@ public:
      */
     void ThemeChanged();
 
-    bool IsDarkTheme() const { return m_theme == BITMAP_INFO::THEME::DARK; }
+    // The Reckless set is drawn for a dark ground, so it counts as dark wherever a caller picks by that
+    bool IsDarkTheme() const { return m_theme == BITMAP_INFO::THEME::DARK || m_theme == BITMAP_INFO::THEME::RECKLESS; }
 
 private:
 

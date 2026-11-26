@@ -36,6 +36,7 @@ struct KICOMMON_API BITMAP_INFO
     {
         LIGHT,
         DARK,
+        RECKLESS,
         NO_THEME
     };
 
@@ -47,10 +48,12 @@ struct KICOMMON_API BITMAP_INFO
     BITMAP_INFO( BITMAPS aId, const wxString& aFilename, int16_t aHeight, const wxString& aTheme ) :
             id( aId ),
             height( aHeight ),
-            theme( aTheme == wxS( "light" ) ? THEME::LIGHT : ( aTheme == wxS( "dark" ) ? THEME::DARK : THEME::NO_THEME ) ),
-            filename( aFilename.utf8_string() )
-    {};
-
+            theme( aTheme == wxS( "light" )
+                           ? THEME::LIGHT
+                           : ( aTheme == wxS( "dark" )
+                                       ? THEME::DARK
+                                       : ( aTheme == wxS( "reckless" ) ? THEME::RECKLESS : THEME::NO_THEME ) ) ),
+            filename( aFilename.utf8_string() ) {};
 };
 
 
