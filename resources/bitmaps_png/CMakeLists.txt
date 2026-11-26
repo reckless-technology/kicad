@@ -49,9 +49,12 @@ option( MAINTAIN_PNGS
 # The png2cpp creates files with native End of Line format.
 
 # List of themes - each corresponds to a folder of SVGS in ./resources/bitmaps_png/sources/
+# "reckless" is the dark set recolored by tools/reckless/reckless_icon_recolor.py, never edited by hand; its SVGs are
+# in sources/reckless/ and its PNGs are named like the dark ones with _reckless in place of _dark.
 set( THEMES
     light
-    dark )
+    dark
+    reckless )
 
 # Plan for three sizes of bitmaps:
 # SMALL - for menus         - 16 x 16
@@ -1094,6 +1097,12 @@ if( WIN32 )
 endif()
 
 set( TARFLAGS -czf )
+
+# The Reckless icon set is the house build's. Any other build leaves it out of the archive, so its archive is upstream's.
+if( NOT KICAD_HOUSE_THEME )
+    set( TAR_EXCLUDE "--exclude=*_reckless*.png" )
+endif()
+
 if( DEFINED ENV{SOURCE_DATE_EPOCH} )
     set( TARFLAGS --sort=name --mtime=@$ENV{SOURCE_DATE_EPOCH} --clamp-mtime --owner=0 --group=0 --numeric-owner --pax-option=exthdr.name=%d/PaxHeaders/%f,delete=atime,delete=ctime -czf )
 endif()
@@ -1106,7 +1115,7 @@ add_custom_target( bitmap_archive_bundle ALL )
 # on every cmake build if there are no depends changes
 add_custom_command(
     OUTPUT ${BITMAP_ARCHIVE_PATH}
-    COMMAND ${TAR} ${TAR_LOCAL_FLAG} ${TARFLAGS} "${TAR_OUTPUT_FILE}" .
+    COMMAND ${TAR} ${TAR_LOCAL_FLAG} ${TAR_EXCLUDE} ${TARFLAGS} "${TAR_OUTPUT_FILE}" .
     DEPENDS bitmap_archive_bundle ${ALL_PNGS}
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/png
     COMMENT "Creating image archive ${TAR_OUTPUT_FILE}"
