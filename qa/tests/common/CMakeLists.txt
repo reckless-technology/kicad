@@ -216,6 +216,7 @@ set( QA_COMMON_SRCS
     test_net_settings.cpp
     test_component_class_settings.cpp
     test_project_local_settings.cpp
+    test_reckless_color_theme.cpp
     test_remote_provider_metadata.cpp
     test_remote_provider_client.cpp
     test_remote_provider_settings.cpp
@@ -300,6 +301,14 @@ set_source_files_properties( test_remote_provider_metadata.cpp test_remote_provi
         COMPILE_DEFINITIONS "QA_SRC_ROOT=(\"${CMAKE_SOURCE_DIR}\")"
         )
 
+# The Reckless theme test reads the theme's file, and expects it as the default exactly when the build makes it one
+set_property( SOURCE test_reckless_color_theme.cpp APPEND PROPERTY COMPILE_DEFINITIONS
+    "QA_SRC_ROOT=(\"${CMAKE_SOURCE_DIR}\")" )
+
+if( KICAD_HOUSE_THEME )
+    set_property( SOURCE test_reckless_color_theme.cpp APPEND PROPERTY COMPILE_DEFINITIONS KICAD_HOUSE_THEME )
+endif()
+
 # Give the desktop-id test the same launcher identifiers pgm_base.cpp is built with so it can
 # assert the exact ids, matching regular and Flatpak prefixes.
 if( UNIX AND NOT APPLE )
@@ -315,6 +324,11 @@ if( KICAD_TEST_DATABASE_LIBRARIES )
 endif()
 
 kicad_add_boost_test( qa_common qa_common )
+
+# The theme file is written by its script; fail when the two have drifted apart
+add_test( NAME reckless_color_theme_is_current
+          COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tools/reckless/reckless_color_theme.py
+                  --check ${CMAKE_SOURCE_DIR}/common/settings/reckless_color_theme.json )
 
 setup_qa_env( qa_common )
 

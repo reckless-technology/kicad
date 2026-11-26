@@ -36,6 +36,7 @@ set( QA_PCBNEW_SRCS
     test_3d_viewer_layer_presets.cpp
     test_array_pad_name_provider.cpp
     test_barcode_load_save.cpp
+    test_reckless_theme_round_trip.cpp
     test_extruded_body_load_save.cpp
     test_board_connected_items.cpp
     test_board_design_settings.cpp

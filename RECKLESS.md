@@ -50,6 +50,20 @@ Preferences > Footprint Editor > Defaults, stored in the footprint editor settin
 `copper`, `fab` and `others`). A new footprint's reference, value and default text items take it, as do fields added
 in the footprint properties and text drawn in the footprint editor. Not set leaves them in the stroke font, as before.
 
+The canvases have a Reckless color theme (#65, piece 1), a built-in theme named "Reckless" beside KiCad Default and
+KiCad Classic, for the schematic, symbol, PCB and footprint editors, gerbview and the 3D viewer. It is dark, on the
+near-black plate of the Reckless apps, with cream ink for text and amber for selection and highlight in the schematic
+editors. Every layer color was chosen by its WCAG contrast against the canvas, so that layers differ by lightness first
+and hue second: `tools/reckless/reckless_color_theme.py` holds the look's colors, each cited to its source, and a
+contrast ratio per item; it writes `common/settings/reckless_color_theme.json` and prints the contrast table, and
+`--check` (the `reckless_color_theme_is_current` test) fails when the two drift apart. The file is built into kicommon
+and holds no parameters once loaded, so a settings reload or reset never changes it. The `KICAD_HOUSE_THEME` option, on
+when `KICAD_VERSION_EXTRA` is `reckless`, makes it the theme a new configuration starts in, and the 3D viewer's "user"
+theme is made from it; a color print starts in KiCad Default, since paper is white. An existing configuration keeps
+the theme it names. To go back to upstream's look, pick KiCad Default in Preferences > Colors in each editor. In the
+PCB and footprint editors, selection and net highlight are not theme colors: KiCad brightens the item's own color and
+dims the rest, so they are not amber there.
+
 ## Keeping up with upstream
 
 `reckless/main` is rebased onto upstream `master` only when Jonny asks for it, never on a schedule, so a rebase never

@@ -158,6 +158,7 @@ set( QA_EESCHEMA_SRCS
     test_issue23143_junction_midpoint.cpp
     test_issue23403_shared_subsheet_screen.cpp
     test_issue24870_top_level_sheet_delete.cpp
+    test_reckless_theme_round_trip.cpp
     test_issue22576_subsheet_standalone.cpp
     test_issue22694_global_hier_label.cpp
     test_issue24044_expression_net_names.cpp
