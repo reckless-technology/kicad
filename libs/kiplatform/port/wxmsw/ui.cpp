@@ -85,7 +85,7 @@ bool KIPLATFORM::UI::IsWindowActive( wxWindow* aWindow )
 }
 
 
-void KIPLATFORM::UI::RunWhenActive( wxWindow* aWindow, std::function<void()> aFunction )
+void KIPLATFORM::UI::RunWhenActive( wxWindow*, std::function<void()> aFunction )
 {
     aFunction();
 }
@@ -97,7 +97,7 @@ void KIPLATFORM::UI::SetFocusWhenActive( wxWindow* aWindow )
 }
 
 
-bool KIPLATFORM::UI::ActivateWithoutPresenting( wxWindow* aWindow )
+bool KIPLATFORM::UI::ActivateWithoutPresenting( wxWindow* )
 {
     return false;
 }
