@@ -502,7 +502,10 @@ public:
 
 private:
     bool m_isAvailable = false;
-    bool m_isOpenedHere = false;
+
+#ifdef __WXGTK__
+    bool m_isOpenedHere = false; ///< only GTK opens a display, and only GTK closes it
+#endif
 };
 
 } // namespace KI_TEST
