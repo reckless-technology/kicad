@@ -333,9 +333,19 @@ A sequence is a path through a menu tree. The engine is a small state machine ow
   From then on the native menu handles the next letter through its mnemonics (Windows, GTK), and mouse and arrow
   keys work. Because the engine has already consumed the keys typed so far, type-ahead cannot be lost while the
   menu is being mapped, which is the failure a pure native-popup design has on GTK.
-- **macOS.** Native popups have no mnemonics. Show the same menu with the letter in a right-hand hint column, and
-  have the engine keep reading keys while it is open if wx allows; otherwise use a non-activating popup window
-  (the way `HOTKEY_CYCLE_POPUP` is driven from the dispatcher). Settle this by experiment; Linux and Windows first.
+- **macOS.** A native popup cannot be the hint there: Cocoa runs the menu in a modal loop, so the engine gets no
+  keys, `performKeyEquivalent` fires the first bare-letter match anywhere in the menu tree (submenus included, so `P`,
+  wait, `T` ran Place > Board Graphics > Table and not Track), and where nothing matches type-select eats the key
+  (found on a Mac screen, issue #144). So on macOS the hint is a popup window the program draws
+  (`KEY_SEQUENCE_POPUP`, `common/dialogs/`), which never takes keyboard focus: keys keep reaching the frame's own key
+  path, the engine stays pending and reads them exactly as on the fast path, and the window is only a picture of the
+  engine's node. It redraws in place when the engine descends into a submenu, hides when the sequence ends or the
+  frame is deactivated, and a click on an enabled row is the same as typing its letter. Its rows
+  (`BuildKeySequenceRows`, `include/key_sequence_rows.h`) come from the same tree, with `.When()` honored (a disabled
+  row is drawn dimmed), key-only entries skipped and the action's own hotkey in the right-hand column; the highlighted
+  row differs by luminance, not hue. Windows and GTK keep the native menu, whose mnemonics work. The environment
+  variable `KICAD_KEY_SEQUENCE_POPUP=1` forces the window on any platform (`0` forces the native menu), for tests and
+  for trying it on Linux.
 - **Inside a command.** Sequences still work mid-command for view commands, as they do in Altium (`V` `F` while
   routing). The engine does not cancel the active tool; whether the leaf action interrupts it is the action's own
   business, as today.
