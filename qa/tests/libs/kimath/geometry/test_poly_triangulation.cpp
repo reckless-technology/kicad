@@ -16,7 +16,9 @@
 #include <advanced_config.h>
 #include <trigo.h>
 #include <thread>
+#include <algorithm>
 #include <chrono>
+#include <limits>
 #include <future>
 #include <filesystem>
 #include <fstream>
@@ -27,6 +29,7 @@
 
 #include <qa_utils/geometry/geometry.h>
 #include <qa_utils/numeric.h>
+#include <qa_utils/timing.h>
 #include <qa_utils/wx_utils/unit_test_utils.h>
 
 #include "geom_test_utils.h"
@@ -1078,45 +1081,66 @@ BOOST_AUTO_TEST_CASE( SourceOutlineIndexTracking )
 // Performance regression tests
 BOOST_AUTO_TEST_CASE( PerformanceRegression )
 {
-    // Test various polygon sizes to ensure performance scales reasonably
-    std::vector<int> testSizes = { 10, 50, 100, 500, 1000 };
+    // Test various polygon sizes to ensure performance scales reasonably.  The time is the process CPU time, so other
+    // load on the machine does not inflate it, and each size keeps the fastest of several repetitions, so a preemption
+    // or a cold cache on one of them does not either.
+    const std::vector<int> testSizes = { 10, 50, 100, 500, 1000, 2000, 4000, 8000, 16000 };
+    const int              repetitions = 7;
     std::vector<long long> durations;
 
     for( int size : testSizes )
     {
-        TRIANGULATION_TEST_FIXTURE fixture;
-        auto triangulator = fixture.CreateTriangulator();
-
         // Create regular polygon
         SHAPE_LINE_CHAIN poly;
         for( int i = 0; i < size; i++ )
         {
             double angle = 2.0 * M_PI * i / size;
-            int x = static_cast<int>( 1000 * cos( angle ) );
-            int y = static_cast<int>( 1000 * sin( angle ) );
+            int    x = static_cast<int>( 1000000 * cos( angle ) );
+            int    y = static_cast<int>( 1000000 * sin( angle ) );
             poly.Append( x, y );
         }
         poly.SetClosed( true );
 
-        auto start = std::chrono::high_resolution_clock::now();
-        bool success = triangulator->TesselatePolygon( poly, nullptr );
-        auto end = std::chrono::high_resolution_clock::now();
+        long long fastest = std::numeric_limits<long long>::max();
 
-        BOOST_TEST( success );
+        for( int repetition = 0; repetition < repetitions; repetition++ )
+        {
+            TRIANGULATION_TEST_FIXTURE fixture;
+            auto                       triangulator = fixture.CreateTriangulator();
 
-        auto duration = std::chrono::duration_cast<std::chrono::microseconds>( end - start );
-        durations.push_back( duration.count() );
+            bool success = false;
+            auto elapsed = KI_TEST::ProcessCpuTimeOf(
+                    [&]()
+                    {
+                        success = triangulator->TesselatePolygon( poly, nullptr );
+                    } );
+
+            BOOST_TEST( success );
+            fastest = std::min<long long>( fastest, elapsed.count() );
+        }
+
+        durations.push_back( fastest );
     }
 
     // Check that performance scales reasonably (shouldn't be exponential)
     // This is a basic sanity check - actual performance will vary by hardware
+    // A call that takes only a few microseconds is dominated by timer and cache effects, so a ratio taken against
+    // one says nothing about how the code scales.  Only compare against sizes that took long enough to measure.
+    const long long minimumMeasurableMicroseconds = 200;
+
     for( size_t i = 1; i < durations.size(); i++ )
     {
-        double scaleFactor = static_cast<double>( durations[i] ) / durations[i-1];
-        double sizeFactor = static_cast<double>( testSizes[i] ) / testSizes[i-1];
+        BOOST_TEST_MESSAGE( "size " << testSizes[i] << ": " << durations[i] << " us" );
 
-        // Performance shouldn't be worse than O(n^2) in most cases
-        BOOST_TEST( scaleFactor < sizeFactor * sizeFactor * 2 );
+        if( durations[i - 1] < minimumMeasurableMicroseconds )
+            continue;
+
+        double scaleFactor = static_cast<double>( durations[i] ) / durations[i - 1];
+        double sizeFactor = static_cast<double>( testSizes[i] ) / testSizes[i - 1];
+
+        // Performance shouldn't be worse than O(n^2) in most cases.  The factor of 1.5 leaves room for cache effects
+        // while still failing a cubic algorithm, whose ratio between doubled sizes tends to 8 against a limit of 6.
+        BOOST_TEST( scaleFactor < sizeFactor * sizeFactor * 1.5 );
     }
 }
 
