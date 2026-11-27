@@ -753,6 +753,7 @@ set( COMMON_DLG_SRCS
     dialogs/eda_view_switcher_base.cpp
     dialogs/fields_view_controls_grid_data_model.cpp
     dialogs/hotkey_cycle_popup.cpp
+    dialogs/key_sequence_popup.cpp
     dialogs/html_message_box.cpp
     dialogs/panel_color_settings_base.cpp
     dialogs/panel_color_settings.cpp
@@ -1043,6 +1044,7 @@ set( COMMON_SRCS
     inspectable.cpp
     interaction/interaction_profile.cpp
     interaction/key_sequence.cpp
+    interaction/key_sequence_rows.cpp
     interaction/menu_builder.cpp
     interaction/menu_def.cpp
     item_realignment.cpp

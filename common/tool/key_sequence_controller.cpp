@@ -19,6 +19,9 @@
 
 #include <tool/key_sequence_controller.h>
 
+#include <dialogs/key_sequence_popup.h>
+#include <hotkeys_basic.h>
+#include <key_sequence_rows.h>
 #include <kiplatform/ui.h>
 #include <pgm_base.h>
 #include <settings/common_settings.h>
@@ -36,6 +39,7 @@
 #include <menu_def.h>
 
 #include <wx/log.h>
+#include <wx/utils.h>
 #include <wx/menu.h>
 #include <wx/window.h>
 
@@ -51,6 +55,24 @@ KEY_SEQUENCE_CONTROLLER::KEY_SEQUENCE_CONTROLLER( TOOL_MANAGER* aToolManager ) :
 KEY_SEQUENCE_CONTROLLER::~KEY_SEQUENCE_CONTROLLER()
 {
     m_timer.Stop();
+
+    if( m_popup )
+        m_popup->Destroy();
+}
+
+
+bool KEY_SEQUENCE_CONTROLLER::UsesPopupWindow()
+{
+    wxString override;
+
+    if( wxGetEnv( wxS( "KICAD_KEY_SEQUENCE_POPUP" ), &override ) )
+        return override == wxS( "1" );
+
+#ifdef __WXMAC__
+    return true;
+#else
+    return false;
+#endif
 }
 
 
@@ -102,8 +124,6 @@ void KEY_SEQUENCE_CONTROLLER::Cancel()
 
 bool KEY_SEQUENCE_CONTROLLER::Handle( const TOOL_EVENT& aEvent )
 {
-    using OUTCOME = KEY_SEQUENCE_RESULT::OUTCOME;
-
     if( !m_engine.IsPending() )
         return false;
 
@@ -141,22 +161,42 @@ bool KEY_SEQUENCE_CONTROLLER::Handle( const TOOL_EVENT& aEvent )
     // Leave the status bar as it was before the action runs: a tool the action starts shows its own name there
     afterEngineChange();
 
-    switch( result.m_outcome )
+    return applyResult( result, aEvent.KeyCode() );
+}
+
+
+bool KEY_SEQUENCE_CONTROLLER::applyResult( const KEY_SEQUENCE_RESULT& aResult, int aKeyCode )
+{
+    using OUTCOME = KEY_SEQUENCE_RESULT::OUTCOME;
+
+    switch( aResult.m_outcome )
     {
     case OUTCOME::RUN_ACTION:
-        wxLogTrace( kicadTraceKeySequence, wxS( "key %d runs %s" ), aEvent.KeyCode(), result.m_action->GetName() );
-        m_toolManager->GetActionManager()->RunActionAsHotKey( *result.m_action );
+        wxLogTrace( kicadTraceKeySequence, wxS( "key %d runs %s" ), aKeyCode, aResult.m_action->GetName() );
+        m_toolManager->GetActionManager()->RunActionAsHotKey( *aResult.m_action );
         return true;
 
     case OUTCOME::CONSUMED: return true;
 
     case OUTCOME::SHOW_NODE:
     case OUTCOME::NOT_MINE:
-        wxLogTrace( kicadTraceKeySequence, wxS( "key %d is not part of the sequence" ), aEvent.KeyCode() );
+        wxLogTrace( kicadTraceKeySequence, wxS( "key %d is not part of the sequence" ), aKeyCode );
         return false;
     }
 
     return false;
+}
+
+
+void KEY_SEQUENCE_CONTROLLER::typeLetter( wxUniChar aLetter )
+{
+    if( !m_engine.IsPending() )
+        return;
+
+    KEY_SEQUENCE_RESULT result = m_engine.HandleKey( static_cast<int>( aLetter.GetValue() ), false );
+
+    afterEngineChange();
+    applyResult( result, static_cast<int>( aLetter.GetValue() ) );
 }
 
 
@@ -166,11 +206,19 @@ void KEY_SEQUENCE_CONTROLLER::afterEngineChange()
 
     if( !m_engine.IsPending() )
     {
+        hidePopup();
         restoreStatus();
         return;
     }
 
     showStatus();
+
+    if( m_popup && m_popup->IsShown() )
+    {
+        // The engine went down into a submenu: the same window draws it, at once, and no second window opens
+        showPopup( *m_engine.PendingNode() );
+        return;
+    }
 
     int delay = HintDelayMilliseconds();
 
@@ -202,6 +250,18 @@ void KEY_SEQUENCE_CONTROLLER::onTimer( wxTimerEvent& )
 
 void KEY_SEQUENCE_CONTROLLER::onHintDue( unsigned aToken )
 {
+    if( UsesPopupWindow() )
+    {
+        // The engine stays pending: it keeps reading the keys, and the window is only a picture of its node
+        if( m_engine.IsPending() && aToken == m_engine.Token() )
+        {
+            wxLogTrace( kicadTraceKeySequence, wxS( "hint popup shown for %s" ), m_engine.PendingNode()->m_label );
+            showPopup( *m_engine.PendingNode() );
+        }
+
+        return;
+    }
+
     KEY_SEQUENCE_RESULT result = m_engine.HintTimerFired( aToken );
 
     if( result.m_outcome != KEY_SEQUENCE_RESULT::OUTCOME::SHOW_NODE )
@@ -255,4 +315,63 @@ void KEY_SEQUENCE_CONTROLLER::showHint( const MENU_DEF& aNode )
     std::unique_ptr<ACTION_MENU> menu( BuildActionMenu( hinted, tool ) );
 
     frame->PopupMenu( menu.get(), frame->ScreenToClient( KIPLATFORM::UI::GetMousePosition() ) );
+}
+
+
+void KEY_SEQUENCE_CONTROLLER::showPopup( const MENU_DEF& aNode )
+{
+    wxWindow* frame = dynamic_cast<wxWindow*>( m_toolManager->GetToolHolder() );
+
+    if( !frame )
+        return;
+
+    if( !m_popup )
+    {
+        m_popup = new KEY_SEQUENCE_POPUP( frame );
+        m_popup->SetClickHandler(
+                [this]( wxUniChar aLetter )
+                {
+                    // Not from inside the popup's own mouse event: running the action may close the window
+                    CallAfter(
+                            [this, aLetter]()
+                            {
+                                typeLetter( aLetter );
+                            } );
+                } );
+    }
+
+    if( !m_isFrameBound )
+    {
+        // Losing the focus to another application abandons the sequence, so no window is left over the desktop
+        frame->Bind( wxEVT_ACTIVATE, &KEY_SEQUENCE_CONTROLLER::onFrameActivate, this );
+        m_isFrameBound = true;
+    }
+
+    TOOL_MANAGER* toolManager = m_toolManager;
+
+    auto hotkeyText = [toolManager]( const TOOL_ACTION& aAction ) -> wxString
+    {
+        int hotkey = toolManager->GetHotKey( aAction );
+
+        return hotkey ? AddHotkeyName( wxEmptyString, hotkey ).AfterFirst( '\t' ) : wxString();
+    };
+
+    m_popup->ShowRows( StripMnemonicMarkers( aNode.m_label ), BuildKeySequenceRows( aNode, hotkeyText ),
+                       KIPLATFORM::UI::GetMousePosition() );
+}
+
+
+void KEY_SEQUENCE_CONTROLLER::hidePopup()
+{
+    if( m_popup )
+        m_popup->HidePopup();
+}
+
+
+void KEY_SEQUENCE_CONTROLLER::onFrameActivate( wxActivateEvent& aEvent )
+{
+    aEvent.Skip();
+
+    if( !aEvent.GetActive() && m_engine.IsPending() )
+        Cancel();
 }

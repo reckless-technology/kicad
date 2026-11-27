@@ -24,10 +24,13 @@
 
 #include <wx/event.h>
 #include <wx/timer.h>
+#include <wx/weakref.h>
 
 class TOOL_ACTION;
 class TOOL_EVENT;
 class TOOL_MANAGER;
+class KEY_SEQUENCE_POPUP;
+class wxActivateEvent;
 
 
 /**
@@ -64,6 +67,16 @@ public:
     /// The hint delay in force, in milliseconds: the setting, which is 0 for "at once".
     static int HintDelayMilliseconds();
 
+    /**
+     * Whether the hint is a window the program draws and not a native menu.
+     *
+     * True on macOS, whose native menu runs a modal loop that gives the engine no keys and fires a bare-letter key
+     * equivalent anywhere in its tree. Elsewhere the native menu is used, because its mnemonics work. Setting the
+     * environment variable `KICAD_KEY_SEQUENCE_POPUP` to `1` forces the window on any platform, for tests and for
+     * trying it on Linux; `0` forces the native menu.
+     */
+    static bool UsesPopupWindow();
+
 private:
     void onTimer( wxTimerEvent& aEvent );
     void onHintDue( unsigned aToken );
@@ -71,12 +84,24 @@ private:
     void showStatus();
     void restoreStatus();
     void showHint( const MENU_DEF& aNode );
+    void showPopup( const MENU_DEF& aNode );
+    void hidePopup();
+    void onFrameActivate( wxActivateEvent& aEvent );
+
+    /// Act on what the engine answered to a key (typed, or clicked in the popup): run the action, or note the rest.
+    bool applyResult( const KEY_SEQUENCE_RESULT& aResult, int aKeyCode );
+
+    /// A row of the popup was clicked: the same as typing its letter.
+    void typeLetter( wxUniChar aLetter );
 
     TOOL_MANAGER* m_toolManager;
     KEY_SEQUENCE  m_engine;
     wxTimer       m_timer;
     unsigned      m_timerToken = 0;
     bool          m_isStatusShown = false;
+
+    wxWeakRef<KEY_SEQUENCE_POPUP> m_popup; ///< made when first needed; the frame owns it
+    bool                          m_isFrameBound = false;
 };
 
 #endif // KEY_SEQUENCE_CONTROLLER_H

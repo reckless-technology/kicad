@@ -120,6 +120,9 @@ public:
 
     bool IsPending() const { return m_node != nullptr; }
 
+    /// The pending menu, or null. A hint drawn by the program reads it without ending the sequence, as the timer does.
+    const MENU_DEF* PendingNode() const { return m_node; }
+
     /// Changes at every key that moves a pending sequence on, so that a timer started earlier can be told apart.
     unsigned Token() const { return m_token; }
 
