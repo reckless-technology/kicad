@@ -45,11 +45,17 @@ BOOST_AUTO_TEST_CASE( EveryActionInEachProfileTableIsRegistered )
     {
         PROFILE_HOTKEY_LAYER layer = INTERACTION_PROFILE::BuildHotKeyLayer( profile );
 
+        // A profile other than KiCad's must bring a table, or this test passes on nothing.
+        if( layer.m_isActive )
+            BOOST_CHECK_MESSAGE( !layer.m_bindings.empty(), "an active profile's hotkey table is empty" );
+
         std::vector<std::string> unregistered =
                 INTERACTION_PROFILE::UnregisteredActionNames( layer, registered, { INTERACTION_PROFILE_QA_PREFIXES } );
 
+        BOOST_CHECK_MESSAGE( unregistered.empty(), unregistered.size() << " profile table names are unregistered" );
+
         for( const std::string& name : unregistered )
-            BOOST_ERROR( "profile table names an action nothing registers: " << name );
+            BOOST_TEST_MESSAGE( "profile table names an action nothing registers: " << name );
     }
 }
 
