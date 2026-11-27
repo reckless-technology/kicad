@@ -169,6 +169,13 @@ using MENU_SLOT_FILLER = std::function<void( const std::string& aSlot, const MEN
 
 
 /**
+ * Gives a slot of a conditional menu its submenu: a menu that already exists, such as a tool's own, which the slot
+ * shows under the slot's condition. The menu is not owned by the conditional menu. Null leaves the slot empty.
+ */
+using CONDITIONAL_SLOT_FILLER = std::function<ACTION_MENU*( const MENU_DEF& aSlot )>;
+
+
+/**
  * Build the menu for a submenu node: its label is the title, its children the entries. Conditions are ignored, because
  * a menu bar has no selection to test (BuildConditionalMenu() keeps them). The caller owns the menu.
  */
@@ -178,9 +185,11 @@ ACTION_MENU* BuildActionMenu( const MENU_DEF& aSubmenu, TOOL_INTERACTIVE* aTool,
 /**
  * Build a menu whose entries come and go with the selection, for a submenu node: each node's condition is the
  * entry's condition (CONDITIONAL_MENU::Evaluate() applies them). Its entries carry their actions' own labels, as a
- * CONDITIONAL_MENU's always do, and its submenus the labels of the tree. The caller owns the menu.
+ * CONDITIONAL_MENU's always do, and its submenus the labels of the tree. A slot is shown as the submenu \a aFillSlot
+ * gives it, if there is a filler. The caller owns the menu.
  */
-CONDITIONAL_MENU* BuildConditionalMenu( const MENU_DEF& aSubmenu, TOOL_INTERACTIVE* aTool );
+CONDITIONAL_MENU* BuildConditionalMenu( const MENU_DEF& aSubmenu, TOOL_INTERACTIVE* aTool,
+                                        const CONDITIONAL_SLOT_FILLER& aFillSlot = CONDITIONAL_SLOT_FILLER() );
 
 /**
  * Build a frame's menu bar: each child of \a aBar is a menu, titled with its label. The frame appends its help menu.

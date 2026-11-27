@@ -89,6 +89,12 @@ public:
     void ShowContextMenu( SELECTION& aSelection );
 
     /**
+     * Show \a aMenu in concert with the given #SELECTION, in place of this tool's own menu. The interaction profile
+     * uses it to show a menu built from a tree. \a aMenu stays the caller's, and must outlive the popup.
+     */
+    void ShowContextMenu( SELECTION& aSelection, CONDITIONAL_MENU& aMenu );
+
+    /**
      * Helper function to show a context menu without any selection for tools that can't
      * make selections.
      */

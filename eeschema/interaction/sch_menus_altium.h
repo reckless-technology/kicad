@@ -31,6 +31,12 @@
  */
 MENU_DEF SchAltiumMenuBar();
 
+/// The Place menu of the tree (the `P` sequence), which the right-click menu's Place submenu is too.
+MENU_DEF SchAltiumPlaceMenu();
+
+/// The Align menu of the tree (the `A` sequence), which the right-click menu's Align submenu is too.
+MENU_DEF SchAltiumAlignMenu();
+
 /**
  * What the note's schematic table has that the tree leaves out on purpose: the entries marked "new" or "-", and the
  * aliases of an entry the tree already has.

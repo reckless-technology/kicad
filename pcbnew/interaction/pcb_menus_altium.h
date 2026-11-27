@@ -31,6 +31,12 @@
  */
 MENU_DEF PcbAltiumMenuBar();
 
+/// The Place menu of the tree (the `P` sequence), which the right-click menu's Place submenu is too.
+MENU_DEF PcbAltiumPlaceMenu();
+
+/// The Align menu of the tree (the `A` sequence), which the right-click menu's Align submenu is too.
+MENU_DEF PcbAltiumAlignMenu();
+
 /**
  * What the note's PCB table has that the tree leaves out on purpose: the entries marked "new" or "-", the ones that
  * belong to the footprint editor, and the aliases of an entry the tree already has.

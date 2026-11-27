@@ -59,6 +59,90 @@ static MENU_DEF keyOnlyOnMacOS( const MENU_DEF& aEntry )
 }
 
 
+MENU_DEF PcbAltiumPlaceMenu()
+{
+    using M = MENU_DEF;
+
+    M constraints = M::Submenu( _( "Co&nstraints" ), {} );
+
+    for( const TOOL_ACTION* action : PCB_ACTIONS::ConstraintAddActions() )
+        constraints.m_children.push_back( M::Item( action->GetFriendlyName(), *action ) );
+
+    constraints.m_children.push_back( M::Separator() );
+    constraints.m_children.push_back( M::Item( _( "&Remove Constraints" ), PCB_ACTIONS::removeConstraints ) );
+
+    M place = M::Submenu(
+            _( "&Place" ),
+            { M::Item( _( "&Track (Interactive Routing)" ), PCB_ACTIONS::routeSingleTrack ),
+              M::Item( _( "&Via" ), PCB_ACTIONS::drawVia ),
+              M::Item( _( "&Component..." ), PCB_ACTIONS::placeFootprint ),
+              M::Item( _( "Poly&gon Pour" ), PCB_ACTIONS::drawZone ),
+              M::Item( _( "Rule Area (&Keepout)" ), PCB_ACTIONS::drawRuleArea ),
+              M::Separator(),
+              M::Item( _( "&Line" ), PCB_ACTIONS::drawLine ),
+              M::Item( _( "Text &String" ), PCB_ACTIONS::placeText ),
+              M::Item( _( "&Fill (Rectangle)" ), PCB_ACTIONS::drawRectangle ),
+              M::Item( _( "R&ectangle" ), PCB_ACTIONS::drawRectangle ).KeyOnly(),
+              M::Item( _( "Solid &Region (Polygon)" ), PCB_ACTIONS::drawPolygon ),
+              M::Submenu( _( "&Arc" ), { M::Item( _( "&Arc by Center" ), PCB_ACTIONS::drawArcCenter ),
+                                         M::Item( _( "Arc by &Edge" ), PCB_ACTIONS::drawArc ),
+                                         M::Item( _( "F&ull Circle" ), PCB_ACTIONS::drawCircle ) } ),
+              M::Submenu( _( "&Dimension" ), { M::Item( _( "&Linear" ), PCB_ACTIONS::drawAlignedDimension ),
+                                               M::Item( _( "&Radial" ), PCB_ACTIONS::drawRadialDimension ),
+                                               M::Item( _( "L&eader" ), PCB_ACTIONS::drawLeader ),
+                                               M::Item( _( "&Center" ), PCB_ACTIONS::drawCenterDimension ),
+                                               M::Item( _( "&Orthogonal" ), PCB_ACTIONS::drawOrthogonalDimension ) } ),
+              M::Separator(),
+              M::Item( _( "V&ia Stack" ), PCB_ACTIONS::placeViaStack ),
+              M::Item( _( "&Make Via Stack" ), PCB_ACTIONS::makeViaStack ),
+              M::Item( _( "Copper Thieving &Zone" ), PCB_ACTIONS::drawCopperThievingZone ),
+              M::Submenu( _( "&Board Graphics" ),
+                          { M::Item( _( "&Ellipse" ), PCB_ACTIONS::drawEllipse ),
+                            M::Item( _( "Ellipse &Arc" ), PCB_ACTIONS::drawEllipseArc ),
+                            M::Item( _( "&Bezier" ), PCB_ACTIONS::drawBezier ),
+                            M::Item( _( "Reference &Image..." ), PCB_ACTIONS::placeReferenceImage ),
+                            M::Item( _( "Te&xt Box" ), PCB_ACTIONS::drawTextBox ),
+                            M::Item( _( "&Table" ), PCB_ACTIONS::drawTable ),
+                            M::Item( _( "&Point" ), PCB_ACTIONS::placePoint ),
+                            M::Item( _( "Bar&code" ), PCB_ACTIONS::placeBarcode ),
+                            M::Item( _( "&Subgrid" ), PCB_ACTIONS::placeSubGrid ) } ),
+              M::Submenu( _( "Micro&wave Shapes" ),
+                          { M::Item( _( "&Line" ), PCB_ACTIONS::microwaveCreateLine ),
+                            M::Item( _( "&Gap" ), PCB_ACTIONS::microwaveCreateGap ),
+                            M::Item( _( "&Stub" ), PCB_ACTIONS::microwaveCreateStub ),
+                            M::Item( _( "S&tub Arc" ), PCB_ACTIONS::microwaveCreateStubArc ),
+                            M::Item( _( "&Polygonal Shape" ), PCB_ACTIONS::microwaveCreateFunctionShape ) } ),
+              constraints,
+              M::Submenu( _( "Doc&umentation" ),
+                          { M::Item( _( "&Characteristics Table" ), PCB_ACTIONS::placeCharacteristics ),
+                            M::Item( _( "&Stackup Table" ), PCB_ACTIONS::placeStackup ),
+                            M::Item( _( "Drill Cha&rt" ), PCB_ACTIONS::placeDrillChart ),
+                            M::Item( _( "Drill &Map" ), PCB_ACTIONS::placeDrillMap ) } ),
+              M::Submenu( _( "Drill &Origin" ), { M::Item( _( "&Set" ), PCB_ACTIONS::drillOrigin ),
+                                                  M::Item( _( "&Reset" ), PCB_ACTIONS::drillResetOrigin ) } ),
+              M::Submenu( _( "Auto-&Place Footprints" ),
+                          { M::Item( _( "&Off-Board Footprints" ), PCB_ACTIONS::autoplaceOffboardComponents ),
+                            M::Item( _( "&Selected Footprints" ), PCB_ACTIONS::autoplaceSelectedComponents ) } ) } );
+
+    return place;
+}
+
+
+MENU_DEF PcbAltiumAlignMenu()
+{
+    using M = MENU_DEF;
+
+    return M::Submenu(
+            _( "&Align" ),
+            { M::Item( _( "&Left" ), PCB_ACTIONS::alignLeft ), M::Item( _( "&Right" ), PCB_ACTIONS::alignRight ),
+              M::Item( _( "&Top" ), PCB_ACTIONS::alignTop ), M::Item( _( "&Bottom" ), PCB_ACTIONS::alignBottom ),
+              M::Item( _( "Horizontal &Centers" ), PCB_ACTIONS::alignCenterX ),
+              M::Item( _( "&Vertical Centers" ), PCB_ACTIONS::alignCenterY ),
+              M::Item( _( "&Distribute Horizontally" ), PCB_ACTIONS::distributeHorizontallyGaps ),
+              M::Item( _( "Di&stribute Vertically" ), PCB_ACTIONS::distributeVerticallyGaps ) } );
+}
+
+
 MENU_DEF PcbAltiumMenuBar()
 {
     using M = MENU_DEF;
@@ -166,15 +250,7 @@ MENU_DEF PcbAltiumMenuBar()
                             M::Item( _( "&Inside Area" ), ACTIONS::selectSetRect ),
                             M::Item( _( "Lasso S&elect" ), ACTIONS::selectSetLasso ) } ),
               M::Submenu( _( "DeSelect (&X)" ), { M::Item( _( "&All" ), ACTIONS::unselectAll ) } ),
-              M::Submenu( _( "&Align" ),
-                          { M::Item( _( "&Left" ), PCB_ACTIONS::alignLeft ),
-                            M::Item( _( "&Right" ), PCB_ACTIONS::alignRight ),
-                            M::Item( _( "&Top" ), PCB_ACTIONS::alignTop ),
-                            M::Item( _( "&Bottom" ), PCB_ACTIONS::alignBottom ),
-                            M::Item( _( "Horizontal &Centers" ), PCB_ACTIONS::alignCenterX ),
-                            M::Item( _( "&Vertical Centers" ), PCB_ACTIONS::alignCenterY ),
-                            M::Item( _( "&Distribute Horizontally" ), PCB_ACTIONS::distributeHorizontallyGaps ),
-                            M::Item( _( "Di&stribute Vertically" ), PCB_ACTIONS::distributeVerticallyGaps ) } ),
+              PcbAltiumAlignMenu(),
               M::Submenu( _( "&Jump" ), { M::Item( _( "To &Component..." ), ACTIONS::find ),
                                           M::Item( _( "To &Net..." ), ACTIONS::find ).KeyOnly(),
                                           M::Item( _( "To &Pad..." ), ACTIONS::find ).KeyOnly() } ),
@@ -252,66 +328,7 @@ MENU_DEF PcbAltiumMenuBar()
                                                M::Item( _( "&Exclude Marker" ), ACTIONS::excludeMarker ) } );
 
     // The constraints submenu is the list the context menu uses, so the two cannot drift
-    M constraints = M::Submenu( _( "Co&nstraints" ), {} );
-
-    for( const TOOL_ACTION* action : PCB_ACTIONS::ConstraintAddActions() )
-        constraints.m_children.push_back( M::Item( action->GetFriendlyName(), *action ) );
-
-    constraints.m_children.push_back( M::Separator() );
-    constraints.m_children.push_back( M::Item( _( "&Remove Constraints" ), PCB_ACTIONS::removeConstraints ) );
-
-    M place = M::Submenu(
-            _( "&Place" ),
-            { M::Item( _( "&Track (Interactive Routing)" ), PCB_ACTIONS::routeSingleTrack ),
-              M::Item( _( "&Via" ), PCB_ACTIONS::drawVia ),
-              M::Item( _( "&Component..." ), PCB_ACTIONS::placeFootprint ),
-              M::Item( _( "Poly&gon Pour" ), PCB_ACTIONS::drawZone ),
-              M::Item( _( "Rule Area (&Keepout)" ), PCB_ACTIONS::drawRuleArea ),
-              M::Separator(),
-              M::Item( _( "&Line" ), PCB_ACTIONS::drawLine ),
-              M::Item( _( "Text &String" ), PCB_ACTIONS::placeText ),
-              M::Item( _( "&Fill (Rectangle)" ), PCB_ACTIONS::drawRectangle ),
-              M::Item( _( "R&ectangle" ), PCB_ACTIONS::drawRectangle ).KeyOnly(),
-              M::Item( _( "Solid &Region (Polygon)" ), PCB_ACTIONS::drawPolygon ),
-              M::Submenu( _( "&Arc" ), { M::Item( _( "&Arc by Center" ), PCB_ACTIONS::drawArcCenter ),
-                                         M::Item( _( "Arc by &Edge" ), PCB_ACTIONS::drawArc ),
-                                         M::Item( _( "F&ull Circle" ), PCB_ACTIONS::drawCircle ) } ),
-              M::Submenu( _( "&Dimension" ), { M::Item( _( "&Linear" ), PCB_ACTIONS::drawAlignedDimension ),
-                                               M::Item( _( "&Radial" ), PCB_ACTIONS::drawRadialDimension ),
-                                               M::Item( _( "L&eader" ), PCB_ACTIONS::drawLeader ),
-                                               M::Item( _( "&Center" ), PCB_ACTIONS::drawCenterDimension ),
-                                               M::Item( _( "&Orthogonal" ), PCB_ACTIONS::drawOrthogonalDimension ) } ),
-              M::Separator(),
-              M::Item( _( "V&ia Stack" ), PCB_ACTIONS::placeViaStack ),
-              M::Item( _( "&Make Via Stack" ), PCB_ACTIONS::makeViaStack ),
-              M::Item( _( "Copper Thieving &Zone" ), PCB_ACTIONS::drawCopperThievingZone ),
-              M::Submenu( _( "&Board Graphics" ),
-                          { M::Item( _( "&Ellipse" ), PCB_ACTIONS::drawEllipse ),
-                            M::Item( _( "Ellipse &Arc" ), PCB_ACTIONS::drawEllipseArc ),
-                            M::Item( _( "&Bezier" ), PCB_ACTIONS::drawBezier ),
-                            M::Item( _( "Reference &Image..." ), PCB_ACTIONS::placeReferenceImage ),
-                            M::Item( _( "Te&xt Box" ), PCB_ACTIONS::drawTextBox ),
-                            M::Item( _( "&Table" ), PCB_ACTIONS::drawTable ),
-                            M::Item( _( "&Point" ), PCB_ACTIONS::placePoint ),
-                            M::Item( _( "Bar&code" ), PCB_ACTIONS::placeBarcode ),
-                            M::Item( _( "&Subgrid" ), PCB_ACTIONS::placeSubGrid ) } ),
-              M::Submenu( _( "Micro&wave Shapes" ),
-                          { M::Item( _( "&Line" ), PCB_ACTIONS::microwaveCreateLine ),
-                            M::Item( _( "&Gap" ), PCB_ACTIONS::microwaveCreateGap ),
-                            M::Item( _( "&Stub" ), PCB_ACTIONS::microwaveCreateStub ),
-                            M::Item( _( "S&tub Arc" ), PCB_ACTIONS::microwaveCreateStubArc ),
-                            M::Item( _( "&Polygonal Shape" ), PCB_ACTIONS::microwaveCreateFunctionShape ) } ),
-              constraints,
-              M::Submenu( _( "Doc&umentation" ),
-                          { M::Item( _( "&Characteristics Table" ), PCB_ACTIONS::placeCharacteristics ),
-                            M::Item( _( "&Stackup Table" ), PCB_ACTIONS::placeStackup ),
-                            M::Item( _( "Drill Cha&rt" ), PCB_ACTIONS::placeDrillChart ),
-                            M::Item( _( "Drill &Map" ), PCB_ACTIONS::placeDrillMap ) } ),
-              M::Submenu( _( "Drill &Origin" ), { M::Item( _( "&Set" ), PCB_ACTIONS::drillOrigin ),
-                                                  M::Item( _( "&Reset" ), PCB_ACTIONS::drillResetOrigin ) } ),
-              M::Submenu( _( "Auto-&Place Footprints" ),
-                          { M::Item( _( "&Off-Board Footprints" ), PCB_ACTIONS::autoplaceOffboardComponents ),
-                            M::Item( _( "&Selected Footprints" ), PCB_ACTIONS::autoplaceSelectedComponents ) } ) } );
+    M place = PcbAltiumPlaceMenu();
 
     M design = M::Submenu( _( "&Design" ),
                            { M::Item( _( "&Rules (Board Setup)..." ), PCB_ACTIONS::boardSetup ),

@@ -69,6 +69,9 @@ using namespace std::placeholders;
 #include <wx/modalhook.h>
 #include <core/profile.h>
 #include <math/vector2wx.h>
+#include <interaction_profile.h>
+#include <interaction/pcb_context_menu_altium.h>
+#include <menu_def.h>
 
 struct LAYER_OPACITY_ITEM
 {
@@ -371,6 +374,37 @@ bool PCB_SELECTION_TOOL::Init()
 }
 
 
+CONDITIONAL_MENU* PCB_SELECTION_TOOL::altiumContextMenu()
+{
+    PCB_EDIT_FRAME* editFrame = dynamic_cast<PCB_EDIT_FRAME*>( m_frame );
+
+    // The footprint editor and the viewers keep KiCad's menus
+    if( !editFrame || INTERACTION_PROFILE::Active() != INTERACTION_PROFILE_ID::ALTIUM )
+        return nullptr;
+
+    if( !m_altiumContextMenu )
+    {
+        // A slot shows the submenu that another tool made for KiCad's own menu, found by its title
+        CONDITIONAL_SLOT_FILLER fillSlot = [this]( const MENU_DEF& aSlot ) -> ACTION_MENU*
+        {
+            for( std::shared_ptr<ACTION_MENU>& subMenu : GetToolMenu().GetSubMenus() )
+            {
+                subMenu->UpdateTitle();
+
+                if( subMenu->GetTitle() == aSlot.m_label )
+                    return subMenu.get();
+            }
+
+            return nullptr;
+        };
+
+        m_altiumContextMenu.reset( BuildConditionalMenu( PcbAltiumContextMenu( editFrame, this ), this, fillSlot ) );
+    }
+
+    return m_altiumContextMenu.get();
+}
+
+
 void PCB_SELECTION_TOOL::Reset( RESET_REASON aReason )
 {
     m_frame = getEditFrame<PCB_BASE_FRAME>();
@@ -564,6 +598,8 @@ int PCB_SELECTION_TOOL::Main( const TOOL_EVENT& aEvent )
 
                 if( genMenu )
                     SetContextMenu( genMenu, CMENU_NOW );
+                else if( CONDITIONAL_MENU* altiumMenu = altiumContextMenu() )
+                    m_menu->ShowContextMenu( m_selection, *altiumMenu );
                 else
                     m_menu->ShowContextMenu( m_selection );
             }

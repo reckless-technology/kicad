@@ -60,6 +60,60 @@ static MENU_DEF keyOnlyOnMacOS( const MENU_DEF& aEntry )
 }
 
 
+MENU_DEF SchAltiumPlaceMenu()
+{
+    using M = MENU_DEF;
+
+    return M::Submenu(
+            _( "&Place" ),
+            { M::Item( _( "&Part..." ), SCH_ACTIONS::placeSymbol ),
+              M::Item( _( "&Wire" ), SCH_ACTIONS::drawWire ),
+              M::Item( _( "&Bus" ), SCH_ACTIONS::drawBus ),
+              M::Item( _( "B&us Entry" ), SCH_ACTIONS::placeBusWireEntry ),
+              M::Item( _( "&Net Label" ), SCH_ACTIONS::placeLabel ),
+              M::Item( _( "P&ower Port" ), SCH_ACTIONS::placePower ),
+              M::Item( _( "Hierarchical Po&rt" ), SCH_ACTIONS::placeHierLabel ),
+              M::Item( _( "Off-Sheet &Connector" ), SCH_ACTIONS::placeGlobalLabel ),
+              M::Item( _( "&Junction" ), SCH_ACTIONS::placeJunction ),
+              M::Submenu( _( "Directi&ves" ),
+                          { M::Item( _( "&No Connect Flag" ), SCH_ACTIONS::placeNoConnect ),
+                            M::Item( _( "Para&meter Set (Directive Label)" ), SCH_ACTIONS::placeClassLabel ),
+                            M::Item( _( "Ru&le Area" ), SCH_ACTIONS::drawRuleArea ) } ),
+              M::Separator(),
+              M::Item( _( "&Sheet Symbol" ), SCH_ACTIONS::drawSheet ),
+              M::Item( _( "Sheet &Entry" ), SCH_ACTIONS::placeSheetPin ),
+              M::Item( _( "S&ynchronize Sheet Pins" ), SCH_ACTIONS::syncAllSheetsPins ),
+              M::Item( _( "&Import Sheet..." ), SCH_ACTIONS::importSheet ),
+              M::Separator(),
+              M::Item( _( "&Text String" ), SCH_ACTIONS::placeSchematicText ),
+              M::Item( _( "Text &Frame" ), SCH_ACTIONS::drawTextBox ),
+              M::Item( _( "T&able" ), SCH_ACTIONS::drawTable ),
+              M::Submenu( _( "&Drawing Tools" ), { M::Item( _( "&Line" ), SCH_ACTIONS::drawLines ),
+                                                   M::Item( _( "&Rectangle" ), SCH_ACTIONS::drawRectangle ),
+                                                   M::Item( _( "&Arc" ), SCH_ACTIONS::drawArc ),
+                                                   M::Item( _( "F&ull Circle" ), SCH_ACTIONS::drawCircle ),
+                                                   M::Item( _( "&Ellipse" ), SCH_ACTIONS::drawEllipse ),
+                                                   M::Item( _( "Ellipse Ar&c" ), SCH_ACTIONS::drawEllipseArc ),
+                                                   M::Item( _( "Pol&ygon" ), SCH_ACTIONS::drawPolygon ),
+                                                   M::Item( _( "&Bezier" ), SCH_ACTIONS::drawBezier ),
+                                                   M::Item( _( "&Graphic..." ), SCH_ACTIONS::placeImage ) } ) } );
+}
+
+
+MENU_DEF SchAltiumAlignMenu()
+{
+    using M = MENU_DEF;
+
+    return M::Submenu( _( "&Align" ), { M::Item( _( "&Left" ), SCH_ACTIONS::alignLeft ),
+                                        M::Item( _( "&Right" ), SCH_ACTIONS::alignRight ),
+                                        M::Item( _( "&Top" ), SCH_ACTIONS::alignTop ),
+                                        M::Item( _( "&Bottom" ), SCH_ACTIONS::alignBottom ),
+                                        M::Item( _( "Horizontal &Centers" ), SCH_ACTIONS::alignCenterX ),
+                                        M::Item( _( "&Vertical Centers" ), SCH_ACTIONS::alignCenterY ),
+                                        M::Item( _( "To &Grid" ), SCH_ACTIONS::alignToGrid ) } );
+}
+
+
 MENU_DEF SchAltiumMenuBar()
 {
     using M = MENU_DEF;
@@ -140,13 +194,7 @@ MENU_DEF SchAltiumMenuBar()
                                             M::Item( _( "&Inside Area" ), ACTIONS::selectSetRect ),
                                             M::Item( _( "Lasso S&elect" ), ACTIONS::selectSetLasso ) } ),
               M::Submenu( _( "DeSelect (&X)" ), { M::Item( _( "&All" ), ACTIONS::unselectAll ) } ),
-              M::Submenu( _( "&Align" ), { M::Item( _( "&Left" ), SCH_ACTIONS::alignLeft ),
-                                           M::Item( _( "&Right" ), SCH_ACTIONS::alignRight ),
-                                           M::Item( _( "&Top" ), SCH_ACTIONS::alignTop ),
-                                           M::Item( _( "&Bottom" ), SCH_ACTIONS::alignBottom ),
-                                           M::Item( _( "Horizontal &Centers" ), SCH_ACTIONS::alignCenterX ),
-                                           M::Item( _( "&Vertical Centers" ), SCH_ACTIONS::alignCenterY ),
-                                           M::Item( _( "To &Grid" ), SCH_ACTIONS::alignToGrid ) } ),
+              SchAltiumAlignMenu(),
               M::Submenu( _( "&Jump" ), { M::Item( _( "To &Component..." ), ACTIONS::find ) } ),
               M::Separator(),
               M::Item( _( "&Find..." ), ACTIONS::find ),
@@ -213,39 +261,7 @@ MENU_DEF SchAltiumMenuBar()
                                                M::Item( _( "&Previous Marker" ), ACTIONS::prevMarker ),
                                                M::Item( _( "&Exclude Marker" ), ACTIONS::excludeMarker ) } );
 
-    M place = M::Submenu(
-            _( "&Place" ),
-            { M::Item( _( "&Part..." ), SCH_ACTIONS::placeSymbol ),
-              M::Item( _( "&Wire" ), SCH_ACTIONS::drawWire ),
-              M::Item( _( "&Bus" ), SCH_ACTIONS::drawBus ),
-              M::Item( _( "B&us Entry" ), SCH_ACTIONS::placeBusWireEntry ),
-              M::Item( _( "&Net Label" ), SCH_ACTIONS::placeLabel ),
-              M::Item( _( "P&ower Port" ), SCH_ACTIONS::placePower ),
-              M::Item( _( "Hierarchical Po&rt" ), SCH_ACTIONS::placeHierLabel ),
-              M::Item( _( "Off-Sheet &Connector" ), SCH_ACTIONS::placeGlobalLabel ),
-              M::Item( _( "&Junction" ), SCH_ACTIONS::placeJunction ),
-              M::Submenu( _( "Directi&ves" ),
-                          { M::Item( _( "&No Connect Flag" ), SCH_ACTIONS::placeNoConnect ),
-                            M::Item( _( "Para&meter Set (Directive Label)" ), SCH_ACTIONS::placeClassLabel ),
-                            M::Item( _( "Ru&le Area" ), SCH_ACTIONS::drawRuleArea ) } ),
-              M::Separator(),
-              M::Item( _( "&Sheet Symbol" ), SCH_ACTIONS::drawSheet ),
-              M::Item( _( "Sheet &Entry" ), SCH_ACTIONS::placeSheetPin ),
-              M::Item( _( "S&ynchronize Sheet Pins" ), SCH_ACTIONS::syncAllSheetsPins ),
-              M::Item( _( "&Import Sheet..." ), SCH_ACTIONS::importSheet ),
-              M::Separator(),
-              M::Item( _( "&Text String" ), SCH_ACTIONS::placeSchematicText ),
-              M::Item( _( "Text &Frame" ), SCH_ACTIONS::drawTextBox ),
-              M::Item( _( "T&able" ), SCH_ACTIONS::drawTable ),
-              M::Submenu( _( "&Drawing Tools" ), { M::Item( _( "&Line" ), SCH_ACTIONS::drawLines ),
-                                                   M::Item( _( "&Rectangle" ), SCH_ACTIONS::drawRectangle ),
-                                                   M::Item( _( "&Arc" ), SCH_ACTIONS::drawArc ),
-                                                   M::Item( _( "F&ull Circle" ), SCH_ACTIONS::drawCircle ),
-                                                   M::Item( _( "&Ellipse" ), SCH_ACTIONS::drawEllipse ),
-                                                   M::Item( _( "Ellipse Ar&c" ), SCH_ACTIONS::drawEllipseArc ),
-                                                   M::Item( _( "Pol&ygon" ), SCH_ACTIONS::drawPolygon ),
-                                                   M::Item( _( "&Bezier" ), SCH_ACTIONS::drawBezier ),
-                                                   M::Item( _( "&Graphic..." ), SCH_ACTIONS::placeImage ) } ) } );
+    M place = SchAltiumPlaceMenu();
 
     M design = M::Submenu( _( "&Design" ),
                            { M::Item( _( "&Update PCB Document" ), ACTIONS::updatePcbFromSchematic ),

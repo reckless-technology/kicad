@@ -67,6 +67,9 @@
 #include <view/view.h>
 #include <view/view_controls.h>
 #include <wx/log.h>
+#include <interaction_profile.h>
+#include <interaction/sch_context_menu_altium.h>
+#include <menu_def.h>
 
 #include "symb_transforms_utils.h"
 
@@ -759,6 +762,37 @@ bool SCH_SELECTION_TOOL::Init()
 }
 
 
+CONDITIONAL_MENU* SCH_SELECTION_TOOL::altiumContextMenu()
+{
+    SCH_EDIT_FRAME* editFrame = dynamic_cast<SCH_EDIT_FRAME*>( m_frame );
+
+    // The symbol editor and the symbol viewer keep KiCad's menus
+    if( !editFrame || INTERACTION_PROFILE::Active() != INTERACTION_PROFILE_ID::ALTIUM )
+        return nullptr;
+
+    if( !m_altiumContextMenu )
+    {
+        // A slot shows the submenu that another tool made for KiCad's own menu, found by its title
+        CONDITIONAL_SLOT_FILLER fillSlot = [this]( const MENU_DEF& aSlot ) -> ACTION_MENU*
+        {
+            for( std::shared_ptr<ACTION_MENU>& subMenu : GetToolMenu().GetSubMenus() )
+            {
+                subMenu->UpdateTitle();
+
+                if( subMenu->GetTitle() == aSlot.m_label )
+                    return subMenu.get();
+            }
+
+            return nullptr;
+        };
+
+        m_altiumContextMenu.reset( BuildConditionalMenu( SchAltiumContextMenu( editFrame, this ), this, fillSlot ) );
+    }
+
+    return m_altiumContextMenu.get();
+}
+
+
 void SCH_SELECTION_TOOL::Reset( RESET_REASON aReason )
 {
     m_frame = getEditFrame<SCH_BASE_FRAME>();
@@ -1031,7 +1065,12 @@ int SCH_SELECTION_TOOL::Main( const TOOL_EVENT& aEvent [[maybe_unused]] )
             }
 
             if( !selCancelled )
-                m_menu->ShowContextMenu( m_selection );
+            {
+                if( CONDITIONAL_MENU* altiumMenu = altiumContextMenu() )
+                    m_menu->ShowContextMenu( m_selection, *altiumMenu );
+                else
+                    m_menu->ShowContextMenu( m_selection );
+            }
         }
         else if( evt->IsDblClick( BUT_LEFT ) || evt->IsAction( &ACTIONS::cursorDblClick ) )
         {

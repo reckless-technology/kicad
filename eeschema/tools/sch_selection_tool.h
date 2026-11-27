@@ -392,6 +392,13 @@ private:
     void setTransitions() override;
 
 private:
+    /**
+     * The menu to show in place of KiCad's own on a right-click, or null for KiCad's own: the interaction profile's
+     * tree in the schematic editor under the Altium-style profile. The profile is read on each call, so a switch
+     * needs no tool re-initialization.
+     */
+    CONDITIONAL_MENU* altiumContextMenu();
+
     SCH_BASE_FRAME* m_frame;     // Pointer to the parent frame
     SCH_SELECTION   m_selection; // Current state of selection
 
@@ -414,6 +421,9 @@ private:
 
     /// Snap helper kept across #Main runs; Reset() clears it on every reset except REDRAW.
     std::unique_ptr<EE_GRID_HELPER> m_grid;
+
+    /// The idle context menu of the Altium-style interaction profile, made from its tree the first time it is shown.
+    std::unique_ptr<CONDITIONAL_MENU> m_altiumContextMenu;
 };
 
 #endif //SCH_SELECTION_TOOL_H

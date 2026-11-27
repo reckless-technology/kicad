@@ -654,6 +654,13 @@ private:
     const GENERAL_COLLECTORS_GUIDE getCollectorsGuide() const;
 
 private:
+    /**
+     * The menu to show in place of KiCad's own on a right-click, or null for KiCad's own: the interaction profile's
+     * tree in the board editor under the Altium-style profile. The profile is read on each call, so a switch needs no
+     * tool re-initialization.
+     */
+    CONDITIONAL_MENU* altiumContextMenu();
+
     void highlightInternal( EDA_ITEM* aItem, int aHighlightMode, bool aUsingOverlay );
 
     void unhighlightInternal( EDA_ITEM* aItem, int aHighlightMode, bool aUsingOverlay );
@@ -680,6 +687,9 @@ private:
 
     class PRIV;                                      ///< Private state (opaque pointer/compilation firewall)
     std::unique_ptr<PRIV>    m_priv;
+
+    /// The idle context menu of the Altium-style interaction profile, made from its tree the first time it is shown.
+    std::unique_ptr<CONDITIONAL_MENU> m_altiumContextMenu;
 };
 
 #endif /* PCB_SELECTION_TOOL_H */

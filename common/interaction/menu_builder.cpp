@@ -58,7 +58,8 @@ ACTION_MENU* BuildActionMenu( const MENU_DEF& aSubmenu, TOOL_INTERACTIVE* aTool,
 }
 
 
-CONDITIONAL_MENU* BuildConditionalMenu( const MENU_DEF& aSubmenu, TOOL_INTERACTIVE* aTool )
+CONDITIONAL_MENU* BuildConditionalMenu( const MENU_DEF& aSubmenu, TOOL_INTERACTIVE* aTool,
+                                        const CONDITIONAL_SLOT_FILLER& aFillSlot )
 {
     CONDITIONAL_MENU* menu = new CONDITIONAL_MENU( aTool );
     menu->SetTitle( aSubmenu.m_label );
@@ -74,7 +75,11 @@ CONDITIONAL_MENU* BuildConditionalMenu( const MENU_DEF& aSubmenu, TOOL_INTERACTI
         }
         else if( entry.IsSlot() )
         {
-            continue; // only a frame's menu bar has slots
+            if( aFillSlot )
+            {
+                if( ACTION_MENU* filled = aFillSlot( entry ) )
+                    menu->AddMenu( filled, entry.m_show );
+            }
         }
         else if( entry.IsAction() )
         {
@@ -85,7 +90,7 @@ CONDITIONAL_MENU* BuildConditionalMenu( const MENU_DEF& aSubmenu, TOOL_INTERACTI
         }
         else
         {
-            menu->AddMenu( BuildConditionalMenu( entry, aTool ), entry.m_show );
+            menu->AddMenu( BuildConditionalMenu( entry, aTool, aFillSlot ), entry.m_show );
         }
     }
 

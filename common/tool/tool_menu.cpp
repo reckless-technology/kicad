@@ -59,6 +59,15 @@ void TOOL_MENU::ShowContextMenu( SELECTION& aSelection )
 }
 
 
+void TOOL_MENU::ShowContextMenu( SELECTION& aSelection, CONDITIONAL_MENU& aMenu )
+{
+    aMenu.Evaluate( aSelection );
+    aMenu.UpdateAll();
+    aMenu.ClearDirty();
+    m_tool.SetContextMenu( &aMenu, CMENU_NOW );
+}
+
+
 void TOOL_MENU::ShowContextMenu()
 {
     m_menu.SetDirty();

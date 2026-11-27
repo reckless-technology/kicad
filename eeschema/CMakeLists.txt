@@ -468,6 +468,7 @@ set( EESCHEMA_SRCS
     gfx_import_utils.cpp
     import_local_symbol_libs.cpp
     import_net_map.cpp
+    interaction/sch_context_menu_altium.cpp
     interaction/sch_menus_altium.cpp
     junction_helpers.cpp
     lib_fields_data_model.cpp
