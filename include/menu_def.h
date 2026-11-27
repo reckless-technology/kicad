@@ -26,6 +26,8 @@
 #include <string>
 #include <vector>
 
+// wxArrayString is a std::vector<wxString> exported from the wx DLL: without this, MSVC instantiates a second copy
+#include <wx/arrstr.h>
 #include <wx/string.h>
 
 #include <tool/selection_conditions.h>
