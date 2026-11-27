@@ -21,7 +21,11 @@
 
 #include <key_sequence_rows.h>
 #include <menu_def.h>
+#include <dialogs/key_sequence_popup.h>
 #include <tool/actions.h>
+
+#include <wx/colour.h>
+#include <wx/font.h>
 
 // The rows of the key-sequence hint popup (interaction-profile note, 5.3), on a small synthetic tree.
 
@@ -115,6 +119,84 @@ BOOST_AUTO_TEST_CASE( MarkersAreStrippedFromLabels )
     BOOST_CHECK_EQUAL( StripMnemonicMarkers( wxS( "Cu&t" ) ), wxS( "Cut" ) );
     BOOST_CHECK_EQUAL( StripMnemonicMarkers( wxS( "A && B" ) ), wxS( "A & B" ) );
     BOOST_CHECK_EQUAL( StripMnemonicMarkers( wxS( "&Zoom\tCtrl+Z" ) ), wxS( "Zoom" ) );
+}
+
+BOOST_AUTO_TEST_SUITE_END()
+
+
+namespace
+{
+/// The luminance of \a aColor, 0 to 255
+int luminance( const wxColour& aColor )
+{
+    return ( 299 * aColor.Red() + 587 * aColor.Green() + 114 * aColor.Blue() ) / 1000;
+}
+
+/// Fixed-width text: 8 pixels a character, 16 high, bold no wider
+wxSize fixedExtent( const wxString& aText, bool )
+{
+    return wxSize( 8 * static_cast<int>( aText.length() ), 16 );
+}
+} // namespace
+
+
+BOOST_AUTO_TEST_SUITE( KeySequencePopup )
+
+BOOST_AUTO_TEST_CASE( TheLayoutHitsItsRowsAndSeparatorsAndTitleAreNoRows )
+{
+    KEY_SEQUENCE_POPUP_LAYOUT layout;
+
+    layout.Measure( fixedExtent, wxFont(), wxS( "Place" ), BuildKeySequenceRows( syntheticNode() ) );
+
+    BOOST_REQUIRE_EQUAL( layout.Rows().size(), 5u );
+    BOOST_REQUIRE( layout.Size().x > 0 && layout.Size().y > 0 );
+
+    std::vector<int> firstY( layout.Rows().size(), -1 );
+
+    for( int y = 0; y < layout.Size().y; ++y )
+    {
+        int row = layout.RowAt( wxPoint( 5, y ) );
+
+        if( row >= 0 && firstY[row] < 0 )
+            firstY[row] = y;
+    }
+
+    BOOST_CHECK_EQUAL( layout.RowAt( wxPoint( 5, 0 ) ), -1 ); // the title
+    BOOST_CHECK_EQUAL( firstY[2], -1 );                       // the separator
+    BOOST_CHECK( firstY[0] >= 0 && firstY[1] > firstY[0] && firstY[3] > firstY[1] && firstY[4] > firstY[3] );
+    BOOST_CHECK_EQUAL( layout.RowAt( wxPoint( 5, layout.Size().y - 1 ) ), -1 );
+
+    // Wide enough for the longest label and its letter, and every row below the title
+    BOOST_CHECK( layout.Size().x >= 8 * 13 + 8 );
+}
+
+
+BOOST_AUTO_TEST_CASE( AHoveredRowIsHighlightedByLuminanceAndADisabledOneNever )
+{
+    KEY_SEQUENCE_ROW enabled;
+    KEY_SEQUENCE_ROW disabled;
+
+    disabled.m_isEnabled = false;
+
+    // A light theme and a dark one
+    for( const KEY_SEQUENCE_POPUP_COLORS& colors :
+         { KEY_SEQUENCE_POPUP_COLORS{ wxColour( 250, 250, 250 ), wxColour( 20, 20, 20 ), wxColour( 140, 140, 140 ) },
+           KEY_SEQUENCE_POPUP_COLORS{ wxColour( 30, 30, 34 ), wxColour( 230, 230, 230 ), wxColour( 120, 120, 120 ) } } )
+    {
+        KEY_SEQUENCE_ROW_COLORS plain = KeySequenceRowColors( enabled, false, colors );
+        KEY_SEQUENCE_ROW_COLORS hovered = KeySequenceRowColors( enabled, true, colors );
+        KEY_SEQUENCE_ROW_COLORS hoveredDisabled = KeySequenceRowColors( disabled, true, colors );
+
+        BOOST_CHECK( !plain.m_hasFill );
+        BOOST_REQUIRE( hovered.m_hasFill );
+
+        // The fill differs from the background, and the text from the fill, by luminance and not by hue
+        BOOST_CHECK_GT( std::abs( luminance( hovered.m_fill ) - luminance( colors.m_background ) ), 150 );
+        BOOST_CHECK_GT( std::abs( luminance( hovered.m_text ) - luminance( hovered.m_fill ) ), 150 );
+
+        BOOST_CHECK( !hoveredDisabled.m_hasFill );
+        BOOST_CHECK( hoveredDisabled.m_text == colors.m_dimmed );
+    }
 }
 
 BOOST_AUTO_TEST_SUITE_END()
