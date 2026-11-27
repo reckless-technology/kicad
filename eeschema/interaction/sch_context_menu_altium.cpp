@@ -119,7 +119,12 @@ MENU_DEF SchAltiumContextMenu( SCH_EDIT_FRAME* aFrame, SCH_SELECTION_TOOL* aSele
 
     M align = SchAltiumAlignMenu();
     align.m_label = _( "Align" );
-    align.m_show = S::MoreThan( 1 );
+    align.m_show = S::NotEmpty;
+
+    // Align works on two items or more, except to the grid, so the entries wait while the submenu keeps its place
+    for( M& entry : align.m_children )
+        entry.m_show =
+                entry.m_action == &SCH_ACTIONS::alignToGrid ? SELECTION_CONDITION( S::NotEmpty ) : S::MoreThan( 1 );
 
     // The items are shown by the conditions of the tools' own menus, so a right-click offers the same things in either
     // profile and only the arrangement differs
@@ -201,7 +206,17 @@ MENU_DEF SchAltiumContextMenu( SCH_EDIT_FRAME* aFrame, SCH_SELECTION_TOOL* aSele
                                           M::Item( _( "Text" ), SCH_ACTIONS::toText ),
                                           M::Item( _( "Text Box" ), SCH_ACTIONS::toTextBox ) } ) } ),
               M::Submenu( _( "Table Actions" ), tableCells && idle,
-                          { M::Item( _( "Select Columns" ), ACTIONS::selectColumns ),
+                          { M::Item( _( "Edit Table..." ), ACTIONS::editTable ),
+                            M::Item( _( "Export Table as CSV..." ), ACTIONS::exportTableCSV ),
+                            M::Item( _( "Add Row Above" ), ACTIONS::addRowAbove ),
+                            M::Item( _( "Add Row Below" ), ACTIONS::addRowBelow ),
+                            M::Item( _( "Add Column Before" ), ACTIONS::addColBefore ),
+                            M::Item( _( "Add Column After" ), ACTIONS::addColAfter ),
+                            M::Item( _( "Delete Rows" ), ACTIONS::deleteRows ),
+                            M::Item( _( "Delete Columns" ), ACTIONS::deleteColumns ),
+                            M::Item( _( "Merge Cells" ), ACTIONS::mergeCells ),
+                            M::Item( _( "Unmerge Cells" ), ACTIONS::unmergeCells ),
+                            M::Item( _( "Select Columns" ), ACTIONS::selectColumns ),
                             M::Item( _( "Select Rows" ), ACTIONS::selectRows ),
                             M::Item( _( "Select Table" ), ACTIONS::selectTable ) } ),
               M::Submenu( _( "Graphics Actions" ), shapes || image || C::SingleNonExcludedMarker,
@@ -215,7 +230,17 @@ MENU_DEF SchAltiumContextMenu( SCH_EDIT_FRAME* aFrame, SCH_SELECTION_TOOL* aSele
                             M::Item( _( "Rotate Clockwise" ), SCH_ACTIONS::rotateCW, orientable ),
                             M::Item( _( "Mirror Vertically" ), SCH_ACTIONS::mirrorV, orientable ),
                             M::Item( _( "Mirror Horizontally" ), SCH_ACTIONS::mirrorH, orientable ),
-                            M::Item( _( "Swap" ), SCH_ACTIONS::swap, swappable ) } ),
+                            M::Item( _( "Swap" ), SCH_ACTIONS::swap, swappable ),
+                            M::Item( _( "Move" ), SCH_ACTIONS::move, S::NotEmpty ),
+                            M::Item( _( "Drag" ), SCH_ACTIONS::drag, S::NotEmpty ) } ),
+              M::Submenu( _( "Locking" ), S::NotEmpty,
+                          { M::Item( _( "Lock" ), SCH_ACTIONS::lock, C::HasUnlockedItems ),
+                            M::Item( _( "Unlock" ), SCH_ACTIONS::unlock, C::HasLockedItems ),
+                            M::Item( _( "Toggle Lock" ), SCH_ACTIONS::toggleLock ) } ),
+              M::Submenu( _( "Select" ), S::ShowAlways,
+                          { M::Item( _( "Select All" ), ACTIONS::selectAll ),
+                            M::Item( _( "Unselect All" ), ACTIONS::unselectAll ) } ),
+              align,
               M::Submenu(
                       _( "Unions" ), S::NotEmpty,
                       { M::Item( _( "Group" ), ACTIONS::group ), M::Item( _( "Ungroup" ), ACTIONS::ungroup ),
@@ -225,14 +250,6 @@ MENU_DEF SchAltiumContextMenu( SCH_EDIT_FRAME* aFrame, SCH_SELECTION_TOOL* aSele
                         M::Item( _( "Leave Group" ), ACTIONS::groupLeave, inGroup ),
                         M::Item( _( "Place Linked Design Block" ), SCH_ACTIONS::placeLinkedDesignBlock, group ),
                         M::Item( _( "Save to Linked Design Block" ), SCH_ACTIONS::saveToLinkedDesignBlock, group ) } ),
-              M::Submenu( _( "Locking" ), S::NotEmpty,
-                          { M::Item( _( "Lock" ), SCH_ACTIONS::lock, C::HasUnlockedItems ),
-                            M::Item( _( "Unlock" ), SCH_ACTIONS::unlock, C::HasLockedItems ),
-                            M::Item( _( "Toggle Lock" ), SCH_ACTIONS::toggleLock ) } ),
-              M::Submenu( _( "Select" ), S::ShowAlways,
-                          { M::Item( _( "Select All" ), ACTIONS::selectAll ),
-                            M::Item( _( "Unselect All" ), ACTIONS::unselectAll ) } ),
-              align,
               M::Item( _( "Cross Probe" ), SCH_ACTIONS::selectOnPCB ),
               M::Separator(),
               M::Item( _( "Cut" ), ACTIONS::cut ),

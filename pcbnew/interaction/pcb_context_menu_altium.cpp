@@ -114,6 +114,12 @@ MENU_DEF PcbAltiumContextMenu( PCB_EDIT_FRAME* aFrame, PCB_SELECTION_TOOL* aSele
             entry.m_show = twoItems;
     }
 
+    // The two distributions that KiCad's own menu has and the shared tree does not
+    align.m_children.push_back(
+            M::Item( _( "Distribute Horizontal Centers" ), A::distributeHorizontallyCenters, twoItems ) );
+    align.m_children.push_back(
+            M::Item( _( "Distribute Vertical Centers" ), A::distributeVerticallyCenters, twoItems ) );
+
     M slotChains = slotOf( PCB_CONTEXT_SLOT::NET_CHAINS, onNet );
 
     return M::Submenu(
@@ -178,7 +184,7 @@ MENU_DEF PcbAltiumContextMenu( PCB_EDIT_FRAME* aFrame, PCB_SELECTION_TOOL* aSele
                           { M::Item( _( "Show Nets" ), A::showNetInRatsnest ),
                             M::Item( _( "Hide Nets" ), A::hideNetInRatsnest ),
                             M::Item( _( "Highlight Net" ), A::highlightNetSelection ),
-                            M::Item( _( "Select Net" ), A::selectNet ),
+                            M::Item( _( "Select Net" ), A::selectNet ), M::Item( _( "Unselect Net" ), A::deselectNet ),
                             M::Item( _( "Assign Net Class" ), A::assignNetClass ),
                             M::Item( _( "Net Inspector" ), A::showNetInspector ),
                             M::Item( _( "Clear Stitching Via Exclusions" ), A::clearStitchViaExclusions, track ),
@@ -205,6 +211,10 @@ MENU_DEF PcbAltiumContextMenu( PCB_EDIT_FRAME* aFrame, PCB_SELECTION_TOOL* aSele
                             M::Item( _( "Autoroute Selected" ), A::routerAutorouteSelected ),
                             M::Item( _( "Optimize Selected" ), A::routerOptimizeSelected ),
                             M::Item( _( "Regenerate Tuning" ), A::regenerateAllTuning ) } ),
+              M::Submenu( _( "Locking" ), anything,
+                          { M::Item( _( "Lock" ), A::lock, P::HasUnlockedItems ),
+                            M::Item( _( "Unlock" ), A::unlock, P::HasLockedItems ),
+                            M::Item( _( "Toggle Lock" ), A::toggleLock ) } ),
               M::Submenu( _( "Convert" ), anything,
                           { M::Item( _( "Convert to Polygon" ), A::convertToPoly ),
                             M::Item( _( "Convert to Zone" ), A::convertToZone ),
@@ -252,7 +262,17 @@ MENU_DEF PcbAltiumContextMenu( PCB_EDIT_FRAME* aFrame, PCB_SELECTION_TOOL* aSele
                             M::Item( _( "Hide Constraints" ), A::hideConstraints ),
                             M::Item( _( "Manage Constraints" ), A::manageConstraints ) } ),
               M::Submenu( _( "Table Actions" ), tableCells,
-                          { M::Item( _( "Select Columns" ), ACTIONS::selectColumns ),
+                          { M::Item( _( "Edit Table..." ), ACTIONS::editTable ),
+                            M::Item( _( "Export Table as CSV..." ), ACTIONS::exportTableCSV ),
+                            M::Item( _( "Add Row Above" ), ACTIONS::addRowAbove ),
+                            M::Item( _( "Add Row Below" ), ACTIONS::addRowBelow ),
+                            M::Item( _( "Add Column Before" ), ACTIONS::addColBefore ),
+                            M::Item( _( "Add Column After" ), ACTIONS::addColAfter ),
+                            M::Item( _( "Delete Rows" ), ACTIONS::deleteRows ),
+                            M::Item( _( "Delete Columns" ), ACTIONS::deleteColumns ),
+                            M::Item( _( "Merge Cells" ), ACTIONS::mergeCells ),
+                            M::Item( _( "Unmerge Cells" ), ACTIONS::unmergeCells ),
+                            M::Item( _( "Select Columns" ), ACTIONS::selectColumns ),
                             M::Item( _( "Select Rows" ), ACTIONS::selectRows ),
                             M::Item( _( "Select Table" ), ACTIONS::selectTable ) } ),
               align,

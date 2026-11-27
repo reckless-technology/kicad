@@ -183,6 +183,7 @@ set( QA_PCBNEW_SRCS
     test_text_variable_resolution.cpp
     test_zone.cpp
     test_zone_filler.cpp
+    test_pcb_context_menu.cpp
     test_pcb_menu_tree.cpp
     test_poly_simplify.cpp
     test_pcb_dynamic_properties.cpp
@@ -656,3 +657,6 @@ add_pcbnew_test_group( other "${PCBNEW_EXCLUDED_FROM_OTHER}" )
 # The action names this executable links, for the interaction profile's table check
 set_property( SOURCE ${CMAKE_SOURCE_DIR}/qa/tests/common/test_interaction_profile_actions.cpp APPEND PROPERTY
     COMPILE_DEFINITIONS "INTERACTION_PROFILE_QA_PREFIXES=\"common.\",\"pcbnew.\"" )
+
+# The right-click menu test reads the tools' sources, to compare KiCad's own menu with the interaction profile's
+set_property( SOURCE test_pcb_context_menu.cpp APPEND PROPERTY COMPILE_DEFINITIONS "KICAD_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"" )

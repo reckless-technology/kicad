@@ -262,6 +262,7 @@ set( QA_EESCHEMA_SRCS
     test_sch_rule_area_directive_visibility.cpp
     test_sch_rtree.cpp
     test_sch_reference_list.cpp
+    test_sch_context_menu.cpp
     test_sch_menu_tree.cpp
     test_sch_screen.cpp
     test_sch_sheet.cpp
@@ -393,3 +394,6 @@ setup_qa_env( qa_eeschema )
 # The action names this executable links, for the interaction profile's table check
 set_property( SOURCE ${CMAKE_SOURCE_DIR}/qa/tests/common/test_interaction_profile_actions.cpp APPEND PROPERTY
     COMPILE_DEFINITIONS "INTERACTION_PROFILE_QA_PREFIXES=\"common.\",\"eeschema.\"" )
+
+# The right-click menu test reads the tools' sources, to compare KiCad's own menu with the interaction profile's
+set_property( SOURCE test_sch_context_menu.cpp APPEND PROPERTY COMPILE_DEFINITIONS "KICAD_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"" )
