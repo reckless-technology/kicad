@@ -142,7 +142,7 @@ bool TOOLS_HOLDER::IsCurrentTool( const TOOL_ACTION& aAction ) const
 }
 
 
-void TOOLS_HOLDER::ShowChangedLanguage()
+void TOOLS_HOLDER::RestoreToolMsg()
 {
     if( !GetToolManager() )
         return;
@@ -152,6 +152,12 @@ void TOOLS_HOLDER::ShowChangedLanguage()
 
     if( action )
         DisplayToolMsg( action->GetFriendlyName() );
+}
+
+
+void TOOLS_HOLDER::ShowChangedLanguage()
+{
+    RestoreToolMsg();
 }
 
 

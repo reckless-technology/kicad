@@ -20,6 +20,9 @@
 #include <qa_utils/wx_utils/unit_test_utils.h>
 
 #include <interaction/sch_menus_altium.h>
+#include <interaction_profile.h>
+#include <kiface_base.h>
+#include <key_sequence.h>
 
 #include "../common/menu_tree_checks.h"
 
@@ -58,7 +61,9 @@ const std::vector<MENU_TREE_ROW>& tableRows()
         { "E D", "common.Interactive.deleteTool", true },
         { "E W", "eeschema.InteractiveEdit.breakWire", true },
         { "M M", "eeschema.InteractiveMove.move", true },
+        { "M S", "eeschema.InteractiveMove.move", true },
         { "M D", "eeschema.InteractiveMove.drag", true },
+        { "M R", "eeschema.InteractiveMove.drag", true },
         { "M E", "eeschema.InteractiveEdit.rotateCCW", true },
         { "M L", "eeschema.InteractiveEdit.rotateCW", true },
         { "S A", "common.Interactive.selectAll", true },
@@ -73,13 +78,20 @@ const std::vector<MENU_TREE_ROW>& tableRows()
         { "A C", "eeschema.Align.alignCenterX", true },
         { "A V", "eeschema.Align.alignCenterY", true },
         { "A G", "eeschema.AlignToGrid", true },
+        { "Z W", "common.Control.zoomTool", true },
+        { "Z I", "common.Control.zoomIn", true },
+        { "Z O", "common.Control.zoomOut", true },
+        { "Z E", "common.Control.zoomFitSelection", true },
+        { "Z L", "common.Control.undoZoom", true },
+        { "Z A", "common.Control.zoomFitObjects", true },
+        { "Z S", "common.Control.zoomFitScreen", true },
         { "J C", "common.Interactive.find", true },
         { "V D", "common.Control.zoomFitScreen", true },
         { "V F", "common.Control.zoomFitObjects", true },
         { "V A", "common.Control.zoomTool", true },
         { "V E", "common.Control.zoomFitSelection", true },
-        { "V I", "common.Control.zoomIn", false },
-        { "V O", "common.Control.zoomOut", false },
+        { "V I", "common.Control.zoomIn", true },
+        { "V O", "common.Control.zoomOut", true },
         { "V Z", "common.Control.undoZoom", true },
         { "V G G", "common.Control.gridNext", true },
         { "V G R", "common.Control.gridPrev", true },
@@ -99,13 +111,12 @@ const std::vector<MENU_TREE_ROW>& tableRows()
         { "T P", "common.SuiteControl.openPreferences", true },
         { "R I", "eeschema.EditorControl.generateBOM", true },
         { "R M", "common.Interactive.measureTool", true },
+        { "O D", "common.Control.pageSettings", true },
         { "O S", "common.Control.pageSettings", true },
         { "O P", "common.SuiteControl.openPreferences", true },
         { "O G", "common.Control.editGrids", true },
         { "F S", "common.Control.save", true },
-        { "F A", "common.Control.saveAs", true },
         { "F P", "common.Control.print", true },
-        { "F O", "common.Control.open", true },
     };
 
     return rows;
@@ -145,6 +156,65 @@ BOOST_AUTO_TEST_CASE( NothingTheNoteMarksAsExistingDisappears )
     MENU_TREE_CHECKS::ExpectNoProblems(
             MENU_TREE_CHECKS::DisappearanceProblems( bar, SchAltiumMenuOmissions(), tableRows() ),
             "a row of the note's table is lost, or its keys do not select its action" );
+}
+
+
+BOOST_AUTO_TEST_CASE( EverySequenceTheNoteMarksAsExistingRunsItsActionWhenTyped )
+{
+    MENU_DEF bar = SchAltiumMenuBar();
+
+    BOOST_CHECK_GE( tableRows().size(), 80u );
+    MENU_TREE_CHECKS::ExpectNoProblems(
+            MENU_TREE_CHECKS::SequenceProblems( bar, SchAltiumSequenceRoots(), tableRows() ),
+            "a sequence of the note's table 6.1 does not run the action the note names" );
+}
+
+
+BOOST_AUTO_TEST_CASE( EveryRootOpensAMenuAndIsBoundToItsLetterInTheProfileTable )
+{
+    MENU_DEF bar = SchAltiumMenuBar();
+
+    BOOST_CHECK_EQUAL( SchAltiumSequenceRoots().size(), 15u );
+    MENU_TREE_CHECKS::ExpectNoProblems(
+            MENU_TREE_CHECKS::RootProblems( bar, SchAltiumSequenceRoots(),
+                                            INTERACTION_PROFILE::BuildHotKeyLayer( INTERACTION_PROFILE_ID::ALTIUM ),
+                                            tableRows() ),
+            "a root is not registered, opens no menu, or is not bound to its letter" );
+}
+
+
+BOOST_AUTO_TEST_CASE( TheKeyOnlyEntriesAreInTheTreeButNotInTheMenuBar )
+{
+    MENU_DEF bar = SchAltiumMenuBar();
+
+    // The Z popup is a menu of the tree that the bar does not show
+    const MENU_DEF* zoom = KEY_SEQUENCE::FindRoot( bar, 'Z' );
+
+    BOOST_REQUIRE( zoom );
+    BOOST_CHECK( zoom->m_isKeyOnly );
+
+    int keyOnlyEntries = 0;
+
+    bar.Walk(
+            [&]( const MENU_DEF& aNode, const std::vector<wxString>& )
+            {
+                keyOnlyEntries += aNode.m_isKeyOnly ? 1 : 0;
+            } );
+
+    BOOST_CHECK_GE( keyOnlyEntries, 4 );
+}
+
+
+BOOST_AUTO_TEST_CASE( SaveAsAndOpenAreSequencesOnlyWhereTheMenuHasThem )
+{
+    // File > Save As and Open are entries of a stand-alone editor: under the project manager they are not in the menu,
+    // and so are not typed (F A and F O). Save and Print are always there.
+    MENU_DEF bar = SchAltiumMenuBar();
+
+    BOOST_CHECK_EQUAL( KEY_SEQUENCE::Resolve( bar, { 'F', 'A' } ) != nullptr, Kiface().IsSingle() );
+    BOOST_CHECK_EQUAL( KEY_SEQUENCE::Resolve( bar, { 'F', 'O' } ) != nullptr, Kiface().IsSingle() );
+    BOOST_CHECK( KEY_SEQUENCE::Resolve( bar, { 'F', 'S' } ) != nullptr );
+    BOOST_CHECK( KEY_SEQUENCE::Resolve( bar, { 'F', 'P' } ) != nullptr );
 }
 
 

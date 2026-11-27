@@ -315,6 +315,9 @@ COMMON_SETTINGS::COMMON_SETTINGS() :
             "input.interaction_profile", &m_Input.interaction_profile, defaultInteractionProfile,
             INTERACTION_PROFILE_ID::STOCK, INTERACTION_PROFILE_ID::ALTIUM ) );
 
+    m_params.emplace_back(
+            new PARAM<int>( "input.key_sequence_hint_delay_ms", &m_Input.key_sequence_hint_delay_ms, 300, 0, 5000 ) );
+
     m_params.emplace_back( new PARAM<int>( "input.scroll_modifier_zoom",
             &m_Input.scroll_modifier_zoom, 0 ) );
 

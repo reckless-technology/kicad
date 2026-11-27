@@ -251,6 +251,24 @@ bool ACTION_MANAGER::RunHotKey( int aHotKey ) const
 }
 
 
+bool ACTION_MANAGER::RunActionAsHotKey( const TOOL_ACTION& aAction ) const
+{
+    if( const ACTION_CONDITIONS* aCond = GetCondition( aAction ) )
+    {
+        if( !aCond->GetHotkeyCondition()( m_toolMgr->GetToolHolder()->GetCurrentSelection() ) )
+            return false;
+    }
+
+    return m_toolMgr->RunAction( aAction );
+}
+
+
+std::string ACTION_MANAGER::EditorScopeOf( FRAME_T aFrameType )
+{
+    return aFrameType == KICAD_MAIN_FRAME_T ? std::string() : FrameNamespacePrefix( aFrameType );
+}
+
+
 std::string ACTION_MANAGER::FrameNamespacePrefix( FRAME_T aFrameType )
 {
     switch( aFrameType )
@@ -343,6 +361,12 @@ void ACTION_MANAGER::UpdateHotKeys( bool aFullUpdate )
     // common settings, which every module reaches through kicommon, never from a static of this module.
     PROFILE_HOTKEY_LAYER profileLayer = INTERACTION_PROFILE::BuildHotKeyLayer( INTERACTION_PROFILE::Active() );
 
+    // A key the profile binds for one editor is taken from the actions of that editor only
+    std::string editorScope;
+
+    if( EDA_BASE_FRAME* frame = dynamic_cast<EDA_BASE_FRAME*>( m_toolMgr->GetToolHolder() ) )
+        editorScope = EditorScopeOf( frame->GetFrameType() );
+
     m_actionHotKeys.clear();
     m_hotkeys.clear();
 
@@ -360,7 +384,7 @@ void ACTION_MANAGER::UpdateHotKeys( bool aFullUpdate )
         int          alt    = 0;
 
         if( aFullUpdate )
-            processHotKey( action, legacyHotKeyMap, profileLayer, userHotKeyMap );
+            processHotKey( action, legacyHotKeyMap, profileLayer, userHotKeyMap, editorScope );
 
         hotkey = action->GetHotKey();
         alt    = action->GetHotKeyAlt();
@@ -379,7 +403,8 @@ void ACTION_MANAGER::UpdateHotKeys( bool aFullUpdate )
 std::pair<int, int> ACTION_MANAGER::ResolveHotKey( const TOOL_ACTION&                                aAction,
                                                    const std::map<std::string, int>&                 aLegacyMap,
                                                    const PROFILE_HOTKEY_LAYER&                       aProfileLayer,
-                                                   const std::map<std::string, std::pair<int, int>>& aHotKeyMap )
+                                                   const std::map<std::string, std::pair<int, int>>& aHotKeyMap,
+                                                   const std::string&                                aEditorScope )
 {
     int hotkey = aAction.m_defaultHotKey;
     int alternate = aAction.m_defaultHotKeyAlt;
@@ -388,8 +413,8 @@ std::pair<int, int> ACTION_MANAGER::ResolveHotKey( const TOOL_ACTION&           
         hotkey = aLegacyMap.at( aAction.m_legacyName );
 
     // The profile's table, and the removal of the keys it takes from every action it does not name
-    std::pair<int, int> keys =
-            INTERACTION_PROFILE::ApplyHotKeyLayer( aProfileLayer, aAction.m_name, { hotkey, alternate } );
+    std::pair<int, int> keys = INTERACTION_PROFILE::ApplyHotKeyLayer(
+            aProfileLayer, aAction.m_name, { hotkey, alternate }, aEditorScope, aAction.GetScope() == AS_CONTEXT );
 
     // The user's own file wins over everything
     if( aHotKeyMap.count( aAction.m_name ) )
@@ -401,9 +426,10 @@ std::pair<int, int> ACTION_MANAGER::ResolveHotKey( const TOOL_ACTION&           
 
 void ACTION_MANAGER::processHotKey( TOOL_ACTION* aAction, const std::map<std::string, int>& aLegacyMap,
                                     const PROFILE_HOTKEY_LAYER&                       aProfileLayer,
-                                    const std::map<std::string, std::pair<int, int>>& aHotKeyMap )
+                                    const std::map<std::string, std::pair<int, int>>& aHotKeyMap,
+                                    const std::string&                                aEditorScope )
 {
-    std::pair<int, int> keys = ResolveHotKey( *aAction, aLegacyMap, aProfileLayer, aHotKeyMap );
+    std::pair<int, int> keys = ResolveHotKey( *aAction, aLegacyMap, aProfileLayer, aHotKeyMap, aEditorScope );
 
     aAction->SetHotKey( keys.first, keys.second );
 }

@@ -25,6 +25,7 @@
 #define TOOL_MANAGER_H
 
 #include <list>
+#include <memory>
 #include <map>
 #include <stack>
 #include <vector>
@@ -41,6 +42,7 @@ struct VC_SETTINGS;
 }
 
 class COMMIT;
+class KEY_SEQUENCE_CONTROLLER;
 class TOOLS_HOLDER;
 class TOOL_ACTION;
 class ACTION_MANAGER;
@@ -537,6 +539,16 @@ public:
      */
     bool DispatchHotKey( const TOOL_EVENT& aEvent );
 
+    /**
+     * A key-sequence root action ran (interaction-profile note, 5.3): enter the pending state at its menu.
+     *
+     * @return false when the frame has no sequence for it.
+     */
+    bool BeginKeySequence( const TOOL_ACTION& aRoot );
+
+    /// The controller of the key sequences, or null while none has been started (always, with the stock profile).
+    KEY_SEQUENCE_CONTROLLER* GetKeySequenceController() const { return m_keySequence.get(); }
+
     VECTOR2D GetMenuCursorPos() const
     {
         return m_menuCursor;
@@ -694,6 +706,9 @@ private:
 
     /// True if the tool manager is shutting down (don't process additional events)
     bool m_shuttingDown;
+
+    /// The pending key sequence's state, made when the first root action runs
+    std::unique_ptr<KEY_SEQUENCE_CONTROLLER> m_keySequence;
 };
 
 #endif // TOOL_MANAGER_H

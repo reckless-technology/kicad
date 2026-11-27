@@ -45,6 +45,7 @@
 #include <tool/action_menu.h>
 #include <tool/coroutine.h>
 #include <tool/action_manager.h>
+#include <tool/key_sequence_controller.h>
 
 #include <class_draw_panel_gal.h>
 
@@ -905,8 +906,22 @@ bool TOOL_MANAGER::dispatchInternal( TOOL_EVENT& aEvent )
 }
 
 
+bool TOOL_MANAGER::BeginKeySequence( const TOOL_ACTION& aRoot )
+{
+    if( !m_keySequence )
+        m_keySequence = std::make_unique<KEY_SEQUENCE_CONTROLLER>( this );
+
+    return m_keySequence->Begin( aRoot );
+}
+
+
 bool TOOL_MANAGER::DispatchHotKey( const TOOL_EVENT& aEvent )
 {
+    // A pending key sequence reads the next key before any hotkey does. There is none until a root action has run, so
+    // with the stock profile this is a null test and the path below is the stock one.
+    if( m_keySequence && m_keySequence->IsPending() && m_keySequence->Handle( aEvent ) )
+        return true;
+
     if( aEvent.Action() == TA_KEY_PRESSED )
         return m_actionMgr->RunHotKey( aEvent.Modifier() | aEvent.KeyCode() );
 

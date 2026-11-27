@@ -32,7 +32,7 @@ ACTION_MENU* BuildActionMenu( const MENU_DEF& aSubmenu, TOOL_INTERACTIVE* aTool,
 
     for( const MENU_DEF& entry : aSubmenu.m_children )
     {
-        if( !entry.IsAvailable() )
+        if( !entry.IsAvailable() || entry.m_isKeyOnly )
             continue;
 
         if( entry.IsSeparator() )
@@ -65,7 +65,7 @@ CONDITIONAL_MENU* BuildConditionalMenu( const MENU_DEF& aSubmenu, TOOL_INTERACTI
 
     for( const MENU_DEF& entry : aSubmenu.m_children )
     {
-        if( !entry.IsAvailable() )
+        if( !entry.IsAvailable() || entry.m_isKeyOnly )
             continue;
 
         if( entry.IsSeparator() )
@@ -99,7 +99,7 @@ WX_MENUBAR* BuildMenuBar( const MENU_DEF& aBar, TOOL_INTERACTIVE* aTool, const M
 
     for( const MENU_DEF& menu : aBar.m_children )
     {
-        if( menu.IsAvailable() )
+        if( menu.IsAvailable() && !menu.m_isKeyOnly )
             menuBar->Append( BuildActionMenu( menu, aTool, aFillSlot ), menu.m_label );
     }
 

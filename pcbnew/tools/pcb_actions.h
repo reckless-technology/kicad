@@ -500,6 +500,10 @@ public:
     static TOOL_ACTION removeUnusedPads;
 
     static TOOL_ACTION runDRC;
+
+    /// Roots of the Altium-style key sequences that only the PCB editor has (interaction-profile note, 5.3)
+    static TOOL_ACTION sequenceRoute;
+    static TOOL_ACTION sequenceNets;
     static TOOL_ACTION drcRuleEditor;
 
     static TOOL_ACTION editFpInFpEditor;

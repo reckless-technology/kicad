@@ -66,7 +66,7 @@ struct PROFILE_TEST_ACTIONS
                                                           .DefaultHotkey( 'Q' ) );
     /// Compiled with Shift+S, which the profile takes for highContrastModeCycle
     TOOL_ACTION magneticSnapToggle = TOOL_ACTION( TOOL_ACTION_ARGS()
-                                                          .Name( "common.Control.magneticSnapToggle" )
+                                                          .Name( "common.test.snap" )
                                                           .FriendlyName( "Snap" )
                                                           .Scope( AS_GLOBAL )
                                                           .DefaultHotkey( MD_SHIFT + 'S' ) );
@@ -81,8 +81,8 @@ struct PROFILE_TEST_ACTIONS
                                                  .Name( "common.test.untouched" )
                                                  .FriendlyName( "Untouched" )
                                                  .Scope( AS_GLOBAL )
-                                                 .DefaultHotkey( 'Z' )
-                                                 .DefaultHotkeyAlt( 'Y' ) );
+                                                 .DefaultHotkey( 'K' )
+                                                 .DefaultHotkeyAlt( 'B' ) );
 
     std::vector<TOOL_ACTION*> List()
     {
@@ -241,7 +241,7 @@ BOOST_AUTO_TEST_CASE( AKeyTheProfileTakesDropsOutOfTheCompiledDefaults )
                  == KEYS( int( MD_CTRL ) + int( WXK_HOME ), 0 ) );
 
     // An action no key of which is taken keeps its keys, alternate included
-    BOOST_CHECK( resolve( actions.untouched, INTERACTION_PROFILE_ID::ALTIUM ) == KEYS( 'Z', 'Y' ) );
+    BOOST_CHECK( resolve( actions.untouched, INTERACTION_PROFILE_ID::ALTIUM ) == KEYS( 'K', 'B' ) );
 }
 
 
@@ -445,7 +445,7 @@ BOOST_AUTO_TEST_CASE( ResetGivesTheProfilesDefaults )
     BOOST_CHECK( store.GetProfile() == INTERACTION_PROFILE_ID::ALTIUM );
     BOOST_CHECK( keysOf( actions.toggleUnits ) == KEYS( 'Q', 0 ) );
     BOOST_CHECK( keysOf( actions.customTrackViaSize ) == KEYS( 0, 0 ) );
-    BOOST_CHECK( keysOf( actions.untouched ) == KEYS( 'Z', 'Y' ) );
+    BOOST_CHECK( keysOf( actions.untouched ) == KEYS( 'K', 'B' ) );
 
     // The no-argument reset is the store's profile's
     store.GetSections()[0].m_HotKeys[0].m_EditKeycode = 'J';
@@ -498,6 +498,194 @@ BOOST_AUTO_TEST_CASE( ActionNamesInATableAreChecked )
 
     // Only the prefix asked for is checked, and only a name nothing registers is reported
     BOOST_CHECK( unregistered == std::vector<std::string>( { "common.Control.noSuchAction" } ) );
+}
+
+
+BOOST_AUTO_TEST_CASE( AKeyIsTakenInTheScopeOfTheActionThatBindsIt )
+{
+    // common binds Q, the schematic editor W, the PCB editor W and E
+    PROFILE_HOTKEY_LAYER layer = INTERACTION_PROFILE::BuildHotKeyLayerFromText(
+            "common.test.a\tQ\neeschema.test.b\tW\npcbnew.test.c\tW\npcbnew.test.d\tE\n" );
+
+    BOOST_CHECK( layer.m_takenKeysByScope.at( "common." ) == std::set<int>( { 'Q' } ) );
+    BOOST_CHECK( layer.m_takenKeysByScope.at( "eeschema." ) == std::set<int>( { 'W' } ) );
+    BOOST_CHECK( layer.m_takenKeysByScope.at( "pcbnew." ) == std::set<int>( { 'W', 'E' } ) );
+    BOOST_CHECK( layer.m_takenKeys == std::set<int>( { 'Q', 'W', 'E' } ) );
+
+    auto keyOf = [&]( const char* aName, int aKey, const char* aEditor )
+    {
+        return INTERACTION_PROFILE::ApplyHotKeyLayer( layer, aName, KEYS( aKey, 0 ), aEditor ).first;
+    };
+
+    // A key a common action binds is taken in every editor, from every action
+    BOOST_CHECK_EQUAL( keyOf( "eeschema.test.x", 'Q', "eeschema." ), 0 );
+    BOOST_CHECK_EQUAL( keyOf( "pcbnew.test.x", 'Q', "pcbnew." ), 0 );
+    BOOST_CHECK_EQUAL( keyOf( "common.test.x", 'Q', "eeschema." ), 0 );
+    BOOST_CHECK_EQUAL( keyOf( "common.test.x", 'Q', "pcbnew." ), 0 );
+    BOOST_CHECK_EQUAL( keyOf( "common.test.x", 'Q', "" ), 0 );
+
+    // A key an editor's action binds is taken in that editor only
+    BOOST_CHECK_EQUAL( keyOf( "eeschema.test.x", 'W', "eeschema." ), 0 );
+    BOOST_CHECK_EQUAL( keyOf( "pcbnew.test.x", 'W', "pcbnew." ), 0 );
+    BOOST_CHECK_EQUAL( keyOf( "eeschema.test.x", 'E', "eeschema." ), 'E' ); // only the PCB editor binds E
+    BOOST_CHECK_EQUAL( keyOf( "pcbnew.test.x", 'E', "pcbnew." ), 0 );
+
+    // An action that is in every editor loses the keys of the editor it is resolved for
+    BOOST_CHECK_EQUAL( keyOf( "common.test.x", 'E', "eeschema." ), 'E' );
+    BOOST_CHECK_EQUAL( keyOf( "common.test.x", 'E', "pcbnew." ), 0 );
+    BOOST_CHECK_EQUAL( keyOf( "common.test.x", 'W', "eeschema." ), 0 );
+
+    // ... and the keys of every editor when the editor is not known (a hotkey editor that lists several)
+    BOOST_CHECK_EQUAL( keyOf( "common.test.x", 'E', "" ), 0 );
+
+    // An action of a program with no table of its own loses only what common takes
+    BOOST_CHECK_EQUAL( keyOf( "kicad.test.x", 'W', "" ), 'W' );
+    BOOST_CHECK_EQUAL( keyOf( "kicad.test.x", 'Q', "" ), 0 );
+
+    // The table's own binding wins over all of it, and a key nobody binds is untouched
+    BOOST_CHECK( INTERACTION_PROFILE::ApplyHotKeyLayer( layer, "pcbnew.test.c", KEYS( 'Q', 0 ), "pcbnew." )
+                 == KEYS( 'W', 0 ) );
+    BOOST_CHECK_EQUAL( keyOf( "pcbnew.test.x", 'K', "pcbnew." ), 'K' );
+
+    // The alternate key is scoped the same way
+    BOOST_CHECK( INTERACTION_PROFILE::ApplyHotKeyLayer( layer, "eeschema.test.x", KEYS( 'W', 'E' ), "eeschema." )
+                 == KEYS( 0, 'E' ) );
+    BOOST_CHECK( INTERACTION_PROFILE::ApplyHotKeyLayer( layer, "pcbnew.test.x", KEYS( 'E', 'W' ), "pcbnew." )
+                 == KEYS( 0, 0 ) );
+
+    // The scope of a name
+    BOOST_CHECK_EQUAL( INTERACTION_PROFILE::ScopeOf( "eeschema.Sequence.zoom" ), "eeschema." );
+    BOOST_CHECK_EQUAL( INTERACTION_PROFILE::ScopeOf( "nodots" ), "" );
+
+    // An inactive layer changes nothing in any scope
+    BOOST_CHECK( INTERACTION_PROFILE::ApplyHotKeyLayer( PROFILE_HOTKEY_LAYER(), "pcbnew.test.x", KEYS( 'E', 'W' ),
+                                                        "pcbnew." )
+                 == KEYS( 'E', 'W' ) );
+}
+
+
+BOOST_AUTO_TEST_CASE( TheEditorsOwnKeysAreResolvedPerEditorByTheActionManager )
+{
+    // The same key means a different action in each editor, because two editor-prefixed actions bind it
+    PROFILE_HOTKEY_LAYER layer =
+            INTERACTION_PROFILE::BuildHotKeyLayerFromText( "eeschema.test.wire\tCtrl+W\npcbnew.test.track\tCtrl+W\n" );
+
+    TOOL_ACTION stockWire = TOOL_ACTION( TOOL_ACTION_ARGS()
+                                                 .Name( "common.test.closeWindow" )
+                                                 .FriendlyName( "Close" )
+                                                 .Scope( AS_GLOBAL )
+                                                 .DefaultHotkey( MD_CTRL + 'W' ) );
+    TOOL_ACTION schWire = TOOL_ACTION( TOOL_ACTION_ARGS().Name( "eeschema.test.wire" ).Scope( AS_GLOBAL ) );
+    TOOL_ACTION pcbTrack = TOOL_ACTION( TOOL_ACTION_ARGS().Name( "pcbnew.test.track" ).Scope( AS_GLOBAL ) );
+
+    auto keys = [&]( const TOOL_ACTION& aAction, const char* aEditor )
+    {
+        return ACTION_MANAGER::ResolveHotKey( aAction, std::map<std::string, int>(), layer, PROFILE_HOTKEY_MAP(),
+                                              aEditor );
+    };
+
+    BOOST_CHECK( keys( schWire, "eeschema." ) == KEYS( MD_CTRL + 'W', 0 ) );
+    BOOST_CHECK( keys( pcbTrack, "pcbnew." ) == KEYS( MD_CTRL + 'W', 0 ) );
+
+    // A common action that has Ctrl+W loses it in each editor, because each binds it
+    BOOST_CHECK( keys( stockWire, "eeschema." ) == KEYS( 0, 0 ) );
+    BOOST_CHECK( keys( stockWire, "pcbnew." ) == KEYS( 0, 0 ) );
+
+    // In an editor that does not bind it, it keeps it
+    BOOST_CHECK( keys( stockWire, "gerbview." ) == KEYS( MD_CTRL + 'W', 0 ) );
+    BOOST_CHECK( ACTION_MANAGER::EditorScopeOf( KICAD_MAIN_FRAME_T ).empty() );
+    BOOST_CHECK_EQUAL( ACTION_MANAGER::EditorScopeOf( FRAME_SCH ), "eeschema." );
+    BOOST_CHECK_EQUAL( ACTION_MANAGER::EditorScopeOf( FRAME_PCB_EDITOR ), "pcbnew." );
+}
+
+
+BOOST_AUTO_TEST_CASE( TheKeySequenceHintDelayHasADefaultARangeAndOldFilesLoadTheDefault )
+{
+    COMMON_SETTINGS settings;
+
+    settings.Load();
+    BOOST_CHECK_EQUAL( settings.m_Input.key_sequence_hint_delay_ms, 300 );
+
+    // Round trip, including 0 ("show the menu at once") and the ends of the range
+    for( int delay : { 0, 1, 750, 5000 } )
+    {
+        settings.m_Input.key_sequence_hint_delay_ms = delay;
+        settings.Store();
+        settings.m_Input.key_sequence_hint_delay_ms = 17;
+        settings.Load();
+        BOOST_CHECK_EQUAL( settings.m_Input.key_sequence_hint_delay_ms, delay );
+    }
+
+    // A file from before the setting existed has no such entry, and a file with a value outside the range has a
+    // bad one: both load the default, whatever was in memory
+    TEMP_DIRECTORY directory;
+
+    settings.m_Input.key_sequence_hint_delay_ms = 750;
+    settings.Store();
+    BOOST_REQUIRE( settings.SaveToFile( directory.m_path, true ) );
+
+    wxFileName  fileName( directory.m_path, settings.GetFullFilename() );
+    std::string written = readWholeFile( fileName.GetFullPath() ).ToStdString();
+
+    BOOST_REQUIRE_MESSAGE( written.find( "\"key_sequence_hint_delay_ms\": 750" ) != std::string::npos,
+                           "the setting is not in the file the settings wrote" );
+
+    auto loadWith = [&]( const std::string& aReplacement )
+    {
+        std::string text = written;
+        size_t      at = text.find( "\"key_sequence_hint_delay_ms\": 750," );
+
+        BOOST_REQUIRE( at != std::string::npos );
+        text.replace( at, std::string( "\"key_sequence_hint_delay_ms\": 750," ).size(), aReplacement );
+
+        wxFFile file( fileName.GetFullPath(), wxS( "wb" ) );
+        file.Write( text.data(), text.size() );
+        file.Close();
+
+        settings.m_Input.key_sequence_hint_delay_ms = 750;
+        BOOST_REQUIRE( settings.LoadFromFile( directory.m_path ) );
+        return settings.m_Input.key_sequence_hint_delay_ms;
+    };
+
+    BOOST_CHECK_EQUAL( loadWith( "" ), 300 );
+    BOOST_CHECK_EQUAL( loadWith( "\"key_sequence_hint_delay_ms\": -5," ), 300 );
+    BOOST_CHECK_EQUAL( loadWith( "\"key_sequence_hint_delay_ms\": 99999," ), 300 );
+    BOOST_CHECK_EQUAL( loadWith( "\"key_sequence_hint_delay_ms\": 0," ), 0 );
+    BOOST_CHECK_EQUAL( loadWith( "\"key_sequence_hint_delay_ms\": 750," ), 750 );
+}
+
+BOOST_AUTO_TEST_CASE( AContextActionKeepsItsKeyWhereARootTakesItAndAGlobalOneLosesIt )
+{
+    // F is the root of the File sequences. In a command it is still the router's "finish": a context action of the
+    // active tool wins its letter, which is Altium's rule that in-command keys win (note, 5.3)
+    PROFILE_HOTKEY_LAYER layer = INTERACTION_PROFILE::BuildHotKeyLayerFromText( "common.Sequence.file\tF\n" );
+
+    TOOL_ACTION finish = TOOL_ACTION( TOOL_ACTION_ARGS()
+                                              .Name( "pcbnew.InteractiveRouter.AttemptFinish" )
+                                              .Scope( AS_CONTEXT )
+                                              .DefaultHotkey( 'F' ) );
+    TOOL_ACTION flip = TOOL_ACTION( TOOL_ACTION_ARGS()
+                                            .Name( "pcbnew.InteractiveEdit.flip" )
+                                            .FriendlyName( "Flip" )
+                                            .Scope( AS_GLOBAL )
+                                            .DefaultHotkey( 'F' ) );
+
+    auto keys = [&]( const TOOL_ACTION& aAction )
+    {
+        return ACTION_MANAGER::ResolveHotKey( aAction, std::map<std::string, int>(), layer, PROFILE_HOTKEY_MAP(),
+                                              "pcbnew." );
+    };
+
+    BOOST_CHECK( keys( finish ) == KEYS( 'F', 0 ) );
+    BOOST_CHECK( keys( flip ) == KEYS( 0, 0 ) );
+
+    // The user's own file still wins over both, and a context action the table names gets the table's key
+    PROFILE_HOTKEY_LAYER named = INTERACTION_PROFILE::BuildHotKeyLayerFromText(
+            "common.Sequence.file\tF\npcbnew.InteractiveRouter.AttemptFinish\tShift+F\n" );
+
+    BOOST_CHECK( ACTION_MANAGER::ResolveHotKey( finish, std::map<std::string, int>(), named, PROFILE_HOTKEY_MAP(),
+                                                "pcbnew." )
+                 == KEYS( MD_SHIFT + 'F', 0 ) );
 }
 
 BOOST_AUTO_TEST_SUITE_END()

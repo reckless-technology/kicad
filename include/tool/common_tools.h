@@ -45,6 +45,9 @@ public:
 
     int SelectionTool( const TOOL_EVENT& aEvent );
 
+    /// A key-sequence root ran: wait for the sequence's next key (interaction-profile note, 5.3)
+    int KeySequence( const TOOL_EVENT& aEvent );
+
     // View controls
     int ZoomRedraw( const TOOL_EVENT& aEvent );
     int ZoomInOut( const TOOL_EVENT& aEvent );

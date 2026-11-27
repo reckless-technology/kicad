@@ -739,8 +739,40 @@ int COMMON_TOOLS::ToggleBoundingBoxes( const TOOL_EVENT& aEvent [[maybe_unused]]
 }
 
 
+int COMMON_TOOLS::KeySequence( const TOOL_EVENT& aEvent )
+{
+    for( const TOOL_ACTION* root :
+         { &ACTIONS::sequencePlace, &ACTIONS::sequenceEdit, &ACTIONS::sequenceMove, &ACTIONS::sequenceSelect,
+           &ACTIONS::sequenceDeselect, &ACTIONS::sequenceAlign, &ACTIONS::sequenceJump, &ACTIONS::sequenceView,
+           &ACTIONS::sequenceProject, &ACTIONS::sequenceDesign, &ACTIONS::sequenceTools, &ACTIONS::sequenceReports,
+           &ACTIONS::sequenceOptions, &ACTIONS::sequenceFile } )
+    {
+        if( aEvent.IsAction( root ) )
+            m_toolMgr->BeginKeySequence( *root );
+    }
+
+    return 0;
+}
+
+
 void COMMON_TOOLS::setTransitions()
 {
+    Go( &COMMON_TOOLS::KeySequence, ACTIONS::sequencePlace.MakeEvent() );
+    Go( &COMMON_TOOLS::KeySequence, ACTIONS::sequenceEdit.MakeEvent() );
+    Go( &COMMON_TOOLS::KeySequence, ACTIONS::sequenceMove.MakeEvent() );
+    Go( &COMMON_TOOLS::KeySequence, ACTIONS::sequenceSelect.MakeEvent() );
+    Go( &COMMON_TOOLS::KeySequence, ACTIONS::sequenceDeselect.MakeEvent() );
+    Go( &COMMON_TOOLS::KeySequence, ACTIONS::sequenceAlign.MakeEvent() );
+    Go( &COMMON_TOOLS::KeySequence, ACTIONS::sequenceJump.MakeEvent() );
+    Go( &COMMON_TOOLS::KeySequence, ACTIONS::sequenceView.MakeEvent() );
+    Go( &COMMON_TOOLS::KeySequence, ACTIONS::sequenceProject.MakeEvent() );
+    Go( &COMMON_TOOLS::KeySequence, ACTIONS::sequenceDesign.MakeEvent() );
+    Go( &COMMON_TOOLS::KeySequence, ACTIONS::sequenceTools.MakeEvent() );
+    Go( &COMMON_TOOLS::KeySequence, ACTIONS::sequenceReports.MakeEvent() );
+    Go( &COMMON_TOOLS::KeySequence, ACTIONS::sequenceOptions.MakeEvent() );
+    Go( &COMMON_TOOLS::KeySequence, ACTIONS::sequenceFile.MakeEvent() );
+
+
     Go( &COMMON_TOOLS::SelectionTool,       ACTIONS::selectionTool.MakeEvent() );
 
     // Cursor control

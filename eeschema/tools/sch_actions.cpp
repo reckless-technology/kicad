@@ -42,6 +42,12 @@ class DESIGN_BLOCK;
 
 // SCH_INSPECTION_TOOL
 //
+TOOL_ACTION SCH_ACTIONS::sequenceZoom( TOOL_ACTION_ARGS()
+        .Name( "eeschema.Sequence.zoom" )
+        .Scope( AS_GLOBAL )
+        .FriendlyName( _( "Zoom Key Sequence" ) )
+        .Tooltip( _( "Start a key sequence: the next keys pick an entry of the zoom popup" ) ) );
+
 TOOL_ACTION SCH_ACTIONS::runERC( TOOL_ACTION_ARGS()
         .Name( "eeschema.InspectionTool.runERC" )
         .Scope( AS_GLOBAL )

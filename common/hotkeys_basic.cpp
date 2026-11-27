@@ -413,14 +413,15 @@ void ReadHotKeyConfig( const wxString& aFileName, std::map<std::string, std::pai
 }
 
 
-void ReadHotKeyConfigIntoActions( const wxString& aFileName, std::vector<TOOL_ACTION*>& aActions )
+void ReadHotKeyConfigIntoActions( const wxString& aFileName, std::vector<TOOL_ACTION*>& aActions,
+                                  const std::string& aEditorScope )
 {
-    ReadHotKeyConfigIntoActions( INTERACTION_PROFILE::Active(), aFileName, aActions );
+    ReadHotKeyConfigIntoActions( INTERACTION_PROFILE::Active(), aFileName, aActions, aEditorScope );
 }
 
 
 void ReadHotKeyConfigIntoActions( INTERACTION_PROFILE_ID aProfile, const wxString& aFileName,
-                                  std::vector<TOOL_ACTION*>& aActions )
+                                  std::vector<TOOL_ACTION*>& aActions, const std::string& aEditorScope )
 {
     std::map<std::string, std::pair<int, int>> hotkeys;
 
@@ -439,7 +440,7 @@ void ReadHotKeyConfigIntoActions( INTERACTION_PROFILE_ID aProfile, const wxStrin
     {
         if( profileLayer.m_isActive )
         {
-            std::pair<int, int> defaults = ResolveProfileDefaultKeys( *action, profileLayer, legacyMaps );
+            std::pair<int, int> defaults = ResolveProfileDefaultKeys( *action, profileLayer, legacyMaps, aEditorScope );
             action->SetHotKey( defaults.first, defaults.second );
         }
 
@@ -464,7 +465,7 @@ LEGACY_HOTKEY_MAPS ReadLegacyHotkeyMaps()
 
 
 std::pair<int, int> ResolveProfileDefaultKeys( const TOOL_ACTION& aAction, const PROFILE_HOTKEY_LAYER& aLayer,
-                                               const LEGACY_HOTKEY_MAPS& aLegacyMaps )
+                                               const LEGACY_HOTKEY_MAPS& aLegacyMaps, const std::string& aEditorScope )
 {
     static const std::map<std::string, int> noLegacyKeys;
 
@@ -477,12 +478,14 @@ std::pair<int, int> ResolveProfileDefaultKeys( const TOOL_ACTION& aAction, const
     else if( name.compare( 0, 8, "pcbnew." ) == 0 )
         legacyKeys = &aLegacyMaps.m_pcbnew;
 
-    return ACTION_MANAGER::ResolveHotKey( aAction, *legacyKeys, aLayer, std::map<std::string, std::pair<int, int>>() );
+    return ACTION_MANAGER::ResolveHotKey( aAction, *legacyKeys, aLayer, std::map<std::string, std::pair<int, int>>(),
+                                          aEditorScope );
 }
 
 
 int WriteProfileHotKeyConfig( const std::vector<TOOL_ACTION*>& aActions, const PROFILE_HOTKEY_LAYER& aLayer,
-                              const LEGACY_HOTKEY_MAPS& aLegacyMaps, const wxString& aFileName )
+                              const LEGACY_HOTKEY_MAPS& aLegacyMaps, const wxString& aFileName,
+                              const std::string& aEditorScope )
 {
     // KiCad's own profile keeps upstream's way: the whole set
     if( !aLayer.m_isActive )
@@ -500,7 +503,7 @@ int WriteProfileHotKeyConfig( const std::vector<TOOL_ACTION*>& aActions, const P
 
         // Only a difference from the profile's defaults is the user's: an unbound action is written with empty keys,
         // and one set back to its default drops out of the file
-        if( keys == ResolveProfileDefaultKeys( *action, aLayer, aLegacyMaps ) )
+        if( keys == ResolveProfileDefaultKeys( *action, aLayer, aLegacyMaps, aEditorScope ) )
             hotkeys.erase( action->GetName() );
         else
             hotkeys[action->GetName()] = keys;

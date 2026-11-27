@@ -123,11 +123,16 @@ PROFILE_HOTKEY_LAYER INTERACTION_PROFILE::BuildHotKeyLayerFromText( const std::s
 
     for( const auto& [name, keys] : layer.m_bindings )
     {
-        if( keys.first > 0 )
-            layer.m_takenKeys.insert( keys.first );
+        std::set<int>& takenInScope = layer.m_takenKeysByScope[ScopeOf( name )];
 
-        if( keys.second > 0 )
-            layer.m_takenKeys.insert( keys.second );
+        for( int key : { keys.first, keys.second } )
+        {
+            if( key > 0 )
+            {
+                layer.m_takenKeys.insert( key );
+                takenInScope.insert( key );
+            }
+        }
     }
 
     return layer;
@@ -143,9 +148,18 @@ PROFILE_HOTKEY_LAYER INTERACTION_PROFILE::BuildHotKeyLayer( INTERACTION_PROFILE_
 }
 
 
+std::string INTERACTION_PROFILE::ScopeOf( const std::string& aActionName )
+{
+    size_t dot = aActionName.find( '.' );
+
+    return dot == std::string::npos ? std::string() : aActionName.substr( 0, dot + 1 );
+}
+
+
 std::pair<int, int> INTERACTION_PROFILE::ApplyHotKeyLayer( const PROFILE_HOTKEY_LAYER& aLayer,
                                                            const std::string&          aActionName,
-                                                           std::pair<int, int>         aBaseKeys )
+                                                           std::pair<int, int>         aBaseKeys,
+                                                           const std::string& aEditorScope, bool aIsContextAction )
 {
     // Only real actions are profiled: the editor's read-only gesture and platform entries have no name
     if( !aLayer.m_isActive || aActionName.empty() )
@@ -156,13 +170,44 @@ std::pair<int, int> INTERACTION_PROFILE::ApplyHotKeyLayer( const PROFILE_HOTKEY_
     if( binding != aLayer.m_bindings.end() )
         return binding->second;
 
-    // A key the table binds is taken from every action the table does not name, in every editor. That is global for
-    // now; scoping it to the editor that binds the key is a requirement of step 3 (#136), where the editors' tables come
-    // in.
-    if( aLayer.m_takenKeys.count( aBaseKeys.first ) )
+    if( aIsContextAction )
+        return aBaseKeys;
+
+    // The keys the table takes from this action: those its own scope binds, and those `common.` binds (in every
+    // editor). An action that is in every editor also loses the keys of the editor it is resolved for, or of every
+    // editor when that is not known.
+    static const std::string commonScope = "common.";
+
+    std::string actionScope = ScopeOf( aActionName );
+
+    auto isTakenIn = [&]( const std::string& aScope, int aKey )
+    {
+        auto taken = aLayer.m_takenKeysByScope.find( aScope );
+
+        return taken != aLayer.m_takenKeysByScope.end() && taken->second.count( aKey );
+    };
+
+    auto isTaken = [&]( int aKey )
+    {
+        if( aKey <= 0 )
+            return false;
+
+        if( isTakenIn( commonScope, aKey ) )
+            return true;
+
+        if( actionScope != commonScope )
+            return isTakenIn( actionScope, aKey );
+
+        if( !aEditorScope.empty() )
+            return isTakenIn( aEditorScope, aKey );
+
+        return aLayer.m_takenKeys.count( aKey ) > 0;
+    };
+
+    if( isTaken( aBaseKeys.first ) )
         aBaseKeys.first = 0;
 
-    if( aLayer.m_takenKeys.count( aBaseKeys.second ) )
+    if( isTaken( aBaseKeys.second ) )
         aBaseKeys.second = 0;
 
     return aBaseKeys;

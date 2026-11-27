@@ -815,6 +815,18 @@ TOOL_ACTION PCB_ACTIONS::closeOutline( TOOL_ACTION_ARGS()
 
 // DRC
 //
+TOOL_ACTION PCB_ACTIONS::sequenceRoute( TOOL_ACTION_ARGS()
+        .Name( "pcbnew.Sequence.route" )
+        .Scope( AS_GLOBAL )
+        .FriendlyName( _( "Route Key Sequence" ) )
+        .Tooltip( _( "Start a key sequence: the next keys pick an entry of the Route menu" ) ) );
+
+TOOL_ACTION PCB_ACTIONS::sequenceNets( TOOL_ACTION_ARGS()
+        .Name( "pcbnew.Sequence.nets" )
+        .Scope( AS_GLOBAL )
+        .FriendlyName( _( "Nets Key Sequence" ) )
+        .Tooltip( _( "Start a key sequence: the next keys pick an entry of the Nets menu (connections)" ) ) );
+
 TOOL_ACTION PCB_ACTIONS::runDRC( TOOL_ACTION_ARGS()
         .Name( "pcbnew.DRCTool.runDRC" )
         .Scope( AS_GLOBAL )

@@ -24,6 +24,7 @@
 #include <kiway_player.h>
 #include <panel_hotkeys_editor.h>
 #include <wildcards_and_files_ext.h>
+#include <tool/action_manager.h>
 #include <tool/tool_manager.h>
 #include <widgets/button_row_panel.h>
 #include <widgets/ui_common.h>
@@ -186,6 +187,10 @@ void PANEL_HOTKEYS_EDITOR::installButtons( wxSizer* aSizer )
 
 bool PANEL_HOTKEYS_EDITOR::TransferDataToWindow()
 {
+    // The keys the profile takes are an editor's own, so the defaults are those of the editor this is opened from
+    std::string editorScope = m_frame ? ACTION_MANAGER::EditorScopeOf( m_frame->GetFrameType() ) : std::string();
+
+    m_hotkeyStore.SetEditorScope( editorScope );
     m_hotkeyStore.Init( m_actions, true );
 
     // The store starts from the actions' resolved keys, which are the active profile's
@@ -220,9 +225,9 @@ bool PANEL_HOTKEYS_EDITOR::TransferDataFromWindow()
     // (for a profile other than KiCad's, only what differs from the profile's defaults)
     PROFILE_HOTKEY_LAYER profileLayer = INTERACTION_PROFILE::BuildHotKeyLayer( m_selectedProfile );
 
-    WriteProfileHotKeyConfig( m_actions, profileLayer,
-                              profileLayer.m_isActive ? ReadLegacyHotkeyMaps() : LEGACY_HOTKEY_MAPS(),
-                              INTERACTION_PROFILE::UserHotKeyFilePath( m_selectedProfile ) );
+    WriteProfileHotKeyConfig(
+            m_actions, profileLayer, profileLayer.m_isActive ? ReadLegacyHotkeyMaps() : LEGACY_HOTKEY_MAPS(),
+            INTERACTION_PROFILE::UserHotKeyFilePath( m_selectedProfile ), m_hotkeyStore.GetEditorScope() );
     INTERACTION_PROFILE::SetActive( m_selectedProfile );
 
     return true;

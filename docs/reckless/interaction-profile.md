@@ -302,8 +302,10 @@ tab-separated file in the `user.hotkeys` format, one per profile, embedded at bu
 its compiled default unless that key is taken by the profile, in which case it is unbound. That rule matters:
 the profile takes nearly every bare letter for sequences, so KiCad's single-letter defaults (`A`, `W`, `M`, `E`,
 `X`, `V` and the rest) must drop out rather than fight.
-This rule is global for now: a key the table binds is taken from every action it does not name, in every editor.
-Step 3 (#136) scopes it to the editor that binds the key.
+A key is taken in the scope of the action that binds it (step 3, #136): a `common.` action takes it in every editor,
+and an `eeschema.` or `pcbnew.` action in that editor only, so the two editors' tables can give one key different
+meanings. An `AS_CONTEXT` action keeps its stock key where a root takes the letter, because inside its command it wins
+(5.3).
 
 The user's own changes are stored per profile: `user.hotkeys` for `kicad`, `user.<profile>.hotkeys` otherwise, so
 switching profiles never destroys a customization. For a profile other than `kicad` the editor writes only the actions whose keys differ from

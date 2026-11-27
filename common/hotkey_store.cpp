@@ -228,7 +228,7 @@ void HOTKEY_STORE::ResetAllHotkeysToDefault( INTERACTION_PROFILE_ID aProfile )
 
             // The stock profile's defaults are the compiled ones; another's include the legacy file and its table
             if( profileLayer.m_isActive && !action->GetName().empty() )
-                defaults = ResolveProfileDefaultKeys( *action, profileLayer, legacyMaps );
+                defaults = ResolveProfileDefaultKeys( *action, profileLayer, legacyMaps, m_editorScope );
 
             hotkey.m_EditKeycode = defaults.first;
             hotkey.m_EditKeycodeAlt = defaults.second;

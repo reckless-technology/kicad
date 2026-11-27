@@ -128,6 +128,9 @@ public:
         /// Which way of reaching KiCad's functions is in force: stock KiCad or the Altium-style profile
         INTERACTION_PROFILE_ID interaction_profile;
 
+        /// How long a half-typed key sequence waits before its menu is shown, in milliseconds. 0 shows it at once.
+        int key_sequence_hint_delay_ms;
+
         int scroll_modifier_zoom;
         int scroll_modifier_pan_h;
         int scroll_modifier_pan_v;

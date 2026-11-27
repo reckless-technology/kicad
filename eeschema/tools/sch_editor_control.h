@@ -59,6 +59,9 @@ public:
     int Revert( const TOOL_EVENT& aEvent );
 
     int ShowSchematicSetup( const TOOL_EVENT& aEvent );
+
+    /// A key-sequence root that only this editor has ran
+    int KeySequence( const TOOL_EVENT& aEvent );
     int PageSetup( const TOOL_EVENT& aEvent );
     int Print( const TOOL_EVENT& aEvent );
     int Plot( const TOOL_EVENT& aEvent );

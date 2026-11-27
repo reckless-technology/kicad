@@ -112,13 +112,15 @@ void ParseHotKeyConfig( const wxString& aText, std::map<std::string, std::pair<i
  *
  * If \a aFileName is empty it will read in the active interaction profile's user hotkeys file.
  */
-void ReadHotKeyConfigIntoActions( const wxString& aFileName, std::vector<TOOL_ACTION*>& aActions );
+void ReadHotKeyConfigIntoActions( const wxString& aFileName, std::vector<TOOL_ACTION*>& aActions,
+                                  const std::string& aEditorScope = std::string() );
 
 /**
  * Set a list of actions to a profile's hotkeys: its defaults, then its user file (or \a aFileName when given).
  */
 void ReadHotKeyConfigIntoActions( INTERACTION_PROFILE_ID aProfile, const wxString& aFileName,
-                                  std::vector<TOOL_ACTION*>& aActions );
+                                  std::vector<TOOL_ACTION*>& aActions,
+                                  const std::string&         aEditorScope = std::string() );
 
 /**
  * Update the hotkeys config file with the hotkeys from the given actions map.
@@ -142,9 +144,12 @@ LEGACY_HOTKEY_MAPS ReadLegacyHotkeyMaps();
 /**
  * The defaults of an action under a profile: its compiled default, then the legacy file of its editor (chosen by the
  * action name's prefix), then the profile's table. The user's file is not applied.
+ *
+ * @param aEditorScope is the editor the keys are for, as INTERACTION_PROFILE::ApplyHotKeyLayer() takes it.
  */
 std::pair<int, int> ResolveProfileDefaultKeys( const TOOL_ACTION& aAction, const PROFILE_HOTKEY_LAYER& aLayer,
-                                               const LEGACY_HOTKEY_MAPS& aLegacyMaps );
+                                               const LEGACY_HOTKEY_MAPS& aLegacyMaps,
+                                               const std::string&        aEditorScope = std::string() );
 
 /**
  * Write the user's hotkey file of a profile.
@@ -157,7 +162,8 @@ std::pair<int, int> ResolveProfileDefaultKeys( const TOOL_ACTION& aAction, const
  * @param aFileName is the file to write; when empty it is the user file of the active profile.
  */
 int WriteProfileHotKeyConfig( const std::vector<TOOL_ACTION*>& aActions, const PROFILE_HOTKEY_LAYER& aLayer,
-                              const LEGACY_HOTKEY_MAPS& aLegacyMaps, const wxString& aFileName = wxEmptyString );
+                              const LEGACY_HOTKEY_MAPS& aLegacyMaps, const wxString& aFileName = wxEmptyString,
+                              const std::string& aEditorScope = std::string() );
 
 /**
  * Read hotkey configuration for a given app.

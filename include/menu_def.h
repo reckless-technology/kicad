@@ -59,6 +59,14 @@ struct MENU_DEF
     bool                  m_isCheck = false; ///< a leaf shown with a check mark
     std::string           m_slot;            ///< a slot's name: the frame fills it in when the menu is built
 
+    /// An entry that exists for key sequences only: the menu builders leave it out, and the key-sequence engine reads it
+    /// like any other (a second way to type an action, or a popup that has no place in the menu bar).
+    bool m_isKeyOnly = false;
+
+    /// The action the key-sequence engine runs for this leaf when it differs from the menu's (a menu has no cursor, so
+    /// its zoom is about the window center, and the key sequence's is about the cursor). Null: m_action.
+    const TOOL_ACTION* m_keyAction = nullptr;
+
     /// Empty for an entry that is always there. Otherwise it is asked when the menu is built, and a false answer leaves
     /// the entry out (an advanced setting that is off, a program that runs on its own). The tree still holds it.
     std::function<bool()> m_isAvailable;
@@ -87,6 +95,19 @@ struct MENU_DEF
     /// A copy of this node that is built only when \a aPredicate answers true.
     MENU_DEF When( const std::function<bool()>& aPredicate ) const;
 
+    /// A copy of this node that only the key-sequence engine sees: no menu is built for it.
+    MENU_DEF KeyOnly() const;
+
+    /// A copy of this leaf whose key sequence runs \a aAction, where its menu entry runs the action it was made with.
+    MENU_DEF ByKey( const TOOL_ACTION& aAction ) const;
+
+    /// A copy of \a aNode in which every entry that has a mnemonic shows it in the right-hand column (`Label\tP`), for a
+    /// popup that has no mnemonics of its own (macOS).
+    static MENU_DEF WithLetterHints( const MENU_DEF& aNode );
+
+    /// The action a key sequence reaching this leaf runs.
+    const TOOL_ACTION* KeyAction() const { return m_keyAction ? m_keyAction : m_action; }
+
     bool IsAvailable() const { return !m_isAvailable || m_isAvailable(); }
     bool IsSeparator() const { return m_isSeparator; }
     bool IsSubmenu() const { return !m_isSeparator && !m_action && m_slot.empty(); }
@@ -106,7 +127,7 @@ struct MENU_DEF
     /// Every action in the tree, in menu order. An action in two places is listed twice.
     std::vector<const TOOL_ACTION*> Actions() const;
 
-    /// Whether the tree has an entry for \a aAction.
+    /// Whether the tree has an entry for \a aAction, as a menu entry or as the action a key sequence runs.
     bool Contains( const TOOL_ACTION& aAction ) const;
 
     /// Every slot name in the tree.

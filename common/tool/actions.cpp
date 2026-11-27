@@ -1254,6 +1254,104 @@ TOOL_ACTION ACTIONS::selectionTool( TOOL_ACTION_ARGS()
         .Icon( BITMAPS::cursor )
         .Flags( AF_ACTIVATE ) );
 
+TOOL_ACTION ACTIONS::sequencePlace(
+        TOOL_ACTION_ARGS()
+                .Name( "common.Sequence.place" )
+                .Scope( AS_GLOBAL )
+                .FriendlyName( _( "Place Key Sequence" ) )
+                .Tooltip( _( "Start a key sequence: the next keys pick an entry of the Place menu" ) ) );
+
+TOOL_ACTION ACTIONS::sequenceEdit(
+        TOOL_ACTION_ARGS()
+                .Name( "common.Sequence.edit" )
+                .Scope( AS_GLOBAL )
+                .FriendlyName( _( "Edit Key Sequence" ) )
+                .Tooltip( _( "Start a key sequence: the next keys pick an entry of the Edit menu" ) ) );
+
+TOOL_ACTION ACTIONS::sequenceMove(
+        TOOL_ACTION_ARGS()
+                .Name( "common.Sequence.move" )
+                .Scope( AS_GLOBAL )
+                .FriendlyName( _( "Move Key Sequence" ) )
+                .Tooltip( _( "Start a key sequence: the next keys pick an entry of the Move menu" ) ) );
+
+TOOL_ACTION ACTIONS::sequenceSelect(
+        TOOL_ACTION_ARGS()
+                .Name( "common.Sequence.select" )
+                .Scope( AS_GLOBAL )
+                .FriendlyName( _( "Select Key Sequence" ) )
+                .Tooltip( _( "Start a key sequence: the next keys pick an entry of the Select menu" ) ) );
+
+TOOL_ACTION ACTIONS::sequenceDeselect(
+        TOOL_ACTION_ARGS()
+                .Name( "common.Sequence.deselect" )
+                .Scope( AS_GLOBAL )
+                .FriendlyName( _( "Deselect Key Sequence" ) )
+                .Tooltip( _( "Start a key sequence: the next keys pick an entry of the Deselect menu" ) ) );
+
+TOOL_ACTION ACTIONS::sequenceAlign(
+        TOOL_ACTION_ARGS()
+                .Name( "common.Sequence.align" )
+                .Scope( AS_GLOBAL )
+                .FriendlyName( _( "Align Key Sequence" ) )
+                .Tooltip( _( "Start a key sequence: the next keys pick an entry of the Align menu" ) ) );
+
+TOOL_ACTION ACTIONS::sequenceJump(
+        TOOL_ACTION_ARGS()
+                .Name( "common.Sequence.jump" )
+                .Scope( AS_GLOBAL )
+                .FriendlyName( _( "Jump Key Sequence" ) )
+                .Tooltip( _( "Start a key sequence: the next keys pick an entry of the Jump menu" ) ) );
+
+TOOL_ACTION ACTIONS::sequenceView(
+        TOOL_ACTION_ARGS()
+                .Name( "common.Sequence.view" )
+                .Scope( AS_GLOBAL )
+                .FriendlyName( _( "View Key Sequence" ) )
+                .Tooltip( _( "Start a key sequence: the next keys pick an entry of the View menu" ) ) );
+
+TOOL_ACTION ACTIONS::sequenceProject(
+        TOOL_ACTION_ARGS()
+                .Name( "common.Sequence.project" )
+                .Scope( AS_GLOBAL )
+                .FriendlyName( _( "Project Key Sequence" ) )
+                .Tooltip( _( "Start a key sequence: the next keys pick an entry of the Project menu" ) ) );
+
+TOOL_ACTION ACTIONS::sequenceDesign(
+        TOOL_ACTION_ARGS()
+                .Name( "common.Sequence.design" )
+                .Scope( AS_GLOBAL )
+                .FriendlyName( _( "Design Key Sequence" ) )
+                .Tooltip( _( "Start a key sequence: the next keys pick an entry of the Design menu" ) ) );
+
+TOOL_ACTION ACTIONS::sequenceTools(
+        TOOL_ACTION_ARGS()
+                .Name( "common.Sequence.tools" )
+                .Scope( AS_GLOBAL )
+                .FriendlyName( _( "Tools Key Sequence" ) )
+                .Tooltip( _( "Start a key sequence: the next keys pick an entry of the Tools menu" ) ) );
+
+TOOL_ACTION ACTIONS::sequenceReports(
+        TOOL_ACTION_ARGS()
+                .Name( "common.Sequence.reports" )
+                .Scope( AS_GLOBAL )
+                .FriendlyName( _( "Reports Key Sequence" ) )
+                .Tooltip( _( "Start a key sequence: the next keys pick an entry of the Reports menu" ) ) );
+
+TOOL_ACTION ACTIONS::sequenceOptions(
+        TOOL_ACTION_ARGS()
+                .Name( "common.Sequence.options" )
+                .Scope( AS_GLOBAL )
+                .FriendlyName( _( "Options Key Sequence" ) )
+                .Tooltip( _( "Start a key sequence: the next keys pick an entry of the Options menu" ) ) );
+
+TOOL_ACTION ACTIONS::sequenceFile(
+        TOOL_ACTION_ARGS()
+                .Name( "common.Sequence.file" )
+                .Scope( AS_GLOBAL )
+                .FriendlyName( _( "File Key Sequence" ) )
+                .Tooltip( _( "Start a key sequence: the next keys pick an entry of the File menu" ) ) );
+
 TOOL_ACTION ACTIONS::measureTool( TOOL_ACTION_ARGS()
         .Name( "common.Interactive.measureTool" )
         .Scope( AS_GLOBAL )

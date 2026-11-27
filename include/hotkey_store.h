@@ -77,6 +77,11 @@ public:
 
     INTERACTION_PROFILE_ID GetProfile() const { return m_profile; }
 
+    /// The editor the keys are for when the store is opened from one (as "eeschema."), else empty: see
+    /// INTERACTION_PROFILE::ApplyHotKeyLayer().
+    void               SetEditorScope( const std::string& aEditorScope ) { m_editorScope = aEditorScope; }
+    const std::string& GetEditorScope() const { return m_editorScope; }
+
     static wxString GetAppName( TOOL_ACTION* aAction );
     static wxString GetSectionName( TOOL_ACTION* aAction );
 
@@ -122,6 +127,7 @@ private:
     std::vector<TOOL_MANAGER*>  m_toolManagers;
     std::vector<HOTKEY_SECTION> m_hk_sections;
     INTERACTION_PROFILE_ID      m_profile = INTERACTION_PROFILE_ID::STOCK;
+    std::string                 m_editorScope;
 };
 
 #endif // HOTKEY_STORE__H

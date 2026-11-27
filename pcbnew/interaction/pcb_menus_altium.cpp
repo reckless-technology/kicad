@@ -19,9 +19,12 @@
 
 #include "pcb_menus_altium.h"
 
+#include <memory>
+
 #include <advanced_config.h>
 #include <bitmaps.h>
 #include <file_history.h>
+#include <key_sequence.h>
 #include <kiface_base.h>
 #include <pcb_edit_frame.h>
 #include <pgm_base.h>
@@ -138,6 +141,7 @@ MENU_DEF PcbAltiumMenuBar()
               M::Item( _( "Fi&nd Similar Objects..." ), PCB_ACTIONS::findByProperties ),
               M::Separator(),
               M::Submenu( _( "&Move" ), { M::Item( _( "&Move" ), PCB_ACTIONS::move ),
+                                          M::Item( _( "Move &Selection" ), PCB_ACTIONS::move ).KeyOnly(),
                                           M::Item( _( "&Drag" ), PCB_ACTIONS::drag45Degree ),
                                           M::Item( _( "Move &Component..." ), PCB_ACTIONS::getAndPlace ),
                                           M::Item( _( "&Break Track" ), PCB_ACTIONS::breakTrack ),
@@ -147,6 +151,8 @@ MENU_DEF PcbAltiumMenuBar()
               M::Submenu( _( "&Select" ),
                           { M::Item( _( "&All" ), ACTIONS::selectAll ), M::Item( _( "&Net" ), PCB_ACTIONS::selectNet ),
                             M::Item( _( "Connected Co&pper" ), PCB_ACTIONS::selectConnection ),
+                            M::Item( _( "&Board" ), ACTIONS::selectAll ).KeyOnly(),
+                            M::Item( _( "Physical &Connection" ), PCB_ACTIONS::selectConnection ).KeyOnly(),
                             M::Item( _( "&Inside Area" ), ACTIONS::selectSetRect ),
                             M::Item( _( "Lasso S&elect" ), ACTIONS::selectSetLasso ) } ),
               M::Submenu( _( "DeSelect (&X)" ), { M::Item( _( "&All" ), ACTIONS::unselectAll ) } ),
@@ -159,7 +165,9 @@ MENU_DEF PcbAltiumMenuBar()
                             M::Item( _( "&Vertical Centers" ), PCB_ACTIONS::alignCenterY ),
                             M::Item( _( "&Distribute Horizontally" ), PCB_ACTIONS::distributeHorizontallyGaps ),
                             M::Item( _( "Di&stribute Vertically" ), PCB_ACTIONS::distributeVerticallyGaps ) } ),
-              M::Submenu( _( "&Jump" ), { M::Item( _( "To &Component..." ), ACTIONS::find ) } ),
+              M::Submenu( _( "&Jump" ), { M::Item( _( "To &Component..." ), ACTIONS::find ),
+                                          M::Item( _( "To &Net..." ), ACTIONS::find ).KeyOnly(),
+                                          M::Item( _( "To &Pad..." ), ACTIONS::find ).KeyOnly() } ),
               M::Submenu( _( "&Origin" ), { M::Item( _( "&Set" ), ACTIONS::gridSetOrigin ),
                                             M::Item( _( "&Reset" ), ACTIONS::gridResetOrigin ) } ) } );
 
@@ -168,7 +176,8 @@ MENU_DEF PcbAltiumMenuBar()
             { M::Item( _( "&Fit Board" ), ACTIONS::zoomFitObjects ),
               M::Item( _( "Fit &Document" ), ACTIONS::zoomFitScreen ), M::Item( _( "Zoom &Area" ), ACTIONS::zoomTool ),
               M::Item( _( "S&elected Objects" ), ACTIONS::zoomFitSelection ),
-              M::Item( _( "Zoom &In" ), ACTIONS::zoomInCenter ), M::Item( _( "Zoom &Out" ), ACTIONS::zoomOutCenter ),
+              M::Item( _( "Zoom &In" ), ACTIONS::zoomInCenter ).ByKey( ACTIONS::zoomIn ),
+              M::Item( _( "Zoom &Out" ), ACTIONS::zoomOutCenter ).ByKey( ACTIONS::zoomOut ),
               M::Item( _( "&Zoom Last" ), ACTIONS::zoomUndo ), M::Item( _( "&Redraw" ), ACTIONS::zoomRedraw ),
               M::Separator(), M::CheckItem( _( "Flip &Board" ), PCB_ACTIONS::flipBoard ),
               M::Submenu( _( "&Grids" ), { M::Item( _( "Next &Grid" ), ACTIONS::gridNext ),
@@ -190,8 +199,15 @@ MENU_DEF PcbAltiumMenuBar()
                                                             } ) } ),
               M::Submenu( _( "Co&nnections" ),
                           { M::CheckItem( _( "Show/Hide &All Connections" ), PCB_ACTIONS::showRatsnest ),
-                            M::Item( _( "&Show Net Connections" ), PCB_ACTIONS::showNetInRatsnest ),
-                            M::Item( _( "&Hide Net Connections" ), PCB_ACTIONS::hideNetInRatsnest ) } ),
+                            M::Item( _( "Show &Net Connections" ), PCB_ACTIONS::showNetInRatsnest ),
+                            M::Item( _( "Hide Net Connect&ions" ), PCB_ACTIONS::hideNetInRatsnest ),
+                            // Altium's own order of the keys is show or hide, then all or a net
+                            M::Submenu( _( "&Show" ), { M::Item( _( "&All" ), PCB_ACTIONS::showRatsnest ),
+                                                        M::Item( _( "&Net" ), PCB_ACTIONS::showNetInRatsnest ) } )
+                                    .KeyOnly(),
+                            M::Submenu( _( "&Hide" ), { M::Item( _( "&All" ), PCB_ACTIONS::showRatsnest ),
+                                                        M::Item( _( "&Net" ), PCB_ACTIONS::hideNetInRatsnest ) } )
+                                    .KeyOnly() } ),
               M::Item( _( "Foo&tprint Browser" ), ACTIONS::showFootprintBrowser ),
               M::Item( _( "3D Vie&wer" ), ACTIONS::show3DViewer ),
               M::Submenu( _( "Drawing &Mode" ),
@@ -245,6 +261,7 @@ MENU_DEF PcbAltiumMenuBar()
               M::Item( _( "&Line" ), PCB_ACTIONS::drawLine ),
               M::Item( _( "Text &String" ), PCB_ACTIONS::placeText ),
               M::Item( _( "&Fill (Rectangle)" ), PCB_ACTIONS::drawRectangle ),
+              M::Item( _( "R&ectangle" ), PCB_ACTIONS::drawRectangle ).KeyOnly(),
               M::Item( _( "Solid &Region (Polygon)" ), PCB_ACTIONS::drawPolygon ),
               M::Submenu( _( "&Arc" ), { M::Item( _( "&Arc by Center" ), PCB_ACTIONS::drawArcCenter ),
                                          M::Item( _( "Arc by &Edge" ), PCB_ACTIONS::drawArc ),
@@ -257,7 +274,7 @@ MENU_DEF PcbAltiumMenuBar()
               M::Separator(),
               M::Item( _( "V&ia Stack" ), PCB_ACTIONS::placeViaStack ),
               M::Item( _( "&Make Via Stack" ), PCB_ACTIONS::makeViaStack ),
-              M::Item( _( "Copper Thieving Zon&e" ), PCB_ACTIONS::drawCopperThievingZone ),
+              M::Item( _( "Copper Thieving &Zone" ), PCB_ACTIONS::drawCopperThievingZone ),
               M::Submenu( _( "&Board Graphics" ),
                           { M::Item( _( "&Ellipse" ), PCB_ACTIONS::drawEllipse ),
                             M::Item( _( "Ellipse &Arc" ), PCB_ACTIONS::drawEllipseArc ),
@@ -288,6 +305,8 @@ MENU_DEF PcbAltiumMenuBar()
 
     M design = M::Submenu( _( "&Design" ),
                            { M::Item( _( "&Rules (Board Setup)..." ), PCB_ACTIONS::boardSetup ),
+                             M::Item( _( "Layer Stac&k Manager..." ), PCB_ACTIONS::boardSetup ).KeyOnly(),
+                             M::Item( _( "&Classes..." ), PCB_ACTIONS::boardSetup ).KeyOnly(),
                              M::Item( _( "Custom Rule &Editor..." ), PCB_ACTIONS::drcRuleEditor ), M::Separator(),
                              M::Item( _( "&Import Changes From Schematic..." ), ACTIONS::updatePcbFromSchematic ),
                              M::Item( _( "&Update Schematic from PCB..." ), ACTIONS::updateSchematicFromPcb ),
@@ -381,8 +400,10 @@ MENU_DEF PcbAltiumMenuBar()
                             { M::Item( _( "Page &Settings..." ), ACTIONS::pageSettings ),
                               M::Item( _( "&Preferences..." ), ACTIONS::openPreferences ),
                               M::Item( _( "&Grids..." ), ACTIONS::gridProperties ),
-                              M::Item( _( "Rou&ting Options..." ), PCB_ACTIONS::routerSettingsDialog ), M::Separator(),
-                              M::Item( _( "Conf&igure Paths..." ), ACTIONS::configurePaths ),
+                              M::Item( _( "Rou&ting Options..." ), PCB_ACTIONS::routerSettingsDialog ),
+                              M::Item( _( "Layer Stac&k Manager..." ), PCB_ACTIONS::boardSetup ).KeyOnly(),
+                              M::Item( _( "Favorite Routing &Widths..." ), PCB_ACTIONS::boardSetup ).KeyOnly(),
+                              M::Separator(), M::Item( _( "Conf&igure Paths..." ), ACTIONS::configurePaths ),
                               M::Item( _( "&Footprint Libraries..." ), ACTIONS::showFootprintLibTable ),
                               M::Item( _( "Design &Block Libraries..." ), ACTIONS::showDesignBlockLibTable )
                                       .When(
@@ -406,15 +427,6 @@ const std::vector<MENU_OMISSION>& PcbAltiumMenuOmissions()
         { "G", nullptr, "Snap grid popup: new, small (5.7)" },
         { "O D, Ctrl+D", nullptr, "View Options: new, small" },
         { "D T", nullptr, "Manage Layer Sets: the Appearance panel's presets, which have no action" },
-        { "V I", "common.Control.zoomIn",
-          "the menu zooms about the window center; the key sequence zooms about the cursor" },
-        { "V O", "common.Control.zoomOut",
-          "the menu zooms about the window center; the key sequence zooms about the cursor" },
-        { "D K, D C, O K, O W", nullptr, "pages of Board Setup: one action opens it, so the entry is Design > Rules" },
-        { "M S", nullptr, "Move Selection: the same action as Move, as a key sequence" },
-        { "P E", nullptr, "Rectangle: the same action as Place > Fill, as a key sequence" },
-        { "S B, J N, J P", nullptr, "the same actions as Select All and Jump to Component, as key sequences" },
-        { "S C", nullptr, "Physical Connection: the same action as Connected Copper, as a key sequence" },
     };
 
     return omissions;
@@ -504,4 +516,27 @@ WX_MENUBAR* PCB_EDIT_FRAME::createInteractionProfileMenuBar( TOOL_INTERACTIVE* a
     AddStandardHelpMenu( menuBar );
 
     return menuBar;
+}
+
+
+const std::vector<std::pair<const TOOL_ACTION*, wxUniChar>>& PcbAltiumSequenceRoots()
+{
+    static const std::vector<std::pair<const TOOL_ACTION*, wxUniChar>> roots = {
+        { &ACTIONS::sequencePlace, 'P' },   { &ACTIONS::sequenceEdit, 'E' },     { &ACTIONS::sequenceMove, 'M' },
+        { &ACTIONS::sequenceSelect, 'S' },  { &ACTIONS::sequenceDeselect, 'X' }, { &ACTIONS::sequenceAlign, 'A' },
+        { &ACTIONS::sequenceJump, 'J' },    { &ACTIONS::sequenceView, 'V' },     { &ACTIONS::sequenceProject, 'C' },
+        { &ACTIONS::sequenceDesign, 'D' },  { &ACTIONS::sequenceTools, 'T' },    { &ACTIONS::sequenceReports, 'R' },
+        { &ACTIONS::sequenceOptions, 'O' }, { &ACTIONS::sequenceFile, 'F' },     { &PCB_ACTIONS::sequenceRoute, 'U' },
+        { &PCB_ACTIONS::sequenceNets, 'N' }
+    };
+
+    return roots;
+}
+
+
+bool PCB_EDIT_FRAME::GetKeySequenceSpec( KEY_SEQUENCE_SPEC& aSpec ) const
+{
+    aSpec.m_tree = std::make_shared<const MENU_DEF>( PcbAltiumMenuBar() );
+    aSpec.m_roots = PcbAltiumSequenceRoots();
+    return true;
 }

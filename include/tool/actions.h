@@ -247,6 +247,23 @@ public:
     // Common Tools
     static TOOL_ACTION selectionTool;
     static TOOL_ACTION measureTool;
+
+    // The roots of the Altium-style key sequences (interaction-profile note, 5.3). Each opens one menu of the frame's
+    // Altium-style menu tree; its key is the first letter of every sequence that goes through that menu.
+    static TOOL_ACTION sequencePlace;
+    static TOOL_ACTION sequenceEdit;
+    static TOOL_ACTION sequenceMove;
+    static TOOL_ACTION sequenceSelect;
+    static TOOL_ACTION sequenceDeselect;
+    static TOOL_ACTION sequenceAlign;
+    static TOOL_ACTION sequenceJump;
+    static TOOL_ACTION sequenceView;
+    static TOOL_ACTION sequenceProject;
+    static TOOL_ACTION sequenceDesign;
+    static TOOL_ACTION sequenceTools;
+    static TOOL_ACTION sequenceReports;
+    static TOOL_ACTION sequenceOptions;
+    static TOOL_ACTION sequenceFile;
     static TOOL_ACTION pickerTool;
     static TOOL_ACTION pickerSubTool;
 

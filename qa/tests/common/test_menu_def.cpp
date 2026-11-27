@@ -304,6 +304,75 @@ BOOST_AUTO_TEST_CASE( AnEntryThatIsNotAvailableIsLeftOut )
 }
 
 
+BOOST_AUTO_TEST_CASE( AKeyOnlyEntryIsInTheTreeAndInNoMenu )
+{
+    using M = MENU_DEF;
+
+    // The tree: what the engine and the tests read
+    MENU_DEF bar = M::Submenu(
+            wxEmptyString,
+            { M::Submenu( wxS( "&Test" ),
+                          { M::Item( wxS( "&Undo" ), ACTIONS::undo ),
+                            M::Item( wxS( "&Redo" ), ACTIONS::redo ).KeyOnly(),
+                            M::Submenu( wxS( "&Hidden" ), { M::Item( wxS( "&Cut" ), ACTIONS::cut ) } ).KeyOnly(),
+                            M::Item( wxS( "Zoom &In" ), ACTIONS::zoomInCenter ).ByKey( ACTIONS::zoomIn ) } ),
+              M::Submenu( wxS( "&Popup" ), { M::Item( wxS( "&Find" ), ACTIONS::find ) } ).KeyOnly() } );
+
+    BOOST_CHECK( bar.Contains( ACTIONS::redo ) );
+    BOOST_CHECK( bar.Contains( ACTIONS::cut ) );
+    BOOST_CHECK( bar.Contains( ACTIONS::find ) );
+
+    // A key action is in the tree beside the menu's own, and one that is not in it is not
+    BOOST_CHECK( bar.Contains( ACTIONS::zoomInCenter ) );
+    BOOST_CHECK( bar.Contains( ACTIONS::zoomIn ) );
+    BOOST_CHECK( !bar.Contains( ACTIONS::zoomOut ) );
+
+    BOOST_CHECK( bar.m_children[0].m_children[3].KeyAction() == &ACTIONS::zoomIn );
+    BOOST_CHECK( bar.m_children[0].m_children[0].KeyAction() == &ACTIONS::undo );
+    BOOST_CHECK( !bar.m_children[0].m_children[0].m_isKeyOnly );
+    BOOST_CHECK( bar.m_children[0].m_children[1].m_isKeyOnly );
+
+    // The mnemonic of a key-only entry counts for duplicates, so the engine never has two ways to a letter
+    MENU_DEF twin = M::Submenu(
+            wxEmptyString, { M::Submenu( wxS( "&Test" ), { M::Item( wxS( "&Undo" ), ACTIONS::undo ),
+                                                           M::Item( wxS( "&Under" ), ACTIONS::redo ).KeyOnly() } ) } );
+    BOOST_CHECK_EQUAL( twin.DuplicateMnemonics().size(), 1u );
+
+    // An action the key sequence runs must be registered too
+    UNREGISTERED_ACTION unregistered;
+    MENU_DEF            faulty = M::Submenu(
+            wxEmptyString,
+            { M::Submenu( wxS( "&Test" ), { M::Item( wxS( "&Undo" ), ACTIONS::undo ).ByKey( unregistered ) } ) } );
+
+    std::vector<wxString> messages = faulty.UnresolvedActions( ACTION_MANAGER::GetActionList() );
+
+    BOOST_REQUIRE_EQUAL( messages.size(), 1u );
+    BOOST_CHECK( messages[0].Contains( wxS( "key sequence" ) ) );
+
+    // The menus leave it out
+    KI_TEST::DISPLAY_FOR_WIDGETS display;
+
+    if( !display.IsAvailable() )
+    {
+        BOOST_TEST_MESSAGE( "Skipping the menus of the test - no display available" );
+        return;
+    }
+
+    ACTION_MANAGER actionManager( nullptr );
+
+    std::unique_ptr<ACTION_MENU> menu( BuildActionMenu( bar.m_children[0], nullptr ) );
+
+    BOOST_CHECK_EQUAL( menu->GetMenuItemCount(), 2u ); // Undo and Zoom In
+    BOOST_CHECK( menu->FindItem( ACTIONS::redo.GetUIId() ) == nullptr );
+
+    std::unique_ptr<CONDITIONAL_MENU> conditional( BuildConditionalMenu( bar.m_children[0], nullptr ) );
+    SELECTION                         selection;
+
+    conditional->Evaluate( selection );
+    BOOST_CHECK_EQUAL( conditional->GetMenuItemCount(), 2u );
+}
+
+
 BOOST_AUTO_TEST_CASE( TheConditionalMenuKeepsEachEntrysCondition )
 {
     KI_TEST::DISPLAY_FOR_WIDGETS display;

@@ -1,8 +1,76 @@
 # The Altium-style interaction profile's hotkeys, in the format of a user.hotkeys file: action name, key, alternate
-# key, separated by tabs. A line that starts with # is a comment. See docs/reckless/interaction-profile.md, 5.2.
+# key, separated by tabs. A line that starts with # is a comment. See docs/reckless/interaction-profile.md, 5.2, 5.3
+# and 6. Names are registered action names.
 #
-# Step 1 of the profile holds a handful of bindings, enough to test the layering with. The full tables are step 3.
-# A key bound here is taken: any action not named here loses it as a compiled default.
+# A key bound here is taken: an action not named here loses it as a compiled default. It is taken in the scope of the
+# action that binds it: a common.* action is in every editor, so its key is taken in every editor, and an eeschema.* or
+# pcbnew.* action takes its key in that editor only. A key that means one thing in the schematic editor and another in
+# the PCB editor is therefore bound by two editor-prefixed actions.
+#
+# What is left out, and why:
+#   - Ctrl+PgDn: the schematic fits all objects, the PCB editor fits the document, and both are common.* actions, which
+#     one table cannot bind to the same key for two editors. Both are reachable as sequences (V F, V D).
+#   - Ctrl+Shift+G: the schematic toggles the visible grid and the PCB editor the grid overrides, the same clash. The
+#     PCB editor's is its stock key; the schematic's is the sequence V G V.
+#   - X and Y (flip) in a command, Space and Shift+Space (rotate), Tab, right-click and Esc: the in-command keys, which
+#     step 4 of the note adds as context aliases of the loops. X is also the root of the DeSelect sequences, so until
+#     then the schematic's flip has no key while a symbol is moved.
+#   - Routing keys, in-command and sticky: step 5.
+#   - Anything that needs a new action: the layer tab bar, the heads-up display, nudging, in-place editing, the 3D keys.
+#
+# Roots of the key sequences: the letter is typed first, then the letters of the entries it leads to (6.1 and 6.3).
+common.Sequence.place	P
+common.Sequence.edit	E
+common.Sequence.move	M
+common.Sequence.select	S
+common.Sequence.deselect	X
+common.Sequence.align	A
+common.Sequence.jump	J
+common.Sequence.view	V
+common.Sequence.project	C
+common.Sequence.design	D
+common.Sequence.tools	T
+common.Sequence.reports	R
+common.Sequence.options	O
+common.Sequence.file	F
+eeschema.Sequence.zoom	Z
+pcbnew.Sequence.route	U
+pcbnew.Sequence.nets	N
+#
+# Direct keys of both editors (6.2 and 6.4)
 common.Control.toggleUnits	Q
 common.Control.zoomCenter	Home
+common.Control.zoomRedraw	End
+common.Control.zoomIn	PgUp
+common.Control.zoomOut	PgDn
+common.Control.gridNext	G
+common.Control.gridPrev	Shift+G
+common.Control.editGrids	Ctrl+G
+common.Control.toggleGridOverrides	Ctrl+Shift+G
+common.Control.cursorUpFast	Shift+Up
+common.Control.cursorDownFast	Shift+Down
+common.Control.cursorLeftFast	Shift+Left
+common.Control.cursorRightFast	Shift+Right
+common.Interactive.duplicate	Ctrl+R
+common.Interactive.measureTool	Ctrl+M
+common.Interactive.selectAll	Ctrl+A
+common.Control.showProperties	F11
+common.Interactive.search	Shift+F12
 common.Control.highContrastModeCycle	Shift+S
+common.Control.magneticSnapToggle	Shift+E
+#
+# Schematic editor (6.2)
+eeschema.InteractiveDrawingLineWireBus.drawWires	Ctrl+W
+eeschema.InteractiveDrawingLineWireBus.switchPosture	Space
+eeschema.EditorControl.clearHighlight	Shift+C
+#
+# PCB editor (6.4)
+pcbnew.EditorControl.clearHighlight	Shift+C
+pcbnew.Control.flipBoard	Ctrl+F
+pcbnew.Control.netColorMode	F5
+pcbnew.Control.layerNext	Num Pad *
+pcbnew.Control.layerPrev	Shift+Num Pad *
+pcbnew.InteractiveRouter.OptimizeSelected	Ctrl+Alt+G
+pcbnew.InteractiveRouter.SingleTrack	Ctrl+W
+# Ctrl+W was the router's corner-style switch, which step 5 rebinds; no key until then, so it cannot fight the above
+pcbnew.InteractiveRouter.SwitchRounding45	

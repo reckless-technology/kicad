@@ -3914,8 +3914,16 @@ int SCH_EDITOR_CONTROL::CopyVariant( const TOOL_EVENT& aEvent [[maybe_unused]] )
 }
 
 
+int SCH_EDITOR_CONTROL::KeySequence( const TOOL_EVENT& aEvent [[maybe_unused]] )
+{
+    m_toolMgr->BeginKeySequence( SCH_ACTIONS::sequenceZoom );
+    return 0;
+}
+
+
 void SCH_EDITOR_CONTROL::setTransitions()
 {
+    Go( &SCH_EDITOR_CONTROL::KeySequence, SCH_ACTIONS::sequenceZoom.MakeEvent() );
     Go( &SCH_EDITOR_CONTROL::New,                     ACTIONS::doNew.MakeEvent() );
     Go( &SCH_EDITOR_CONTROL::Open,                    ACTIONS::open.MakeEvent() );
     Go( &SCH_EDITOR_CONTROL::Save,                    ACTIONS::save.MakeEvent() );

@@ -168,6 +168,9 @@ public:
 
     /// Inspection and Editing
     static TOOL_ACTION runERC;
+
+    /// A root of the Altium-style key sequences that only the schematic editor has (interaction-profile note, 5.3)
+    static TOOL_ACTION sequenceZoom;
     static TOOL_ACTION annotate;
     static TOOL_ACTION incrementAnnotations;
     static TOOL_ACTION editSymbolFields;

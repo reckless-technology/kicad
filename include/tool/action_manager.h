@@ -161,6 +161,14 @@ public:
     bool RunHotKey( int aHotKey ) const;
 
     /**
+     * Run an action as if its hotkey had been pressed: it is run only if the action's hotkey condition holds for the
+     * current selection. A key sequence reaches its action this way.
+     *
+     * @return true if the action was run and handled.
+     */
+    bool RunActionAsHotKey( const TOOL_ACTION& aAction ) const;
+
+    /**
      * Return the action-name namespace prefix (e.g. "pcbnew.", "eeschema.") shared by the
      * actions native to a given frame, or an empty string when the frame has no namespace.
      */
@@ -224,13 +232,20 @@ public:
      */
     static std::pair<int, int> ResolveHotKey( const TOOL_ACTION& aAction, const std::map<std::string, int>& aLegacyMap,
                                               const PROFILE_HOTKEY_LAYER&                       aProfileLayer,
-                                              const std::map<std::string, std::pair<int, int>>& aHotKeyMap );
+                                              const std::map<std::string, std::pair<int, int>>& aHotKeyMap,
+                                              const std::string& aEditorScope = std::string() );
+
+    /**
+     * The editor scope that profile hotkeys are resolved for in a frame of \a aFrameType: its action-name prefix
+     * ("eeschema."), or empty for a frame that is not one editor's (the project manager).
+     */
+    static std::string EditorScopeOf( FRAME_T aFrameType );
 
 private:
     // Resolve a hotkey and set it on the action.
     void processHotKey( TOOL_ACTION* aAction, const std::map<std::string, int>& aLegacyMap,
                         const PROFILE_HOTKEY_LAYER&                       aProfileLayer,
-                        const std::map<std::string, std::pair<int, int>>& aHotKeyMap );
+                        const std::map<std::string, std::pair<int, int>>& aHotKeyMap, const std::string& aEditorScope );
 
 private:
     /// Tool manager needed to run actions

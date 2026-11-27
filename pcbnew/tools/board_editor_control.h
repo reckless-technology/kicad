@@ -48,6 +48,9 @@ public:
     bool Init() override;
 
     int New( const TOOL_EVENT& aEvent );
+
+    /// A key-sequence root that only this editor has ran
+    int KeySequence( const TOOL_EVENT& aEvent );
     int Open( const TOOL_EVENT& aEvent );
     int Save( const TOOL_EVENT& aEvent );
     int ExportForOlderVersion( const TOOL_EVENT& aEvent );

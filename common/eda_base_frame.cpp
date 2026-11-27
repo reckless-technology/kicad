@@ -1888,7 +1888,8 @@ void EDA_BASE_FRAME::ShowPreferences( const wxString& aStartPage, const wxString
 
         // Update all of the action hotkeys. The process of loading the actions through
         // the KiFACE will only get us the default hotkeys
-        ReadHotKeyConfigIntoActions( wxEmptyString, hotkeysPanel->ActionsList() );
+        ReadHotKeyConfigIntoActions( wxEmptyString, hotkeysPanel->ActionsList(),
+                                     ACTION_MANAGER::EditorScopeOf( GetFrameType() ) );
 
         for( size_t i = 0; i < book->GetPageCount(); ++i )
             book->GetPage( i )->Layout();

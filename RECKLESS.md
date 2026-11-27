@@ -117,11 +117,13 @@ Each profile has its own user file, `user.hotkeys` for `kicad` and `user.altium.
 never destroys a customization, and "Reset to defaults" in the hotkey editor means the selected profile's defaults.
 With `kicad` the resolved hotkeys are exactly the compiled defaults and no code path changes. The code is in
 `common/interaction/` and `include/interaction_profile.h`; the active profile is read from the common settings through
-`Pgm()`, never from a static, because `common` is linked into every module and a static there is one copy for each. In
-step 1 the Altium-style table holds three bindings, enough to test with; the full tables are step 3. The
-`KICAD_HOUSE_INTERACTION` option only chooses which profile a new configuration starts with, and it is **off even in the
-house build** until step 3 lands, so an existing and a new configuration both start in `kicad`; an existing
-configuration keeps the profile it names. Menus are data (step 2, #135): `MENU_DEF`
+`Pgm()`, never from a static, because `common` is linked into every module and a static there is one copy for each. The
+Altium-style table holds the roots of the key sequences and the direct keys of tables 6.2 and 6.4 for the actions that
+exist (step 3, #136; what is left out is listed at the top of the file). A key is taken in the scope of the action that
+binds it: a `common.` action takes it in every editor, an `eeschema.` or `pcbnew.` one in its editor only, so the two
+editors can give a key different meanings. The `KICAD_HOUSE_INTERACTION` option only chooses which profile a new
+configuration starts with, and it is **off even in the house build**, whether it goes on being Jonny's decision: an
+existing and a new configuration both start in `kicad`; an existing configuration keeps the profile it names. Menus are data (step 2, #135): `MENU_DEF`
 (`include/menu_def.h`, `common/interaction/menu_def.cpp`) is a declarative tree of labels with `&` mnemonics, actions,
 submenus, separators and named slots, with no wx widgets in it, so the key-sequence engine of step 3 can read the
 same tree. `BuildMenuBar()` and `BuildActionMenu()` turn a tree into menus, and `BuildConditionalMenu()` into one
@@ -131,6 +133,27 @@ whose entries follow the selection (for step 14's right-click menus). The schema
 omissions that the tests use. With the profile `altium`, each editor's `doReCreateMenuBar()` builds its bar from its
 tree (`createInteractionProfileMenuBar()`) and returns; with `kicad` the stock code runs unchanged. Switching profile
 rebuilds the bar because `CommonSettingsChanged()` already does.
+
+Key sequences (step 3, #136; `include/key_sequence.h`, `common/interaction/key_sequence.cpp`,
+`common/tool/key_sequence_controller.cpp`). A sequence is a path of mnemonics through the same trees, so the menu bar and
+the keys cannot drift: `P` `V` `N` is Place, Directives, No Connect Flag. `KEY_SEQUENCE` is the state machine (no wx
+widgets, no timer; it is tested without a GUI) and `KEY_SEQUENCE_CONTROLLER`, which the tool manager makes when the first
+root runs, owns the hint timer, the status bar and the popup. The roots are real `AS_GLOBAL` actions that the profile
+table binds to their letters: `common.Sequence.place`, `.edit`, `.move`, `.select`, `.deselect`, `.align`, `.jump`,
+`.view`, `.project`, `.design`, `.tools`, `.reports`, `.options` and `.file` in both editors, `eeschema.Sequence.zoom`
+(`Z`) and `pcbnew.Sequence.route` (`U`) and `.nets` (`N`). A root runs `TOOL_MANAGER::BeginKeySequence()`; a pending
+sequence reads the next key at the top of `TOOL_MANAGER::DispatchHotKey()` before any hotkey does (`Esc` arrives there
+as a cancel event, and a mouse button abandons the sequence), so with the stock profile, where no root has a key, no
+controller exists and dispatch is the stock path. An action of the active tool keeps its letter inside a command
+through the ordinary rule that a context action beats a global one. `MENU_DEF` has two additions for the engine: an
+entry can be `KeyOnly()` (the menu builders skip it: the second way to type an action, or a popup such as `Z`) and a leaf
+can `ByKey()` run another action than its menu entry (View > Zoom In zooms about the window center, `V` `I` about the
+cursor). After `input.key_sequence_hint_delay_ms` (300, 0 for at once; in `kicad_common.json`, no preferences page yet)
+without the next key the popup of the pending menu is shown at the cursor, built by the menu bar's own builder, and its
+native mnemonics take over (the engine has consumed the keys typed so far, so none is lost while it maps); a sequence
+completed before the delay shows nothing. The keys typed so far show in the status bar's tool field (`P ›`). On macOS
+the popup carries the letters as accelerator text (`MENU_DEF::WithLetterHints()`, compiled for `__WXMAC__` only and
+not run there).
 
 ## Keeping up with upstream
 

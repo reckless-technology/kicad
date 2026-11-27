@@ -27,6 +27,8 @@
 #include <string>
 #include <vector>
 
+#include <interaction_profile.h>
+#include <key_sequence.h>
 #include <menu_def.h>
 #include <tool/action_manager.h>
 #include <tool/tool_action.h>
@@ -57,8 +59,8 @@ inline const TOOL_ACTION* FindRegistered( const std::string& aName )
 }
 
 
-/// The entry a sequence of keys selects: the first key names a menu or a submenu of one, the rest are mnemonics.
-inline const MENU_DEF* ResolveSequence( const MENU_DEF& aBar, const std::string& aSequence )
+/// The keys of a sequence as the note writes it ("P V N"): the first letter of each word
+inline std::vector<wxUniChar> SequenceKeys( const std::string& aSequence )
 {
     std::vector<wxUniChar> keys;
     std::istringstream     stream( aSequence );
@@ -67,49 +69,15 @@ inline const MENU_DEF* ResolveSequence( const MENU_DEF& aBar, const std::string&
     while( stream >> key )
         keys.push_back( wxUniChar( key[0] ) );
 
-    if( keys.empty() )
-        return nullptr;
+    return keys;
+}
 
-    const MENU_DEF* node = nullptr;
 
-    for( const MENU_DEF& menu : aBar.m_children )
-    {
-        if( menu.Mnemonic() == keys[0] )
-        {
-            node = &menu;
-            break;
-        }
-    }
-
-    for( size_t i = 0; !node && i < aBar.m_children.size(); ++i )
-    {
-        for( const MENU_DEF& submenu : aBar.m_children[i].m_children )
-        {
-            if( submenu.IsSubmenu() && submenu.Mnemonic() == keys[0] )
-            {
-                node = &submenu;
-                break;
-            }
-        }
-    }
-
-    for( size_t i = 1; node && i < keys.size(); ++i )
-    {
-        const MENU_DEF* next = nullptr;
-
-        for( const MENU_DEF& child : node->m_children )
-        {
-            if( !child.IsSeparator() && child.Mnemonic() == keys[i] )
-            {
-                next = &child;
-                break;
-            }
-        }
-
-        node = next;
-    }
-
-    return node;
+/// The entry a sequence of keys selects, by the rule the key-sequence engine uses: the first key names a menu or a
+/// submenu of one, the rest are mnemonics.
+inline const MENU_DEF* ResolveSequence( const MENU_DEF& aBar, const std::string& aSequence )
+{
+    return KEY_SEQUENCE::Resolve( aBar, SequenceKeys( aSequence ) );
 }
 
 
@@ -218,7 +186,7 @@ inline std::vector<std::string> DisappearanceProblems( const MENU_DEF&          
         {
             const MENU_DEF* node = ResolveSequence( aBar, row.m_sequence );
 
-            if( !node || node->m_action != action )
+            if( !node || node->KeyAction() != action )
                 problems.push_back( std::string( "the keys " ) + row.m_sequence + " do not select " + row.m_actionName
                                     + " in the tree, they select "
                                     + ( node ? "\"" + node->m_label.ToStdString() + "\"" : std::string( "nothing" ) ) );
@@ -234,6 +202,150 @@ inline std::vector<std::string> DisappearanceProblems( const MENU_DEF&          
         if( omission.m_actionName && !FindRegistered( omission.m_actionName ) )
             problems.push_back( std::string( "the omission " ) + omission.m_sequence + " names " + omission.m_actionName
                                 + ", which no program registers" );
+    }
+
+    return problems;
+}
+
+
+using SEQUENCE_ROOTS = std::vector<std::pair<const TOOL_ACTION*, wxUniChar>>;
+
+
+/**
+ * Type each row's sequence into the engine as the program does (the root action first, then one key at a time) and
+ * check that the action the note names is the one that runs, and that nothing else does on the way. A row that is not
+ * a path of mnemonics is typed too: the engine is the only way to a sequence.
+ */
+inline std::vector<std::string> SequenceProblems( const MENU_DEF& aBar, const SEQUENCE_ROOTS& aRoots,
+                                                  const std::vector<MENU_TREE_ROW>& aRows )
+{
+    std::vector<std::string> problems;
+
+    if( aRows.size() < 20 )
+        problems.push_back( "the table has " + std::to_string( aRows.size() ) + " rows" );
+
+    for( const MENU_TREE_ROW& row : aRows )
+    {
+        std::vector<wxUniChar> keys = SequenceKeys( row.m_sequence );
+        const TOOL_ACTION*     expected = FindRegistered( row.m_actionName );
+        std::string            where = std::string( "the keys " ) + row.m_sequence + ": ";
+
+        if( keys.size() < 2 || !expected )
+        {
+            problems.push_back( where + "the row has no second key or names an action nothing registers" );
+            continue;
+        }
+
+        const TOOL_ACTION* root = nullptr;
+
+        for( const auto& [action, letter] : aRoots )
+        {
+            if( letter == keys[0] )
+                root = action;
+        }
+
+        if( !root )
+        {
+            problems.push_back( where + "no root action opens the first key's menu" );
+            continue;
+        }
+
+        KEY_SEQUENCE engine;
+
+        engine.SetTree( std::make_shared<const MENU_DEF>( aBar ) );
+
+        if( engine.Enter( keys[0] ).m_outcome != KEY_SEQUENCE_RESULT::OUTCOME::CONSUMED )
+        {
+            problems.push_back( where + "the root does not open a menu of the tree" );
+            continue;
+        }
+
+        const TOOL_ACTION* ran = nullptr;
+
+        for( size_t i = 1; i < keys.size(); ++i )
+        {
+            using OUTCOME = KEY_SEQUENCE_RESULT::OUTCOME;
+
+            bool                isLast = i + 1 == keys.size();
+            KEY_SEQUENCE_RESULT result = engine.HandleKey( static_cast<int>( keys[i].GetValue() ), false );
+
+            if( result.m_outcome == OUTCOME::RUN_ACTION )
+            {
+                ran = result.m_action;
+
+                if( !isLast )
+                    problems.push_back( where + "an action ran before the last key" );
+
+                break;
+            }
+
+            if( result.m_outcome != OUTCOME::CONSUMED )
+            {
+                problems.push_back( where + "the engine let a key through that the sequence needs" );
+                break;
+            }
+        }
+
+        if( ran != expected )
+            problems.push_back( where + "ran " + ( ran ? ran->GetName() : std::string( "nothing" ) )
+                                + ", the note says " + row.m_actionName );
+
+        if( engine.IsPending() )
+            problems.push_back( where + "the engine is still waiting for a key" );
+    }
+
+    return problems;
+}
+
+
+/**
+ * The roots: every root action is registered, its menu is in the tree, and the profile's table binds it to the letter
+ * it opens (so the key the user types is the one the tree reads). Every letter that starts a row has a root.
+ */
+inline std::vector<std::string> RootProblems( const MENU_DEF& aBar, const SEQUENCE_ROOTS& aRoots,
+                                              const PROFILE_HOTKEY_LAYER&       aTable,
+                                              const std::vector<MENU_TREE_ROW>& aRows )
+{
+    std::vector<std::string> problems;
+
+    if( aRoots.size() < 10 )
+        problems.push_back( "the editor has " + std::to_string( aRoots.size() ) + " roots" );
+
+    for( const auto& [action, letter] : aRoots )
+    {
+        std::string name = action ? action->GetName() : std::string( "(null)" );
+
+        if( !action || !FindRegistered( name ) )
+        {
+            problems.push_back( "root " + name + " is not registered" );
+            continue;
+        }
+
+        const MENU_DEF* menu = KEY_SEQUENCE::FindRoot( aBar, letter );
+
+        if( !menu || !menu->IsSubmenu() )
+            problems.push_back( "root " + name + " opens no menu of the tree" );
+
+        auto binding = aTable.m_bindings.find( name );
+
+        if( binding == aTable.m_bindings.end() )
+            problems.push_back( "root " + name + " has no key in the profile's table" );
+        else if( binding->second.first != static_cast<int>( letter.GetValue() ) )
+            problems.push_back( "root " + name + " is bound to a key other than "
+                                + std::string( 1, (char) letter.GetValue() ) );
+    }
+
+    for( const MENU_TREE_ROW& row : aRows )
+    {
+        wxUniChar first = SequenceKeys( row.m_sequence ).at( 0 );
+        bool      hasRoot = std::any_of( aRoots.begin(), aRoots.end(),
+                                         [&]( const auto& aRoot )
+                                         {
+                                        return aRoot.second == first;
+                                         } );
+
+        if( !hasRoot )
+            problems.push_back( std::string( "the row " ) + row.m_sequence + " starts with a letter no root has" );
     }
 
     return problems;

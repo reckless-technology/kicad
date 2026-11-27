@@ -912,6 +912,9 @@ public:
 
     void ShowChangedLanguage() override;
 
+    /// The key sequences of the Altium-style interaction profile: its menu tree and the roots of it (see key_sequence.h)
+    bool GetKeySequenceSpec( KEY_SEQUENCE_SPEC& aSpec ) const override;
+
     void SetScreen( BASE_SCREEN* aScreen ) override;
 
     const BOX2I GetDocumentExtents( bool aIncludeAllVisible = true ) const override;

@@ -27,6 +27,7 @@
 struct ACTION_CONDITIONS;
 
 class ACTIONS;
+struct KEY_SEQUENCE_SPEC;
 class TOOL_ACTION;
 class TOOL_DISPATCHER;
 class TOOL_EVENT;
@@ -123,6 +124,16 @@ public:
     bool IsCurrentTool( const TOOL_ACTION& aAction ) const;
 
     virtual void DisplayToolMsg( const wxString& msg [[maybe_unused]] ) {};
+
+    /// Show the name of the current tool again, after something else (a half-typed key sequence) used the field.
+    void RestoreToolMsg();
+
+    /**
+     * The key sequences this frame has: the menu tree they are read from, and the action that opens each of its menus.
+     *
+     * @return false when the frame has none (the default).
+     */
+    virtual bool GetKeySequenceSpec( KEY_SEQUENCE_SPEC& aSpec [[maybe_unused]] ) const { return false; }
 
     /**
      * Select the given action in the toolbar group which contains it, if any.

@@ -76,6 +76,7 @@ set( QA_COMMON_SRCS
     test_hotkey_store.cpp
     test_interaction_profile.cpp
     test_interaction_profile_actions.cpp
+    test_key_sequence.cpp
     test_menu_def.cpp
     test_increment.cpp
     test_inplace_function.cpp

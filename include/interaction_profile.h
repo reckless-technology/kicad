@@ -57,7 +57,12 @@ struct PROFILE_HOTKEY_LAYER
 {
     bool               m_isActive = false;
     PROFILE_HOTKEY_MAP m_bindings;  ///< what the profile table binds, by action name
-    std::set<int>      m_takenKeys; ///< every key the table binds: no other action keeps it as a compiled default
+    std::set<int>      m_takenKeys; ///< every key the table binds, in any editor
+
+    /// The keys the table binds, by the scope of the action that binds them: the action name up to and including its
+    /// first dot ("common.", "eeschema.", "pcbnew."). A `common.` action is in every editor, so its key is taken there;
+    /// an editor's own action takes its key in that editor only.
+    std::map<std::string, std::set<int>> m_takenKeysByScope;
 };
 
 
@@ -109,11 +114,26 @@ public:
      * The profile's defaults for one action: the layering that follows the compiled (or legacy) keys.
      *
      * The table's binding wins. An action the table does not name keeps \a aBaseKeys, except that a key the table
-     * binds elsewhere is removed from it (0 in that slot), so the profile's keys never fight a stock default.
+     * binds elsewhere in its scope is removed from it (0 in that slot), so the profile's keys never fight a stock
+     * default. The scopes of a key are the action's: a key bound by a `common.` action is taken in every editor, and a
+     * key bound by an `eeschema.` or `pcbnew.` action in that editor only. An action of an editor loses the keys of
+     * `common.` and of its own editor; a `common.` action, which is in every editor, loses the keys of `common.` and of
+     * the editor it is resolved for (\a aEditorScope, as "eeschema."), or those of every editor when that is empty
+     * (a hotkey editor that lists the actions of several).
+     *
+     * An action of the active tool (\a aIsContextAction) keeps its key where a root takes it, because inside its command
+     * it wins: Altium's rule that in-command keys win, which is why the roots are real actions (note, 5.3). Only a table
+     * entry for the action itself changes it.
+     *
      * An inactive layer returns \a aBaseKeys.
      */
     static std::pair<int, int> ApplyHotKeyLayer( const PROFILE_HOTKEY_LAYER& aLayer, const std::string& aActionName,
-                                                 std::pair<int, int> aBaseKeys );
+                                                 std::pair<int, int> aBaseKeys,
+                                                 const std::string&  aEditorScope = std::string(),
+                                                 bool                aIsContextAction = false );
+
+    /// The scope of an action name: up to and including its first dot ("common."), or empty for a name with none.
+    static std::string ScopeOf( const std::string& aActionName );
 
     /**
      * The action names of a layer's table that are in none of \a aActions.

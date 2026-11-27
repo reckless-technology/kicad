@@ -19,9 +19,12 @@
 
 #include "sch_menus_altium.h"
 
+#include <memory>
+
 #include <advanced_config.h>
 #include <bitmaps.h>
 #include <file_history.h>
+#include <key_sequence.h>
 #include <kiface_base.h>
 #include <pgm_base.h>
 #include <sch_edit_frame.h>
@@ -118,6 +121,8 @@ MENU_DEF SchAltiumMenuBar()
               M::Separator(),
               M::Submenu( _( "&Move" ),
                           { M::Item( _( "&Move" ), SCH_ACTIONS::move ), M::Item( _( "&Drag" ), SCH_ACTIONS::drag ),
+                            M::Item( _( "Move &Selection" ), SCH_ACTIONS::move ).KeyOnly(),
+                            M::Item( _( "D&rag Selection" ), SCH_ACTIONS::drag ).KeyOnly(),
                             M::Item( _( "Rotat&e Selection" ), SCH_ACTIONS::rotateCCW ),
                             M::Item( _( "Rotate C&lockwise" ), SCH_ACTIONS::rotateCW ) } ),
               M::Submenu( _( "&Select" ), { M::Item( _( "&All" ), ACTIONS::selectAll ),
@@ -153,7 +158,8 @@ MENU_DEF SchAltiumMenuBar()
               M::Item( _( "&Fit All Objects" ), ACTIONS::zoomFitObjects ),
               M::Item( _( "Zoom &Area" ), ACTIONS::zoomTool ),
               M::Item( _( "S&elected Objects" ), ACTIONS::zoomFitSelection ),
-              M::Item( _( "Zoom &In" ), ACTIONS::zoomInCenter ), M::Item( _( "Zoom &Out" ), ACTIONS::zoomOutCenter ),
+              M::Item( _( "Zoom &In" ), ACTIONS::zoomInCenter ).ByKey( ACTIONS::zoomIn ),
+              M::Item( _( "Zoom &Out" ), ACTIONS::zoomOutCenter ).ByKey( ACTIONS::zoomOut ),
               M::Item( _( "&Zoom Last" ), ACTIONS::zoomUndo ), M::Item( _( "&Redraw" ), ACTIONS::zoomRedraw ),
               M::Separator(),
               M::Submenu( _( "&Grids" ), { M::Item( _( "Next &Grid" ), ACTIONS::gridNext ),
@@ -282,13 +288,24 @@ MENU_DEF SchAltiumMenuBar()
     M options = M::Submenu( _( "&Options" ),
                             { M::Item( _( "Page &Settings..." ), ACTIONS::pageSettings ),
                               M::Item( _( "&Preferences..." ), ACTIONS::openPreferences ),
-                              M::Item( _( "&Grids..." ), ACTIONS::gridProperties ), M::Separator(),
+                              M::Item( _( "&Grids..." ), ACTIONS::gridProperties ),
+                              M::Item( _( "&Document Options..." ), ACTIONS::pageSettings ).KeyOnly(), M::Separator(),
                               M::Item( _( "Configure Pa&ths..." ), ACTIONS::configurePaths ),
                               M::Item( _( "Symbol &Libraries..." ), ACTIONS::showSymbolLibTable ),
                               M::Item( _( "Design &Block Libraries..." ), ACTIONS::showDesignBlockLibTable ),
                               M::Slot( _( "Language" ), SCH_MENU_SLOT::LANGUAGES ) } );
 
-    return M::Submenu( wxEmptyString, { file, edit, view, project, place, design, tools, reports, options } );
+    // The zoom popup of the key sequences (Z): the same entries as View, to be typed with the cursor where the zoom is
+    M zoom = M::Submenu( _( "&Zoom" ),
+                         { M::Item( _( "&Window" ), ACTIONS::zoomTool ), M::Item( _( "Zoom &In" ), ACTIONS::zoomIn ),
+                           M::Item( _( "Zoom &Out" ), ACTIONS::zoomOut ),
+                           M::Item( _( "Selected Objects (&E)" ), ACTIONS::zoomFitSelection ),
+                           M::Item( _( "&Last" ), ACTIONS::zoomUndo ),
+                           M::Item( _( "&All Objects" ), ACTIONS::zoomFitObjects ),
+                           M::Item( _( "&Sheet" ), ACTIONS::zoomFitScreen ) } )
+                     .KeyOnly();
+
+    return M::Submenu( wxEmptyString, { file, edit, view, project, place, design, tools, reports, options, zoom } );
 }
 
 
@@ -297,14 +314,6 @@ const std::vector<MENU_OMISSION>& SchAltiumMenuOmissions()
     static const std::vector<MENU_OMISSION> omissions = {
         { "E N, Shift+F", nullptr, "Find Similar Objects: the schematic has no such command" },
         { "T H", nullptr, "Up/Down Hierarchy: a new action, built with the sequence engine" },
-        { "V I", "common.Control.zoomIn",
-          "the menu zooms about the window center; the key sequence zooms about the cursor" },
-        { "V O", "common.Control.zoomOut",
-          "the menu zooms about the window center; the key sequence zooms about the cursor" },
-        { "Z W, Z I, Z O, Z E, Z L, Z A, Z S", nullptr, "the zoom popup: key sequences of the same entries as View" },
-        { "M S, M R", nullptr,
-          "Move Selection and Drag Selection: the same actions as Move and Drag, as key sequences" },
-        { "O D", nullptr, "Document Options: the same action as Options > Page Settings, as a key sequence" },
     };
 
     return omissions;
@@ -396,4 +405,26 @@ WX_MENUBAR* SCH_EDIT_FRAME::createInteractionProfileMenuBar( TOOL_INTERACTIVE* a
     AddStandardHelpMenu( menuBar );
 
     return menuBar;
+}
+
+
+const std::vector<std::pair<const TOOL_ACTION*, wxUniChar>>& SchAltiumSequenceRoots()
+{
+    static const std::vector<std::pair<const TOOL_ACTION*, wxUniChar>> roots = {
+        { &ACTIONS::sequencePlace, 'P' },   { &ACTIONS::sequenceEdit, 'E' },     { &ACTIONS::sequenceMove, 'M' },
+        { &ACTIONS::sequenceSelect, 'S' },  { &ACTIONS::sequenceDeselect, 'X' }, { &ACTIONS::sequenceAlign, 'A' },
+        { &ACTIONS::sequenceJump, 'J' },    { &ACTIONS::sequenceView, 'V' },     { &ACTIONS::sequenceProject, 'C' },
+        { &ACTIONS::sequenceDesign, 'D' },  { &ACTIONS::sequenceTools, 'T' },    { &ACTIONS::sequenceReports, 'R' },
+        { &ACTIONS::sequenceOptions, 'O' }, { &ACTIONS::sequenceFile, 'F' },     { &SCH_ACTIONS::sequenceZoom, 'Z' }
+    };
+
+    return roots;
+}
+
+
+bool SCH_EDIT_FRAME::GetKeySequenceSpec( KEY_SEQUENCE_SPEC& aSpec ) const
+{
+    aSpec.m_tree = std::make_shared<const MENU_DEF>( SchAltiumMenuBar() );
+    aSpec.m_roots = SchAltiumSequenceRoots();
+    return true;
 }

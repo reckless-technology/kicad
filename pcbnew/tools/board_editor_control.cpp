@@ -2374,8 +2374,22 @@ int BOARD_EDITOR_CONTROL::DrillOrigin( const TOOL_EVENT& aEvent )
 }
 
 
+int BOARD_EDITOR_CONTROL::KeySequence( const TOOL_EVENT& aEvent )
+{
+    for( const TOOL_ACTION* root : { &PCB_ACTIONS::sequenceRoute, &PCB_ACTIONS::sequenceNets } )
+    {
+        if( aEvent.IsAction( root ) )
+            m_toolMgr->BeginKeySequence( *root );
+    }
+
+    return 0;
+}
+
+
 void BOARD_EDITOR_CONTROL::setTransitions()
 {
+    Go( &BOARD_EDITOR_CONTROL::KeySequence, PCB_ACTIONS::sequenceRoute.MakeEvent() );
+    Go( &BOARD_EDITOR_CONTROL::KeySequence, PCB_ACTIONS::sequenceNets.MakeEvent() );
     Go( &BOARD_EDITOR_CONTROL::New,                    ACTIONS::doNew.MakeEvent() );
     Go( &BOARD_EDITOR_CONTROL::Open,                   ACTIONS::open.MakeEvent() );
     Go( &BOARD_EDITOR_CONTROL::Save,                   ACTIONS::save.MakeEvent() );

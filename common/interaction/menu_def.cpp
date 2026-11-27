@@ -93,6 +93,41 @@ MENU_DEF MENU_DEF::When( const std::function<bool()>& aPredicate ) const
 }
 
 
+MENU_DEF MENU_DEF::KeyOnly() const
+{
+    MENU_DEF def = *this;
+    def.m_isKeyOnly = true;
+    return def;
+}
+
+
+MENU_DEF MENU_DEF::ByKey( const TOOL_ACTION& aAction ) const
+{
+    MENU_DEF def = *this;
+    def.m_keyAction = &aAction;
+    return def;
+}
+
+
+MENU_DEF MENU_DEF::WithLetterHints( const MENU_DEF& aNode )
+{
+    MENU_DEF hinted = aNode;
+
+    for( MENU_DEF& child : hinted.m_children )
+    {
+        if( child.IsSeparator() || child.IsSlot() )
+            continue;
+
+        if( child.IsSubmenu() )
+            child = WithLetterHints( child );
+        else if( child.Mnemonic() )
+            child.m_label += wxS( "\t" ) + wxString( child.Mnemonic() );
+    }
+
+    return hinted;
+}
+
+
 wxUniChar MENU_DEF::Mnemonic() const
 {
     for( size_t i = 0; i + 1 < m_label.length(); ++i )
@@ -155,7 +190,18 @@ bool MENU_DEF::Contains( const TOOL_ACTION& aAction ) const
 {
     std::vector<const TOOL_ACTION*> actions = Actions();
 
-    return std::find( actions.begin(), actions.end(), &aAction ) != actions.end();
+    if( std::find( actions.begin(), actions.end(), &aAction ) != actions.end() )
+        return true;
+
+    bool isRunByKey = false;
+
+    Walk(
+            [&]( const MENU_DEF& aNode, const std::vector<wxString>& )
+            {
+                isRunByKey = isRunByKey || aNode.m_keyAction == &aAction;
+            } );
+
+    return isRunByKey;
 }
 
 
@@ -276,6 +322,10 @@ std::vector<wxString> MENU_DEF::UnresolvedActions( const std::list<TOOL_ACTION*>
                     messages.push_back( where + wxS( ": a leaf with no action, or a submenu with no entries" ) );
                     return;
                 }
+
+                if( aNode.m_keyAction
+                    && std::find( aRegistered.begin(), aRegistered.end(), aNode.m_keyAction ) == aRegistered.end() )
+                    messages.push_back( where + wxS( ": the key sequence's action is not registered" ) );
 
                 if( !aNode.m_action )
                     return;

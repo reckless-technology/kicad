@@ -86,6 +86,9 @@ extern KICOMMON_API const wxChar* const kicadTraceKeyEvent;
  */
 extern KICOMMON_API const wxChar* const kicadTraceToolStack;
 
+/// Trace mask for the Altium-style key sequences: roots, keys, what runs, when the hint popup is shown.
+extern KICOMMON_API const wxChar* const kicadTraceKeySequence;
+
 /**
  * Flag to enable tracing of the coroutine call stack.
  *

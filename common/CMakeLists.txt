@@ -1029,6 +1029,7 @@ set( COMMON_SRCS
     hotkeys_basic.cpp
     inspectable.cpp
     interaction/interaction_profile.cpp
+    interaction/key_sequence.cpp
     interaction/menu_builder.cpp
     interaction/menu_def.cpp
     item_realignment.cpp
@@ -1080,6 +1081,7 @@ set( COMMON_SRCS
     tool/common_control.cpp
     tool/construction_manager.cpp
     tool/common_tools.cpp
+    tool/key_sequence_controller.cpp
     tool/conditional_menu.cpp
     tool/design_block_control.cpp
     tool/edit_relations.cpp

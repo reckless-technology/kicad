@@ -20,6 +20,7 @@
 #ifndef PCB_MENUS_ALTIUM_H
 #define PCB_MENUS_ALTIUM_H
 
+#include <utility>
 #include <vector>
 
 #include <menu_def.h>
@@ -35,6 +36,9 @@ MENU_DEF PcbAltiumMenuBar();
  * belong to the footprint editor, and the aliases of an entry the tree already has.
  */
 const std::vector<MENU_OMISSION>& PcbAltiumMenuOmissions();
+
+/// The key-sequence roots of the PCB editor: each root action and the mnemonic of the menu it opens
+const std::vector<std::pair<const TOOL_ACTION*, wxUniChar>>& PcbAltiumSequenceRoots();
 
 /// The slots in the tree that the frame fills in (see MENU_SLOT_FILLER).
 namespace PCB_MENU_SLOT

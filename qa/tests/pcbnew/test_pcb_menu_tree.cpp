@@ -20,6 +20,9 @@
 #include <qa_utils/wx_utils/unit_test_utils.h>
 
 #include <interaction/pcb_menus_altium.h>
+#include <interaction_profile.h>
+#include <kiface_base.h>
+#include <key_sequence.h>
 
 #include "../common/menu_tree_checks.h"
 
@@ -45,6 +48,7 @@ const std::vector<MENU_TREE_ROW>& tableRows()
         { "P L", "pcbnew.InteractiveDrawing.line", true },
         { "P S", "pcbnew.InteractiveDrawing.text", true },
         { "P F", "pcbnew.InteractiveDrawing.rectangle", true },
+        { "P E", "pcbnew.InteractiveDrawing.rectangle", true },
         { "P R", "pcbnew.InteractiveDrawing.graphicPolygon", true },
         { "P A A", "pcbnew.InteractiveDrawing.arcCenter", true },
         { "P A E", "pcbnew.InteractiveDrawing.arc", true },
@@ -59,6 +63,7 @@ const std::vector<MENU_TREE_ROW>& tableRows()
         { "E O R", "common.Control.gridResetOrigin", true },
         { "E N", "pcbnew.EditorControl.findByProperties", true },
         { "M M", "pcbnew.InteractiveMove.move", true },
+        { "M S", "pcbnew.InteractiveMove.move", true },
         { "M D", "pcbnew.InteractiveRouter.Drag45Degree", true },
         { "M C", "pcbnew.InteractiveEdit.FindMove", true },
         { "M B", "pcbnew.InteractiveRouter.BreakTrack", true },
@@ -66,6 +71,8 @@ const std::vector<MENU_TREE_ROW>& tableRows()
         { "M I", "pcbnew.InteractiveEdit.flip", true },
         { "M O", "pcbnew.InteractiveEdit.rotateCcw", true },
         { "S A", "common.Interactive.selectAll", true },
+        { "S B", "common.Interactive.selectAll", true },
+        { "S C", "pcbnew.InteractiveSelection.SelectConnection", true },
         { "S N", "pcbnew.InteractiveSelection.SelectNet", true },
         { "S P", "pcbnew.InteractiveSelection.SelectConnection", true },
         { "S I", "common.Interactive.selectSetRect", true },
@@ -80,6 +87,10 @@ const std::vector<MENU_TREE_ROW>& tableRows()
         { "A D", "pcbnew.AlignAndDistribute.distributeHorizontallyGaps", true },
         { "A S", "pcbnew.AlignAndDistribute.distributeVerticallyGaps", true },
         { "J C", "common.Interactive.find", true },
+        { "J N", "common.Interactive.find", true },
+        { "J P", "common.Interactive.find", true },
+        { "V I", "common.Control.zoomIn", true },
+        { "V O", "common.Control.zoomOut", true },
         { "V F", "common.Control.zoomFitObjects", true },
         { "V D", "common.Control.zoomFitScreen", true },
         { "V A", "common.Control.zoomTool", true },
@@ -87,10 +98,15 @@ const std::vector<MENU_TREE_ROW>& tableRows()
         { "V Z", "common.Control.undoZoom", true },
         { "V B", "pcbnew.Control.flipBoard", true },
         { "V U", "common.Control.toggleUnits", true },
-        { "N S A", "pcbnew.Control.showRatsnest", false },
-        { "N S N", "pcbnew.EditorControl.showNet", false },
-        { "N H N", "pcbnew.EditorControl.hideNet", false },
+        { "N S A", "pcbnew.Control.showRatsnest", true },
+        { "N H A", "pcbnew.Control.showRatsnest", true },
+        { "N S N", "pcbnew.EditorControl.showNet", true },
+        { "N H N", "pcbnew.EditorControl.hideNet", true },
         { "D R", "pcbnew.EditorControl.boardSetup", true },
+        { "D K", "pcbnew.EditorControl.boardSetup", true },
+        { "D C", "pcbnew.EditorControl.boardSetup", true },
+        { "O K", "pcbnew.EditorControl.boardSetup", true },
+        { "O W", "pcbnew.EditorControl.boardSetup", true },
         { "D I", "common.Control.updatePcbFromSchematic", true },
         { "D U", "common.Control.updateSchematicFromPCB", true },
         { "D N", "pcbnew.Control.showNetInspector", true },
@@ -112,14 +128,35 @@ const std::vector<MENU_TREE_ROW>& tableRows()
         { "C C", "pcbnew.DRCTool.runDRC", true },
         { "C O", "pcbnew.EditorControl.boardSetup", true },
         { "F S", "common.Control.save", true },
-        { "F A", "common.Control.saveAs", true },
         { "F P", "common.Control.print", true },
-        { "F O", "common.Control.open", true },
     };
 
     return rows;
 }
 } // namespace
+
+
+/// The rows the engine can run in the PCB editor: those whose action is not on the list of omissions (the pad is
+/// placed in the footprint editor, which has no tree of its own)
+std::vector<MENU_TREE_ROW> engineRows()
+{
+    std::vector<MENU_TREE_ROW> rows;
+
+    for( const MENU_TREE_ROW& row : tableRows() )
+    {
+        bool isOmitted = std::any_of( PcbAltiumMenuOmissions().begin(), PcbAltiumMenuOmissions().end(),
+                                      [&]( const MENU_OMISSION& aOmission )
+                                      {
+                                          return aOmission.m_actionName
+                                                 && std::string( aOmission.m_actionName ) == row.m_actionName;
+                                      } );
+
+        if( !isOmitted )
+            rows.push_back( row );
+    }
+
+    return rows;
+}
 
 
 BOOST_AUTO_TEST_SUITE( PcbAltiumMenuTree )
@@ -154,6 +191,69 @@ BOOST_AUTO_TEST_CASE( NothingTheNoteMarksAsExistingDisappears )
     MENU_TREE_CHECKS::ExpectNoProblems(
             MENU_TREE_CHECKS::DisappearanceProblems( bar, PcbAltiumMenuOmissions(), tableRows() ),
             "a row of the note's table is lost, or its keys do not select its action" );
+}
+
+
+BOOST_AUTO_TEST_CASE( EverySequenceTheNoteMarksAsExistingRunsItsActionWhenTyped )
+{
+    MENU_DEF bar = PcbAltiumMenuBar();
+
+    BOOST_CHECK_GE( engineRows().size(), 90u );
+    BOOST_CHECK_EQUAL( tableRows().size() - engineRows().size(), 1u ); // the pad
+    MENU_TREE_CHECKS::ExpectNoProblems(
+            MENU_TREE_CHECKS::SequenceProblems( bar, PcbAltiumSequenceRoots(), engineRows() ),
+            "a sequence of the note's table 6.3 does not run the action the note names" );
+}
+
+
+BOOST_AUTO_TEST_CASE( EveryRootOpensAMenuAndIsBoundToItsLetterInTheProfileTable )
+{
+    MENU_DEF bar = PcbAltiumMenuBar();
+
+    BOOST_CHECK_EQUAL( PcbAltiumSequenceRoots().size(), 16u );
+    MENU_TREE_CHECKS::ExpectNoProblems(
+            MENU_TREE_CHECKS::RootProblems( bar, PcbAltiumSequenceRoots(),
+                                            INTERACTION_PROFILE::BuildHotKeyLayer( INTERACTION_PROFILE_ID::ALTIUM ),
+                                            tableRows() ),
+            "a root is not registered, opens no menu, or is not bound to its letter" );
+}
+
+
+BOOST_AUTO_TEST_CASE( TheNetsRootOpensTheConnectionsMenuAndTheKeyOnlyEntriesAreNotInTheBar )
+{
+    MENU_DEF bar = PcbAltiumMenuBar();
+
+    // N is the Connections submenu of View, whose Show and Hide are entries for the keys only
+    const MENU_DEF* nets = KEY_SEQUENCE::FindRoot( bar, 'N' );
+
+    BOOST_REQUIRE( nets );
+    BOOST_CHECK( !nets->m_isKeyOnly );
+    BOOST_CHECK( KEY_SEQUENCE::FindChild( *nets, 'S' ) != nullptr );
+    BOOST_CHECK( KEY_SEQUENCE::FindChild( *nets, 'S' )->m_isKeyOnly );
+    BOOST_CHECK( KEY_SEQUENCE::FindChild( *nets, 'H' )->m_isKeyOnly );
+
+    int keyOnlyEntries = 0;
+
+    bar.Walk(
+            [&]( const MENU_DEF& aNode, const std::vector<wxString>& )
+            {
+                keyOnlyEntries += aNode.m_isKeyOnly ? 1 : 0;
+            } );
+
+    BOOST_CHECK_GE( keyOnlyEntries, 12 );
+}
+
+
+BOOST_AUTO_TEST_CASE( SaveAsAndOpenAreSequencesOnlyWhereTheMenuHasThem )
+{
+    // File > Save As and Open are entries of a stand-alone editor: under the project manager they are not in the menu,
+    // and so are not typed (F A and F O). Save and Print are always there.
+    MENU_DEF bar = PcbAltiumMenuBar();
+
+    BOOST_CHECK_EQUAL( KEY_SEQUENCE::Resolve( bar, { 'F', 'A' } ) != nullptr, Kiface().IsSingle() );
+    BOOST_CHECK_EQUAL( KEY_SEQUENCE::Resolve( bar, { 'F', 'O' } ) != nullptr, Kiface().IsSingle() );
+    BOOST_CHECK( KEY_SEQUENCE::Resolve( bar, { 'F', 'S' } ) != nullptr );
+    BOOST_CHECK( KEY_SEQUENCE::Resolve( bar, { 'F', 'P' } ) != nullptr );
 }
 
 
