@@ -347,8 +347,22 @@ KiCad-only commands where an Altium user would look for them (for example Net In
 Fields Table under Tools). KiCad's own Preferences menu becomes `T` `P` (Tools > Preferences) and `O`; Inspect's
 items move to Tools and Reports.
 
-Right-click menus stay KiCad's condition-driven menus, reordered where it is cheap so the first items match
-Altium's (Find Similar, Clear Filter, Place, the object's Actions submenu, Align, Cut/Copy/Paste, Properties).
+**Right-click menus are rebuilt too** (the owner's choice, section 9), from `MENU_DEF` trees like the menu bar.
+Today the selection tool owns the idle context menu (`SCH_SELECTION_TOOL::Init`, `PCB_SELECTION_TOOL::Init`) and
+other tools append their items to it in their own `Init` (edit, move, align, inspection, wire, router), each with a
+`SELECTION_CONDITION`. Leave all of that in place for the `kicad` profile. For this profile build a second
+`CONDITIONAL_MENU` per editor from one tree, each node's `show` condition becoming the item's condition, and have
+the selection tool show that one instead (choose at the point it calls `ShowContextMenu`, so switching profile
+needs no tool re-initialization). The trees are in section 6.6. Three rules:
+
+- Altium's order: Find Similar and Clear Filter first; then the Place submenu (the same tree as `P`); then one
+  "Actions" submenu per kind of object under the cursor, shown only for that kind; then Align, Cross Probe, the
+  clipboard, and Properties last.
+- Nothing is lost. Every action KiCad offers on right-click today must be reachable in the rebuilt menu, KiCad-only
+  ones inside the Actions submenu of their object (for example Drag 45 and Break Track under Track Actions, Pin
+  Tricks under Pin Actions). A test compares the two menus' action sets against a short list of deliberate drops.
+- Menus shown inside a command are not these: a right-click in a command backs out (5.5), and `Shift+F1` shows the
+  running tool's own menu, which stays as KiCad builds it.
 
 ### 5.5 In-command keys and command conventions
 
@@ -781,6 +795,59 @@ Routing, from the list in section 3.4:
 | `Shift`+right-drag / right-drag | orbit / pan | canvas mouse handling | new / = |
 | `L` | view configuration | `showLayersManager` | = |
 
+### 6.6 Right-click menus
+
+Altium's top level, in order, with what each line holds here. A submenu appears only when the selection or the
+object under the cursor is of its kind. "(K)" marks KiCad commands that have no Altium line and are filed where an
+Altium user would look.
+
+Schematic:
+
+| Item | Shown for | Contents (KiCad actions) |
+|---|---|---|
+| Find Text… | always | `common.Interactive.find` (Altium's Find Similar Objects has no schematic equivalent) |
+| Clear Filter | a net is highlighted | `EditorControl.clearHighlight` |
+| Wire | nothing selected | `drawWires`; Finish while a wire is being drawn |
+| Place ▸ | always | the `P` tree of 6.1 |
+| Part Actions ▸ | symbol | Update From Libraries (`updateSymbol`), Change Symbol, Edit with Symbol Editor, Unit ▸ and Body Style ▸ (K), Edit Main Fields ▸ reference, value, footprint (K), Autoplace Fields (K), Toggle Fitted/Not Fitted (`setDNP`) and the other attributes, Show Datasheet (K), Select PCB Components (`selectOnPCB`) |
+| Pin Actions ▸ (K) | pin | KiCad's pin tricks: no-connect, wire stub, label from pin name; Swap Pins |
+| Wire Actions ▸ (K) | wire or bus | Add Junction, Add Net Label, Add Port, Break Wire, Slice, Unfold From Bus, Select Connection, Assign Netclass |
+| Sheet Symbol Actions ▸ | sheet | Open SubSheet (`enterSheet`), Place Sheet Entry (`placeSheetPin`), Synchronize Sheet Entries and Ports (`syncSheetPins`), Cleanup Sheet Pins, Edit Page Number |
+| Port Actions ▸ | label of any kind | Change To ▸ net label, port, off-sheet connector, directive, text |
+| Sheet Actions ▸ | nothing selected | Leave Sheet, Page Settings |
+| Align ▸ | two or more items | the `A` tree |
+| Cross Probe | symbol, pin, label | `EditorControl.selectOnPCB` |
+| Cut, Copy, Paste | selection / clipboard | unchanged, plus Paste Special and Duplicate (K) |
+| Project Options… | always | `EditorControl.schematicSetup` |
+| Preferences… | always | `openPreferences` |
+| Properties… | one or more items | `InteractiveEdit.properties`, last |
+
+PCB:
+
+| Item | Shown for | Contents (KiCad actions) |
+|---|---|---|
+| Find Similar Objects… | always | `EditorControl.findByProperties` |
+| Clear Filter | a net is highlighted | `EditorControl.clearHighlight` |
+| Interactive Routing, Interactive Length Tuning | nothing selected | `InteractiveRouter.SingleTrack`, `LengthTuner.TuneSingleTrack` |
+| Place ▸ | always | the `P` tree of 6.3 |
+| Toggle Primitive Lock | selection | `EditorControl.toggleLock` |
+| Component Actions ▸ | footprint | Move Component (`move`), Unroute Component (new, as `U` `U` `O`), Show Nets / Hide Nets (local ratsnest), Select Component Connections, Manage 3D Bodies (footprint properties, 3D Models tab), Update From PCB Libraries (`updateFootprint`), Change Footprint (K), Open in Footprint Editor (K), Swap Components (`swap`), Flip, Rotate (K) |
+| Pad Actions ▸ (K) | pad | Copy, Apply and Push Pad Properties, Swap Pad Nets |
+| Track Actions ▸ (K) | track, arc, via | Drag (45 degree), Drag (free angle), Break Track, Change Track Width, Fillet Tracks, Select Connection, Unroute Selected, Switch Track to Next / Previous Layer, Route From Other End |
+| Polygon Actions ▸ | zone | Repour Selected (`zoneFill`), Repour All (`zoneFillAll`), Shelve Selected (`zoneUnfill`), Bring to Front / Send to Back (`zonePriorityMoveToTop` / `MoveToBottom`, with Raise and Lower), Polygon Manager (`zonesManager`), Add Cutout, Add Similar Polygon, Duplicate onto Layer, Combine Selected Polygons (`zoneMerge`) |
+| Net Actions ▸ | anything on a net | Show Nets / Hide Nets (`showNet` / `hideNet`), Highlight Net, Select Net, Assign Net Class, Properties (Net Inspector) |
+| Align ▸ | two or more items | the `A` tree |
+| Cross Probe | footprint, pad | `InteractiveSelection.SelectOnSchematic` |
+| Cut, Copy, Paste | selection / clipboard | unchanged, plus Paste Special and Duplicate (K) |
+| Applicable Unary Rules…, Applicable Binary Rules… | one item, two items | `InspectionTool.InspectConstraints`, `InspectionTool.InspectClearance` |
+| Violations ▸ | DRC marker | marker items: exclude, next, previous |
+| Preferences… | always | `openPreferences` |
+| Properties… | one or more items | `InteractiveEdit.properties`, last |
+
+Group enter and leave, create group, and the convert-shape commands keep a submenu each ("Unions" for groups, which
+is Altium's nearest idea, and "Convert") between Net Actions and Align. Zoom and Grid, which KiCad appends to every
+context menu, are dropped from this one: they are `Z`, `V` and `G`.
+
 ## 7. Order of work
 
 Each step is one issue and one or more `fix/<issue>-<slug>` branches, mergeable alone, with the profile off by
@@ -799,10 +866,12 @@ default until step 3 is in. An umbrella issue links them.
 | 9 | Schematic behaviors (5.9): `Ctrl`+drag inversion, label auto-increment, sticky defaults, nudge | M | As described in 5.9 |
 | 10 | 3D step 1 (5.10): `2`/`3`, camera kept, view keys, orbit modifier | S-M | `3` then `2` returns to the same 2D view; `3` again shows the same camera |
 | 11 | In-place text editing (5.9) | L | `F2` edits a value on the canvas and commits through undo |
-| 12 | Panels and toolbars (5.11); right-click menu order | S-M | - |
+| 12 | Panels and toolbars (5.11) | S-M | - |
 | 13 | 3D step 2: docked 3D canvas; importer support for extruded bodies | L | decided after step 10 has been used |
+| 14 | Right-click menus rebuilt from `MENU_DEF` trees (5.4, 6.6), both editors | M | The idle right-click menu follows 6.6 for free space, a part, a wire, a label, a sheet, a footprint, a track, a pad and a zone; the action-set test passes |
 
-Steps 1 to 4 give most of the benefit and have no dependency on the rest. 5 to 8 can go in parallel after 3, as can
+Step 14 is numbered last only so the earlier numbers keep matching their issues; it needs step 2 alone and belongs
+right after step 3. Steps 1 to 4 give most of the benefit and have no dependency on the rest. 5 to 8 can go in parallel after 3, as can
 9 and 10.
 
 ## 8. Testing
@@ -828,6 +897,7 @@ Taken by the owner on 2026-11-26.
 3. **Menu delay.** The popup appears after the short pause of section 5.3 (300 ms), adjustable, 0 for at once.
 4. **Ports.** `P` `R` places a hierarchical label; `P` `C` places a global label.
 5. **Docked 3D.** Not decided: build step 10 (two windows, camera kept) first and decide on step 13 after using it.
+6. **Right-click menus.** Rebuilt in Altium's structure, not just reordered (5.4, 6.6, step 14).
 
 Settled earlier from the owner's own Altium preferences: the wheel scrolls and `Ctrl`+wheel zooms; a plain drag in
 the schematic keeps wires attached and `Ctrl`+drag does not; in-place text editing is wanted; routing starts with
