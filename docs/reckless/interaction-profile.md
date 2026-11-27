@@ -256,8 +256,8 @@ Six pieces. The first three carry most of the muscle memory and should land firs
 ### 5.1 The profile switch
 
 One new global setting, `input.interaction_profile` in `COMMON_SETTINGS`, an enum with two values to start:
-`kicad` (stock) and `reckless` (this note). Everything below is conditional on it at run time; with `kicad` no code
-path changes. A build option `KICAD_HOUSE_INTERACTION` (ON with the other house options) only makes `reckless` the
+`kicad` (stock) and `altium` (this note), shown in Preferences as "KiCad" and "Altium-style". Everything below is conditional on it at run time; with `kicad` no code
+path changes. A build option `KICAD_HOUSE_INTERACTION` (ON with the other house options) only makes `altium` the
 value a new configuration starts with, exactly as `KICAD_HOUSE_THEME` does for the color theme. A selector goes at
 the top of Preferences > Hotkeys ("Interaction profile"), and changing it rebuilds menus, toolbars and hotkeys in
 every open frame (the path a language change takes: `ShowChangedLanguage` / `CommonSettingsChanged`).
@@ -268,14 +268,14 @@ Put the new code in its own files so a rebase onto upstream touches as little as
 common/interaction/interaction_profile.{h,cpp}   the enum, the active profile, change notification
 common/interaction/key_sequence.{h,cpp}          the sequence state machine (no wx, unit-testable)
 common/interaction/menu_def.{h,cpp}              declarative menu trees and their builders
-common/interaction/profile_hotkeys_reckless.cpp  generated from a checked-in table
-eeschema/interaction/sch_menus_reckless.cpp      the schematic trees
-pcbnew/interaction/pcb_menus_reckless.cpp        the PCB trees
+common/interaction/profile_hotkeys_altium.cpp    generated from a checked-in table
+eeschema/interaction/sch_menus_altium.cpp        the schematic trees
+pcbnew/interaction/pcb_menus_altium.cpp          the PCB trees
 ```
 
 Each hook into an upstream file is a short guarded call into these.
 
-The user-facing name is a decision for the owner (section 9). This note says "the profile".
+The owner chose the name "Altium-style" (section 9). This note says "the profile".
 
 ### 5.2 A profile layer in hotkey resolution
 
@@ -304,7 +304,7 @@ A sequence is a path through a menu tree. The engine is a small state machine ow
   clears the state. Any other key clears the state and is then dispatched normally, so a mistyped sequence costs
   nothing. Modifier-only events are ignored.
 - **The menu is a hint, not the mechanism.** On entering the pending state, start a short timer (default 300 ms,
-  a preference, 0 to show at once). If the sequence completes first, nothing is drawn: a fluent user never sees a
+  the owner's choice; a preference, 0 to show at once). If the sequence completes first, nothing is drawn: a fluent user never sees a
   menu flash. If the timer fires, show the node's menu at the cursor as a native popup built from the same tree.
   From then on the native menu handles the next letter through its mnemonics (Windows, GTK), and mouse and arrow
   keys work. Because the engine has already consumed the keys typed so far, type-ahead cannot be lost while the
@@ -432,10 +432,12 @@ delta (`resetLocalCoords`, which leaves `Space`). The status bar keeps showing w
 `EDA_DRAW_FRAME`'s context menu); `Ctrl+G` opens grid properties; `Shift+Ctrl+G` grid overrides; `Q` toggles
 units. In the schematic `G` and `Shift+G` cycle the grid (`gridNext`/`gridPrev`), as Altium does there.
 
-**Colors.** A color theme in Altium's classic layer colors (top red, bottom blue, overlay yellow, multi-layer
-gray, and so on) already exists outside this repository with the converted libraries. Offer it as a built-in theme
-beside "Reckless"; which one the profile starts in is the owner's choice (section 9). Colors matter to finger
-memory less than keys, but the transparent stack reads differently on each.
+**Colors.** The profile starts in Altium's classic colors (the owner's choice): on the PCB top red, bottom blue,
+overlay yellow, multi-layer gray and the rest on Altium's dark canvas, so the transparent stack blends to the
+colors an Altium eye reads; in the schematic a white sheet, blue wires and parts, dark-red labels and power ports.
+Add it as a built-in theme beside "Reckless" for every editor, made the way the Reckless theme is (a generator
+script and a checked-in JSON). A theme in these layer colors already exists outside this repository with the
+converted libraries and is the reference. Any theme stays selectable in Preferences > Colors.
 
 ### 5.8 Routing
 
@@ -488,7 +490,7 @@ All by rebinding unless marked new. Target keys are in section 6.4.
   takes that name. The first label of a session opens the dialog, as now.
 - **Ports.** In a hierarchy Altium's port is KiCad's hierarchical label and its sheet entry is the sheet pin; in a
   flat multi-sheet design a port behaves like a global label. `P` `R` places a hierarchical label and `P` `C`
-  (off-sheet connector) a global label; both are in the Place menu under their KiCad names with Altium's mnemonic.
+  (off-sheet connector) a global label (the owner's designs use sheet symbols with sheet entries); both are in the Place menu under their KiCad names with Altium's mnemonic.
   Power ports are power symbols (`P` `O`); add a submenu of the most used ones (GND, the supply rails found in the
   schematic) the way the Active Bar does.
 - **Editing text in place.** New: `F2`, or a second slow click on a selected field or label, opens a borderless
@@ -512,8 +514,8 @@ Step 2, larger: show the 3D canvas inside the PCB frame in place of the 2D canva
 document's view as in Altium. `PANEL_PREVIEW_3D_MODEL` shows what an embedded canvas needs: its own
 `BOARD_ADAPTER`, camera, tool manager and dispatcher. Swap the visible AUI center pane rather than showing both;
 route keys to whichever canvas is shown; make a click in the docked canvas select in the board directly (today's
-cross-probe path assumes the separate frame). Decide after step 1 has been used for a while whether this is worth
-its cost.
+cross-probe path assumes the separate frame). The owner will decide after step 1 has been used for a while whether this is
+worth its cost; don't start it before then.
 
 Models: the footprint editor's Place menu gets "3D Body" (`P` `B`, opens the 3D Models tab with a new extruded
 body) and "3D Model" (`P` `O`, the same tab's add-model path); Tools gets "Manage 3D Bodies". The importer should
@@ -791,13 +793,13 @@ default until step 3 is in. An umbrella issue links them.
 | 3 | Sequence engine (5.3) with the root actions; the full profile hotkey tables for direct keys (6.2, 6.4) | L | Every sequence in 6.1 and 6.3 marked "=" runs when typed fast with no menu shown, and from the menu when typed slowly, on Linux and Windows |
 | 4 | Command conventions (5.5): context aliases, right-click cancels, key list, `Tab`; mouse preset (5.6) | M | A part can be placed, rotated with `Space`, edited with `Tab`, and the command left with two right-clicks; wires end on right-click keeping clicked vertices |
 | 5 | Routing keys (5.8): bindings, width and via popups, look-ahead and loop-removal toggles, `Ctrl`+click finish, visible-layer stepping, `Ctrl+Shift`+wheel | M | A two-layer route with a layer change, a width change and a mode change can be made using only the keys in 6.4 |
-| 6 | Views (5.7): `L`, transparent 2D preset, `Shift+S`, mask level, grid popup | S-M | The preset reproduces the opacities in 3.5; the three single-layer states cycle |
+| 6 | Views (5.7): `L`, transparent 2D preset, Altium classic color theme, `Shift+S`, mask level, grid popup | M | The preset reproduces the opacities in 3.5 in the classic colors; the three single-layer states cycle |
 | 7 | Layer tab bar (5.7) | M | Tabs track layer visibility, color and the active layer both ways |
 | 8 | Heads-up display (5.7), with the routing line | M | Position, delta, layer, net under cursor, and router state update live without measurable frame cost |
 | 9 | Schematic behaviors (5.9): `Ctrl`+drag inversion, label auto-increment, sticky defaults, nudge | M | As described in 5.9 |
 | 10 | 3D step 1 (5.10): `2`/`3`, camera kept, view keys, orbit modifier | S-M | `3` then `2` returns to the same 2D view; `3` again shows the same camera |
 | 11 | In-place text editing (5.9) | L | `F2` edits a value on the canvas and commits through undo |
-| 12 | Panels and toolbars (5.11); color theme choice; right-click menu order | S-M | - |
+| 12 | Panels and toolbars (5.11); right-click menu order | S-M | - |
 | 13 | 3D step 2: docked 3D canvas; importer support for extruded bodies | L | decided after step 10 has been used |
 
 Steps 1 to 4 give most of the benefit and have no dependency on the rest. 5 to 8 can go in parallel after 3, as can
@@ -816,14 +818,20 @@ Steps 1 to 4 give most of the benefit and have no dependency on the rest. 5 to 8
   column, typed at speed. Fast typing is the thing unit tests cannot see: check for dropped second keys on GTK.
 - Follow the fork's rules: warnings are errors, upstream code style, 120 columns, American spelling, no pragmas.
 
-## 9. Open decisions for the owner
+## 9. Decisions
 
-1. **Name.** What the profile is called in Preferences, and its setting value. "Reckless" matches the color theme;
-   a name containing another company's trademark is avoidable.
-2. **Colors.** Start the profile in the "Reckless" theme or in Altium's classic layer colors.
-3. **Menu delay.** Whether the popup should appear at once, as Altium's does, or only after the pause in 5.3.
-4. **Ports.** Whether `P` `R` should place a hierarchical label (5.9) or a global label.
-5. **Docked 3D.** Whether step 13 is wanted at all once `2`/`3` switch windows with the camera kept.
+Taken by the owner on 2026-11-26.
+
+1. **Name.** "Altium-style" in Preferences; setting value `altium`.
+2. **Colors.** The profile starts in Altium's classic colors, with the transparent 2D view of section 3.5 as the
+   default for a new project.
+3. **Menu delay.** The popup appears after the short pause of section 5.3 (300 ms), adjustable, 0 for at once.
+4. **Ports.** `P` `R` places a hierarchical label; `P` `C` places a global label.
+5. **Docked 3D.** Not decided: build step 10 (two windows, camera kept) first and decide on step 13 after using it.
+
+Settled earlier from the owner's own Altium preferences: the wheel scrolls and `Ctrl`+wheel zooms; a plain drag in
+the schematic keeps wires attached and `Ctrl`+drag does not; in-place text editing is wanted; routing starts with
+look-ahead off.
 
 ## 10. Risks
 
