@@ -32,6 +32,7 @@
 #include <widgets/ui_common.h>
 
 #include <wx/filename.h>
+#include <wx/settings.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
 
@@ -121,9 +122,13 @@ BOOST_AUTO_TEST_CASE( StartupRegistersTheBundledDirectory )
 }
 
 
-#ifdef __WXMAC__
-// wxOSX has no GUI default font, so the house family reaches the controls only through DIALOG_SHIM's constructor
-// (KIPLATFORM::UI::ApplyInterfaceFont), which they inherit from as they are made. The dialog is made, not shown.
+#if defined( __WXMAC__ ) || defined( __WXMSW__ )
+// wxOSX and wxMSW have no settable GUI default font, so the house family reaches the controls only through
+// DIALOG_SHIM's constructor (KIPLATFORM::UI::ApplyInterfaceFont), which they inherit from as they are made. The
+// dialog is made, not shown.
+//
+// It also crosses a module boundary: the family is set here, in the test program's own copy of kiplatform, and
+// read by DIALOG_SHIM and KIUI in kicommon's. A family kept in a static of one copy reads as unset in the other.
 BOOST_AUTO_TEST_CASE( DialogControlsTakeTheInterfaceFont )
 {
     if( !KI_TEST::CanDoDisplayTests() )
@@ -131,7 +136,7 @@ BOOST_AUTO_TEST_CASE( DialogControlsTakeTheInterfaceFont )
 
     KIPLATFORM::UI::RegisterPrivateFonts( PATHS::GetBundledFontsPath() );
     KIPLATFORM::UI::SetInterfaceFontFamily( "Noto Serif" );
-    BOOST_REQUIRE_EQUAL( KIPLATFORM::UI::GetInterfaceFontFamily(), wxS( "Noto Serif" ) );
+    BOOST_REQUIRE_EQUAL( KIPLATFORM::UI::GetInterfaceFontFamily(), wxString( wxS( "Noto Serif" ) ) );
 
     struct TEST_DIALOG : public DIALOG_SHIM
     {
@@ -148,15 +153,20 @@ BOOST_AUTO_TEST_CASE( DialogControlsTakeTheInterfaceFont )
     // Heap-allocated and released with Destroy(): deleting a top-level window here, with no event loop, crashes
     TEST_DIALOG* dialog = new TEST_DIALOG();
 
-    BOOST_CHECK_EQUAL( dialog->GetFont().GetFaceName(), wxS( "Noto Serif" ) );
-    BOOST_CHECK_EQUAL( dialog->m_label->GetFont().GetFaceName(), wxS( "Noto Serif" ) );
-    BOOST_CHECK_EQUAL( dialog->m_text->GetFont().GetFaceName(), wxS( "Noto Serif" ) );
+    BOOST_CHECK_EQUAL( dialog->GetFont().GetFaceName(), wxString( wxS( "Noto Serif" ) ) );
+    BOOST_CHECK_EQUAL( dialog->m_label->GetFont().GetFaceName(), wxString( wxS( "Noto Serif" ) ) );
+    BOOST_CHECK_EQUAL( dialog->m_text->GetFont().GetFaceName(), wxString( wxS( "Noto Serif" ) ) );
 
     // At the size a control has without the house font
-    BOOST_CHECK_EQUAL( dialog->m_text->GetFont().GetPointSize(), wxFont( wxOSX_SYSTEM_FONT_NORMAL ).GetPointSize() );
+#ifdef __WXMAC__
+    const int systemSize = wxFont( wxOSX_SYSTEM_FONT_NORMAL ).GetPointSize();
+#else
+    const int systemSize = wxSystemSettings::GetFont( wxSYS_DEFAULT_GUI_FONT ).GetPointSize();
+#endif
+    BOOST_CHECK_EQUAL( dialog->m_text->GetFont().GetPointSize(), systemSize );
 
     // The KIUI getters follow the family
-    BOOST_CHECK_EQUAL( KIUI::GetControlFont( dialog->m_text ).GetFaceName(), wxS( "Noto Serif" ) );
+    BOOST_CHECK_EQUAL( KIUI::GetControlFont( dialog->m_text ).GetFaceName(), wxString( wxS( "Noto Serif" ) ) );
 
     dialog->Destroy();
 }

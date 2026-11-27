@@ -20,6 +20,7 @@
 add_executable( qa_kiplatform
     kiplatform_test_module.cpp
     test_reckless_chrome.cpp
+    test_interface_font.cpp
     )
 
 target_link_libraries( qa_kiplatform
@@ -34,6 +35,12 @@ kicad_qa_tool_manifest( qa_kiplatform )
 
 if( KICAD_HOUSE_THEME )
     target_compile_definitions( qa_kiplatform PRIVATE KICAD_HOUSE_THEME )
+endif()
+
+# The bundled house fonts, read from the source tree
+if( KICAD_HOUSE_FONTS )
+    target_compile_definitions( qa_kiplatform PRIVATE
+        "QA_HOUSE_FONTS_DIR=\"${CMAKE_SOURCE_DIR}/resources/fonts/house\"" )
 endif()
 
 kicad_add_boost_test( qa_kiplatform qa_kiplatform )

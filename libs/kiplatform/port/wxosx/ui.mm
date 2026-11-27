@@ -18,6 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <kiplatform/shared_state.h>
 #include <kiplatform/ui.h>
 
 #import <Cocoa/Cocoa.h>
@@ -87,10 +88,6 @@ wxWindow* KIPLATFORM::UI::CreateCanvasOverlay( wxWindow* aCanvas [[maybe_unused]
 }
 
 
-// The family SetInterfaceFontFamily() resolved, for ApplyInterfaceFont() and GetInterfaceFontFamily()
-static wxString s_interfaceFontFamily;
-
-
 void KIPLATFORM::UI::RegisterPrivateFonts( const wxString& aDirectory )
 {
     // wxFont::AddPrivateFont() registers nothing on wxOSX: it only accepts a file already in the bundle's
@@ -134,20 +131,22 @@ void KIPLATFORM::UI::SetInterfaceFontFamily( const char* aFamily )
         return;
 
     // wxOSX has no GUI default font to set: ApplyInterfaceFont() gives it to each top-level window instead
-    s_interfaceFontFamily = resolved.AsString();
+    SHARED_STATE::Set( SHARED_STATE::INTERFACE_FONT_FAMILY, resolved.AsString() );
 }
 
 
 void KIPLATFORM::UI::ApplyInterfaceFont( wxWindow* aTopLevel )
 {
-    if( !aTopLevel || s_interfaceFontFamily.IsEmpty() )
+    const wxString family = GetInterfaceFontFamily();
+
+    if( !aTopLevel || family.IsEmpty() )
         return;
 
     // A control made without a font of its own inherits its parent's (wxWindowMac::MacPostControlCreate calls
     // InheritAttributes() before falling back to the system font), so a font set here, before the window's
     // children are made, reaches all of them. The size is the one those controls would have had.
     wxFont font( wxOSX_SYSTEM_FONT_NORMAL );
-    font.SetFaceName( s_interfaceFontFamily );
+    font.SetFaceName( family );
 
     if( font.IsOk() )
         aTopLevel->SetFont( font );
@@ -156,7 +155,7 @@ void KIPLATFORM::UI::ApplyInterfaceFont( wxWindow* aTopLevel )
 
 wxString KIPLATFORM::UI::GetInterfaceFontFamily()
 {
-    return s_interfaceFontFamily;
+    return SHARED_STATE::Get( SHARED_STATE::INTERFACE_FONT_FAMILY );
 }
 
 

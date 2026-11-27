@@ -20,12 +20,17 @@
 
 #include <windows.h>
 
+#include <kiplatform/shared_state.h>
 #include <kiplatform/ui.h>
 
 #include <wx/cursor.h>
 #include <wx/dataview.h>
 #include <wx/dialog.h>
+#include <wx/dir.h>
 #include <wx/display.h>
+#include <wx/filename.h>
+#include <wx/font.h>
+#include <wx/fontenum.h>
 #include <wx/nonownedwnd.h>
 #include <wx/window.h>
 #include <wx/msw/registry.h>
@@ -309,15 +314,74 @@ void KIPLATFORM::UI::GetNativeWindowHandles( wxWindow* aWindow, void** aHandle, 
 }
 
 
-void KIPLATFORM::UI::RegisterPrivateFonts( const wxString& )
+void KIPLATFORM::UI::RegisterPrivateFonts( const wxString& aDirectory )
 {
-    // TODO(house fonts): wxFont::AddPrivateFont() each .ttf and .otf in the directory
+    if( !wxDir::Exists( aDirectory ) )
+        return;
+
+#if wxUSE_PRIVATE_FONTS
+    if( !wxFont::CanUsePrivateFonts() )
+        return;
+#endif
+
+    wxDir dir( aDirectory );
+
+    if( !dir.IsOpened() )
+        return;
+
+    for( const wxString& pattern : { wxS( "*.ttf" ), wxS( "*.otf" ) } )
+    {
+        wxString name;
+
+        for( bool found = dir.GetFirst( &name, pattern, wxDIR_FILES ); found; found = dir.GetNext( &name ) )
+        {
+            const wxString path = wxFileName( aDirectory, name ).GetFullPath();
+
+#if wxUSE_PRIVATE_FONTS
+            wxFont::AddPrivateFont( path );
+#else
+            // A wx built without private fonts: this is the call it would make, private to this process
+            ::AddFontResourceExW( path.wc_str(), FR_PRIVATE, nullptr );
+#endif
+        }
+    }
+
+    // wx lists the face names once and keeps the list, which would not have these
+    wxFontEnumerator::InvalidateCache();
 }
 
 
-void KIPLATFORM::UI::SetInterfaceFontFamily( const char* )
+void KIPLATFORM::UI::SetInterfaceFontFamily( const char* aFamily )
 {
-    // TODO(house fonts): make the GUI default font this family at the system size
+    const wxString family = wxString::FromUTF8( aFamily );
+
+    // wxMSW keeps its GUI default font to itself (from the system's message font), so there is nothing to set:
+    // ApplyInterfaceFont() gives the family to each top-level window instead
+    if( wxFontEnumerator::IsValidFacename( family ) )
+        SHARED_STATE::Set( SHARED_STATE::INTERFACE_FONT_FAMILY, family );
+}
+
+
+void KIPLATFORM::UI::ApplyInterfaceFont( wxWindow* aTopLevel )
+{
+    const wxString family = GetInterfaceFontFamily();
+
+    if( !aTopLevel || family.IsEmpty() )
+        return;
+
+    // A window not yet given a font has the system's GUI font at its own DPI. The controls made in it afterwards,
+    // and the dialogs it is the parent of, inherit the font set here. Native menus and the title bar keep the
+    // system's.
+    wxFont font = aTopLevel->GetFont();
+
+    if( font.IsOk() && font.SetFaceName( family ) )
+        aTopLevel->SetFont( font );
+}
+
+
+wxString KIPLATFORM::UI::GetInterfaceFontFamily()
+{
+    return SHARED_STATE::Get( SHARED_STATE::INTERFACE_FONT_FAMILY );
 }
 
 

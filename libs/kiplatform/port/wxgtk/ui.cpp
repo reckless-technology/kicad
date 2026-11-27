@@ -18,6 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <kiplatform/shared_state.h>
 #include <kiplatform/ui.h>
 
 #include <algorithm>
@@ -64,10 +65,6 @@ void KIPLATFORM::UI::RegisterPrivateFonts( const wxString& )
 }
 
 
-// The family SetInterfaceFontFamily() applied, for GetInterfaceFontFamily()
-static wxString s_interfaceFontFamily;
-
-
 void KIPLATFORM::UI::SetInterfaceFontFamily( const char* aFamily )
 {
     GtkSettings* settings = gtk_settings_get_default();
@@ -91,7 +88,7 @@ void KIPLATFORM::UI::SetInterfaceFontFamily( const char* aFamily )
     if( !isInstalled )
         return;
 
-    s_interfaceFontFamily = wxString::FromUTF8( aFamily );
+    SHARED_STATE::Set( SHARED_STATE::INTERFACE_FONT_FAMILY, wxString::FromUTF8( aFamily ) );
 
     gchar* currentName = nullptr;
     g_object_get( settings, "gtk-font-name", &currentName, nullptr );
@@ -118,7 +115,7 @@ void KIPLATFORM::UI::ApplyInterfaceFont( wxWindow* )
 
 wxString KIPLATFORM::UI::GetInterfaceFontFamily()
 {
-    return s_interfaceFontFamily;
+    return SHARED_STATE::Get( SHARED_STATE::INTERFACE_FONT_FAMILY );
 }
 
 

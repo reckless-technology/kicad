@@ -53,8 +53,9 @@ namespace KIPLATFORM
          * Called before SetInterfaceFontFamily() with the bundled house fonts (see KICAD_HOUSE_FONTS).
          *
          * wxGTK: nothing to do, because Pango reads the fontconfig that KiCad has already added the directory to.
-         * wxMSW and wxOSX: TODO(house fonts), register each .ttf and .otf in the directory with
-         * wxFont::AddPrivateFont() (the OS font system does not read fontconfig).
+         * wxMSW and wxOSX: each .ttf and .otf in the directory is registered with the OS font system for this
+         * process alone (it does not read fontconfig): AddFontResourceEx( FR_PRIVATE ) on Windows, through
+         * wxFont::AddPrivateFont() where wx is built with wxUSE_PRIVATE_FONTS, and CoreText on macOS.
          *
          * @param aDirectory is the directory of the bundled fonts, with a trailing separator.
          */
@@ -69,7 +70,7 @@ namespace KIPLATFORM
          *
          * wxOSX: there is no GUI default font to set, so this only resolves the family and remembers it for
          * ApplyInterfaceFont() and GetInterfaceFontFamily().
-         * wxMSW: TODO(house fonts), the implementation is still empty.
+         * wxMSW: the same, because its GUI default font is the system's message font and has no setter.
          *
          * @param aFamily is the font family, for example "Noto Serif".
          */
@@ -83,6 +84,8 @@ namespace KIPLATFORM
          * wxGTK: nothing to do, because the family is the toolkit's own default font already.
          * wxOSX: needed, because a control without a font of its own takes the system font when it is made,
          * unless its parent passes one down.
+         * wxMSW: needed for the same reason. Dialogs made with the window as their parent inherit it too. Native
+         * menus and the title bar keep the system's font.
          *
          * @param aTopLevel is the frame or dialog being constructed.
          */
