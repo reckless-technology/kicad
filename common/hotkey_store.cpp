@@ -94,6 +94,8 @@ void HOTKEY_STORE::Init( std::vector<TOOL_ACTION*> aActionsList, bool aIncludeRe
 {
     std::map<std::string, HOTKEY> masterMap;
 
+    m_profile = INTERACTION_PROFILE::Active();
+
     for( TOOL_ACTION* action : aActionsList )
     {
         // Internal actions probably shouldn't be allowed hotkeys
@@ -178,14 +180,51 @@ void HOTKEY_STORE::SaveAllHotkeys()
 }
 
 
-void HOTKEY_STORE::ResetAllHotkeysToDefault()
+void HOTKEY_STORE::SetProfile( INTERACTION_PROFILE_ID aProfile, const PROFILE_HOTKEY_MAP& aUserKeys )
 {
+    ResetAllHotkeysToDefault( aProfile );
+
     for( HOTKEY_SECTION& section : m_hk_sections )
     {
         for( HOTKEY& hotkey : section.m_HotKeys )
         {
-            hotkey.m_EditKeycode    = hotkey.m_Actions[ 0 ]->GetDefaultHotKey();
-            hotkey.m_EditKeycodeAlt = hotkey.m_Actions[ 0 ]->GetDefaultHotKeyAlt();
+            auto userKeys = aUserKeys.find( hotkey.m_Actions[0]->GetName() );
+
+            if( userKeys != aUserKeys.end() )
+            {
+                hotkey.m_EditKeycode = userKeys->second.first;
+                hotkey.m_EditKeycodeAlt = userKeys->second.second;
+            }
+        }
+    }
+}
+
+
+void HOTKEY_STORE::ResetAllHotkeysToDefault()
+{
+    ResetAllHotkeysToDefault( m_profile );
+}
+
+
+void HOTKEY_STORE::ResetAllHotkeysToDefault( INTERACTION_PROFILE_ID aProfile )
+{
+    m_profile = aProfile;
+
+    PROFILE_HOTKEY_LAYER profileLayer = INTERACTION_PROFILE::BuildHotKeyLayer( aProfile );
+
+    for( HOTKEY_SECTION& section : m_hk_sections )
+    {
+        for( HOTKEY& hotkey : section.m_HotKeys )
+        {
+            // The profile's defaults: the compiled ones under the profile's table. For KiCad's own, they are the
+            // compiled ones.
+            TOOL_ACTION* action = hotkey.m_Actions[0];
+
+            std::pair<int, int> defaults = INTERACTION_PROFILE::ApplyHotKeyLayer(
+                    profileLayer, action->GetName(), { action->GetDefaultHotKey(), action->GetDefaultHotKeyAlt() } );
+
+            hotkey.m_EditKeycode = defaults.first;
+            hotkey.m_EditKeycodeAlt = defaults.second;
         }
     }
 }

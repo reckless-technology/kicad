@@ -1,0 +1,386 @@
+/*
+ * This program source code file is part of KiCad, a free EDA CAD application.
+ *
+ * Copyright The KiCad Developers, see AUTHORS.txt for contributors.
+ *
+ * This program is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation, either version 3 of the License, or (at your
+ * option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+#include <boost/test/unit_test.hpp>
+
+#include <boost/test/unit_test.hpp>
+
+#include <hotkey_store.h>
+#include <hotkeys_basic.h>
+#include <interaction_profile.h>
+#include <settings/common_settings.h>
+#include <tool/action_manager.h>
+#include <tool/tool_action.h>
+#include <tool/tool_event.h>
+
+#include <wx/dir.h>
+#include <wx/ffile.h>
+#include <wx/filefn.h>
+#include <wx/filename.h>
+#include <wx/stdpaths.h>
+
+// The interaction profile (docs/reckless/interaction-profile.md, 5.1 and 5.2): the setting, the profile layer of hotkey
+// resolution, and a user hotkey file for each profile. The tests use the Altium-style table as checked in, which for
+// step 1 binds Q to toggleUnits, Home to zoomCenter and Shift+S to highContrastModeCycle.
+
+namespace
+{
+/// Actions with the names and compiled keys of real ones the table binds or takes keys from, and one it never touches.
+struct PROFILE_TEST_ACTIONS
+{
+    TOOL_ACTION toggleUnits = TOOL_ACTION( TOOL_ACTION_ARGS()
+                                                   .Name( "common.Control.toggleUnits" )
+                                                   .FriendlyName( "Switch units" )
+                                                   .Scope( AS_GLOBAL )
+                                                   .DefaultHotkey( MD_CTRL + 'U' ) );
+    TOOL_ACTION zoomCenter = TOOL_ACTION( TOOL_ACTION_ARGS()
+                                                  .Name( "common.Control.zoomCenter" )
+                                                  .FriendlyName( "Center on Cursor" )
+                                                  .Scope( AS_GLOBAL )
+                                                  .DefaultHotkey( WXK_F4 ) );
+    TOOL_ACTION highContrastModeCycle = TOOL_ACTION( TOOL_ACTION_ARGS()
+                                                             .Name( "common.Control.highContrastModeCycle" )
+                                                             .FriendlyName( "Inactive Layer View Mode" )
+                                                             .Scope( AS_GLOBAL )
+                                                             .DefaultHotkey( 'H' ) );
+    /// Compiled with Q, which the profile takes for toggleUnits
+    TOOL_ACTION customTrackViaSize = TOOL_ACTION( TOOL_ACTION_ARGS()
+                                                          .Name( "pcbnew.InteractiveRouter.CustomTrackViaSize" )
+                                                          .FriendlyName( "Custom Track/Via Size" )
+                                                          .Scope( AS_GLOBAL )
+                                                          .DefaultHotkey( 'Q' ) );
+    /// Compiled with Shift+S, which the profile takes for highContrastModeCycle
+    TOOL_ACTION magneticSnapToggle = TOOL_ACTION( TOOL_ACTION_ARGS()
+                                                          .Name( "common.Control.magneticSnapToggle" )
+                                                          .FriendlyName( "Snap" )
+                                                          .Scope( AS_GLOBAL )
+                                                          .DefaultHotkey( MD_SHIFT + 'S' ) );
+    /// Compiled with Home as its alternate, which the profile takes for zoomCenter
+    TOOL_ACTION zoomFitScreen = TOOL_ACTION( TOOL_ACTION_ARGS()
+                                                     .Name( "common.Control.zoomFitScreen" )
+                                                     .FriendlyName( "Zoom to Fit" )
+                                                     .Scope( AS_GLOBAL )
+                                                     .DefaultHotkey( int( MD_CTRL ) + int( WXK_HOME ) )
+                                                     .DefaultHotkeyAlt( WXK_HOME ) );
+    TOOL_ACTION untouched = TOOL_ACTION( TOOL_ACTION_ARGS()
+                                                 .Name( "common.test.untouched" )
+                                                 .FriendlyName( "Untouched" )
+                                                 .Scope( AS_GLOBAL )
+                                                 .DefaultHotkey( 'Z' )
+                                                 .DefaultHotkeyAlt( 'Y' ) );
+
+    std::vector<TOOL_ACTION*> List()
+    {
+        return { &toggleUnits,   &zoomCenter, &highContrastModeCycle, &customTrackViaSize, &magneticSnapToggle,
+                 &zoomFitScreen, &untouched };
+    }
+};
+
+using KEYS = std::pair<int, int>;
+
+/// What the keys of an action resolve to with a profile and a user file, as ACTION_MANAGER::UpdateHotKeys does.
+KEYS resolve( const TOOL_ACTION& aAction, INTERACTION_PROFILE_ID aProfile,
+              const PROFILE_HOTKEY_MAP& aUserKeys = PROFILE_HOTKEY_MAP() )
+{
+    return ACTION_MANAGER::ResolveHotKey( aAction, std::map<std::string, int>(),
+                                          INTERACTION_PROFILE::BuildHotKeyLayer( aProfile ), aUserKeys );
+}
+
+/// A new directory for the user files of a test, removed with it
+struct TEMP_DIRECTORY
+{
+    TEMP_DIRECTORY()
+    {
+        wxFileName fileName( wxFileName::CreateTempFileName( wxS( "interaction_profile" ) ) );
+        wxRemoveFile( fileName.GetFullPath() );
+        m_path = fileName.GetFullPath();
+        wxFileName::Mkdir( m_path );
+    }
+
+    ~TEMP_DIRECTORY() { wxFileName::Rmdir( m_path, wxPATH_RMDIR_RECURSIVE ); }
+
+    wxString m_path;
+};
+
+wxString readWholeFile( const wxString& aPath )
+{
+    wxString content;
+    wxFFile  file( aPath, wxS( "rb" ) );
+
+    if( file.IsOpened() )
+        file.ReadAll( &content );
+
+    return content;
+}
+} // namespace
+
+
+BOOST_AUTO_TEST_SUITE( InteractionProfile )
+
+BOOST_AUTO_TEST_CASE( SettingDefaultsAndRoundTrip )
+{
+    COMMON_SETTINGS settings;
+
+    // A parameter missing from the file loads its default, so an existing configuration needs no migration.
+    settings.Load();
+
+#ifdef KICAD_HOUSE_INTERACTION
+    BOOST_CHECK( settings.m_Input.interaction_profile == INTERACTION_PROFILE_ID::ALTIUM );
+#else
+    BOOST_CHECK( settings.m_Input.interaction_profile == INTERACTION_PROFILE_ID::STOCK );
+#endif
+
+    settings.m_Input.interaction_profile = INTERACTION_PROFILE_ID::ALTIUM;
+    settings.Store();
+
+    settings.m_Input.interaction_profile = INTERACTION_PROFILE_ID::STOCK;
+    settings.Load();
+    BOOST_CHECK( settings.m_Input.interaction_profile == INTERACTION_PROFILE_ID::ALTIUM );
+}
+
+
+BOOST_AUTO_TEST_CASE( TableParsing )
+{
+    PROFILE_HOTKEY_MAP bindings;
+
+    INTERACTION_PROFILE::ParseHotKeyTable( "# a comment\n\ncommon.a\tQ\tShift+W\r\ncommon.b\tHome\n", bindings );
+
+    BOOST_CHECK_EQUAL( bindings.size(), 2u );
+    BOOST_CHECK( bindings["common.a"] == KEYS( 'Q', MD_SHIFT + 'W' ) );
+    BOOST_CHECK( bindings["common.b"] == KEYS( WXK_HOME, 0 ) );
+
+    PROFILE_HOTKEY_LAYER layer = INTERACTION_PROFILE::BuildHotKeyLayerFromText( "common.a\tQ\tShift+W\n" );
+    BOOST_CHECK( layer.m_isActive );
+    BOOST_CHECK( layer.m_takenKeys == std::set<int>( { 'Q', MD_SHIFT + 'W' } ) );
+}
+
+
+BOOST_AUTO_TEST_CASE( EmbeddedTables )
+{
+    BOOST_CHECK( INTERACTION_PROFILE::HotKeyTableText( INTERACTION_PROFILE_ID::STOCK ).empty() );
+    BOOST_CHECK( !INTERACTION_PROFILE::BuildHotKeyLayer( INTERACTION_PROFILE_ID::STOCK ).m_isActive );
+
+    PROFILE_HOTKEY_LAYER altium = INTERACTION_PROFILE::BuildHotKeyLayer( INTERACTION_PROFILE_ID::ALTIUM );
+
+    BOOST_CHECK( altium.m_isActive );
+    BOOST_CHECK( altium.m_bindings.count( "common.Control.toggleUnits" ) );
+    BOOST_CHECK( altium.m_takenKeys.count( 'Q' ) );
+}
+
+
+BOOST_AUTO_TEST_CASE( SelectingTheProfileChangesTheBindingsAndBack )
+{
+    PROFILE_TEST_ACTIONS actions;
+
+    // KiCad: the compiled defaults
+    BOOST_CHECK( resolve( actions.toggleUnits, INTERACTION_PROFILE_ID::STOCK ) == KEYS( MD_CTRL + 'U', 0 ) );
+    BOOST_CHECK( resolve( actions.zoomCenter, INTERACTION_PROFILE_ID::STOCK ) == KEYS( WXK_F4, 0 ) );
+    BOOST_CHECK( resolve( actions.highContrastModeCycle, INTERACTION_PROFILE_ID::STOCK ) == KEYS( 'H', 0 ) );
+
+    // Altium-style: the table's
+    BOOST_CHECK( resolve( actions.toggleUnits, INTERACTION_PROFILE_ID::ALTIUM ) == KEYS( 'Q', 0 ) );
+    BOOST_CHECK( resolve( actions.zoomCenter, INTERACTION_PROFILE_ID::ALTIUM ) == KEYS( WXK_HOME, 0 ) );
+    BOOST_CHECK( resolve( actions.highContrastModeCycle, INTERACTION_PROFILE_ID::ALTIUM )
+                 == KEYS( MD_SHIFT + 'S', 0 ) );
+
+    // And KiCad again restores them
+    BOOST_CHECK( resolve( actions.toggleUnits, INTERACTION_PROFILE_ID::STOCK ) == KEYS( MD_CTRL + 'U', 0 ) );
+    BOOST_CHECK( resolve( actions.zoomCenter, INTERACTION_PROFILE_ID::STOCK ) == KEYS( WXK_F4, 0 ) );
+    BOOST_CHECK( resolve( actions.highContrastModeCycle, INTERACTION_PROFILE_ID::STOCK ) == KEYS( 'H', 0 ) );
+}
+
+
+BOOST_AUTO_TEST_CASE( KiCadProfileIsExactlyTheCompiledDefaults )
+{
+    PROFILE_TEST_ACTIONS      actions;
+    std::vector<TOOL_ACTION*> everyAction = actions.List();
+
+    // The whole set the program has linked in as well as the test actions
+    for( TOOL_ACTION* action : ACTION_MANAGER::GetActionList() )
+        everyAction.push_back( action );
+
+    BOOST_REQUIRE( everyAction.size() > actions.List().size() );
+
+    for( const TOOL_ACTION* action : everyAction )
+    {
+        BOOST_CHECK_MESSAGE( resolve( *action, INTERACTION_PROFILE_ID::STOCK )
+                                     == KEYS( action->GetDefaultHotKey(), action->GetDefaultHotKeyAlt() ),
+                             action->GetName() << " changed under the KiCad profile" );
+    }
+}
+
+
+BOOST_AUTO_TEST_CASE( AKeyTheProfileTakesDropsOutOfTheCompiledDefaults )
+{
+    PROFILE_TEST_ACTIONS actions;
+
+    // Q was CustomTrackViaSize's; the profile binds it to toggleUnits, so CustomTrackViaSize has none
+    BOOST_CHECK( resolve( actions.customTrackViaSize, INTERACTION_PROFILE_ID::STOCK ) == KEYS( 'Q', 0 ) );
+    BOOST_CHECK( resolve( actions.customTrackViaSize, INTERACTION_PROFILE_ID::ALTIUM ) == KEYS( 0, 0 ) );
+
+    // Shift+S likewise
+    BOOST_CHECK( resolve( actions.magneticSnapToggle, INTERACTION_PROFILE_ID::ALTIUM ) == KEYS( 0, 0 ) );
+
+    // A taken key is removed from the slot that held it only: the primary stays, the alternate goes
+    BOOST_CHECK( resolve( actions.zoomFitScreen, INTERACTION_PROFILE_ID::ALTIUM )
+                 == KEYS( int( MD_CTRL ) + int( WXK_HOME ), 0 ) );
+
+    // An action no key of which is taken keeps its keys, alternate included
+    BOOST_CHECK( resolve( actions.untouched, INTERACTION_PROFILE_ID::ALTIUM ) == KEYS( 'Z', 'Y' ) );
+}
+
+
+BOOST_AUTO_TEST_CASE( TheUserFileWinsOverTheProfile )
+{
+    PROFILE_TEST_ACTIONS actions;
+    PROFILE_HOTKEY_MAP   userKeys;
+
+    userKeys["common.Control.toggleUnits"] = KEYS( 'X', 0 );
+    userKeys["pcbnew.InteractiveRouter.CustomTrackViaSize"] = KEYS( 'Q', 0 );
+
+    BOOST_CHECK( resolve( actions.toggleUnits, INTERACTION_PROFILE_ID::ALTIUM, userKeys ) == KEYS( 'X', 0 ) );
+
+    // The user may bind a key the profile took, for an action the profile left alone
+    BOOST_CHECK( resolve( actions.customTrackViaSize, INTERACTION_PROFILE_ID::ALTIUM, userKeys ) == KEYS( 'Q', 0 ) );
+}
+
+
+BOOST_AUTO_TEST_CASE( EachProfileHasItsOwnUserFile )
+{
+    TEMP_DIRECTORY directory;
+
+    wxString kicadFile = INTERACTION_PROFILE::UserHotKeyFilePath( INTERACTION_PROFILE_ID::STOCK, directory.m_path );
+    wxString altiumFile = INTERACTION_PROFILE::UserHotKeyFilePath( INTERACTION_PROFILE_ID::ALTIUM, directory.m_path );
+
+    BOOST_CHECK_EQUAL( wxFileName( kicadFile ).GetFullName(), "user.hotkeys" );
+    BOOST_CHECK_EQUAL( wxFileName( altiumFile ).GetFullName(), "user.altium.hotkeys" );
+
+    PROFILE_TEST_ACTIONS      actions;
+    std::vector<TOOL_ACTION*> list = actions.List();
+
+    // The user customizes the KiCad profile
+    actions.untouched.SetHotKey( 'K', 0 );
+    WriteHotKeyConfig( list, kicadFile );
+    wxString kicadContent = readWholeFile( kicadFile );
+
+    // Then the Altium-style one
+    actions.untouched.SetHotKey( 'A', 'B' );
+    WriteHotKeyConfig( list, altiumFile );
+
+    // Writing the second left the first alone, and each reads back its own keys
+    BOOST_CHECK_EQUAL( readWholeFile( kicadFile ), kicadContent );
+
+    PROFILE_HOTKEY_MAP kicadKeys;
+    PROFILE_HOTKEY_MAP altiumKeys;
+    ReadHotKeyConfig( kicadFile, kicadKeys );
+    ReadHotKeyConfig( altiumFile, altiumKeys );
+
+    BOOST_CHECK( kicadKeys["common.test.untouched"] == KEYS( 'K', 0 ) );
+    BOOST_CHECK( altiumKeys["common.test.untouched"] == KEYS( 'A', 'B' ) );
+
+    // Loading a profile's keys into actions reads that profile's file over the profile's defaults
+    ReadHotKeyConfigIntoActions( INTERACTION_PROFILE_ID::STOCK, kicadFile, list );
+    BOOST_CHECK_EQUAL( actions.untouched.GetHotKey(), 'K' );
+    BOOST_CHECK_EQUAL( actions.toggleUnits.GetHotKey(), MD_CTRL + 'U' );
+
+    ReadHotKeyConfigIntoActions( INTERACTION_PROFILE_ID::ALTIUM, altiumFile, list );
+    BOOST_CHECK_EQUAL( actions.untouched.GetHotKey(), 'A' );
+}
+
+
+BOOST_AUTO_TEST_CASE( ResetGivesTheProfilesDefaults )
+{
+    PROFILE_TEST_ACTIONS actions;
+
+    HOTKEY_STORE store;
+    store.Init( actions.List(), false );
+
+    auto keysOf = [&]( const TOOL_ACTION& aAction ) -> KEYS
+    {
+        for( HOTKEY_SECTION& section : store.GetSections() )
+        {
+            for( HOTKEY& hotkey : section.m_HotKeys )
+            {
+                if( hotkey.m_Actions[0] == &aAction )
+                    return KEYS( hotkey.m_EditKeycode, hotkey.m_EditKeycodeAlt );
+            }
+        }
+
+        return KEYS( -1, -1 );
+    };
+
+    store.ResetAllHotkeysToDefault( INTERACTION_PROFILE_ID::ALTIUM );
+    BOOST_CHECK( store.GetProfile() == INTERACTION_PROFILE_ID::ALTIUM );
+    BOOST_CHECK( keysOf( actions.toggleUnits ) == KEYS( 'Q', 0 ) );
+    BOOST_CHECK( keysOf( actions.customTrackViaSize ) == KEYS( 0, 0 ) );
+    BOOST_CHECK( keysOf( actions.untouched ) == KEYS( 'Z', 'Y' ) );
+
+    // The no-argument reset is the store's profile's
+    store.GetSections()[0].m_HotKeys[0].m_EditKeycode = 'J';
+    store.ResetAllHotkeysToDefault();
+    BOOST_CHECK( keysOf( actions.toggleUnits ) == KEYS( 'Q', 0 ) );
+    BOOST_CHECK( keysOf( actions.zoomCenter ) == KEYS( WXK_HOME, 0 ) );
+
+    store.ResetAllHotkeysToDefault( INTERACTION_PROFILE_ID::STOCK );
+    BOOST_CHECK( keysOf( actions.toggleUnits ) == KEYS( MD_CTRL + 'U', 0 ) );
+    BOOST_CHECK( keysOf( actions.customTrackViaSize ) == KEYS( 'Q', 0 ) );
+
+    // Switching the store to a profile applies that profile's user keys over its defaults
+    PROFILE_HOTKEY_MAP userKeys;
+    userKeys["common.test.untouched"] = KEYS( 'K', 0 );
+    store.SetProfile( INTERACTION_PROFILE_ID::ALTIUM, userKeys );
+    BOOST_CHECK( keysOf( actions.untouched ) == KEYS( 'K', 0 ) );
+    BOOST_CHECK( keysOf( actions.toggleUnits ) == KEYS( 'Q', 0 ) );
+}
+
+
+BOOST_AUTO_TEST_CASE( ConflictChecksRunOnTheResolvedSet )
+{
+    PROFILE_TEST_ACTIONS actions;
+
+    HOTKEY_STORE store;
+    store.Init( actions.List(), false );
+    HOTKEY* conflict = nullptr;
+
+    // In the KiCad set, H is highContrastModeCycle's, so another common action cannot take it; Q is the router's own
+    store.ResetAllHotkeysToDefault( INTERACTION_PROFILE_ID::STOCK );
+    BOOST_CHECK( store.CheckKeyConflicts( &actions.untouched, 'H', &conflict ) );
+    BOOST_CHECK( !store.CheckKeyConflicts( &actions.customTrackViaSize, 'Q', &conflict ) );
+
+    // In the Altium-style set H is free, and Q is toggleUnits', which the router's action can no longer take
+    store.ResetAllHotkeysToDefault( INTERACTION_PROFILE_ID::ALTIUM );
+    BOOST_CHECK( !store.CheckKeyConflicts( &actions.untouched, 'H', &conflict ) );
+    BOOST_CHECK( store.CheckKeyConflicts( &actions.customTrackViaSize, 'Q', &conflict ) );
+    BOOST_CHECK( conflict && conflict->m_Actions[0] == &actions.toggleUnits );
+}
+
+
+BOOST_AUTO_TEST_CASE( ActionNamesInATableAreChecked )
+{
+    PROFILE_TEST_ACTIONS actions;
+    PROFILE_HOTKEY_LAYER layer = INTERACTION_PROFILE::BuildHotKeyLayerFromText(
+            "common.Control.toggleUnits\tQ\ncommon.Control.noSuchAction\tW\npcbnew.other.noSuchAction\tE\n" );
+
+    std::vector<std::string> unregistered =
+            INTERACTION_PROFILE::UnregisteredActionNames( layer, actions.List(), { "common." } );
+
+    // Only the prefix asked for is checked, and only a name nothing registers is reported
+    BOOST_CHECK( unregistered == std::vector<std::string>( { "common.Control.noSuchAction" } ) );
+}
+
+BOOST_AUTO_TEST_SUITE_END()

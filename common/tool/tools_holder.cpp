@@ -158,7 +158,14 @@ void TOOLS_HOLDER::ShowChangedLanguage()
 void TOOLS_HOLDER::CommonSettingsChanged( int aFlags )
 {
     if( GetToolManager() )
-        GetToolManager()->GetActionManager()->UpdateHotKeys( aFlags & HOTKEYS_CHANGED );
+    {
+        // A change of interaction profile re-resolves the hotkeys: the profile layer is part of them
+        GetToolManager()->GetActionManager()->UpdateHotKeys( aFlags
+                                                             & ( HOTKEYS_CHANGED | INTERACTION_PROFILE_CHANGED ) );
+    }
+
+    if( aFlags & INTERACTION_PROFILE_CHANGED )
+        InteractionProfileChanged();
 
     COMMON_SETTINGS* settings = Pgm().GetCommonSettings();
 

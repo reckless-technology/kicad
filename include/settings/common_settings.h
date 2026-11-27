@@ -20,6 +20,7 @@
 
 #pragma once
 
+#include <interaction_profile.h>
 #include <memory>
 #include <vector>
 #include <mouse_drag_action.h>
@@ -123,6 +124,9 @@ public:
         bool zoom_speed_auto;
 
         TOUCHPAD_MODE touchpad_mode;
+
+        /// Which way of reaching KiCad's functions is in force: stock KiCad or the Altium-style profile
+        INTERACTION_PROFILE_ID interaction_profile;
 
         int scroll_modifier_zoom;
         int scroll_modifier_pan_h;

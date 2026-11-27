@@ -69,6 +69,14 @@ public:
 
     void Init( std::vector<TOOL_ACTION*> aActionsList, bool aIncludeReadOnlyCmds );
 
+    /**
+     * Make a profile the one the store edits: every hotkey becomes the profile's default, then what \a aUserKeys
+     * (that profile's user hotkey file) says. Only the store changes, not the actions.
+     */
+    void SetProfile( INTERACTION_PROFILE_ID aProfile, const PROFILE_HOTKEY_MAP& aUserKeys );
+
+    INTERACTION_PROFILE_ID GetProfile() const { return m_profile; }
+
     static wxString GetAppName( TOOL_ACTION* aAction );
     static wxString GetSectionName( TOOL_ACTION* aAction );
 
@@ -84,9 +92,16 @@ public:
     void SaveAllHotkeys();
 
     /**
-     * Reset every hotkey in the store to the default values
+     * Reset every hotkey in the store to the default values of the store's profile (the active one unless
+     * SetProfile() chose another).
      */
     void ResetAllHotkeysToDefault();
+
+    /**
+     * Reset every hotkey in the store to the default values of a profile: the compiled defaults under the
+     * profile's table, and make it the store's profile. Conflict checks then run on this resolved set.
+     */
+    void ResetAllHotkeysToDefault( INTERACTION_PROFILE_ID aProfile );
 
     /**
      * Resets every hotkey to the original values.
@@ -106,6 +121,7 @@ public:
 private:
     std::vector<TOOL_MANAGER*>  m_toolManagers;
     std::vector<HOTKEY_SECTION> m_hk_sections;
+    INTERACTION_PROFILE_ID      m_profile = INTERACTION_PROFILE_ID::STOCK;
 };
 
 #endif // HOTKEY_STORE__H

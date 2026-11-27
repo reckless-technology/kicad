@@ -199,6 +199,14 @@ option( KICAD_HOUSE_THEME
     "Make the built-in Reckless color theme the default for a new configuration"
     ${_KICAD_HOUSE_DEFAULT} )
 
+# The Altium-style interaction profile is in every build (it is a setting, input.interaction_profile); this makes it the
+# one a new configuration starts with (common/CMakeLists.txt defines KICAD_HOUSE_INTERACTION for kicommon, the only
+# library that reads it). OFF even in the house build until the profile's hotkey tables are complete (step 3 of
+# docs/reckless/interaction-profile.md): until then the profile holds a handful of bindings and is for testing.
+option( KICAD_HOUSE_INTERACTION
+    "Make the Altium-style interaction profile the default for a new configuration"
+    OFF )
+
 # The interface font is set in code (PGM_BASE::InitPgm), so the build carries the choice however a program is started.
 if( KICAD_HOUSE_FONTS )
     add_compile_definitions( KICAD_HOUSE_FONTS )

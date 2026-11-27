@@ -152,12 +152,20 @@ public:
 #define ENVVARS_CHANGED  0x0001
 #define TEXTVARS_CHANGED 0x0002
 #define HOTKEYS_CHANGED  0x0004
+#define INTERACTION_PROFILE_CHANGED 0x0008 ///< input.interaction_profile changed; hotkeys are re-resolved too
 
     /**
      * Notification event that some of the common (suite-wide) settings have changed.
      * Update hotkeys, preferences, etc.
      */
     virtual void CommonSettingsChanged( int aFlags = 0 );
+
+    /**
+     * Notification that the interaction profile changed (CommonSettingsChanged with INTERACTION_PROFILE_CHANGED),
+     * after hotkeys have been re-resolved. Does nothing yet: step 2 of docs/reckless/interaction-profile.md
+     * rebuilds the frame's menus and toolbars here.
+     */
+    virtual void InteractionProfileChanged() {}
 
     /**
      * Canvas access.

@@ -27,9 +27,11 @@
 #include <tool/tool_manager.h>
 #include <widgets/button_row_panel.h>
 #include <widgets/ui_common.h>
+#include <wx/choice.h>
 #include <wx/filedlg.h>
 #include <wx/sizer.h>
 #include <wx/srchctrl.h>
+#include <wx/stattext.h>
 #include <wx/txtstrm.h>
 #include <wx/wfstream.h>
 
@@ -71,6 +73,25 @@ PANEL_HOTKEYS_EDITOR::PANEL_HOTKEYS_EDITOR( EDA_BASE_FRAME* aFrame, wxWindow* aW
     wxBoxSizer* mainSizer = new wxBoxSizer( wxVERTICAL );
     wxBoxSizer* bMargins = new wxBoxSizer( wxVERTICAL );
 
+    // The interaction profile selector, above the hotkeys it chooses between
+    wxBoxSizer*   profileSizer = new wxBoxSizer( wxHORIZONTAL );
+    wxStaticText* profileLabel = new wxStaticText( this, wxID_ANY, _( "Interaction profile:" ) );
+    m_profileChoice = new wxChoice( this, wxID_ANY );
+
+    for( INTERACTION_PROFILE_ID profile : INTERACTION_PROFILE::AllProfiles() )
+    {
+        m_profileChoice->Append( INTERACTION_PROFILE::DisplayName( profile ) );
+    }
+
+    m_profileChoice->SetToolTip( _( "Which way of reaching KiCad's functions is used. Each profile has its own "
+                                    "default hotkeys and keeps its own customizations." ) );
+
+    profileSizer->Add( profileLabel, 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, KIUI::GetStdMargin() );
+    profileSizer->Add( m_profileChoice, 0, wxALIGN_CENTER_VERTICAL, 0 );
+    bMargins->Add( profileSizer, 0, wxEXPAND | wxTOP | wxBOTTOM | wxRIGHT, 5 );
+
+    m_selectedProfile = INTERACTION_PROFILE::Active();
+
     m_filterSearch = CreateTextFilterBox( this, _( "Type filter text" ) );
     bMargins->Add( m_filterSearch, 0, wxEXPAND | wxTOP | wxRIGHT, 5 );
 
@@ -101,6 +122,7 @@ PANEL_HOTKEYS_EDITOR::PANEL_HOTKEYS_EDITOR( EDA_BASE_FRAME* aFrame, wxWindow* aW
 
     // Connect Events
     m_filterSearch->Bind( wxEVT_COMMAND_TEXT_UPDATED, &PANEL_HOTKEYS_EDITOR::OnFilterSearch, this );
+    m_profileChoice->Bind( wxEVT_CHOICE, &PANEL_HOTKEYS_EDITOR::OnProfileChoice, this );
 }
 
 
@@ -108,6 +130,7 @@ PANEL_HOTKEYS_EDITOR::~PANEL_HOTKEYS_EDITOR()
 {
     m_filterSearch->Unbind( wxEVT_COMMAND_TEXT_UPDATED, &PANEL_HOTKEYS_EDITOR::OnFilterSearch,
                             this );
+    m_profileChoice->Unbind( wxEVT_CHOICE, &PANEL_HOTKEYS_EDITOR::OnProfileChoice, this );
 }
 
 
@@ -165,6 +188,18 @@ bool PANEL_HOTKEYS_EDITOR::TransferDataToWindow()
 {
     m_hotkeyStore.Init( m_actions, true );
 
+    // The store starts from the actions' resolved keys, which are the active profile's
+    m_selectedProfile = INTERACTION_PROFILE::Active();
+
+    // The choice lists the profiles in the order of AllProfiles()
+    std::vector<INTERACTION_PROFILE_ID> profiles = INTERACTION_PROFILE::AllProfiles();
+
+    for( size_t ii = 0; ii < profiles.size(); ++ii )
+    {
+        if( profiles[ii] == m_selectedProfile )
+            m_profileChoice->SetSelection( static_cast<int>( ii ) );
+    }
+
     if( !m_hotkeyListCtrl->TransferDataToControl() )
         return false;
 
@@ -181,9 +216,24 @@ bool PANEL_HOTKEYS_EDITOR::TransferDataFromWindow()
     if( !m_hotkeyListCtrl->TransferDataFromControl() )
         return false;
 
-    WriteHotKeyConfig( m_actions );
+    // The keys go to the selected profile's own file, and the profile becomes the active one
+    WriteHotKeyConfig( m_actions, INTERACTION_PROFILE::UserHotKeyFilePath( m_selectedProfile ) );
+    INTERACTION_PROFILE::SetActive( m_selectedProfile );
 
     return true;
+}
+
+
+void PANEL_HOTKEYS_EDITOR::OnProfileChoice( wxCommandEvent& aEvent )
+{
+    m_selectedProfile = INTERACTION_PROFILE::AllProfiles().at( aEvent.GetSelection() );
+
+    PROFILE_HOTKEY_MAP userKeys;
+    ReadHotKeyConfig( INTERACTION_PROFILE::UserHotKeyFilePath( m_selectedProfile ), userKeys );
+
+    // Edits made for the other profile are dropped: each profile's file holds only what was accepted
+    m_hotkeyStore.SetProfile( m_selectedProfile, userKeys );
+    m_hotkeyListCtrl->TransferDataToControl();
 }
 
 

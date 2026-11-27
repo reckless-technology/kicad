@@ -105,6 +105,24 @@ configuration under `KICAD_HOUSE_THEME`; Light, Dark and Automatic keep their me
 keeps the choice it names. An upstream build keeps the Reckless PNGs out of `images.tar.gz`, hides the Reckless
 choice, and is otherwise unchanged; the committed Light and Dark SVGs and PNGs are untouched.
 
+The Altium-style interaction profile (#133, step 1 is #134) is a setting, `input.interaction_profile` in
+`kicad_common.json`, with two values: `kicad`, stock KiCad ("KiCad" in Preferences), and `altium` ("Altium-style"). A
+selector at the top of Preferences > Hotkeys chooses it, and changing it re-applies hotkeys in every open frame (the
+`INTERACTION_PROFILE_CHANGED` flag of `CommonSettingsChanged`; `TOOLS_HOLDER::InteractionProfileChanged()` is the
+empty hook where step 2 rebuilds menus). The design is `docs/reckless/interaction-profile.md`. Hotkeys resolve in
+layers: compiled default, then the legacy file, then the profile's table, then the user's file. The table is
+`common/interaction/altium.hotkeys`, in the `user.hotkeys` format and embedded at build time like the color theme, and a
+key it binds is taken from every action it does not name, so a stock single-letter default never fights a profile key.
+Each profile has its own user file, `user.hotkeys` for `kicad` and `user.altium.hotkeys` for `altium`, so switching
+never destroys a customization, and "Reset to defaults" in the hotkey editor means the selected profile's defaults.
+With `kicad` the resolved hotkeys are exactly the compiled defaults and no code path changes. The code is in
+`common/interaction/` and `include/interaction_profile.h`; the active profile is read from the common settings through
+`Pgm()`, never from a static, because `common` is linked into every module and a static there is one copy for each. In
+step 1 the Altium-style table holds three bindings, enough to test with; the full tables are step 3. The
+`KICAD_HOUSE_INTERACTION` option only chooses which profile a new configuration starts with, and it is **off even in the
+house build** until step 3 lands, so an existing and a new configuration both start in `kicad`; an existing
+configuration keeps the profile it names.
+
 ## Keeping up with upstream
 
 `reckless/main` is rebased onto upstream `master` only when Jonny asks for it, never on a schedule, so a rebase never

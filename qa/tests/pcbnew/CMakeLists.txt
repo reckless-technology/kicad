@@ -24,6 +24,7 @@ set( QA_PCBNEW_SRCS
 
     # Shared between programs, but dependent on the BIU
     ${CMAKE_SOURCE_DIR}/qa/tests/common/test_format_units.cpp
+    ${CMAKE_SOURCE_DIR}/qa/tests/common/test_interaction_profile_actions.cpp
     ${CMAKE_SOURCE_DIR}/qa/tests/common/test_array_options.cpp
 
     # testing utility routines
@@ -650,3 +651,7 @@ set( PCBNEW_EXCLUDED_FROM_OTHER
 :!ConstraintSolver*" )
 
 add_pcbnew_test_group( other "${PCBNEW_EXCLUDED_FROM_OTHER}" )
+
+# The action names this executable links, for the interaction profile's table check
+set_property( SOURCE ${CMAKE_SOURCE_DIR}/qa/tests/common/test_interaction_profile_actions.cpp APPEND PROPERTY
+    COMPILE_DEFINITIONS "INTERACTION_PROFILE_QA_PREFIXES=\"common.\",\"pcbnew.\"" )

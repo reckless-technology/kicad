@@ -20,6 +20,7 @@
 #ifndef  HOTKEYS_BASIC_H
 #define  HOTKEYS_BASIC_H
 
+#include <interaction_profile.h>
 #include <wx/string.h>
 #include <map>
 #include <vector>
@@ -102,16 +103,29 @@ void ReadHotKeyConfig( const wxString&                             aFileName,
                        std::map<std::string, std::pair<int, int>>& aHotKeys );
 
 /**
+ * Read a hotkey config file into a map from text in the same format.
+ */
+void ParseHotKeyConfig( const wxString& aText, std::map<std::string, std::pair<int, int>>& aHotKeys );
+
+/**
  * Read a hotkey config file into a list of actions.
  *
- * If \a aFileName is empty it will read in the default hotkeys file.
+ * If \a aFileName is empty it will read in the active interaction profile's user hotkeys file.
  */
 void ReadHotKeyConfigIntoActions( const wxString& aFileName, std::vector<TOOL_ACTION*>& aActions );
 
 /**
- * Update the hotkeys config file with the hotkeys from the given actions map.
+ * Set a list of actions to a profile's hotkeys: its defaults, then its user file (or \a aFileName when given).
  */
-int WriteHotKeyConfig( const std::vector<TOOL_ACTION*>& aActions );
+void ReadHotKeyConfigIntoActions( INTERACTION_PROFILE_ID aProfile, const wxString& aFileName,
+                                  std::vector<TOOL_ACTION*>& aActions );
+
+/**
+ * Update the hotkeys config file with the hotkeys from the given actions map.
+ *
+ * If \a aFileName is empty it will write the active interaction profile's user hotkeys file.
+ */
+int WriteHotKeyConfig( const std::vector<TOOL_ACTION*>& aActions, const wxString& aFileName = wxEmptyString );
 
 /**
  * Read hotkey configuration for a given app.

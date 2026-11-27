@@ -31,6 +31,7 @@
 #include <vector>
 
 #include <frame_type.h>
+#include <interaction_profile.h>
 #include <tool/selection_conditions.h>
 
 class TOOL_BASE;
@@ -215,10 +216,20 @@ public:
      */
     const ACTION_CONDITIONS* GetCondition( const TOOL_ACTION& aAction ) const;
 
+    /**
+     * Resolve an action's hotkeys by layering over its compiled default: the legacy file, then the interaction
+     * profile's table (which also removes the keys it takes from actions it does not name), then the user's file.
+     *
+     * @return the primary and the alternate key.
+     */
+    static std::pair<int, int> ResolveHotKey( const TOOL_ACTION& aAction, const std::map<std::string, int>& aLegacyMap,
+                                              const PROFILE_HOTKEY_LAYER&                       aProfileLayer,
+                                              const std::map<std::string, std::pair<int, int>>& aHotKeyMap );
+
 private:
-    // Resolve a hotkey by applying legacy and current settings over the action's
-    // default hotkey.
+    // Resolve a hotkey and set it on the action.
     void processHotKey( TOOL_ACTION* aAction, const std::map<std::string, int>& aLegacyMap,
+                        const PROFILE_HOTKEY_LAYER&                       aProfileLayer,
                         const std::map<std::string, std::pair<int, int>>& aHotKeyMap );
 
 private:

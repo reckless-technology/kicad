@@ -74,6 +74,8 @@ set( QA_COMMON_SRCS
     test_frame_close_block.cpp
     test_hashtables.cpp
     test_hotkey_store.cpp
+    test_interaction_profile.cpp
+    test_interaction_profile_actions.cpp
     test_increment.cpp
     test_inplace_function.cpp
     test_io_error.cpp
@@ -319,6 +321,15 @@ set_property( SOURCE test_house_icon_theme.cpp APPEND PROPERTY COMPILE_DEFINITIO
 if( KICAD_HOUSE_FONTS )
     set_property( SOURCE test_house_fonts.cpp test_builtin_font_atlas.cpp APPEND PROPERTY COMPILE_DEFINITIONS
         "QA_HOUSE_FONTS_DIR=(\"${CMAKE_SOURCE_DIR}/resources/fonts/house\")" )
+endif()
+
+# The profile test expects the Altium-style profile as the default exactly when the build makes it one, and the action
+# test checks the names this executable links
+set_property( SOURCE test_interaction_profile_actions.cpp APPEND PROPERTY COMPILE_DEFINITIONS
+    "INTERACTION_PROFILE_QA_PREFIXES=\"common.\"" )
+
+if( KICAD_HOUSE_INTERACTION )
+    set_property( SOURCE test_interaction_profile.cpp APPEND PROPERTY COMPILE_DEFINITIONS KICAD_HOUSE_INTERACTION )
 endif()
 
 if( KICAD_HOUSE_THEME )

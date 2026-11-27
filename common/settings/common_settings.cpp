@@ -305,6 +305,16 @@ COMMON_SETTINGS::COMMON_SETTINGS() :
             &m_Input.touchpad_mode, defaultTouchpadMode, TOUCHPAD_MODE::NATIVE_GESTURES,
             TOUCHPAD_MODE::SCROLL_GESTURES ) );
 
+#ifdef KICAD_HOUSE_INTERACTION
+    constexpr INTERACTION_PROFILE_ID defaultInteractionProfile = INTERACTION_PROFILE_ID::ALTIUM;
+#else
+    constexpr INTERACTION_PROFILE_ID defaultInteractionProfile = INTERACTION_PROFILE_ID::STOCK;
+#endif
+
+    m_params.emplace_back( new PARAM_ENUM<INTERACTION_PROFILE_ID>(
+            "input.interaction_profile", &m_Input.interaction_profile, defaultInteractionProfile,
+            INTERACTION_PROFILE_ID::STOCK, INTERACTION_PROFILE_ID::ALTIUM ) );
+
     m_params.emplace_back( new PARAM<int>( "input.scroll_modifier_zoom",
             &m_Input.scroll_modifier_zoom, 0 ) );
 

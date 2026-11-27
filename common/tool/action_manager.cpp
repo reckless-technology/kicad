@@ -339,6 +339,10 @@ void ACTION_MANAGER::UpdateHotKeys( bool aFullUpdate )
     static std::map<std::string, std::pair<int, int>> userHotKeyMap;
     static bool                                       mapsInitialized = false;
 
+    // The interaction profile's layer sits between the compiled defaults and the user's file. It is read from the
+    // common settings, which every module reaches through kicommon, never from a static of this module.
+    PROFILE_HOTKEY_LAYER profileLayer = INTERACTION_PROFILE::BuildHotKeyLayer( INTERACTION_PROFILE::Active() );
+
     m_actionHotKeys.clear();
     m_hotkeys.clear();
 
@@ -356,7 +360,7 @@ void ACTION_MANAGER::UpdateHotKeys( bool aFullUpdate )
         int          alt    = 0;
 
         if( aFullUpdate )
-            processHotKey( action, legacyHotKeyMap, userHotKeyMap );
+            processHotKey( action, legacyHotKeyMap, profileLayer, userHotKeyMap );
 
         hotkey = action->GetHotKey();
         alt    = action->GetHotKeyAlt();
@@ -372,22 +376,34 @@ void ACTION_MANAGER::UpdateHotKeys( bool aFullUpdate )
 }
 
 
-void ACTION_MANAGER::processHotKey( TOOL_ACTION*                                      aAction,
-                                    const std::map<std::string, int>&                 aLegacyMap,
+std::pair<int, int> ACTION_MANAGER::ResolveHotKey( const TOOL_ACTION&                                aAction,
+                                                   const std::map<std::string, int>&                 aLegacyMap,
+                                                   const PROFILE_HOTKEY_LAYER&                       aProfileLayer,
+                                                   const std::map<std::string, std::pair<int, int>>& aHotKeyMap )
+{
+    int hotkey = aAction.m_defaultHotKey;
+    int alternate = aAction.m_defaultHotKeyAlt;
+
+    if( !aAction.m_legacyName.empty() && aLegacyMap.count( aAction.m_legacyName ) )
+        hotkey = aLegacyMap.at( aAction.m_legacyName );
+
+    // The profile's table, and the removal of the keys it takes from every action it does not name
+    std::pair<int, int> keys =
+            INTERACTION_PROFILE::ApplyHotKeyLayer( aProfileLayer, aAction.m_name, { hotkey, alternate } );
+
+    // The user's own file wins over everything
+    if( aHotKeyMap.count( aAction.m_name ) )
+        keys = aHotKeyMap.at( aAction.m_name );
+
+    return keys;
+}
+
+
+void ACTION_MANAGER::processHotKey( TOOL_ACTION* aAction, const std::map<std::string, int>& aLegacyMap,
+                                    const PROFILE_HOTKEY_LAYER&                       aProfileLayer,
                                     const std::map<std::string, std::pair<int, int>>& aHotKeyMap )
 {
-    int hotkey = aAction->m_defaultHotKey;
-    int alternate = aAction->m_defaultHotKeyAlt;
+    std::pair<int, int> keys = ResolveHotKey( *aAction, aLegacyMap, aProfileLayer, aHotKeyMap );
 
-    if( !aAction->m_legacyName.empty() && aLegacyMap.count( aAction->m_legacyName ) )
-        hotkey = aLegacyMap.at( aAction->m_legacyName );
-
-    if( aHotKeyMap.count( aAction->m_name ) )
-    {
-        std::pair<int, int> keys = aHotKeyMap.at( aAction->m_name );
-        hotkey = keys.first;
-        alternate = keys.second;
-    }
-
-    aAction->SetHotKey( hotkey, alternate );
+    aAction->SetHotKey( keys.first, keys.second );
 }

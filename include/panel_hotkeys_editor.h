@@ -33,6 +33,7 @@ class wxPanel;
 class wxSizer;
 class TOOL_MANAGER;
 class wxSearchCtrl;
+class wxChoice;
 
 
 class PANEL_HOTKEYS_EDITOR : public RESETTABLE_PANEL
@@ -50,7 +51,7 @@ public:
 
     wxString GetResetTooltip() const override
     {
-        return _( "Reset all hotkeys to the built-in KiCad defaults" );
+        return _( "Reset all hotkeys to the defaults of the selected interaction profile" );
     }
 
     wxSizer* GetBottomSizer() { return m_bottomSizer; }
@@ -77,6 +78,12 @@ private:
     void ImportHotKeys();
 
     /**
+     * Handle a choice in the interaction profile selector: the editor shows that profile's hotkeys, its defaults
+     * and its own user file. Nothing is applied until the dialog is accepted.
+     */
+    void OnProfileChoice( wxCommandEvent& aEvent );
+
+    /**
      * Dump all actions and their hotkeys to a text file for inclusion in documentation.
      *
      * The format is asciidoc-compatible table rows.
@@ -85,6 +92,10 @@ private:
     void dumpHotkeys();
 
     wxSearchCtrl* m_filterSearch;
+    wxChoice*     m_profileChoice;
+
+    /// The profile the editor is showing; it becomes the active one when the dialog is accepted.
+    INTERACTION_PROFILE_ID m_selectedProfile;
 
 protected:
     EDA_BASE_FRAME*            m_frame;

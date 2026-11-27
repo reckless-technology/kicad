@@ -473,6 +473,18 @@ add_custom_command(
     COMMENT "Creating reckless_color_theme_json.h from settings/reckless_color_theme.json"
     )
 
+# The Altium-style interaction profile's hotkey table, embedded the same way
+add_custom_command(
+    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/altium_hotkeys.h
+    COMMAND ${CMAKE_COMMAND}
+        -DinputFile=${CMAKE_CURRENT_SOURCE_DIR}/interaction/altium.hotkeys
+        -DoutputFile=${CMAKE_CURRENT_BINARY_DIR}/altium_hotkeys.h
+        -P ${KICAD_CMAKE_MODULE_PATH}/BuildSteps/Text2CString.cmake
+    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/interaction/altium.hotkeys
+        ${KICAD_CMAKE_MODULE_PATH}/BuildSteps/Text2CString.cmake
+    COMMENT "Creating altium_hotkeys.h from interaction/altium.hotkeys"
+    )
+
 add_library( kicommon SHARED
     ${KICOMMON_SRCS}
     ${CMAKE_CURRENT_BINARY_DIR}/reckless_color_theme_json.h
@@ -482,6 +494,10 @@ target_include_directories( kicommon PRIVATE ${CMAKE_CURRENT_BINARY_DIR} )
 
 if( KICAD_HOUSE_THEME )
     target_compile_definitions( kicommon PRIVATE KICAD_HOUSE_THEME )
+endif()
+
+if( KICAD_HOUSE_INTERACTION )
+    target_compile_definitions( kicommon PRIVATE KICAD_HOUSE_INTERACTION )
 endif()
 
 if( KICAD_USE_PCH )
@@ -1012,6 +1028,7 @@ set( COMMON_SRCS
     hotkey_store.cpp
     hotkeys_basic.cpp
     inspectable.cpp
+    interaction/interaction_profile.cpp
     item_realignment.cpp
     kiface_base.cpp
     kiway_player.cpp
@@ -1135,8 +1152,11 @@ list( APPEND COMMON_SRCS
 
 add_library( common STATIC
     ${COMMON_SRCS}
+    ${CMAKE_CURRENT_BINARY_DIR}/altium_hotkeys.h
     $<TARGET_OBJECTS:netlist_reader_obj>
     )
+
+target_include_directories( common PRIVATE ${CMAKE_CURRENT_BINARY_DIR} )
 
 if( KICAD_USE_PCH )
     target_precompile_headers( common

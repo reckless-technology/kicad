@@ -57,6 +57,7 @@ set( QA_EESCHEMA_SRCS
 
     # Shared between programs, but dependent on the BIU
     ${CMAKE_SOURCE_DIR}/qa/tests/common/test_format_units.cpp
+    ${CMAKE_SOURCE_DIR}/qa/tests/common/test_interaction_profile_actions.cpp
     ${CMAKE_SOURCE_DIR}/qa/tests/common/test_array_options.cpp
 
     sch_io/altium/test_altium_parser_sch.cpp
@@ -387,3 +388,7 @@ target_compile_definitions( qa_eeschema
 kicad_add_boost_test( qa_eeschema qa_eeschema )
 
 setup_qa_env( qa_eeschema )
+
+# The action names this executable links, for the interaction profile's table check
+set_property( SOURCE ${CMAKE_SOURCE_DIR}/qa/tests/common/test_interaction_profile_actions.cpp APPEND PROPERTY
+    COMPILE_DEFINITIONS "INTERACTION_PROFILE_QA_PREFIXES=\"common.\",\"eeschema.\"" )

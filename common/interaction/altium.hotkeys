@@ -1,0 +1,8 @@
+# The Altium-style interaction profile's hotkeys, in the format of a user.hotkeys file: action name, key, alternate
+# key, separated by tabs. A line that starts with # is a comment. See docs/reckless/interaction-profile.md, 5.2.
+#
+# Step 1 of the profile holds a handful of bindings, enough to test the layering with. The full tables are step 3.
+# A key bound here is taken: any action not named here loses it as a compiled default.
+common.Control.toggleUnits	Q
+common.Control.zoomCenter	Home
+common.Control.highContrastModeCycle	Shift+S

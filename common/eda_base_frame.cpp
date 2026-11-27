@@ -1903,12 +1903,21 @@ void EDA_BASE_FRAME::ShowPreferences( const wxString& aStartPage, const wxString
 #undef LAZY_CTOR
     }
 
+    INTERACTION_PROFILE_ID profileBefore = INTERACTION_PROFILE::Active();
+
     if( dlg.ShowModal() == wxID_OK )
     {
         // Update our grids that are cached in the tool
         m_toolManager->ResetTools( TOOL_BASE::REDRAW );
         Pgm().GetSettingsManager().Save();
-        dlg.Kiway().CommonSettingsChanged( HOTKEYS_CHANGED );
+
+        // A new interaction profile is re-applied in every open frame, as a language change is
+        int changeFlags = HOTKEYS_CHANGED;
+
+        if( INTERACTION_PROFILE::Active() != profileBefore )
+            changeFlags |= INTERACTION_PROFILE_CHANGED;
+
+        dlg.Kiway().CommonSettingsChanged( changeFlags );
     }
 
 }

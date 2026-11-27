@@ -21,6 +21,7 @@
 
 #include <kiface_base.h>
 #include <hotkeys_basic.h>
+#include <interaction_profile.h>
 #include <id.h>
 #include <string_utils.h>
 #include <eda_base_frame.h>
@@ -366,29 +367,9 @@ void DisplayHotkeyList( EDA_BASE_FRAME* aParent )
 }
 
 
-void ReadHotKeyConfig( const wxString&                             aFileName,
-                       std::map<std::string, std::pair<int, int>>& aHotKeys )
+void ParseHotKeyConfig( const wxString& aText, std::map<std::string, std::pair<int, int>>& aHotKeys )
 {
-    wxString fileName = aFileName;
-
-    if( fileName.IsEmpty() )
-    {
-        wxFileName fn( wxS( "user" ) );
-        fn.SetExt( FILEEXT::HotkeyFileExtension );
-        fn.SetPath( PATHS::GetUserSettingsPath() );
-        fileName = fn.GetFullPath();
-    }
-
-    if( !wxFile::Exists( fileName ) )
-        return;
-
-    wxFFile file( fileName, "rb" );
-
-    if( !file.IsOpened() )       // There is a problem to open file
-        return;
-
-    wxString input;
-    file.ReadAll( &input );
+    wxString input = aText;
     input.Replace( "\r\n", "\n" );  // Convert Windows files to Unix line-ends
     wxStringTokenizer fileTokenizer( input, "\n", wxTOKEN_STRTOK );
 
@@ -409,16 +390,55 @@ void ReadHotKeyConfig( const wxString&                             aFileName,
 }
 
 
+void ReadHotKeyConfig( const wxString& aFileName, std::map<std::string, std::pair<int, int>>& aHotKeys )
+{
+    wxString fileName = aFileName;
+
+    // The default file is the active interaction profile's: user.hotkeys for the KiCad profile
+    if( fileName.IsEmpty() )
+        fileName = INTERACTION_PROFILE::UserHotKeyFilePath( INTERACTION_PROFILE::Active() );
+
+    if( !wxFile::Exists( fileName ) )
+        return;
+
+    wxFFile file( fileName, "rb" );
+
+    if( !file.IsOpened() ) // There is a problem to open file
+        return;
+
+    wxString input;
+    file.ReadAll( &input );
+    ParseHotKeyConfig( input, aHotKeys );
+}
+
+
 void ReadHotKeyConfigIntoActions( const wxString& aFileName, std::vector<TOOL_ACTION*>& aActions )
+{
+    ReadHotKeyConfigIntoActions( INTERACTION_PROFILE::Active(), aFileName, aActions );
+}
+
+
+void ReadHotKeyConfigIntoActions( INTERACTION_PROFILE_ID aProfile, const wxString& aFileName,
+                                  std::vector<TOOL_ACTION*>& aActions )
 {
     std::map<std::string, std::pair<int, int>> hotkeys;
 
-    // Read the existing config (all hotkeys)
-    ReadHotKeyConfig( aFileName, hotkeys );
+    // Read the existing config (all hotkeys): the file named, or the profile's own user file
+    ReadHotKeyConfig( aFileName.IsEmpty() ? INTERACTION_PROFILE::UserHotKeyFilePath( aProfile ) : aFileName, hotkeys );
+
+    // A profile other than KiCad's starts every action from the profile's defaults, not the compiled ones
+    PROFILE_HOTKEY_LAYER profileLayer = INTERACTION_PROFILE::BuildHotKeyLayer( aProfile );
 
     // Set each tool action hotkey to the config file hotkey if present
     for( TOOL_ACTION* action : aActions )
     {
+        if( profileLayer.m_isActive )
+        {
+            std::pair<int, int> defaults = INTERACTION_PROFILE::ApplyHotKeyLayer(
+                    profileLayer, action->GetName(), { action->GetDefaultHotKey(), action->GetDefaultHotKeyAlt() } );
+            action->SetHotKey( defaults.first, defaults.second );
+        }
+
         if( hotkeys.find( action->GetName() ) != hotkeys.end() )
         {
             std::pair<int, int> keys = hotkeys[action->GetName()];
@@ -428,13 +448,11 @@ void ReadHotKeyConfigIntoActions( const wxString& aFileName, std::vector<TOOL_AC
 }
 
 
-int WriteHotKeyConfig( const std::vector<TOOL_ACTION*>& aActions )
+int WriteHotKeyConfig( const std::vector<TOOL_ACTION*>& aActions, const wxString& aFileName )
 {
     std::map<std::string, std::pair<int, int>> hotkeys;
-    wxFileName fn( "user" );
-
-    fn.SetExt( FILEEXT::HotkeyFileExtension );
-    fn.SetPath( PATHS::GetUserSettingsPath() );
+    wxFileName fn( aFileName.IsEmpty() ? INTERACTION_PROFILE::UserHotKeyFilePath( INTERACTION_PROFILE::Active() )
+                                       : aFileName );
 
     // Read the existing config (all hotkeys)
     ReadHotKeyConfig( fn.GetFullPath(), hotkeys );
