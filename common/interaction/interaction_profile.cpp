@@ -110,7 +110,33 @@ void INTERACTION_PROFILE::ParseHotKeyTable( const std::string& aText, PROFILE_HO
         lineStart = lineEnd + 1;
     }
 
-    ParseHotKeyConfig( wxString::FromUTF8( uncommented ), aBindings );
+    ParseHotKeyConfig( wxString::FromUTF8( PlatformKeyNames( uncommented ) ), aBindings );
+}
+
+
+std::string INTERACTION_PROFILE::MacKeyNames( const std::string& aTableText )
+{
+    std::string text = aTableText;
+
+    for( const auto& [tableName, macName] : { std::pair<std::string, std::string>( "Ctrl+", "Cmd+" ),
+                                              std::pair<std::string, std::string>( "Alt+", "Option+" ) } )
+    {
+        for( size_t at = text.find( tableName ); at != std::string::npos;
+             at = text.find( tableName, at + macName.size() ) )
+            text.replace( at, tableName.size(), macName );
+    }
+
+    return text;
+}
+
+
+std::string INTERACTION_PROFILE::PlatformKeyNames( const std::string& aTableText )
+{
+#ifdef __WXMAC__
+    return MacKeyNames( aTableText );
+#else
+    return aTableText;
+#endif
 }
 
 

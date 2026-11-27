@@ -38,14 +38,24 @@
 
 
 // On macOS, wxWidgets moves a Preferences item into the application menu, and the bar has two (Tools and Options). The
-// one at the end of Tools is left out there, with its separator, so the one moved is the one in Options and Tools does
-// not end in a separator. The tree still holds it, so the key sequence reaches Preferences on every platform.
+// one at the end of Tools is kept out of the menus there, with its separator, so the one moved is the one in Options
+// and Tools does not end in a separator. It stays in the tree as a key-only entry, so `T` `P` works on every platform.
 static bool isNotMacOS()
 {
 #ifdef __WXMAC__
     return false;
 #else
     return true;
+#endif
+}
+
+
+static MENU_DEF keyOnlyOnMacOS( const MENU_DEF& aEntry )
+{
+#ifdef __WXMAC__
+    return aEntry.KeyOnly();
+#else
+    return aEntry;
 #endif
 }
 
@@ -276,7 +286,7 @@ MENU_DEF SchAltiumMenuBar()
               M::Item( _( "Calc&ulator Tools" ), ACTIONS::showCalculatorTools ),
               M::Slot( _( "External Plugins" ), SCH_MENU_SLOT::PLUGINS ),
               M::Separator().When( isNotMacOS ),
-              M::Item( _( "&Preferences..." ), ACTIONS::openPreferences ).When( isNotMacOS ) } );
+              keyOnlyOnMacOS( M::Item( _( "&Preferences..." ), ACTIONS::openPreferences ) ) } );
 
     M reports = M::Submenu( _( "&Reports" ),
                             { M::Item( _( "B&ill of Materials..." ), SCH_ACTIONS::generateBOM ),

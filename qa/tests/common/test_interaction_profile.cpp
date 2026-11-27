@@ -170,6 +170,23 @@ BOOST_AUTO_TEST_CASE( TableParsing )
 }
 
 
+BOOST_AUTO_TEST_CASE( TableKeysTakeTheMacSpelling )
+{
+    // macOS's hotkey file says Cmd and Option, and its parser reads no Alt: the tables are rewritten before parsing
+    BOOST_CHECK_EQUAL( INTERACTION_PROFILE::MacKeyNames( "pcbnew.A\tCtrl+Alt+G\npcbnew.B\tAlt+F\tCtrl+Shift+G\n" ),
+                       "pcbnew.A\tCmd+Option+G\npcbnew.B\tOption+F\tCmd+Shift+G\n" );
+    BOOST_CHECK_EQUAL( INTERACTION_PROFILE::MacKeyNames( "common.C\tShift+S\tAltGr+X\n" ),
+                       "common.C\tShift+S\tAltGr+X\n" );
+
+#ifdef __WXMAC__
+    BOOST_CHECK_EQUAL( INTERACTION_PROFILE::PlatformKeyNames( "Ctrl+Alt+G" ), "Cmd+Option+G" );
+    BOOST_CHECK_GT( KeyCodeFromKeyName( wxS( "Cmd+Option+G" ) ), 0 );
+#else
+    BOOST_CHECK_EQUAL( INTERACTION_PROFILE::PlatformKeyNames( "Ctrl+Alt+G" ), "Ctrl+Alt+G" );
+#endif
+}
+
+
 BOOST_AUTO_TEST_CASE( EmbeddedTables )
 {
     BOOST_CHECK( INTERACTION_PROFILE::HotKeyTableText( INTERACTION_PROFILE_ID::STOCK ).empty() );

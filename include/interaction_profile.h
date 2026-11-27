@@ -104,6 +104,13 @@ public:
     /// Read a table in the `user.hotkeys` format, ignoring blank lines and lines that start with `#`.
     static void ParseHotKeyTable( const std::string& aText, PROFILE_HOTKEY_MAP& aBindings );
 
+    /// A profile table's key names in this platform's spelling. The tables say `Ctrl+` and `Alt+`; on macOS the hotkey
+    /// file says `Cmd+` and `Option+`, and KeyCodeFromKeyName() reads no `Alt+` there.
+    static std::string PlatformKeyNames( const std::string& aTableText );
+
+    /// A profile table's key names as macOS spells them (`Ctrl+` as `Cmd+`, `Alt+` as `Option+`), on any platform.
+    static std::string MacKeyNames( const std::string& aTableText );
+
     /// The layer of a profile, from its embedded table.
     static PROFILE_HOTKEY_LAYER BuildHotKeyLayer( INTERACTION_PROFILE_ID aProfile );
 

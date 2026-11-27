@@ -128,11 +128,14 @@ BOOST_AUTO_TEST_CASE( EveryKeyOfTheAltiumTableIsSpelledTheWayTheHotkeyFileSpells
             if( fields[i].empty() )
                 continue;
 
-            int code = KeyCodeFromKeyName( wxString::FromUTF8( fields[i] ) );
+            // The profile reads its table in this platform's spelling (Cmd and Option on macOS), so check that one
+            const std::string spelling = INTERACTION_PROFILE::PlatformKeyNames( fields[i] );
+            const int         code = KeyCodeFromKeyName( wxString::FromUTF8( spelling ) );
 
-            BOOST_CHECK_MESSAGE( code != 0, "the key \"" << fields[i] << "\" of " << fields[0] << " is not a key" );
-            BOOST_CHECK_MESSAGE( KeyNameFromKeyCode( code ).ToStdString() == fields[i],
-                                 "the key \"" << fields[i] << "\" of " << fields[0] << " is spelled "
+            // KeyCodeFromKeyName() gives -1 for a name it cannot read
+            BOOST_CHECK_MESSAGE( code > 0, "the key \"" << spelling << "\" of " << fields[0] << " is not a key" );
+            BOOST_CHECK_MESSAGE( KeyNameFromKeyCode( code ).ToStdString() == spelling,
+                                 "the key \"" << spelling << "\" of " << fields[0] << " is spelled "
                                               << KeyNameFromKeyCode( code ).ToStdString() << " by the hotkey file" );
             ++keysChecked;
         }
