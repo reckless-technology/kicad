@@ -395,6 +395,9 @@ CONDITIONAL_MENU* PCB_SELECTION_TOOL::altiumContextMenu()
                     return subMenu.get();
             }
 
+            // Every slot names a submenu this editor's tools add in Init, so a miss means a title changed
+            wxFAIL_MSG(
+                    wxString::Format( wxS( "No submenu titled '%s' for a right-click menu slot" ), aSlot.m_label ) );
             return nullptr;
         };
 
