@@ -43,7 +43,9 @@ Priorities follow how often the user does a thing, most frequent first:
   were read from the program's own in-command shortcut list (`Shift+F1` while routing).
 - A second live session on 2026-11-27, on a larger two-layer board and its schematic, read the in-command key lists
   of the other commands (moving a component, placing lines and dimensions, wiring, placing labels and ports,
-  dragging), the width, via and grid pickers, and the heads-up display. They are in 6.7.
+  dragging), the width, via and grid pickers, and the heads-up display; then the right-click menus of both editors
+  (6.6), polygon pours, buses, sheet symbols, ports, moving a selection, the Route menu, length tuning and
+  differential-pair routing. The in-command lists are in 6.7.
 - This tree: the tool framework, both editors, the router and the 3D viewer. File and line references below are to
   `8bc6620158` and will drift; search for the symbol.
 
@@ -87,8 +89,9 @@ Commands are sticky: after placing a part or finishing a wire the command stays 
 Around that core each command adds keys of its own, listed in 6.7: `Ins` inserts a vertex while wiring and copies
 the attributes of the object under the cursor while placing; moving a component on the PCB has `L`, `X`, `Y`, a
 pushing mode and alignment held on `Ctrl` and `Shift`; placing a PCB line has nearly the router's set. And the list
-itself has two forms: a menu at the cursor almost everywhere, but a modal dialog (key, action, Close) for placing a
-PCB line. A menu at the cursor everywhere (5.5) is the consistent choice.
+itself has two forms, a menu at the cursor or a modal dialog (key, action, Close), and the form is not fixed per
+command: moving one component showed the menu and moving a selection the dialog, with the same entries. A menu at the
+cursor everywhere (5.5) is the consistent choice.
 
 **3.4 Routing.** One command (`P` `T`, `U` `T` or `Ctrl+W`). Click a pad or track to start, click to commit
 corners. The last segment is drawn hatched and is not committed by the click (look-ahead, toggled by `1`). The full
@@ -936,6 +939,45 @@ The status bar names `Tab` and `F1`.
 **Schematic, the move menu (`M`).** As 6.1, with Move Selection by X, Y, the four ordering commands and six
 sheet-symbol and sheet-entry commands (flip along X / Y, swap side, reverse order, toggle the IO type of the selected
 or all entries), disabled without a selection. The ordering and sheet-entry commands have no KiCad counterpart.
+
+**PCB, placing a polygon pour (`P` `G`).** Outline placement starts at once, with no dialog first. `Backspace`
+removes the last vertex, `Space` / `Shift+Space` toggle the elbow side / cycle the corner mode (shown as "90/45" in
+the display), `,` / `.` change the arc setback by one step and `Shift+,` / `Shift+.` by ten, `1` toggles look-ahead,
+`Enter` places a vertex, numpad `+` `-` `*` change layer. The view pans when the cursor passes the window edge.
+KiCad's zone tool has the vertex, posture and layer keys; arc setback and look-ahead are left out.
+
+**Schematic, the other placements.**
+
+- Bus (`P` `B`): the wiring list exactly, `Ins` included.
+- Bus entry (`P` `U`) and port (`P` `R`): the placing list (`X`, `Y`, `Ins` copy attributes). A port takes two
+  points, the second setting its length.
+- Sheet symbol (`P` `S`): first corner, then size, with the display showing the box's delta. Rotation and `Ins`, but
+  no `X` / `Y` flip.
+
+**Moving a selection.** Dragging a schematic selection (`M`, Drag Selection) draws the dragged objects faded and has
+the dragging list. Moving a PCB selection (`M`, Move Selection) has Move Component's list and display, the DRC count
+updating live; if the selection holds locked items, Altium asks whether to continue once the reference point is
+picked. KiCad asks nothing and skips locked items; the profile keeps that.
+
+**Length tuning (`U` popup; single nets and differential pairs).** Until a track is picked, the display asks for one
+and the key list holds only Help; picking a track that is not part of a pair, in pair tuning, is refused with a
+message. Then: `Shift+G` toggles the length gauge, `,` / `.` decrease / increase the amplitude, `1` / `2` the miter,
+`3` / `4` the spacing, `Space` cycles the pattern style, `Ctrl`+drag rotates the pattern and `R` toggles 45-degree
+snapping while rotating, `Tab` pauses, numpad `+` `-` `*` change layer. The display shows the net length and the
+target. The digits mean something else here than when routing, as the PCB line list above shows: the in-command
+keys belong to the command (5.5).
+
+**Differential-pair routing (`U` popup).** Started on a pad of one net of a defined pair; if the other net has nothing
+near the pick, a message says so and the command keeps waiting. Its list is the fullest routing set: everything in
+3.4, plus `5` cycles the via pattern, `Shift+6` the gap source and `Shift+B` the width and gap sources together, with
+checkmarks on the toggles that are on (loop removal, subnet swapping). The display adds the gap source, and the
+length of each net of the pair with their difference against the allowed delta. Inside routing `Ctrl+W` shows
+clearance boundaries, where idle it starts routing. Defining a pair asks only for the positive net, the negative net
+and a name.
+
+**The Route menu (`U`).** Active routing, interactive routing, interactive differential-pair routing, the two quick
+routing modes and multi-routing; gloss and retrace selected; single and pair length tuning; then fanout, autoroute,
+subnet jumpers and unroute submenus. 6.3 maps the KiCad ones.
 
 **The pickers.**
 
