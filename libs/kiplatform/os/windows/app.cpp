@@ -19,6 +19,7 @@
 */
 
 #include <kiplatform/app.h>
+#include <kiplatform/shared_state.h>
 
 #include <wx/app.h>
 #include <wx/log.h>
@@ -224,12 +225,6 @@ bool KIPLATFORM::APP::Init()
 }
 
 
-#ifdef KICAD_HOUSE_THEME
-// Set once the house dark look is in force, so the windows created after it get a title bar to match
-static bool s_houseCaption = false;
-#endif
-
-
 void KIPLATFORM::APP::EnableDarkMode( bool aForce )
 {
 #if wxCHECK_VERSION( 3, 3, 0 )
@@ -239,7 +234,9 @@ void KIPLATFORM::APP::EnableDarkMode( bool aForce )
     if( aForce )
     {
         wxTheApp->MSWEnableDarkMode( wxApp::DarkMode_Always, new RECKLESS_DARK_MODE_SETTINGS() );
-        s_houseCaption = true;
+
+        // So the windows created after it get a title bar to match, whichever module creates them
+        SHARED_STATE::Set( SHARED_STATE::HOUSE_CAPTION, wxS( "1" ) );
         return;
     }
 #endif
@@ -252,7 +249,7 @@ bool KIPLATFORM::APP::GetCaptionColors( unsigned& aCaption [[maybe_unused]], uns
                                         unsigned& aBorder [[maybe_unused]] )
 {
 #ifdef KICAD_HOUSE_THEME
-    if( s_houseCaption )
+    if( !SHARED_STATE::Get( SHARED_STATE::HOUSE_CAPTION ).IsEmpty() )
     {
         using namespace KIPLATFORM::RECKLESS_PALETTE;
 

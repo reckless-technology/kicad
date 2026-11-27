@@ -36,6 +36,9 @@ namespace KIPLATFORM::SHARED_STATE
 /// The interface font family UI::SetInterfaceFontFamily() resolved
 inline const wxString INTERFACE_FONT_FAMILY = wxS( "kicad.interface-font-family" );
 
+/// Set (to "1") once APP::EnableDarkMode() has forced the house dark look, so APP::GetCaptionColors() has colors
+inline const wxString HOUSE_CAPTION = wxS( "kicad.house-caption" );
+
 /// Set a value for the whole process, or clear it with an empty string.
 void Set( const wxString& aName, const wxString& aValue );
 

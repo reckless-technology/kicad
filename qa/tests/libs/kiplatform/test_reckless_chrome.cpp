@@ -20,9 +20,11 @@
 
 #include <kiplatform/app.h>
 #include <kiplatform/reckless_palette.h>
+#include <kiplatform/shared_state.h>
 
 #include <wx/frame.h>
 #include <wx/settings.h>
+#include <wx/sysopt.h>
 
 namespace
 {
@@ -111,6 +113,20 @@ BOOST_AUTO_TEST_CASE( CaptionColorsFollowTheForcedDarkTheme )
 #else
     // Only the house build on Windows colors the title bar: everywhere else it stays the system's
     BOOST_CHECK( !any );
+#endif
+
+#if defined( KICAD_HOUSE_THEME ) && defined( __WXMSW__ )
+    // kicommon, each kiface and each program have their own copy of kiplatform, and see one another only through
+    // wx's system options: the flag has to be written there and read from there, not kept in a static
+    using KIPLATFORM::SHARED_STATE::HOUSE_CAPTION;
+
+    BOOST_CHECK( !wxSystemOptions::GetOption( HOUSE_CAPTION ).IsEmpty() );
+
+    wxSystemOptions::SetOption( HOUSE_CAPTION, wxEmptyString );
+    BOOST_CHECK( !KIPLATFORM::APP::GetCaptionColors( caption, text, border ) );
+
+    wxSystemOptions::SetOption( HOUSE_CAPTION, wxS( "1" ) );
+    BOOST_CHECK( KIPLATFORM::APP::GetCaptionColors( caption, text, border ) );
 #endif
 
     // A window that is never shown takes the colors without complaint, on every platform
