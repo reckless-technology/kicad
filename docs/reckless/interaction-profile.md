@@ -374,9 +374,10 @@ other tools append their items to it in their own `Init` (edit, move, align, ins
 the selection tool show that one instead (choose at the point it calls `ShowContextMenu`, so switching profile
 needs no tool re-initialization). The trees are in section 6.6. Three rules:
 
-- Altium's order: Find Similar and Clear Filter first; then the Place submenu (the same tree as `P`); then one
-  "Actions" submenu per kind of object under the cursor, shown only for that kind; then Align, Cross Probe, the
-  clipboard, and Properties last.
+- Altium's order, which never moves: Find Similar and Clear Filter first; then the Place submenu (the same tree as
+  `P`); then the "Actions" submenus, most of them shown whatever is under the cursor, with entries that do not apply
+  disabled rather than removed; then Align, Cross Probe, the clipboard, and Properties last. The PCB has a shorter
+  form over free space (6.6).
 - Nothing is lost. Every action KiCad offers on right-click today must be reachable in the rebuilt menu, KiCad-only
   ones inside the Actions submenu of their object (for example Drag 45 and Break Track under Track Actions, Pin
   Tricks under Pin Actions). A test compares the two menus' action sets against a short list of deliberate drops.
@@ -816,56 +817,65 @@ Routing, from the list in section 3.4:
 
 ### 6.6 Right-click menus
 
-Altium's top level, in order, with what each line holds here. A submenu appears only when the selection or the
-object under the cursor is of its kind. "(K)" marks KiCad commands that have no Altium line and are filed where an
-Altium user would look.
+Read live on 2026-11-27 (section 2). Altium does not build a menu per kind of object. Each editor has one base menu in
+a fixed order, and what is under the cursor only adds entries or changes what a submenu holds, so an entry's position
+never moves; entries that do not apply are disabled, not removed. The profile keeps that rule. "(K)" marks KiCad
+commands that have no Altium line and are filed where an Altium user would look; KiCad-only submenus are shown only
+for their kind, after Altium's own, so they never move an Altium entry.
 
-Schematic:
+Schematic, one base menu:
 
-| Item | Shown for | Contents (KiCad actions) |
+| Item | Shown | Contents (KiCad actions) |
 |---|---|---|
 | Find Text… | always | `common.Interactive.find` (Altium's Find Similar Objects has no schematic equivalent) |
-| Clear Filter | a net is highlighted | `EditorControl.clearHighlight` |
-| Wire | nothing selected | `drawWires`; Finish while a wire is being drawn |
+| Clear Filter | always | `EditorControl.clearHighlight` |
+| Wire | over a wire or a pin | `drawWires`, starting there |
 | Place ▸ | always | the `P` tree of 6.1 |
-| Part Actions ▸ | symbol | Update From Libraries (`updateSymbol`), Change Symbol, Edit with Symbol Editor, Unit ▸ and Body Style ▸ (K), Edit Main Fields ▸ reference, value, footprint (K), Autoplace Fields (K), Toggle Fitted/Not Fitted (`setDNP`) and the other attributes, Show Datasheet (K), Select PCB Components (`selectOnPCB`) |
+| Part Actions ▸ | always | Update From Libraries (`updateSymbol`, available with no symbol); with a symbol: Change Symbol, Edit with Symbol Editor, Unit ▸ and Body Style ▸ (K), Edit Main Fields ▸ reference, value, footprint (K), Autoplace Fields (K), Toggle Fitted/Not Fitted (`setDNP`) and the other attributes, Show Datasheet (K), Select PCB Components (`selectOnPCB`) |
+| Sheet Symbol Actions ▸ | over a sheet symbol | Open SubSheet (`enterSheet`), Place Sheet Entry (`placeSheetPin`), Synchronize Sheet Entries and Ports (`syncSheetPins`), Cleanup Sheet Pins, Edit Page Number |
+| Sheet Actions ▸ | always | Leave Sheet, Page Settings |
 | Pin Actions ▸ (K) | pin | KiCad's pin tricks: no-connect, wire stub, label from pin name; Swap Pins |
 | Wire Actions ▸ (K) | wire or bus | Add Junction, Add Net Label, Add Port, Break Wire, Slice, Unfold From Bus, Select Connection, Assign Netclass |
-| Sheet Symbol Actions ▸ | sheet | Open SubSheet (`enterSheet`), Place Sheet Entry (`placeSheetPin`), Synchronize Sheet Entries and Ports (`syncSheetPins`), Cleanup Sheet Pins, Edit Page Number |
-| Port Actions ▸ | label of any kind | Change To ▸ net label, port, off-sheet connector, directive, text |
-| Sheet Actions ▸ | nothing selected | Leave Sheet, Page Settings |
-| Align ▸ | two or more items | the `A` tree |
-| Cross Probe | symbol, pin, label | `EditorControl.selectOnPCB` |
-| Cut, Copy, Paste | selection / clipboard | unchanged, plus Paste Special and Duplicate (K) |
+| Port Actions ▸ (K) | label of any kind | Change To ▸ net label, port, off-sheet connector, directive, text |
+| Align ▸ (K) | two or more items | the `A` tree (Altium's schematic menu has none) |
+| Cross Probe | always | `EditorControl.selectOnPCB` |
+| Cut, Copy, Paste | always | unchanged, Cut and Copy disabled with no selection, plus Paste Special and Duplicate (K) |
 | Project Options… | always | `EditorControl.schematicSetup` |
 | Preferences… | always | `openPreferences` |
-| Properties… | one or more items | `InteractiveEdit.properties`, last |
+| Properties… | over an object or with a selection | `InteractiveEdit.properties`, last |
 
-PCB:
+Altium's Pin Mapping, Supplier Links (over a part), the sheet and part conversions, variants and code symbols have no
+KiCad counterpart.
 
-| Item | Shown for | Contents (KiCad actions) |
-|---|---|---|
-| Find Similar Objects… | always | `EditorControl.findByProperties` |
-| Clear Filter | a net is highlighted | `EditorControl.clearHighlight` |
-| Interactive Routing, Interactive Length Tuning | nothing selected | `InteractiveRouter.SingleTrack`, `LengthTuner.TuneSingleTrack` |
-| Place ▸ | always | the `P` tree of 6.3 |
-| Toggle Primitive Lock | selection | `EditorControl.toggleLock` |
-| Component Actions ▸ | footprint | Move Component (`move`), Unroute Component (new, as `U` `U` `O`), Show Nets / Hide Nets (local ratsnest), Select Component Connections, Manage 3D Bodies (footprint properties, 3D Models tab), Update From PCB Libraries (`updateFootprint`), Change Footprint (K), Open in Footprint Editor (K), Swap Components (`swap`), Flip, Rotate (K) |
-| Pad Actions ▸ (K) | pad | Copy, Apply and Push Pad Properties, Swap Pad Nets |
-| Track Actions ▸ (K) | track, arc, via | Drag (45 degree), Drag (free angle), Break Track, Change Track Width, Fillet Tracks, Select Connection, Unroute Selected, Switch Track to Next / Previous Layer, Route From Other End |
-| Polygon Actions ▸ | zone | Repour Selected (`zoneFill`), Repour All (`zoneFillAll`), Shelve Selected (`zoneUnfill`), Bring to Front / Send to Back (`zonePriorityMoveToTop` / `MoveToBottom`, with Raise and Lower), Polygon Manager (`zonesManager`), Add Cutout, Add Similar Polygon, Duplicate onto Layer, Combine Selected Polygons (`zoneMerge`) |
-| Net Actions ▸ | anything on a net | Show Nets / Hide Nets (`showNet` / `hideNet`), Highlight Net, Select Net, Assign Net Class, Properties (Net Inspector) |
-| Align ▸ | two or more items | the `A` tree |
-| Cross Probe | footprint, pad | `InteractiveSelection.SelectOnSchematic` |
-| Cut, Copy, Paste | selection / clipboard | unchanged, plus Paste Special and Duplicate (K) |
-| Applicable Unary Rules…, Applicable Binary Rules… | one item, two items | `InspectionTool.InspectConstraints`, `InspectionTool.InspectClearance` |
-| Violations ▸ | DRC marker | marker items: exclude, next, previous |
-| Preferences… | always | `openPreferences` |
-| Properties… | one or more items | `InteractiveEdit.properties`, last |
+PCB, two forms: a short one over free space, and one fixed long one over any object or with a selection.
 
-Group enter and leave, create group, and the convert-shape commands keep a submenu each ("Unions" for groups, which
-is Altium's nearest idea, and "Convert") between Net Actions and Align. Zoom and Grid, which KiCad appends to every
-context menu, are dropped from this one: they are `Z`, `V` and `G`.
+| Item | Free space | Object | Contents (KiCad actions) |
+|---|---|---|---|
+| Find Similar Objects… | yes | yes | `EditorControl.findByProperties` |
+| Clear Filter | yes | yes | `EditorControl.clearHighlight` |
+| Interactive Routing, Interactive Length Tuning | yes | - | `InteractiveRouter.SingleTrack`, `LengthTuner.TuneSingleTrack` (Altium's second line is Quick Routing) |
+| Place ▸ | yes | yes | the `P` tree of 6.3 |
+| Toggle Lock | - | with a selection | `EditorControl.toggleLock` (Altium shows a lock toggle over a pour) |
+| Unions ▸ | - | yes | KiCad's groups: enter, leave, create, remove |
+| Component Actions ▸ | - | yes | over a footprint or its pad: Move Component (`move`), Unroute Component (new, as `U` `U` `O`), Show Nets / Hide Nets (local ratsnest), Select Component Connections, Manage 3D Bodies (footprint properties, 3D Models tab), Update From PCB Libraries (`updateFootprint`), Change Footprint (K), Open in Footprint Editor (K), Swap Components (`swap`), Flip, Rotate (K); otherwise the entries that need a footprint are disabled |
+| Polygon Actions ▸ | - | yes | Repour Selected (`zoneFill`), Repour All (`zoneFillAll`), Shelve Selected (`zoneUnfill`), Bring to Front / Send to Back (`zonePriorityMoveToTop` / `MoveToBottom`, with Raise and Lower), Polygon Manager (`zonesManager`), Add Cutout, Add Similar Polygon, Duplicate onto Layer, Combine Selected Polygons (`zoneMerge`); those that need a zone are disabled without one |
+| Net Actions ▸ | - | over a track, via or pad | Show Nets / Hide Nets (`showNet` / `hideNet`), Highlight Net, Select Net, Assign Net Class, Properties (Net Inspector) |
+| Pad Actions ▸ (K) | - | pad | Copy, Apply and Push Pad Properties, Swap Pad Nets |
+| Track Actions ▸ (K) | - | track, arc, via | Drag (45 degree), Drag (free angle), Break Track, Change Track Width, Fillet Tracks, Select Connection, Unroute Selected, Switch Track to Next / Previous Layer, Route From Other End |
+| Convert ▸ (K) | - | shapes | the convert-shape commands |
+| Align ▸ | - | yes | the `A` tree with a selection; Altium shows only Position Component Text without one |
+| Cross Probe | yes | yes | `InteractiveSelection.SelectOnSchematic` |
+| Cut, Copy, Paste | yes | yes | unchanged, Cut and Copy disabled with no selection, plus Paste Special and Duplicate (K) |
+| Applicable Unary Rules…, Applicable Binary Rules… | - | yes | `InspectionTool.InspectConstraints`, `InspectionTool.InspectClearance` |
+| Violations ▸ (K) | - | DRC marker | marker items: exclude, next, previous |
+| Preferences… | yes | yes | `openPreferences` |
+| Properties… | - | yes | `InteractiveEdit.properties`, last |
+
+Altium's Component Actions has a short form when no component is under the cursor (unroute, select connections,
+swap) and a long one over a component, its text or its pad; with components selected it adds Move Component Origin
+To Grid. Its xSignals and Room Actions submenus, and the polygon slice, explode, move and resize items, have no KiCad
+counterpart. Zoom and Grid, which KiCad appends to every context menu, are dropped from both editors' menus: they
+are `Z`, `V` and `G`.
 
 ### 6.7 In-command keys by command
 
