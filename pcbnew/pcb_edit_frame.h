@@ -59,6 +59,8 @@ class IO_ERROR;
 class FP_LIB_TABLE;
 class BOARD_NETLIST_UPDATER;
 class ACTION_MENU;
+class TOOL_INTERACTIVE;
+class WX_MENUBAR;
 class TOOL_ACTION;
 class DIALOG_BOARD_SETUP;
 class DIALOG_FOOTPRINT_FIELDS_TABLE;
@@ -737,6 +739,9 @@ protected:
     LAYER_TOOLBAR_ICON_VALUES m_prevIconVal;
 
     void doReCreateMenuBar() override;
+
+    /// The menu bar of the Altium-style interaction profile, built from the tree in pcb_menus_altium.cpp.
+    WX_MENUBAR* createInteractionProfileMenuBar( TOOL_INTERACTIVE* aTool );
 
     void configureToolbars() override;
 

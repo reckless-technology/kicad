@@ -23,6 +23,7 @@
 #include <advanced_config.h>
 #include <bitmaps.h>
 #include <file_history.h>
+#include <interaction_profile.h>
 #include <kiface_base.h>
 #include <pcb_edit_frame.h>
 #include <pcbnew_id.h>
@@ -39,6 +40,16 @@
 void PCB_EDIT_FRAME::doReCreateMenuBar()
 {
     PCB_SELECTION_TOOL* selTool = m_toolManager->GetTool<PCB_SELECTION_TOOL>();
+
+    if( INTERACTION_PROFILE::Active() == INTERACTION_PROFILE_ID::ALTIUM )
+    {
+        wxMenuBar* previousMenuBar = GetMenuBar();
+
+        SetMenuBar( createInteractionProfileMenuBar( selTool ) );
+        delete previousMenuBar;
+        return;
+    }
+
     // wxWidgets handles the Mac Application menu behind the scenes, but that means
     // we always have to start from scratch with a new wxMenuBar.
     wxMenuBar*  oldMenuBar = GetMenuBar();

@@ -162,8 +162,9 @@ public:
 
     /**
      * Notification that the interaction profile changed (CommonSettingsChanged with INTERACTION_PROFILE_CHANGED),
-     * after hotkeys have been re-resolved. Does nothing yet: step 2 of docs/reckless/interaction-profile.md
-     * rebuilds the frame's menus and toolbars here.
+     * after hotkeys have been re-resolved. Does nothing yet. The menu bar needs no code here: a frame's
+     * CommonSettingsChanged() recreates it, and doReCreateMenuBar() reads the active profile. Step 12 of
+     * docs/reckless/interaction-profile.md rebuilds the toolbars here.
      */
     virtual void InteractionProfileChanged() {}
 

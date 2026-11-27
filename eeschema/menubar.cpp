@@ -22,6 +22,7 @@
 
 #include <bitmaps.h>
 #include <file_history.h>
+#include <interaction_profile.h>
 #include <kiface_base.h>
 #include <pgm_base.h>
 #include <schematic.h>
@@ -41,6 +42,15 @@
 void SCH_EDIT_FRAME::doReCreateMenuBar()
 {
     SCH_SELECTION_TOOL* selTool = m_toolManager->GetTool<SCH_SELECTION_TOOL>();
+
+    if( INTERACTION_PROFILE::Active() == INTERACTION_PROFILE_ID::ALTIUM )
+    {
+        wxMenuBar* previousMenuBar = GetMenuBar();
+
+        SetMenuBar( createInteractionProfileMenuBar( selTool ) );
+        delete previousMenuBar;
+        return;
+    }
 
     // wxWidgets handles the Mac Application menu behind the scenes, but that means
     // we always have to start from scratch with a new wxMenuBar.

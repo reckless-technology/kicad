@@ -482,4 +482,27 @@ std::string LoadStringData( const wxString& aPath );
  */
 bool CanDoDisplayTests();
 
+/**
+ * Opens the display for the duration of a test that makes widgets such as menus, in programs that start wxWidgets with
+ * no application object (so GTK is not initialized), and closes it again so the other tests that need a display
+ * still find none and skip themselves.
+ *
+ * IsAvailable() is false when there is no display connection to make widgets on, and the test may skip.
+ */
+class DISPLAY_FOR_WIDGETS
+{
+public:
+    DISPLAY_FOR_WIDGETS();
+    ~DISPLAY_FOR_WIDGETS();
+
+    DISPLAY_FOR_WIDGETS( const DISPLAY_FOR_WIDGETS& ) = delete;
+    DISPLAY_FOR_WIDGETS& operator=( const DISPLAY_FOR_WIDGETS& ) = delete;
+
+    bool IsAvailable() const { return m_isAvailable; }
+
+private:
+    bool m_isAvailable = false;
+    bool m_isOpenedHere = false;
+};
+
 } // namespace KI_TEST

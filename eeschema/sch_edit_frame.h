@@ -58,6 +58,8 @@ class SCHEMATIC;
 class SCH_COMMIT;
 class SCH_DESIGN_BLOCK_PANE;
 class PANEL_REMOTE_SYMBOL;
+class TOOL_INTERACTIVE;
+class WX_MENUBAR;
 class DIALOG_BOOK_REPORTER;
 class DIALOG_ERC;
 class DIALOG_SYMBOL_FIELDS_TABLE;
@@ -1062,6 +1064,9 @@ protected:
     void configureToolbars() override;
 
     void doReCreateMenuBar() override;
+
+    /// The menu bar of the Altium-style interaction profile, built from the tree in sch_menus_altium.cpp.
+    WX_MENUBAR* createInteractionProfileMenuBar( TOOL_INTERACTIVE* aTool );
 
     /**
      * Send the KiCad netlist over to CVPCB.

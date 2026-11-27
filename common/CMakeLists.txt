@@ -1029,6 +1029,8 @@ set( COMMON_SRCS
     hotkeys_basic.cpp
     inspectable.cpp
     interaction/interaction_profile.cpp
+    interaction/menu_builder.cpp
+    interaction/menu_def.cpp
     item_realignment.cpp
     kiface_base.cpp
     kiway_player.cpp

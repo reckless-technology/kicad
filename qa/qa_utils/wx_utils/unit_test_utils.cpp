@@ -26,6 +26,7 @@
 
 #if defined( __WXGTK__ )
 #include <gdk/gdk.h> // For gdk_display_get_default()
+#include <gtk/gtk.h> // For gtk_init_check()
 #endif
 
 std::ostream& boost_test_print_type( std::ostream& os, wxPoint const& aPt )
@@ -136,4 +137,39 @@ bool KI_TEST::CanDoDisplayTests()
 
     // Other platforms don't have this restriction, so always return true
     return true;
+}
+
+
+KI_TEST::DISPLAY_FOR_WIDGETS::DISPLAY_FOR_WIDGETS()
+{
+#ifdef __WXGTK__
+    // The test programs start wxWidgets without an application object, so GTK is not initialized and menus and windows
+    // cannot be made. Open the display for the test, and close it again in the destructor, so the tests that skip
+    // themselves for want of a display keep skipping.
+    if( !gdk_display_get_default() )
+    {
+        gtk_init_check( nullptr, nullptr );
+
+        if( !gdk_display_get_default() )
+        {
+            if( GdkDisplay* display = gdk_display_open( nullptr ) )
+                gdk_display_manager_set_default_display( gdk_display_manager_get(), display );
+        }
+
+        m_isOpenedHere = gdk_display_get_default() != nullptr;
+    }
+
+    m_isAvailable = gdk_display_get_default() != nullptr;
+#else
+    m_isAvailable = true;
+#endif
+}
+
+
+KI_TEST::DISPLAY_FOR_WIDGETS::~DISPLAY_FOR_WIDGETS()
+{
+#ifdef __WXGTK__
+    if( m_isOpenedHere && gdk_display_get_default() )
+        gdk_display_close( gdk_display_get_default() );
+#endif
 }

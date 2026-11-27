@@ -121,7 +121,16 @@ With `kicad` the resolved hotkeys are exactly the compiled defaults and no code 
 step 1 the Altium-style table holds three bindings, enough to test with; the full tables are step 3. The
 `KICAD_HOUSE_INTERACTION` option only chooses which profile a new configuration starts with, and it is **off even in the
 house build** until step 3 lands, so an existing and a new configuration both start in `kicad`; an existing
-configuration keeps the profile it names.
+configuration keeps the profile it names. Menus are data (step 2, #135): `MENU_DEF`
+(`include/menu_def.h`, `common/interaction/menu_def.cpp`) is a declarative tree of labels with `&` mnemonics, actions,
+submenus, separators and named slots, with no wx widgets in it, so the key-sequence engine of step 3 can read the
+same tree. `BuildMenuBar()` and `BuildActionMenu()` turn a tree into menus, and `BuildConditionalMenu()` into one
+whose entries follow the selection (for step 14's right-click menus). The schematic's and the PCB editor's trees are
+`SchAltiumMenuBar()` (`eeschema/interaction/sch_menus_altium.cpp`) and `PcbAltiumMenuBar()`
+(`pcbnew/interaction/pcb_menus_altium.cpp`), from tables 6.1 and 6.3 of the note, each with a short list of deliberate
+omissions that the tests use. With the profile `altium`, each editor's `doReCreateMenuBar()` builds its bar from its
+tree (`createInteractionProfileMenuBar()`) and returns; with `kicad` the stock code runs unchanged. Switching profile
+rebuilds the bar because `CommonSettingsChanged()` already does.
 
 ## Keeping up with upstream
 

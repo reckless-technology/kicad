@@ -469,6 +469,7 @@ set( PCBNEW_CLASS_SRCS
     load_select_footprint.cpp
     net_chain_bridging.cpp
     menubar_footprint_editor.cpp
+    interaction/pcb_menus_altium.cpp
     menubar_pcb_editor.cpp
     padstack.cpp
     pcb_base_edit_frame.cpp

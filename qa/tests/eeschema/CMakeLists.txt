@@ -262,6 +262,7 @@ set( QA_EESCHEMA_SRCS
     test_sch_rule_area_directive_visibility.cpp
     test_sch_rtree.cpp
     test_sch_reference_list.cpp
+    test_sch_menu_tree.cpp
     test_sch_screen.cpp
     test_sch_sheet.cpp
     test_issue24972_sheet_pin_constrain.cpp
