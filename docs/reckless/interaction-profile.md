@@ -41,6 +41,9 @@ Priorities follow how often the user does a thing, most frequent first:
   (`Tree` entries, with the `Popup` letter that opens the tree at the cursor). The tables in section 6 come from
   those definitions, checked against the running program. The in-command routing keys are not in those files; they
   were read from the program's own in-command shortcut list (`Shift+F1` while routing).
+- A second live session on 2026-11-27, on a larger two-layer board and its schematic, read the in-command key lists
+  of the other commands (moving a component, placing lines and dimensions, wiring, placing labels and ports,
+  dragging), the width, via and grid pickers, and the heads-up display. They are in 6.7.
 - This tree: the tool framework, both editors, the router and the 3D viewer. File and line references below are to
   `8bc6620158` and will drift; search for the symbol.
 
@@ -65,7 +68,7 @@ cycles the routing conflict mode, numpad `+` and `-` step through layers, numpad
 schematic: `G` and `Shift+G` cycle the snap grid, `Space` rotates the selection, `Ctrl+W` places a wire.
 
 **3.3 In-command keys.** While a command runs (placing, wiring, moving, routing) a second, fixed set of keys
-applies, and it is consistent across commands:
+applies. Its core is shared by every command:
 
 | Key | Meaning in every command |
 |---|---|
@@ -80,6 +83,12 @@ applies, and it is consistent across commands:
 | `PgUp` `PgDn` `Home` `End` | zoom and pan still work mid-command |
 
 Commands are sticky: after placing a part or finishing a wire the command stays active for the next one.
+
+Around that core each command adds keys of its own, listed in 6.7: `Ins` inserts a vertex while wiring and copies
+the attributes of the object under the cursor while placing; moving a component on the PCB has `L`, `X`, `Y`, a
+pushing mode and alignment held on `Ctrl` and `Shift`; placing a PCB line has nearly the router's set. And the list
+itself has two forms: a menu at the cursor almost everywhere, but a modal dialog (key, action, Close) for placing a
+PCB line. A menu at the cursor everywhere (5.5) is the consistent choice.
 
 **3.4 Routing.** One command (`P` `T`, `U` `T` or `Ctrl+W`). Click a pad or track to start, click to commit
 corners. The last segment is drawn hatched and is not committed by the click (look-ahead, toggled by `1`). The full
@@ -857,6 +866,87 @@ PCB:
 Group enter and leave, create group, and the convert-shape commands keep a submenu each ("Unions" for groups, which
 is Altium's nearest idea, and "Convert") between Net Actions and Align. Zoom and Grid, which KiCad appends to every
 context menu, are dropped from this one: they are `Z`, `V` and `G`.
+
+### 6.7 In-command keys by command
+
+Read live on 2026-11-27 (section 2) from `Shift+F1` in each command. The core of 3.3 (`Tab`, `Space`,
+`Shift+Space`, `Enter`, `Esc`, the zoom keys and the cursor keys) is in every list below and is not repeated. The last
+column says what the profile does with each key: = it maps to an existing action or a context alias of 5.5; new, a
+small action is wanted; - no KiCad counterpart, left out.
+
+**PCB, moving a component (`M` `C`, `M` `M` on a footprint).**
+
+| Key | Function | |
+|---|---|---|
+| `L` | flip to the other side | = (6.4) |
+| `X` / `Y` | flip in X / Y | - (footprints flip sides, not in place) |
+| `R` | cycle the pushing mode (ignore, push) | - |
+| `Shift+Tab` | change which component is on the cursor | - |
+| `N` | cycle the net-line connect mode (pad to pad and others) | - |
+| hold `Ctrl` / hold `Shift` | align to component edges / to pads | - |
+| `Shift+R` | toggle re-routing the component's tracks as it moves | - |
+| `Shift+Ctrl+G` | gloss effort | - |
+| numpad `+` `-` `*` | next / previous / next signal layer | = (6.4) |
+
+Its display reads the live DRC count and the rule being checked, then the move mode, pushing, re-route, object
+count, net-line mode and gloss, each mode with the key that changes it.
+
+**PCB, placing a line (`P` `L`).** On a copper layer this places track without the router, and its list is close to
+the router's (3.4): `Backspace` removes the last segment, `Shift+R` the routing mode, `Shift+W` / `Shift+V` the
+width / via pickers, `,` / `.` decrease / increase the arc setback, `/` connects to an internal plane, `1`
+look-ahead, `2` adds a via with no layer change, `3` / `4` cycle the width / via-size source, numpad `+` `-` `*`
+change layer. KiCad's `P` `L` is a graphic line (6.3), whose tool has none of these; only `Backspace` maps
+(`undoLastSegment`). Track goes through the router.
+
+**PCB, placing a dimension (`P` `D` …).** The core only, with the layer keys. The submenu holds linear, angular,
+radial, ordinate, leader, standard, center, baseline, linear diameter and radial diameter; 6.3 maps the four KiCad
+has.
+
+**Schematic, wiring (`P` `W`).**
+
+| Key | Function | |
+|---|---|---|
+| `Space` | toggle wire start / end mode (the corner flip) | = (6.2) |
+| `Shift+Space` | cycle 90 / 45 / any angle | = (6.2) |
+| `Backspace` | remove the last vertex | = (6.2) |
+| `Ins` | insert a vertex | - |
+
+The status bar shows the corner mode and the end it applies to. Dragging (`M` `D`) has the placing list below
+without `Ins`, plus `Ctrl+Space` for the start / end mode.
+
+**Schematic, placing a net label, port, power port or part.**
+
+| Key | Function | |
+|---|---|---|
+| `X` / `Y` | flip | = (6.2) |
+| `Ins` | copy the attributes of the object under the cursor | new |
+
+The status bar names `Tab` and `F1`.
+
+**Schematic, the move menu (`M`).** As 6.1, with Move Selection by X, Y, the four ordering commands and six
+sheet-symbol and sheet-entry commands (flip along X / Y, swap side, reverse order, toggle the IO type of the selected
+or all entries), disabled without a selection. The ordering and sheet-entry commands have no KiCad counterpart.
+
+**The pickers.**
+
+- `G` on the PCB, the grid menu at the cursor: seven mil steps (1 to 100) and six mm steps (0.025 to 2.5), then grid
+  properties (`Ctrl+G`), the global snap grid (`Shift+Ctrl+G`) and separate X and Y snap submenus. KiCad's grid list
+  at the cursor (5.7) has the steps; separate X and Y are left out.
+- `Shift+W`, a modal "Choose Width" dialog: the favorite widths in imperial and metric columns with the current one
+  highlighted, and "Apply To All Layers". `Shift+V`, a modal "Choose Via Sizes" dialog: the via definitions in use,
+  each with its source (local or a rule), and the diameter and hole of the one selected. The favorites are a
+  preference. The KiCad form stays a menu at the cursor (6.4): the board's track widths and via sizes are already a
+  list.
+
+**The heads-up display while routing.** The cursor position and delta, the active layer, the snap grid and the
+hotspot snap distance; one line with the corner style, conflict mode, the width and via-size sources, the via span
+and the gloss effort; and one with the net name, the routed length and the size of the current segment. The status
+bar repeats the mode line, layer tabs other than signal layers grey out, and the uncommitted look-ahead segment is
+drawn red and hatched. 5.7's HUD and 5.8's look-ahead cover these.
+
+**What this changes in 6.4.** `3` and `4` cycle where the width and via size come from (user choice, rule minimum,
+preferred, maximum), not the next size; 6.4's `trackWidthInc` / `viaSizeInc` is a different behavior. Step 4 (#137)
+decides between a source-cycling action and keeping the next-size mapping as the nearest KiCad meaning.
 
 ## 7. Order of work
 
