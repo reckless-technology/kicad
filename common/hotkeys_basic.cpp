@@ -29,6 +29,7 @@
 #include <wildcards_and_files_ext.h>
 #include <paths.h>
 
+#include <tool/action_manager.h>
 #include <tool/tool_manager.h>
 #include "dialogs/dialog_hotkey_list.h"
 #include <wx/apptrait.h>
@@ -428,14 +429,17 @@ void ReadHotKeyConfigIntoActions( INTERACTION_PROFILE_ID aProfile, const wxStrin
 
     // A profile other than KiCad's starts every action from the profile's defaults, not the compiled ones
     PROFILE_HOTKEY_LAYER profileLayer = INTERACTION_PROFILE::BuildHotKeyLayer( aProfile );
+    LEGACY_HOTKEY_MAPS   legacyMaps;
+
+    if( profileLayer.m_isActive )
+        legacyMaps = ReadLegacyHotkeyMaps();
 
     // Set each tool action hotkey to the config file hotkey if present
     for( TOOL_ACTION* action : aActions )
     {
         if( profileLayer.m_isActive )
         {
-            std::pair<int, int> defaults = INTERACTION_PROFILE::ApplyHotKeyLayer(
-                    profileLayer, action->GetName(), { action->GetDefaultHotKey(), action->GetDefaultHotKeyAlt() } );
+            std::pair<int, int> defaults = ResolveProfileDefaultKeys( *action, profileLayer, legacyMaps );
             action->SetHotKey( defaults.first, defaults.second );
         }
 
@@ -445,6 +449,76 @@ void ReadHotKeyConfigIntoActions( INTERACTION_PROFILE_ID aProfile, const wxStrin
             action->SetHotKey( keys.first, keys.second );
         }
     }
+}
+
+
+LEGACY_HOTKEY_MAPS ReadLegacyHotkeyMaps()
+{
+    LEGACY_HOTKEY_MAPS maps;
+
+    ReadLegacyHotkeyConfig( SCH_EDIT_FRAME_NAME, maps.m_eeschema );
+    ReadLegacyHotkeyConfig( PCB_EDIT_FRAME_NAME, maps.m_pcbnew );
+
+    return maps;
+}
+
+
+std::pair<int, int> ResolveProfileDefaultKeys( const TOOL_ACTION& aAction, const PROFILE_HOTKEY_LAYER& aLayer,
+                                               const LEGACY_HOTKEY_MAPS& aLegacyMaps )
+{
+    static const std::map<std::string, int> noLegacyKeys;
+
+    const std::string&                name = aAction.GetName();
+    const std::map<std::string, int>* legacyKeys = &noLegacyKeys;
+
+    // Only the schematic and PCB editors' legacy files are read here; the other actions' legacy keys are not
+    if( name.compare( 0, 9, "eeschema." ) == 0 )
+        legacyKeys = &aLegacyMaps.m_eeschema;
+    else if( name.compare( 0, 8, "pcbnew." ) == 0 )
+        legacyKeys = &aLegacyMaps.m_pcbnew;
+
+    return ACTION_MANAGER::ResolveHotKey( aAction, *legacyKeys, aLayer, std::map<std::string, std::pair<int, int>>() );
+}
+
+
+int WriteProfileHotKeyConfig( const std::vector<TOOL_ACTION*>& aActions, const PROFILE_HOTKEY_LAYER& aLayer,
+                              const LEGACY_HOTKEY_MAPS& aLegacyMaps, const wxString& aFileName )
+{
+    // KiCad's own profile keeps upstream's way: the whole set
+    if( !aLayer.m_isActive )
+        return WriteHotKeyConfig( aActions, aFileName );
+
+    std::map<std::string, std::pair<int, int>> hotkeys;
+    wxFileName fn( aFileName.IsEmpty() ? INTERACTION_PROFILE::UserHotKeyFilePath( INTERACTION_PROFILE::Active() )
+                                       : aFileName );
+
+    ReadHotKeyConfig( fn.GetFullPath(), hotkeys );
+
+    for( const TOOL_ACTION* action : aActions )
+    {
+        std::pair<int, int> keys( action->GetHotKey(), action->GetHotKeyAlt() );
+
+        // Only a difference from the profile's defaults is the user's: an unbound action is written with empty keys,
+        // and one set back to its default drops out of the file
+        if( keys == ResolveProfileDefaultKeys( *action, aLayer, aLegacyMaps ) )
+            hotkeys.erase( action->GetName() );
+        else
+            hotkeys[action->GetName()] = keys;
+    }
+
+    wxFFileOutputStream outStream( fn.GetFullPath() );
+    wxTextOutputStream  txtStream( outStream, wxEOL_UNIX );
+
+    for( const std::pair<const std::string, std::pair<int, int>>& entry : hotkeys )
+    {
+        txtStream << entry.first << "\t" << KeyNameFromKeyCode( entry.second.first ) << "\t"
+                  << KeyNameFromKeyCode( entry.second.second ) << endl;
+    }
+
+    txtStream.Flush();
+    outStream.Close();
+
+    return 1;
 }
 
 

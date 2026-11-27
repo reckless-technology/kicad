@@ -127,6 +127,38 @@ void ReadHotKeyConfigIntoActions( INTERACTION_PROFILE_ID aProfile, const wxStrin
  */
 int WriteHotKeyConfig( const std::vector<TOOL_ACTION*>& aActions, const wxString& aFileName = wxEmptyString );
 
+/// The legacy hotkey files' keys by legacy name, one map for each editor whose file holds them.
+struct LEGACY_HOTKEY_MAPS
+{
+    std::map<std::string, int> m_eeschema;
+    std::map<std::string, int> m_pcbnew;
+};
+
+/**
+ * Read the legacy hotkey files of the schematic and PCB editors.
+ */
+LEGACY_HOTKEY_MAPS ReadLegacyHotkeyMaps();
+
+/**
+ * The defaults of an action under a profile: its compiled default, then the legacy file of its editor (chosen by the
+ * action name's prefix), then the profile's table. The user's file is not applied.
+ */
+std::pair<int, int> ResolveProfileDefaultKeys( const TOOL_ACTION& aAction, const PROFILE_HOTKEY_LAYER& aLayer,
+                                               const LEGACY_HOTKEY_MAPS& aLegacyMaps );
+
+/**
+ * Write the user's hotkey file of a profile.
+ *
+ * For the stock profile (an inactive \a aLayer) this is WriteHotKeyConfig(): the whole set. For any other profile only
+ * the actions whose keys differ from the profile's defaults are written, so a later change to the profile's table
+ * reaches every action the user never changed. An action the user unbound is written with empty keys; one set back to
+ * its default is removed from the file.
+ *
+ * @param aFileName is the file to write; when empty it is the user file of the active profile.
+ */
+int WriteProfileHotKeyConfig( const std::vector<TOOL_ACTION*>& aActions, const PROFILE_HOTKEY_LAYER& aLayer,
+                              const LEGACY_HOTKEY_MAPS& aLegacyMaps, const wxString& aFileName = wxEmptyString );
+
 /**
  * Read hotkey configuration for a given app.
  *

@@ -156,6 +156,9 @@ std::pair<int, int> INTERACTION_PROFILE::ApplyHotKeyLayer( const PROFILE_HOTKEY_
     if( binding != aLayer.m_bindings.end() )
         return binding->second;
 
+    // A key the table binds is taken from every action the table does not name, in every editor. That is global for
+    // now; scoping it to the editor that binds the key is a requirement of step 3 (#136), where the editors' tables come
+    // in.
     if( aLayer.m_takenKeys.count( aBaseKeys.first ) )
         aBaseKeys.first = 0;
 

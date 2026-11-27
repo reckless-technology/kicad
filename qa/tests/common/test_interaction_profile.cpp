@@ -303,6 +303,123 @@ BOOST_AUTO_TEST_CASE( EachProfileHasItsOwnUserFile )
 }
 
 
+/// Set every action to the profile's defaults, as the editor does when it loads a profile
+void setToProfileDefaults( PROFILE_TEST_ACTIONS& aActions, const PROFILE_HOTKEY_LAYER& aLayer )
+{
+    for( TOOL_ACTION* action : aActions.List() )
+    {
+        KEYS keys = ResolveProfileDefaultKeys( *action, aLayer, LEGACY_HOTKEY_MAPS() );
+        action->SetHotKey( keys.first, keys.second );
+    }
+}
+
+
+BOOST_AUTO_TEST_CASE( AProfileFileHoldsOnlyWhatTheUserChanged )
+{
+    TEMP_DIRECTORY directory;
+    wxString       file = INTERACTION_PROFILE::UserHotKeyFilePath( INTERACTION_PROFILE_ID::ALTIUM, directory.m_path );
+    PROFILE_TEST_ACTIONS actions;
+    PROFILE_HOTKEY_LAYER layer = INTERACTION_PROFILE::BuildHotKeyLayer( INTERACTION_PROFILE_ID::ALTIUM );
+
+    // Saved with nothing changed, the file holds nothing
+    setToProfileDefaults( actions, layer );
+    WriteProfileHotKeyConfig( actions.List(), layer, LEGACY_HOTKEY_MAPS(), file );
+
+    PROFILE_HOTKEY_MAP written;
+    ReadHotKeyConfig( file, written );
+    BOOST_CHECK( written.empty() );
+
+    // One action changed: only it is written
+    actions.untouched.SetHotKey( 'K', 0 );
+    WriteProfileHotKeyConfig( actions.List(), layer, LEGACY_HOTKEY_MAPS(), file );
+
+    ReadHotKeyConfig( file, written );
+    BOOST_CHECK_EQUAL( written.size(), 1u );
+    BOOST_CHECK( written["common.test.untouched"] == KEYS( 'K', 0 ) );
+}
+
+
+BOOST_AUTO_TEST_CASE( ADeliberatelyUnboundActionIsWrittenWithEmptyKeys )
+{
+    TEMP_DIRECTORY directory;
+    wxString       file = INTERACTION_PROFILE::UserHotKeyFilePath( INTERACTION_PROFILE_ID::ALTIUM, directory.m_path );
+    PROFILE_TEST_ACTIONS actions;
+    PROFILE_HOTKEY_LAYER layer = INTERACTION_PROFILE::BuildHotKeyLayer( INTERACTION_PROFILE_ID::ALTIUM );
+
+    setToProfileDefaults( actions, layer );
+    actions.toggleUnits.SetHotKey( 0, 0 );
+    WriteProfileHotKeyConfig( actions.List(), layer, LEGACY_HOTKEY_MAPS(), file );
+
+    BOOST_CHECK( readWholeFile( file ).Contains( wxS( "common.Control.toggleUnits\t\t" ) ) );
+
+    // Read back, it overrides the profile's binding: the action stays unbound
+    PROFILE_HOTKEY_MAP written;
+    ReadHotKeyConfig( file, written );
+    BOOST_REQUIRE( written.count( "common.Control.toggleUnits" ) );
+    BOOST_CHECK( resolve( actions.toggleUnits, INTERACTION_PROFILE_ID::ALTIUM, written ) == KEYS( 0, 0 ) );
+}
+
+
+BOOST_AUTO_TEST_CASE( AnActionSetBackToTheProfileDefaultDropsOutOfTheFile )
+{
+    TEMP_DIRECTORY directory;
+    wxString       file = INTERACTION_PROFILE::UserHotKeyFilePath( INTERACTION_PROFILE_ID::ALTIUM, directory.m_path );
+    PROFILE_TEST_ACTIONS actions;
+    PROFILE_HOTKEY_LAYER layer = INTERACTION_PROFILE::BuildHotKeyLayer( INTERACTION_PROFILE_ID::ALTIUM );
+
+    setToProfileDefaults( actions, layer );
+    actions.toggleUnits.SetHotKey( 'X', 0 );
+    actions.untouched.SetHotKey( 'K', 0 );
+    WriteProfileHotKeyConfig( actions.List(), layer, LEGACY_HOTKEY_MAPS(), file );
+
+    PROFILE_HOTKEY_MAP written;
+    ReadHotKeyConfig( file, written );
+    BOOST_CHECK_EQUAL( written.size(), 2u );
+
+    // toggleUnits goes back to the profile's Q
+    actions.toggleUnits.SetHotKey( 'Q', 0 );
+    WriteProfileHotKeyConfig( actions.List(), layer, LEGACY_HOTKEY_MAPS(), file );
+
+    written.clear();
+    ReadHotKeyConfig( file, written );
+    BOOST_CHECK_EQUAL( written.size(), 1u );
+    BOOST_CHECK( !written.count( "common.Control.toggleUnits" ) );
+    BOOST_CHECK( written.count( "common.test.untouched" ) );
+}
+
+
+BOOST_AUTO_TEST_CASE( ChangingTheTableAfterASaveReachesWhatTheUserNeverTouched )
+{
+    TEMP_DIRECTORY directory;
+    wxString       file = INTERACTION_PROFILE::UserHotKeyFilePath( INTERACTION_PROFILE_ID::ALTIUM, directory.m_path );
+    PROFILE_TEST_ACTIONS actions;
+
+    // A first version of the profile's table, and a save in which the user changed one action only
+    PROFILE_HOTKEY_LAYER firstTable =
+            INTERACTION_PROFILE::BuildHotKeyLayerFromText( "common.Control.toggleUnits\tQ\n" );
+
+    setToProfileDefaults( actions, firstTable );
+    actions.untouched.SetHotKey( 'K', 0 );
+    WriteProfileHotKeyConfig( actions.List(), firstTable, LEGACY_HOTKEY_MAPS(), file );
+
+    // The table then changes, as it does when step 3 fills it in
+    PROFILE_HOTKEY_LAYER laterTable =
+            INTERACTION_PROFILE::BuildHotKeyLayerFromText( "common.Control.toggleUnits\tT\n" );
+
+    PROFILE_HOTKEY_MAP userKeys;
+    ReadHotKeyConfig( file, userKeys );
+
+    auto resolveWith = [&]( const TOOL_ACTION& aAction, const PROFILE_HOTKEY_LAYER& aLayer )
+    {
+        return ACTION_MANAGER::ResolveHotKey( aAction, std::map<std::string, int>(), aLayer, userKeys );
+    };
+
+    BOOST_CHECK( resolveWith( actions.toggleUnits, firstTable ) == KEYS( 'Q', 0 ) );
+    BOOST_CHECK( resolveWith( actions.toggleUnits, laterTable ) == KEYS( 'T', 0 ) );
+    BOOST_CHECK( resolveWith( actions.untouched, laterTable ) == KEYS( 'K', 0 ) );
+}
+
+
 BOOST_AUTO_TEST_CASE( ResetGivesTheProfilesDefaults )
 {
     PROFILE_TEST_ACTIONS actions;

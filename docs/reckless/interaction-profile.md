@@ -190,7 +190,8 @@ versioned, so these describe the current product; where the installed 21.7 resou
 
 **4.1 Actions and hotkeys.** Every command is a `TOOL_ACTION` (`include/tool/tool_action.h`) with a dotted name, a
 scope (`AS_CONTEXT`, `AS_ACTIVE`, `AS_GLOBAL`), a default hotkey and one alternate. Hotkeys resolve in
-`ACTION_MANAGER::UpdateHotKeys` / `processHotKey` (`common/tool/action_manager.cpp`): compiled default, then legacy
+`ACTION_MANAGER::UpdateHotKeys` / `processHotKey` (`common/tool/action_manager.cpp`; the layering itself is
+`ACTION_MANAGER::ResolveHotKey`): compiled default, then legacy
 file, then the user's `user.hotkeys` (a tab-separated file: name, key, alternate key; read and written in
 `common/hotkeys_basic.cpp`). There is one user set and no notion of a named scheme.
 
@@ -265,29 +266,38 @@ every open frame (the path a language change takes: `ShowChangedLanguage` / `Com
 Put the new code in its own files so a rebase onto upstream touches as little as possible:
 
 ```
-common/interaction/interaction_profile.{h,cpp}   the enum, the active profile, change notification
+include/interaction_profile.h                    the enum (`INTERACTION_PROFILE_ID`, `STOCK` and `ALTIUM`), the active profile, the layer
+common/interaction/interaction_profile.cpp       its code, in the static `common` library (it needs the key-name parser)
+common/interaction/altium.hotkeys                the checked-in profile table, embedded at build time (step 1: three bindings)
 common/interaction/key_sequence.{h,cpp}          the sequence state machine (no wx, unit-testable)
 common/interaction/menu_def.{h,cpp}              declarative menu trees and their builders
-common/interaction/profile_hotkeys_altium.cpp    generated from a checked-in table
 eeschema/interaction/sch_menus_altium.cpp        the schematic trees
 pcbnew/interaction/pcb_menus_altium.cpp          the PCB trees
 ```
 
-Each hook into an upstream file is a short guarded call into these.
+Each hook into an upstream file is a short guarded call into these. The active profile is read from the common
+settings through `Pgm()`; the static `common` library is linked into every module, so a static there would be one copy
+for each. Change is announced with `CommonSettingsChanged( HOTKEYS_CHANGED | INTERACTION_PROFILE_CHANGED )`, and
+`TOOLS_HOLDER::InteractionProfileChanged()` is where step 2 rebuilds menus.
 
 The owner chose the name "Altium-style" (section 9). This note says "the profile".
 
 ### 5.2 A profile layer in hotkey resolution
 
-`processHotKey` gains a layer: compiled default → profile table → user file. The profile table is a checked-in
+`processHotKey` gains a layer: compiled default → legacy file → profile table → user file. The profile table is a checked-in
 tab-separated file in the `user.hotkeys` format, one per profile, embedded at build time the way
 `reckless_color_theme.json` is, so the hotkey importer's parser reads it. An action the table does not name keeps
 its compiled default unless that key is taken by the profile, in which case it is unbound. That rule matters:
 the profile takes nearly every bare letter for sequences, so KiCad's single-letter defaults (`A`, `W`, `M`, `E`,
 `X`, `V` and the rest) must drop out rather than fight.
+This rule is global for now: a key the table binds is taken from every action it does not name, in every editor.
+Step 3 (#136) scopes it to the editor that binds the key.
 
 The user's own changes are stored per profile: `user.hotkeys` for `kicad`, `user.<profile>.hotkeys` otherwise, so
-switching profiles never destroys a customization. In the hotkey editor "Reset to defaults" means the profile's
+switching profiles never destroys a customization. For a profile other than `kicad` the editor writes only the actions whose keys differ from
+the profile's resolved defaults (compiled, legacy, table), an action the user unbound as an explicit empty binding and
+an action set back to its default not at all, so a later change to the profile's table reaches everything the user never
+changed; `kicad` keeps upstream's whole-set write. The legacy file is read for the schematic and PCB editors' actions only. In the hotkey editor "Reset to defaults" means the profile's
 defaults (`HOTKEY_STORE::ResetAllHotkeysToDefault`), and conflict checks run on the resolved set.
 
 ### 5.3 The key-sequence engine

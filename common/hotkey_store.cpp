@@ -211,6 +211,10 @@ void HOTKEY_STORE::ResetAllHotkeysToDefault( INTERACTION_PROFILE_ID aProfile )
     m_profile = aProfile;
 
     PROFILE_HOTKEY_LAYER profileLayer = INTERACTION_PROFILE::BuildHotKeyLayer( aProfile );
+    LEGACY_HOTKEY_MAPS   legacyMaps;
+
+    if( profileLayer.m_isActive )
+        legacyMaps = ReadLegacyHotkeyMaps();
 
     for( HOTKEY_SECTION& section : m_hk_sections )
     {
@@ -220,8 +224,11 @@ void HOTKEY_STORE::ResetAllHotkeysToDefault( INTERACTION_PROFILE_ID aProfile )
             // compiled ones.
             TOOL_ACTION* action = hotkey.m_Actions[0];
 
-            std::pair<int, int> defaults = INTERACTION_PROFILE::ApplyHotKeyLayer(
-                    profileLayer, action->GetName(), { action->GetDefaultHotKey(), action->GetDefaultHotKeyAlt() } );
+            std::pair<int, int> defaults( action->GetDefaultHotKey(), action->GetDefaultHotKeyAlt() );
+
+            // The stock profile's defaults are the compiled ones; another's include the legacy file and its table
+            if( profileLayer.m_isActive && !action->GetName().empty() )
+                defaults = ResolveProfileDefaultKeys( *action, profileLayer, legacyMaps );
 
             hotkey.m_EditKeycode = defaults.first;
             hotkey.m_EditKeycodeAlt = defaults.second;

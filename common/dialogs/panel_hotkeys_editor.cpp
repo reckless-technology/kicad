@@ -217,7 +217,12 @@ bool PANEL_HOTKEYS_EDITOR::TransferDataFromWindow()
         return false;
 
     // The keys go to the selected profile's own file, and the profile becomes the active one
-    WriteHotKeyConfig( m_actions, INTERACTION_PROFILE::UserHotKeyFilePath( m_selectedProfile ) );
+    // (for a profile other than KiCad's, only what differs from the profile's defaults)
+    PROFILE_HOTKEY_LAYER profileLayer = INTERACTION_PROFILE::BuildHotKeyLayer( m_selectedProfile );
+
+    WriteProfileHotKeyConfig( m_actions, profileLayer,
+                              profileLayer.m_isActive ? ReadLegacyHotkeyMaps() : LEGACY_HOTKEY_MAPS(),
+                              INTERACTION_PROFILE::UserHotKeyFilePath( m_selectedProfile ) );
     INTERACTION_PROFILE::SetActive( m_selectedProfile );
 
     return true;
