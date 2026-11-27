@@ -3214,8 +3214,16 @@ bool PCB_ARC::IsDegenerated( int aThreshold ) const
 
 bool PCB_TRACK::cmp_tracks::operator() ( const PCB_TRACK* a, const PCB_TRACK* b ) const
 {
+    // Net codes are handed out in the order the loader meets each net, which depends on the order of the items in the
+    // file, so they cannot order a file: the same board would save its tracks differently after a reload. Net names are
+    // unique and are what the file records, so they give an order that is a function of the board's content.
     if( a->GetNetCode() != b->GetNetCode() )
-        return a->GetNetCode() < b->GetNetCode();
+    {
+        const int nameOrder = a->GetNetname().Cmp( b->GetNetname() );
+
+        if( nameOrder != 0 )
+            return nameOrder < 0;
+    }
 
     if( a->GetLayer() != b->GetLayer() )
         return a->GetLayer() < b->GetLayer();

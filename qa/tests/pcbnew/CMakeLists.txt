@@ -106,6 +106,7 @@ set( QA_PCBNEW_SRCS
     test_ellipse_roundtrip.cpp
     test_custom_pad_primitive_roundtrip.cpp
     test_custom_property_roundtrip.cpp
+    test_board_save_order.cpp
     test_default_font.cpp
     test_active_layer_update.cpp
     test_line_ending_load_save.cpp
