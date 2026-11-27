@@ -22,13 +22,11 @@
 #include "pcb_menus_altium.h"
 
 #include <pcb_edit_frame.h>
-#include <pcb_painter.h>
 #include <tool/actions.h>
 #include <tool/selection_conditions.h>
 #include <tools/pcb_actions.h>
 #include <tools/pcb_selection_conditions.h>
 #include <tools/pcb_selection_tool.h>
-#include <view/view.h>
 #include <wx/translation.h>
 
 namespace
@@ -60,16 +58,6 @@ M slotOf( const char* aTitle, const SELECTION_CONDITION& aCondition )
 
 MENU_DEF PcbAltiumContextMenu( PCB_EDIT_FRAME* aFrame, PCB_SELECTION_TOOL* aSelectionTool )
 {
-    const SELECTION_CONDITION haveHighlight = [aFrame]( const SELECTION& )
-    {
-        if( !aFrame || !aFrame->GetCanvas() )
-            return false;
-
-        KIGFX::RENDER_SETTINGS* settings = aFrame->GetCanvas()->GetView()->GetPainter()->GetSettings();
-
-        return !settings->GetHighlightNetCodes().empty();
-    };
-
     const SELECTION_CONDITION toolActive = [aFrame]( const SELECTION& )
     {
         return aFrame && !aFrame->ToolStackIsEmpty();
@@ -126,7 +114,7 @@ MENU_DEF PcbAltiumContextMenu( PCB_EDIT_FRAME* aFrame, PCB_SELECTION_TOOL* aSele
             wxEmptyString,
             { M::Item( _( "Cancel" ), ACTIONS::cancelInteractive, toolActive ),
               M::Item( _( "Find Similar Objects..." ), A::findByProperties ),
-              M::Item( _( "Clear Filter" ), A::clearHighlight, haveHighlight ),
+              M::Item( _( "Clear Filter" ), A::clearHighlight ),
               M::Separator(),
               M::Item( _( "Interactive Routing" ), A::routeSingleTrack, nothing ),
               M::Item( _( "Interactive Length Tuning" ), A::tuneSingleTrack, nothing ),
