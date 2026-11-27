@@ -122,8 +122,9 @@ Altium-style table holds the roots of the key sequences and the direct keys of t
 exist (step 3, #136; what is left out is listed at the top of the file). A key is taken in the scope of the action that
 binds it: a `common.` action takes it in every editor, an `eeschema.` or `pcbnew.` one in its editor only, so the two
 editors can give a key different meanings. The `KICAD_HOUSE_INTERACTION` option only chooses which profile a new
-configuration starts with, and it is **off even in the house build**, whether it goes on being Jonny's decision: an
-existing and a new configuration both start in `kicad`; an existing configuration keeps the profile it names. Menus are data (step 2, #135): `MENU_DEF`
+configuration starts with: on when `KICAD_VERSION_EXTRA` is `reckless`, like the other house options, so a new
+configuration, and one that predates the setting, starts in `altium`; an existing configuration keeps the profile it
+names. Menus are data (step 2, #135): `MENU_DEF`
 (`include/menu_def.h`, `common/interaction/menu_def.cpp`) is a declarative tree of labels with `&` mnemonics, actions,
 submenus, separators and named slots, with no wx widgets in it, so the key-sequence engine of step 3 can read the
 same tree. `BuildMenuBar()` and `BuildActionMenu()` turn a tree into menus, and `BuildConditionalMenu()` into one

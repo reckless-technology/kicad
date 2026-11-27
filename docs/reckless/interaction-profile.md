@@ -1052,6 +1052,8 @@ Taken by the owner on 2026-11-26.
 4. **Ports.** `P` `R` places a hierarchical label; `P` `C` places a global label.
 5. **Docked 3D.** Not decided: build step 10 (two windows, camera kept) first and decide on step 13 after using it.
 6. **Right-click menus.** Rebuilt in Altium's structure, not just reordered (5.4, 6.6, step 14).
+7. **Default.** Altium-style is the profile a new configuration starts with in the Reckless build
+   (`KICAD_HOUSE_INTERACTION` ON with the other house options), from step 3 on (2026-11-27).
 
 Settled earlier from the owner's own Altium preferences: the wheel scrolls and `Ctrl`+wheel zooms; a plain drag in
 the schematic keeps wires attached and `Ctrl`+drag does not; in-place text editing is wanted; routing starts with

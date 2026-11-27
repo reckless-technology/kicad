@@ -201,12 +201,11 @@ option( KICAD_HOUSE_THEME
 
 # The Altium-style interaction profile is in every build (it is a setting, input.interaction_profile); this makes it the
 # one a new configuration starts with (common/CMakeLists.txt defines KICAD_HOUSE_INTERACTION for kicommon, the only
-# library that reads it). OFF even in the house build: the hotkey tables and the key sequences are in (step 3 of
-# docs/reckless/interaction-profile.md), and what remains of the profile is later steps' (in-command keys, mouse,
-# routing, views). Whether a new configuration starts in it is Jonny's decision, not the build's.
+# library that reads it). An existing configuration keeps the profile it has stored; one that predates the setting
+# loads this default.
 option( KICAD_HOUSE_INTERACTION
     "Make the Altium-style interaction profile the default for a new configuration"
-    OFF )
+    ${_KICAD_HOUSE_DEFAULT} )
 
 # The interface font is set in code (PGM_BASE::InitPgm), so the build carries the choice however a program is started.
 if( KICAD_HOUSE_FONTS )
