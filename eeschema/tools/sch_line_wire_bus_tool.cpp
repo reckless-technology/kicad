@@ -798,9 +798,17 @@ int SCH_LINE_WIRE_BUS_TOOL::doDrawSegments( const TOOL_EVENT& aTool, SCH_COMMIT&
 
     VECTOR2I contextMenuPos;
 
+    // The wires as they stood at the last click, as start and end points: what a right-click cancel keeps (the
+    // segments after them are the ones on the cursor). Empty until a click has placed a vertex.
+    std::vector<std::pair<VECTOR2I, VECTOR2I>> wiresAtLastClick;
+
     // Main loop: keep receiving events
     while( TOOL_EVENT* evt = Wait() )
     {
+        // No wire in progress: nothing to keep
+        if( !segment && !m_busUnfold.in_progress )
+            wiresAtLastClick.clear();
+
         LINE_MODE currentMode = (LINE_MODE) m_frame->eeconfig()->m_Drawing.line_mode;
         bool      twoSegments = currentMode != LINE_MODE::LINE_MODE_FREE;
 
@@ -838,6 +846,9 @@ int SCH_LINE_WIRE_BUS_TOOL::doDrawSegments( const TOOL_EVENT& aTool, SCH_COMMIT&
                 m_selectionTool->RemoveItemFromSel( segment );
                 delete segment;
 
+                if( wiresAtLastClick.size() >= m_wires.size() )
+                    wiresAtLastClick.resize( m_wires.size() - 1 );
+
                 segment = m_wires.back();
                 segment->SetEndPoint( cursorPos );
             }
@@ -865,7 +876,35 @@ int SCH_LINE_WIRE_BUS_TOOL::doDrawSegments( const TOOL_EVENT& aTool, SCH_COMMIT&
         {
             m_frame->GetInfoBar()->Dismiss();
 
-            if( segment || m_busUnfold.in_progress )
+            if( ( segment || m_busUnfold.in_progress ) && evt->IsCancelFromRightClick() && !wiresAtLastClick.empty() )
+            {
+                // A right-click ends the wire at the last clicked vertex and drops only what is on the cursor. Esc
+                // keeps KiCad's behavior, which drops the whole wire.
+                while( m_wires.size() > wiresAtLastClick.size() )
+                {
+                    SCH_LINE* onCursor = m_wires.back();
+
+                    m_wires.pop_back();
+                    m_selectionTool->RemoveItemFromSel( onCursor, true /*quiet mode*/ );
+                    delete onCursor;
+                }
+
+                for( size_t ii = 0; ii < m_wires.size(); ++ii )
+                {
+                    m_wires[ii]->SetStartPoint( wiresAtLastClick[ii].first );
+                    m_wires[ii]->SetEndPoint( wiresAtLastClick[ii].second );
+                }
+
+                wiresAtLastClick.clear();
+                finishSegments( aCommit );
+                segment = nullptr;
+
+                aCommit.Push( _( "Draw Wires" ) );
+
+                if( aQuitOnDraw )
+                    break;
+            }
+            else if( segment || m_busUnfold.in_progress )
             {
                 cleanup();
 
@@ -960,6 +999,11 @@ int SCH_LINE_WIRE_BUS_TOOL::doDrawSegments( const TOOL_EVENT& aTool, SCH_COMMIT&
                         placedSegments++;
 
                     segment->SetEndPoint( cursorPos );
+
+                    wiresAtLastClick.clear();
+
+                    for( const SCH_LINE* wire : m_wires )
+                        wiresAtLastClick.emplace_back( wire->GetStartPoint(), wire->GetEndPoint() );
 
                     for( int i = 0; i < placedSegments; i++ )
                     {

@@ -205,17 +205,19 @@ bool ACTION_MANAGER::RunHotKey( int aHotKey ) const
 
     if( context )
     {
-        bool runAction = true;
+        // A context alias runs the action it forwards to, as the key for that action would
+        const TOOL_ACTION* toRun = context->GetForwardTarget() ? context->GetForwardTarget() : context;
+        bool               runAction = true;
 
-        if( const ACTION_CONDITIONS* aCond = GetCondition( *context ) )
+        if( const ACTION_CONDITIONS* aCond = GetCondition( *toRun ) )
             runAction = aCond->GetHotkeyCondition()( sel );
 
         wxLogTrace( kicadTraceToolStack, wxS( "ACTION_MANAGER::RunHotKey %s context action: %s for hotkey %s" ),
-                    runAction ? wxS( "Running" ) : wxS( "Not running" ),
-                    context->GetName(), KeyNameFromKeyCode( aHotKey ) );
+                    runAction ? wxS( "Running" ) : wxS( "Not running" ), toRun->GetName(),
+                    KeyNameFromKeyCode( aHotKey ) );
 
         if( runAction )
-            return m_toolMgr->RunAction( *context );
+            return m_toolMgr->RunAction( *toRun );
     }
 
     // A context action that cannot run releases the key, otherwise its tool would shadow the

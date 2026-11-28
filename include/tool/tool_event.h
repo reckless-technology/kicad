@@ -338,6 +338,15 @@ public:
         return m_actions == TA_CANCEL_TOOL;
     }
 
+    /// The command id of the cancel event a right-click makes, where the Esc key's is WXK_ESCAPE.
+    static constexpr int CANCEL_FROM_RIGHT_CLICK = -2;
+
+    /**
+     * Indicate that the cancel was made by a right-click (input.right_click_cancels) and not by the Esc key. A wire
+     * keeps the vertices it has on a right-click cancel, where Esc drops the whole wire.
+     */
+    bool IsCancelFromRightClick() const { return IsCancel() && m_commandId && *m_commandId == CANCEL_FROM_RIGHT_CLICK; }
+
     bool IsActivate() const
     {
         return m_actions == TA_ACTIVATE;

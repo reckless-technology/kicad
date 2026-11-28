@@ -720,6 +720,9 @@ public:
     DECLARE_EVENT_TABLE()
 
 protected:
+    /// Turn Ctrl+click highlight on, once, as part of the Altium-style profile's mouse preset
+    bool applyEditorMousePresetOnce() override;
+
     /**
      * Store the previous layer toolbar icon state information
      */

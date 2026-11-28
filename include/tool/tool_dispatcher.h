@@ -109,9 +109,26 @@ public:
      */
     static bool IsPastDragThreshold( const VECTOR2D& aOffset, int aDragMinX, int aDragMinY );
 
+    /**
+     * Pure decision on whether a right-click without a drag cancels the running command (`input.right_click_cancels`).
+     *
+     * @param aIsSettingOn the setting.
+     * @param aIsSelectionToolCurrent true when no command is running, so the selection tool is the current tool.
+     */
+    static bool DoesRightClickCancel( bool aIsSettingOn, bool aIsSelectionToolCurrent );
+
+    /**
+     * The event a right-click without a drag becomes: a cancel (TOOL_EVENT::IsCancelFromRightClick) when
+     * \a aDoesCancel, else the click.
+     */
+    static TOOL_EVENT MakeRightClickEvent( bool aDoesCancel, int aButtonsAndModifiers );
+
 private:
     /// Handles mouse related events (click, motion, dragging).
     bool handleMouseButton( wxEvent& aEvent, int aIndex, bool aMotion );
+
+    /// Whether a right-click now cancels the running command, from the setting and the current tool.
+    bool doesRightClickCancel() const;
 
     /// Processes any pending mouse clicks that have been physically completed but not yet
     /// dispatched. This ensures clicks are processed before cancel events when both happen

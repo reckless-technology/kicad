@@ -517,10 +517,13 @@ int PCB_SELECTION_TOOL::Main( const TOOL_EVENT& aEvent )
                 }
 
                 // Single click? Select single object
-                if( m_highlight_modifier && brd_editor )
+                if( ( m_highlight_modifier || m_highlight_add_modifier ) && brd_editor )
                 {
                     if( !toggleTableCellSelection( evt->Position() ) )
-                        m_toolMgr->RunAction( PCB_ACTIONS::highlightNet );
+                    {
+                        m_toolMgr->RunAction( m_highlight_add_modifier ? PCB_ACTIONS::highlightNetAdd
+                                                                       : PCB_ACTIONS::highlightNet );
+                    }
                 }
                 else
                 {

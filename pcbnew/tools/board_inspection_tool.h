@@ -121,7 +121,7 @@ private:
      * @param aPosition is the point where an item is expected (world coordinates).
      * @param aUseSelection is true if we should use the current selection to pick the netcode
      */
-    bool highlightNet( const VECTOR2D& aPosition, bool aUseSelection );
+    bool highlightNet( const VECTOR2D& aPosition, bool aUseSelection, bool aIsToAddToHighlight = false );
 
     void doHideRatsnestNet( int aNetCode, bool aHide );
 

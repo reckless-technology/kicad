@@ -1255,6 +1255,54 @@ TOOL_ACTION PCB_ACTIONS::properties( TOOL_ACTION_ARGS()
         .FriendlyName( _( "Properties..." ) )
         .Icon( BITMAPS::edit ) );
 
+TOOL_ACTION PCB_ACTIONS::rotateCcwWhileMoving( TOOL_ACTION_ARGS()
+        .Name( "pcbnew.InteractiveEdit.rotateCcwWhileMoving" )
+        .Scope( AS_CONTEXT )
+        .FriendlyName( _( "Rotate Counterclockwise While Moving" ) )
+        .ForwardTo( PCB_ACTIONS::rotateCcw ) );
+
+TOOL_ACTION PCB_ACTIONS::rotateCwWhileMoving( TOOL_ACTION_ARGS()
+        .Name( "pcbnew.InteractiveEdit.rotateCwWhileMoving" )
+        .Scope( AS_CONTEXT )
+        .FriendlyName( _( "Rotate Clockwise While Moving" ) )
+        .ForwardTo( PCB_ACTIONS::rotateCw ) );
+
+TOOL_ACTION PCB_ACTIONS::flipWhileMoving( TOOL_ACTION_ARGS()
+        .Name( "pcbnew.InteractiveEdit.flipWhileMoving" )
+        .Scope( AS_CONTEXT )
+        .FriendlyName( _( "Change Side / Flip While Moving" ) )
+        .ForwardTo( PCB_ACTIONS::flip ) );
+
+TOOL_ACTION PCB_ACTIONS::propertiesWhileMoving( TOOL_ACTION_ARGS()
+        .Name( "pcbnew.InteractiveEdit.propertiesWhileMoving" )
+        .Scope( AS_CONTEXT )
+        .FriendlyName( _( "Properties While Moving" ) )
+        .ForwardTo( PCB_ACTIONS::properties ) );
+
+TOOL_ACTION PCB_ACTIONS::rotateCcwWhilePlacing( TOOL_ACTION_ARGS()
+        .Name( "pcbnew.InteractiveDrawing.rotateCcwWhilePlacing" )
+        .Scope( AS_CONTEXT )
+        .FriendlyName( _( "Rotate Counterclockwise While Placing" ) )
+        .ForwardTo( PCB_ACTIONS::rotateCcw ) );
+
+TOOL_ACTION PCB_ACTIONS::rotateCwWhilePlacing( TOOL_ACTION_ARGS()
+        .Name( "pcbnew.InteractiveDrawing.rotateCwWhilePlacing" )
+        .Scope( AS_CONTEXT )
+        .FriendlyName( _( "Rotate Clockwise While Placing" ) )
+        .ForwardTo( PCB_ACTIONS::rotateCw ) );
+
+TOOL_ACTION PCB_ACTIONS::flipWhilePlacing( TOOL_ACTION_ARGS()
+        .Name( "pcbnew.InteractiveDrawing.flipWhilePlacing" )
+        .Scope( AS_CONTEXT )
+        .FriendlyName( _( "Change Side / Flip While Placing" ) )
+        .ForwardTo( PCB_ACTIONS::flip ) );
+
+TOOL_ACTION PCB_ACTIONS::propertiesWhilePlacing( TOOL_ACTION_ARGS()
+        .Name( "pcbnew.InteractiveDrawing.propertiesWhilePlacing" )
+        .Scope( AS_CONTEXT )
+        .FriendlyName( _( "Properties While Placing" ) )
+        .ForwardTo( PCB_ACTIONS::properties ) );
+
 TOOL_ACTION PCB_ACTIONS::matchProperties( TOOL_ACTION_ARGS()
         .Name( "pcbnew.MatchProperties.match" )
         .Scope( AS_GLOBAL )
@@ -2032,6 +2080,14 @@ TOOL_ACTION PCB_ACTIONS::highlightNet( TOOL_ACTION_ARGS()
         .LegacyHotkeyName( "Toggle Highlight of Selected Net (Modern Toolset only)" )
         .FriendlyName( _( "Highlight Net" ) )
         .Tooltip( _( "Highlight net under cursor" ) )
+        .Icon( BITMAPS::net_highlight )
+        .Parameter<int>( 0 ) );
+
+TOOL_ACTION PCB_ACTIONS::highlightNetAdd( TOOL_ACTION_ARGS()
+        .Name( "pcbnew.EditorControl.highlightNetAdd" )
+        .Scope( AS_GLOBAL )
+        .FriendlyName( _( "Add Net to Highlight" ) )
+        .Tooltip( _( "Add the net under the cursor to the highlighted nets" ) )
         .Icon( BITMAPS::net_highlight )
         .Parameter<int>( 0 ) );
 

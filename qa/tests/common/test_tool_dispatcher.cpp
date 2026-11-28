@@ -20,6 +20,8 @@
 #include <boost/test/unit_test.hpp>
 #include <qa_utils/wx_utils/unit_test_utils.h>
 
+#include <settings/common_settings.h>
+#include <tool/actions.h>
 #include <tool/tool_dispatcher.h>
 #include <tool/tool_manager.h>
 #include <tool/tool_interactive.h>
@@ -177,6 +179,152 @@ BOOST_AUTO_TEST_CASE( RightClickOpensMenuWhileEventLoopYields )
 
     mgr.ProcessEvent( TOOL_EVENT( TC_MOUSE, TA_MOUSE_CLICK, BUT_RIGHT ) );
     BOOST_CHECK( tool->m_menuRan );
+}
+
+BOOST_AUTO_TEST_SUITE_END()
+
+namespace
+{
+TOOL_EVENT armButtonMenuEvent()
+{
+    return TOOL_EVENT( TC_COMMAND, TA_ACTION, std::string( "test.buttonMenuTool.arm" ), AS_GLOBAL );
+}
+
+
+/// A tool like a drawing command: its menu opens on a right-click, and stays armed for the next one
+class BUTTON_MENU_TEST_TOOL : public TOOL_INTERACTIVE
+{
+public:
+    BUTTON_MENU_TEST_TOOL() :
+            TOOL_INTERACTIVE( "test.buttonMenuTool" ),
+            m_menuClosedCount( 0 ),
+            m_menu( true )
+    {
+    }
+
+    void Reset( RESET_REASON aReason [[maybe_unused]] ) override {}
+
+    int Arm( const TOOL_EVENT& aEvent [[maybe_unused]] )
+    {
+        Activate();
+        SetContextMenu( &m_menu, CMENU_BUTTON );
+
+        while( TOOL_EVENT* evt = Wait() )
+        {
+            if( evt->Category() == TC_COMMAND && evt->Action() == TA_CHOICE_MENU_CLOSED )
+                ++m_menuClosedCount;
+        }
+
+        return 0;
+    }
+
+    int m_menuClosedCount;
+
+private:
+    void setTransitions() override { Go( &BUTTON_MENU_TEST_TOOL::Arm, armButtonMenuEvent() ); }
+
+    ACTION_MENU m_menu;
+};
+} // namespace
+
+
+BOOST_AUTO_TEST_SUITE( RightClickCancels )
+
+BOOST_AUTO_TEST_CASE( ARightClickCancelsOnlyWithTheSettingOnAndACommandRunning )
+{
+    // setting, selection tool is the current tool, cancels
+    BOOST_CHECK( TOOL_DISPATCHER::DoesRightClickCancel( true, false ) );
+    BOOST_CHECK( !TOOL_DISPATCHER::DoesRightClickCancel( true, true ) );
+    BOOST_CHECK( !TOOL_DISPATCHER::DoesRightClickCancel( false, false ) );
+    BOOST_CHECK( !TOOL_DISPATCHER::DoesRightClickCancel( false, true ) );
+}
+
+BOOST_AUTO_TEST_CASE( TheCancelIsCancelInteractiveAndNotEsc )
+{
+    TOOL_EVENT cancel = TOOL_DISPATCHER::MakeRightClickEvent( true, BUT_RIGHT );
+
+    BOOST_CHECK( cancel.IsCancel() );
+    BOOST_CHECK( cancel.IsCancelInteractive() );
+    BOOST_CHECK( cancel.IsCancelFromRightClick() );
+    BOOST_CHECK( !cancel.IsClick( BUT_RIGHT ) );
+
+    // The Esc key's event is the same kind of cancel, told apart by what made it
+    TOOL_EVENT escape( TC_COMMAND, TA_CANCEL_TOOL, WXK_ESCAPE );
+
+    BOOST_CHECK( escape.IsCancelInteractive() );
+    BOOST_CHECK( !escape.IsCancelFromRightClick() );
+}
+
+BOOST_AUTO_TEST_CASE( WithTheSettingOffTheRightClickIsTheClickItAlwaysWas )
+{
+    TOOL_EVENT click = TOOL_DISPATCHER::MakeRightClickEvent( false, BUT_RIGHT );
+
+    BOOST_CHECK( click.IsClick( BUT_RIGHT ) );
+    BOOST_CHECK( !click.IsCancel() );
+    BOOST_CHECK( !click.IsCancelInteractive() );
+    BOOST_CHECK( !click.IsCancelFromRightClick() );
+}
+
+BOOST_AUTO_TEST_CASE( TheSettingFollowsTheBuildsProfile )
+{
+    COMMON_SETTINGS settings;
+
+    settings.Load();
+
+#ifdef KICAD_HOUSE_INTERACTION
+    BOOST_CHECK( settings.m_Input.right_click_cancels );
+#else
+    BOOST_CHECK( !settings.m_Input.right_click_cancels );
+#endif
+
+    // Round trip, and the name the note gives it
+    settings.m_Input.right_click_cancels = !settings.m_Input.right_click_cancels;
+
+    bool expected = settings.m_Input.right_click_cancels;
+
+    settings.Store();
+    settings.m_Input.right_click_cancels = !expected;
+    settings.Load();
+    BOOST_CHECK_EQUAL( settings.m_Input.right_click_cancels, expected );
+}
+
+BOOST_AUTO_TEST_SUITE_END()
+
+
+BOOST_AUTO_TEST_SUITE( ShowToolContextMenu )
+
+BOOST_AUTO_TEST_CASE( TheRequestOpensTheMenuOfTheRunningToolAndOnlyThatEvent )
+{
+    if( !KI_TEST::CanDoDisplayTests() )
+    {
+        BOOST_TEST_MESSAGE( "Skipping test - no display available" );
+        return;
+    }
+
+    TOOL_MANAGER           mgr;
+    BUTTON_MENU_TEST_TOOL* tool = new BUTTON_MENU_TEST_TOOL();
+
+    mgr.SetEnvironment( nullptr, nullptr, nullptr, nullptr, nullptr );
+    mgr.RegisterTool( tool );
+    mgr.ResetTools( TOOL_BASE::RUN );
+
+    mgr.ProcessEvent( armButtonMenuEvent() );
+    BOOST_CHECK_EQUAL( tool->m_menuClosedCount, 0 );
+
+    // Any other event leaves a menu that waits for the right button alone
+    mgr.ProcessEvent( TOOL_EVENT( TC_MOUSE, TA_MOUSE_MOTION, 0 ) );
+    BOOST_CHECK_EQUAL( tool->m_menuClosedCount, 0 );
+
+    // The key's action opens it now, whatever the trigger
+    mgr.ProcessEvent( ACTIONS::showToolContextMenu.MakeEvent() );
+    BOOST_CHECK_EQUAL( tool->m_menuClosedCount, 1 );
+
+    // ... and leaves it as it was: a right-click opens it again, and the request does too
+    mgr.ProcessEvent( TOOL_EVENT( TC_MOUSE, TA_MOUSE_CLICK, BUT_RIGHT ) );
+    BOOST_CHECK_EQUAL( tool->m_menuClosedCount, 2 );
+
+    mgr.ProcessEvent( ACTIONS::showToolContextMenu.MakeEvent() );
+    BOOST_CHECK_EQUAL( tool->m_menuClosedCount, 3 );
 }
 
 BOOST_AUTO_TEST_SUITE_END()

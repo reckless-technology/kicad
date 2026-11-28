@@ -69,6 +69,9 @@ public:
     static TOOL_ACTION cancelInteractive;
     static TOOL_ACTION finishInteractive;
     static TOOL_ACTION showContextMenu;
+
+    /// Open the context menu of the tool that is running, at the cursor, as the keyboard's way to a right-click
+    static TOOL_ACTION showToolContextMenu;
     static TOOL_ACTION undo;
     static TOOL_ACTION redo;
     static TOOL_ACTION cut;

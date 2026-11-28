@@ -202,6 +202,78 @@ BOOST_AUTO_TEST_CASE( NoTwoActionsInOneScopeAndToolShareAKeyUnderTheAltiumProfil
 }
 
 
+BOOST_AUTO_TEST_CASE( TheContextAliasesAreBoundOnlyByTheAltiumProfile )
+{
+    PROFILE_HOTKEY_LAYER altium = INTERACTION_PROFILE::BuildHotKeyLayer( INTERACTION_PROFILE_ID::ALTIUM );
+    size_t               aliases = 0;
+    size_t               expected = 0;
+
+    for( const std::string& prefix : std::vector<std::string>( { INTERACTION_PROFILE_QA_PREFIXES } ) )
+    {
+        // The schematic editor's move and placement loops have five aliases each, the PCB editor's four
+        expected += prefix == "eeschema." ? 10 : prefix == "pcbnew." ? 8 : 0;
+    }
+
+    for( const TOOL_ACTION* alias : ACTION_MANAGER::GetActionList() )
+    {
+        if( !alias->GetForwardTarget() )
+            continue;
+
+        ++aliases;
+
+        BOOST_TEST_CONTEXT( alias->GetName() )
+        {
+            // An alias belongs to the tool whose loop runs, forwards to a real action and has no key of its own
+            BOOST_CHECK( alias->GetScope() == AS_CONTEXT );
+            BOOST_CHECK_EQUAL( alias->GetDefaultHotKey(), 0 );
+            BOOST_CHECK_EQUAL( alias->GetDefaultHotKeyAlt(), 0 );
+            BOOST_CHECK( alias->GetForwardTarget()->GetScope() == AS_GLOBAL );
+            BOOST_CHECK( alias->GetForwardTarget()->GetForwardTarget() == nullptr );
+
+            const std::string scope = INTERACTION_PROFILE::ScopeOf( alias->GetName() );
+
+            // Stock KiCad never reaches it by a key
+            BOOST_CHECK( ACTION_MANAGER::ResolveHotKey( *alias, std::map<std::string, int>(), PROFILE_HOTKEY_LAYER(),
+                                                        PROFILE_HOTKEY_MAP(), scope )
+                         == std::pair<int, int>( 0, 0 ) );
+
+            // The Altium-style table binds it
+            std::pair<int, int> keys = ACTION_MANAGER::ResolveHotKey( *alias, std::map<std::string, int>(), altium,
+                                                                      PROFILE_HOTKEY_MAP(), scope );
+
+            BOOST_CHECK_MESSAGE( keys.first > 0, "the Altium-style table binds no key to " << alias->GetName() );
+        }
+    }
+
+    BOOST_CHECK_EQUAL( aliases, expected );
+}
+
+
+BOOST_AUTO_TEST_CASE( TabIsPropertiesInTheLoopsAndNoLongerNextItemOrSkip )
+{
+    PROFILE_HOTKEY_LAYER altium = INTERACTION_PROFILE::BuildHotKeyLayer( INTERACTION_PROFILE_ID::ALTIUM );
+
+    // Whoever links these actions: Tab is not what the stock program made it
+    for( const TOOL_ACTION* action : ACTION_MANAGER::GetActionList() )
+    {
+        const std::string& name = action->GetName();
+
+        if( name != "eeschema.EditorControl.nextNetItem" && name != "pcbnew.InteractiveEdit.skip" )
+            continue;
+
+        std::pair<int, int> stock =
+                ACTION_MANAGER::ResolveHotKey( *action, std::map<std::string, int>(), PROFILE_HOTKEY_LAYER(),
+                                               PROFILE_HOTKEY_MAP(), INTERACTION_PROFILE::ScopeOf( name ) );
+        std::pair<int, int> profile =
+                ACTION_MANAGER::ResolveHotKey( *action, std::map<std::string, int>(), altium, PROFILE_HOTKEY_MAP(),
+                                               INTERACTION_PROFILE::ScopeOf( name ) );
+
+        BOOST_CHECK_MESSAGE( stock.first == WXK_TAB, name << " holds Tab in stock KiCad" );
+        BOOST_CHECK_MESSAGE( profile.first == 0 && profile.second == 0, name << " keeps Tab in the profile" );
+    }
+}
+
+
 BOOST_AUTO_TEST_CASE( TheKiCadProfileResolvesEveryLinkedActionToItsCompiledDefault )
 {
     BOOST_REQUIRE( !ACTION_MANAGER::GetActionList().empty() );

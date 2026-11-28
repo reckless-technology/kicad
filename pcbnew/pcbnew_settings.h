@@ -245,6 +245,9 @@ public:
 
     bool               m_CtrlClickHighlight;
 
+    /// The Altium-style profile's mouse preset has turned Ctrl+click highlight on once, and does not do it again
+    bool m_AltiumMousePresetApplied;
+
     LEADER_MODE        m_AngleSnapMode;        // Constrain tool actions to horizontal/vertical or 45°/90°
     FLIP_DIRECTION     m_FlipDirection;
 

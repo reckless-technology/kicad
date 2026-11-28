@@ -671,6 +671,80 @@ BOOST_AUTO_TEST_CASE( TheKeySequenceHintDelayHasADefaultARangeAndOldFilesLoadThe
     BOOST_CHECK_EQUAL( loadWith( "\"key_sequence_hint_delay_ms\": 750," ), 750 );
 }
 
+BOOST_AUTO_TEST_CASE( TheMousePresetAppliesOnceAndNeverOverridesLaterEdits )
+{
+    COMMON_SETTINGS settings;
+
+    settings.ResetToDefaults();
+
+    COMMON_SETTINGS::INPUT& input = settings.m_Input;
+
+    // KiCad's own mouse defaults, which the preset changes
+    input.touchpad_mode = TOUCHPAD_MODE::NATIVE_GESTURES;
+    input.scroll_modifier_zoom = 0;
+    input.scroll_modifier_pan_h = WXK_CONTROL;
+    input.scroll_modifier_pan_v = WXK_SHIFT;
+    input.horizontal_pan = false;
+    input.drag_middle = MOUSE_DRAG_ACTION::NONE;
+    input.drag_right = MOUSE_DRAG_ACTION::NONE;
+    input.altium_mouse_preset_applied = false;
+
+    // The stock profile gets no preset, and does not use up the one the Altium-style profile is owed
+    input.interaction_profile = INTERACTION_PROFILE_ID::STOCK;
+    BOOST_CHECK( !INTERACTION_PROFILE::ApplyMousePresetOnce( settings ) );
+    BOOST_CHECK_EQUAL( input.scroll_modifier_zoom, 0 );
+    BOOST_CHECK( !input.altium_mouse_preset_applied );
+
+    // The first time the Altium-style profile is in effect: the wheel scrolls, Shift+wheel scrolls sideways,
+    // Ctrl+wheel zooms, right-drag pans and middle-drag zooms
+    input.interaction_profile = INTERACTION_PROFILE_ID::ALTIUM;
+    BOOST_CHECK( INTERACTION_PROFILE::ApplyMousePresetOnce( settings ) );
+    BOOST_CHECK( input.touchpad_mode == TOUCHPAD_MODE::SCROLL_GESTURES );
+    BOOST_CHECK_EQUAL( input.scroll_modifier_zoom, (int) WXK_CONTROL );
+    BOOST_CHECK_EQUAL( input.scroll_modifier_pan_h, (int) WXK_SHIFT );
+    BOOST_CHECK_EQUAL( input.scroll_modifier_pan_v, 0 );
+    BOOST_CHECK( input.horizontal_pan );
+    BOOST_CHECK( input.drag_right == MOUSE_DRAG_ACTION::PAN );
+    BOOST_CHECK( input.drag_middle == MOUSE_DRAG_ACTION::ZOOM );
+    BOOST_CHECK( input.altium_mouse_preset_applied );
+
+    // Never again, and what the user changes afterwards stays changed
+    input.scroll_modifier_zoom = 0;
+    input.drag_middle = MOUSE_DRAG_ACTION::PAN;
+    BOOST_CHECK( !INTERACTION_PROFILE::ApplyMousePresetOnce( settings ) );
+    BOOST_CHECK_EQUAL( input.scroll_modifier_zoom, 0 );
+    BOOST_CHECK( input.drag_middle == MOUSE_DRAG_ACTION::PAN );
+
+    // ... across a restart, and across a switch to stock KiCad and back
+    settings.Store();
+    input.altium_mouse_preset_applied = false;
+    settings.Load();
+    BOOST_CHECK( input.altium_mouse_preset_applied );
+
+    input.interaction_profile = INTERACTION_PROFILE_ID::STOCK;
+    input.interaction_profile = INTERACTION_PROFILE_ID::ALTIUM;
+    BOOST_CHECK( !INTERACTION_PROFILE::ApplyMousePresetOnce( settings ) );
+    BOOST_CHECK_EQUAL( input.scroll_modifier_zoom, 0 );
+}
+
+
+BOOST_AUTO_TEST_CASE( AConfigurationThatStartsInTheAltiumProfileIsOwedTheMousePreset )
+{
+    COMMON_SETTINGS settings;
+
+    settings.ResetToDefaults();
+
+    // A new configuration has not had the preset, whatever profile it starts in
+    BOOST_CHECK( !settings.m_Input.altium_mouse_preset_applied );
+
+#ifdef KICAD_HOUSE_INTERACTION
+    BOOST_CHECK( INTERACTION_PROFILE::ApplyMousePresetOnce( settings ) );
+#else
+    BOOST_CHECK( !INTERACTION_PROFILE::ApplyMousePresetOnce( settings ) );
+#endif
+}
+
+
 BOOST_AUTO_TEST_CASE( AContextActionKeepsItsKeyWhereARootTakesItAndAGlobalOneLosesIt )
 {
     // F is the root of the File sequences. In a command it is still the router's "finish": a context action of the

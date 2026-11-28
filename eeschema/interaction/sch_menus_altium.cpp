@@ -191,6 +191,7 @@ MENU_DEF SchAltiumMenuBar()
                             M::Item( _( "Rotate C&lockwise" ), SCH_ACTIONS::rotateCW ) } ),
               M::Submenu( _( "&Select" ), { M::Item( _( "&All" ), ACTIONS::selectAll ),
                                             M::Item( _( "&Connection" ), SCH_ACTIONS::selectConnection ),
+                                            M::Item( _( "&Next Net Item" ), SCH_ACTIONS::nextNetItem ),
                                             M::Item( _( "&Inside Area" ), ACTIONS::selectSetRect ),
                                             M::Item( _( "Lasso S&elect" ), ACTIONS::selectSetLasso ) } ),
               M::Submenu( _( "DeSelect (&X)" ), { M::Item( _( "&All" ), ACTIONS::unselectAll ) } ),

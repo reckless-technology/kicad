@@ -976,7 +976,11 @@ void TOOL_MANAGER::DispatchContextMenu( const TOOL_EVENT& aEvent )
         if( st->contextMenuTrigger == CMENU_OFF )
             continue;
 
-        if( st->contextMenuTrigger == CMENU_BUTTON && !aEvent.IsClick( BUT_RIGHT ) )
+        // The keyboard's way to a right-click: the first tool that has a menu shows it, whatever its trigger. The
+        // loop stops at the first CMENU_BUTTON tool for any other event, so this is decided before that.
+        const bool isMenuRequest = aEvent.IsAction( &ACTIONS::showToolContextMenu );
+
+        if( st->contextMenuTrigger == CMENU_BUTTON && !aEvent.IsClick( BUT_RIGHT ) && !isMenuRequest )
             break;
 
         if( st->cofunc )

@@ -2601,7 +2601,7 @@ int BOARD_INSPECTION_TOOL::HighlightItem( const TOOL_EVENT& aEvent )
 }
 
 
- bool BOARD_INSPECTION_TOOL::highlightNet( const VECTOR2D& aPosition, bool aUseSelection )
+bool BOARD_INSPECTION_TOOL::highlightNet( const VECTOR2D& aPosition, bool aUseSelection, bool aIsToAddToHighlight )
 {
     BOARD*                  board         = static_cast<BOARD*>( m_toolMgr->GetModel() );
     KIGFX::RENDER_SETTINGS* settings      = getView()->GetPainter()->GetSettings();
@@ -2702,6 +2702,21 @@ int BOARD_INSPECTION_TOOL::HighlightItem( const TOOL_EVENT& aEvent )
 
             net = targetItem->GetNetCode();
         }
+    }
+
+    // Shift+Ctrl+click: the net joins the highlighted ones. Nothing under the cursor changes nothing.
+    if( aIsToAddToHighlight )
+    {
+        if( net >= 0 && enableHighlight )
+        {
+            settings->SetHighlight( true, net, true );
+            board->SetHighLightNet( net, true );
+            board->HighLightON();
+            m_toolMgr->GetView()->UpdateAllLayersColor();
+            m_currentlyHighlighted = settings->GetHighlightNetCodes();
+        }
+
+        return true;
     }
 
     const std::set<int>& netcodes = settings->GetHighlightNetCodes();
@@ -2880,6 +2895,10 @@ int BOARD_INSPECTION_TOOL::HighlightNet( const TOOL_EVENT& aEvent )
                 }
             }
         }
+    }
+    else if( aEvent.IsAction( &PCB_ACTIONS::highlightNetAdd ) )
+    {
+        highlightNet( getViewControls()->GetMousePosition(), false, true );
     }
     else if( aEvent.IsAction( &PCB_ACTIONS::highlightNetSelection ) )
     {
@@ -3313,6 +3332,7 @@ void BOARD_INSPECTION_TOOL::setTransitions()
 
     Go( &BOARD_INSPECTION_TOOL::HighlightNet,        PCB_ACTIONS::highlightNet.MakeEvent() );
     Go( &BOARD_INSPECTION_TOOL::HighlightNet,        PCB_ACTIONS::highlightNetSelection.MakeEvent() );
+    Go( &BOARD_INSPECTION_TOOL::HighlightNet, PCB_ACTIONS::highlightNetAdd.MakeEvent() );
     Go( &BOARD_INSPECTION_TOOL::HighlightNet,        PCB_ACTIONS::toggleLastNetHighlight.MakeEvent() );
     Go( &BOARD_INSPECTION_TOOL::HighlightNetChain,     PCB_ACTIONS::highlightNetChain.MakeEvent() );
     Go( &BOARD_INSPECTION_TOOL::ClearHighlight,      PCB_ACTIONS::clearHighlight.MakeEvent() );

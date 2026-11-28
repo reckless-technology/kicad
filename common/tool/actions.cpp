@@ -278,6 +278,15 @@ TOOL_ACTION ACTIONS::showContextMenu( TOOL_ACTION_ARGS()
         .Parameter( CURSOR_RIGHT_CLICK )
         .ToolbarState( TOOLBAR_STATE::HIDDEN ) );
 
+TOOL_ACTION ACTIONS::showToolContextMenu(
+        TOOL_ACTION_ARGS()
+                .Name( "common.Control.showToolContextMenu" )
+                .Scope( AS_GLOBAL )
+                .FriendlyName( _( "Show Tool Menu" ) )
+                .Tooltip( _( "Show the menu of the running tool at the cursor, with the keys of its commands" ) )
+                .Flags( AF_NONE )
+                .ToolbarState( TOOLBAR_STATE::HIDDEN ) );
+
 TOOL_ACTION ACTIONS::updateMenu( TOOL_ACTION_ARGS()
         .Name( "common.Interactive.updateMenu" )
         .ToolbarState( TOOLBAR_STATE::HIDDEN )

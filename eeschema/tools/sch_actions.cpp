@@ -1004,6 +1004,66 @@ TOOL_ACTION SCH_ACTIONS::properties( TOOL_ACTION_ARGS()
         .FriendlyName( _( "Properties..." ) )
         .Icon( BITMAPS::edit ) );
 
+TOOL_ACTION SCH_ACTIONS::rotateCCWWhileMoving( TOOL_ACTION_ARGS()
+        .Name( "eeschema.InteractiveMove.rotateCCWWhileMoving" )
+        .Scope( AS_CONTEXT )
+        .FriendlyName( _( "Rotate Counterclockwise While Moving" ) )
+        .ForwardTo( SCH_ACTIONS::rotateCCW ) );
+
+TOOL_ACTION SCH_ACTIONS::rotateCWWhileMoving( TOOL_ACTION_ARGS()
+        .Name( "eeschema.InteractiveMove.rotateCWWhileMoving" )
+        .Scope( AS_CONTEXT )
+        .FriendlyName( _( "Rotate Clockwise While Moving" ) )
+        .ForwardTo( SCH_ACTIONS::rotateCW ) );
+
+TOOL_ACTION SCH_ACTIONS::mirrorHWhileMoving( TOOL_ACTION_ARGS()
+        .Name( "eeschema.InteractiveMove.mirrorHWhileMoving" )
+        .Scope( AS_CONTEXT )
+        .FriendlyName( _( "Mirror Horizontally While Moving" ) )
+        .ForwardTo( SCH_ACTIONS::mirrorH ) );
+
+TOOL_ACTION SCH_ACTIONS::mirrorVWhileMoving( TOOL_ACTION_ARGS()
+        .Name( "eeschema.InteractiveMove.mirrorVWhileMoving" )
+        .Scope( AS_CONTEXT )
+        .FriendlyName( _( "Mirror Vertically While Moving" ) )
+        .ForwardTo( SCH_ACTIONS::mirrorV ) );
+
+TOOL_ACTION SCH_ACTIONS::propertiesWhileMoving( TOOL_ACTION_ARGS()
+        .Name( "eeschema.InteractiveMove.propertiesWhileMoving" )
+        .Scope( AS_CONTEXT )
+        .FriendlyName( _( "Properties While Moving" ) )
+        .ForwardTo( SCH_ACTIONS::properties ) );
+
+TOOL_ACTION SCH_ACTIONS::rotateCCWWhilePlacing( TOOL_ACTION_ARGS()
+        .Name( "eeschema.InteractiveDrawing.rotateCCWWhilePlacing" )
+        .Scope( AS_CONTEXT )
+        .FriendlyName( _( "Rotate Counterclockwise While Placing" ) )
+        .ForwardTo( SCH_ACTIONS::rotateCCW ) );
+
+TOOL_ACTION SCH_ACTIONS::rotateCWWhilePlacing( TOOL_ACTION_ARGS()
+        .Name( "eeschema.InteractiveDrawing.rotateCWWhilePlacing" )
+        .Scope( AS_CONTEXT )
+        .FriendlyName( _( "Rotate Clockwise While Placing" ) )
+        .ForwardTo( SCH_ACTIONS::rotateCW ) );
+
+TOOL_ACTION SCH_ACTIONS::mirrorHWhilePlacing( TOOL_ACTION_ARGS()
+        .Name( "eeschema.InteractiveDrawing.mirrorHWhilePlacing" )
+        .Scope( AS_CONTEXT )
+        .FriendlyName( _( "Mirror Horizontally While Placing" ) )
+        .ForwardTo( SCH_ACTIONS::mirrorH ) );
+
+TOOL_ACTION SCH_ACTIONS::mirrorVWhilePlacing( TOOL_ACTION_ARGS()
+        .Name( "eeschema.InteractiveDrawing.mirrorVWhilePlacing" )
+        .Scope( AS_CONTEXT )
+        .FriendlyName( _( "Mirror Vertically While Placing" ) )
+        .ForwardTo( SCH_ACTIONS::mirrorV ) );
+
+TOOL_ACTION SCH_ACTIONS::propertiesWhilePlacing( TOOL_ACTION_ARGS()
+        .Name( "eeschema.InteractiveDrawing.propertiesWhilePlacing" )
+        .Scope( AS_CONTEXT )
+        .FriendlyName( _( "Properties While Placing" ) )
+        .ForwardTo( SCH_ACTIONS::properties ) );
+
 TOOL_ACTION SCH_ACTIONS::editReference( TOOL_ACTION_ARGS()
         .Name( "eeschema.InteractiveEdit.editReference" )
         .Scope( AS_GLOBAL )

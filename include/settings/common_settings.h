@@ -131,6 +131,12 @@ public:
         /// How long a half-typed key sequence waits before its menu is shown, in milliseconds. 0 shows it at once.
         int key_sequence_hint_delay_ms;
 
+        /// A right-click without a drag cancels the running command instead of opening its context menu
+        bool right_click_cancels;
+
+        /// The Altium-style profile's mouse preset has been applied once, and is never applied again
+        bool altium_mouse_preset_applied;
+
         int scroll_modifier_zoom;
         int scroll_modifier_pan_h;
         int scroll_modifier_pan_v;

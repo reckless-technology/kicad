@@ -60,6 +60,7 @@ PCBNEW_SETTINGS::PCBNEW_SETTINGS() :
         m_TrackDragAction( TRACK_DRAG_ACTION::DRAG ),
         m_ArcEditMode( ARC_EDIT_MODE::KEEP_CENTER_ADJUST_ANGLE_RADIUS ),
         m_CtrlClickHighlight( false ),
+        m_AltiumMousePresetApplied( false ),
         m_AngleSnapMode( LEADER_MODE::DIRECT ),
         m_FlipDirection( FLIP_DIRECTION::TOP_BOTTOM ),
         m_AutoConstraints( true ),
@@ -199,6 +200,9 @@ PCBNEW_SETTINGS::PCBNEW_SETTINGS() :
 
     m_params.emplace_back( new PARAM<bool>( "editing.ctrl_click_highlight",
             &m_CtrlClickHighlight, false ) );
+
+    m_params.emplace_back(
+            new PARAM<bool>( "editing.altium_mouse_preset_applied", &m_AltiumMousePresetApplied, false ) );
 
     m_params.emplace_back( new PARAM<int>( "editing.pcb_angle_snap_mode",
             reinterpret_cast<int*>( &m_AngleSnapMode ),

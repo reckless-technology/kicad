@@ -12,9 +12,9 @@
 #     one table cannot bind to the same key for two editors. Both are reachable as sequences (V F, V D).
 #   - Ctrl+Shift+G: the schematic toggles the visible grid and the PCB editor the grid overrides, the same clash. The
 #     PCB editor's is its stock key; the schematic's is the sequence V G V.
-#   - X and Y (flip) in a command, Space and Shift+Space (rotate), Tab, right-click and Esc: the in-command keys, which
-#     step 4 of the note adds as context aliases of the loops. X is also the root of the DeSelect sequences, so until
-#     then the schematic's flip has no key while a symbol is moved.
+#   - Right-click and Esc in a command: right-click is the input.right_click_cancels setting, Esc is KiCad's own.
+#   - The in-command keys (Space, Shift+Space, L, X, Y and Tab) are bound below to context aliases, which act only while
+#     the move or placement loop they belong to runs; with no command running, those keys mean what they mean idle.
 #   - Routing keys, in-command and sticky: step 5.
 #   - Anything that needs a new action: the layer tab bar, the heads-up display, nudging, in-place editing, the 3D keys.
 #
@@ -58,11 +58,27 @@ common.Control.showProperties	F11
 common.Interactive.search	Shift+F12
 common.Control.highContrastModeCycle	Shift+S
 common.Control.magneticSnapToggle	Shift+E
+# The key list: the context menu of the running command at the cursor, with the keys of its commands (5.5)
+common.Control.showToolContextMenu	Shift+F1	`
 #
 # Schematic editor (6.2)
 eeschema.InteractiveDrawingLineWireBus.drawWires	Ctrl+W
 eeschema.InteractiveDrawingLineWireBus.switchPosture	Space
 eeschema.EditorControl.clearHighlight	Shift+C
+# In-command keys of the placement and move loops: context aliases that forward to the real action (5.5). Where a
+# key is also the root of a sequence (X), the command that is running wins.
+eeschema.InteractiveMove.rotateCCWWhileMoving	Space
+eeschema.InteractiveMove.rotateCWWhileMoving	Shift+Space
+eeschema.InteractiveMove.mirrorHWhileMoving	X
+eeschema.InteractiveMove.mirrorVWhileMoving	Y
+eeschema.InteractiveMove.propertiesWhileMoving	Tab
+eeschema.InteractiveDrawing.rotateCCWWhilePlacing	Space
+eeschema.InteractiveDrawing.rotateCWWhilePlacing	Shift+Space
+eeschema.InteractiveDrawing.mirrorHWhilePlacing	X
+eeschema.InteractiveDrawing.mirrorVWhilePlacing	Y
+eeschema.InteractiveDrawing.propertiesWhilePlacing	Tab
+# Tab held "next net item" in KiCad; here it is properties, and the command is in Edit > Select (E S N)
+eeschema.EditorControl.nextNetItem	
 #
 # PCB editor (6.4)
 pcbnew.EditorControl.clearHighlight	Shift+C
@@ -70,6 +86,18 @@ pcbnew.Control.flipBoard	Ctrl+F
 pcbnew.Control.netColorMode	F5
 pcbnew.Control.layerNext	Num Pad *
 pcbnew.Control.layerPrev	Shift+Num Pad *
+# In-command keys of the move and placement loops (5.5), and the router's width and via editor
+pcbnew.InteractiveEdit.rotateCcwWhileMoving	Space
+pcbnew.InteractiveEdit.rotateCwWhileMoving	Shift+Space
+pcbnew.InteractiveEdit.flipWhileMoving	L
+pcbnew.InteractiveEdit.propertiesWhileMoving	Tab
+pcbnew.InteractiveDrawing.rotateCcwWhilePlacing	Space
+pcbnew.InteractiveDrawing.rotateCwWhilePlacing	Shift+Space
+pcbnew.InteractiveDrawing.flipWhilePlacing	L
+pcbnew.InteractiveDrawing.propertiesWhilePlacing	Tab
+pcbnew.InteractiveRouter.CustomTrackViaSize	Tab
+# Tab held "skip" while moving footprints one by one; it is in that command's right-click menu
+pcbnew.InteractiveEdit.skip	
 pcbnew.InteractiveRouter.OptimizeSelected	Ctrl+Alt+G
 pcbnew.InteractiveRouter.SingleTrack	Ctrl+W
 # Ctrl+W was the router's corner-style switch, which step 5 rebinds; no key until then, so it cannot fight the above

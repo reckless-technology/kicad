@@ -193,6 +193,13 @@ public:
 
     void CommonSettingsChanged( int aFlags ) override;
 
+    /**
+     * Apply the Altium-style profile's mouse preset the first time the profile is in effect, and say so in the info
+     * bar. The preset is recorded as applied in a stored setting, so it is never applied again and never overrides
+     * what the user changes later (interaction-profile note, 5.6). Does nothing in the stock profile.
+     */
+    void ApplyMousePresetOnce();
+
     virtual wxString GetScreenDesc() const;
     virtual wxString GetFullScreenDesc() const;
 
@@ -572,6 +579,13 @@ public:
     DECLARE_EVENT_TABLE()
 
 protected:
+    /**
+     * The part of the mouse preset that lives in the editor's own settings, applied once on the same terms.
+     *
+     * @return true when it was applied by this call.
+     */
+    virtual bool applyEditorMousePresetOnce() { return false; }
+
     void configureToolbars() override;
 
     virtual void SetScreen( BASE_SCREEN* aScreen )  { m_currentScreen = aScreen; }

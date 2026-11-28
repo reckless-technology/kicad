@@ -318,6 +318,13 @@ COMMON_SETTINGS::COMMON_SETTINGS() :
     m_params.emplace_back(
             new PARAM<int>( "input.key_sequence_hint_delay_ms", &m_Input.key_sequence_hint_delay_ms, 300, 0, 5000 ) );
 
+    // On in the Altium-style profile and off in stock, so it follows the profile a new configuration starts in
+    m_params.emplace_back( new PARAM<bool>( "input.right_click_cancels", &m_Input.right_click_cancels,
+                                            defaultInteractionProfile == INTERACTION_PROFILE_ID::ALTIUM ) );
+
+    m_params.emplace_back(
+            new PARAM<bool>( "input.altium_mouse_preset_applied", &m_Input.altium_mouse_preset_applied, false ) );
+
     m_params.emplace_back( new PARAM<int>( "input.scroll_modifier_zoom",
             &m_Input.scroll_modifier_zoom, 0 ) );
 

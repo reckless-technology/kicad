@@ -32,6 +32,9 @@
 #include <macros.h>
 #include <trace_helpers.h>
 #include <tool/tool_manager.h>
+#include <tool/tools_holder.h>
+#include <pgm_base.h>
+#include <settings/common_settings.h>
 #include <tool/actions.h>
 #include <tool/action_manager.h>
 #include <tool/action_menu.h>
@@ -217,6 +220,36 @@ bool TOOL_DISPATCHER::IsPastDragThreshold( const VECTOR2D& aOffset, int aDragMin
 }
 
 
+TOOL_EVENT TOOL_DISPATCHER::MakeRightClickEvent( bool aDoesCancel, int aButtonsAndModifiers )
+{
+    if( aDoesCancel )
+        return TOOL_EVENT( TC_COMMAND, TA_CANCEL_TOOL, TOOL_EVENT::CANCEL_FROM_RIGHT_CLICK );
+
+    return TOOL_EVENT( TC_MOUSE, TA_MOUSE_CLICK, aButtonsAndModifiers );
+}
+
+
+bool TOOL_DISPATCHER::DoesRightClickCancel( bool aIsSettingOn, bool aIsSelectionToolCurrent )
+{
+    // Only a running command is cancelled. The selection tool is what runs when none does, and a right-click is its
+    // context menu.
+    return aIsSettingOn && !aIsSelectionToolCurrent;
+}
+
+
+bool TOOL_DISPATCHER::doesRightClickCancel() const
+{
+    COMMON_SETTINGS* settings = Pgm().GetCommonSettings();
+    TOOLS_HOLDER*    holder = m_toolMgr->GetToolHolder();
+
+    if( !settings || !holder )
+        return false;
+
+    return DoesRightClickCancel( settings->m_Input.right_click_cancels,
+                                 holder->IsCurrentTool( ACTIONS::selectionTool ) );
+}
+
+
 bool TOOL_DISPATCHER::handleMouseButton( wxEvent& aEvent, int aIndex, bool aMotion )
 {
     BUTTON_STATE* st = m_buttons[aIndex];
@@ -286,7 +319,12 @@ bool TOOL_DISPATCHER::handleMouseButton( wxEvent& aEvent, int aIndex, bool aMoti
             isClick = true;
 
         if( isClick )
-            evt = TOOL_EVENT( TC_MOUSE, TA_MOUSE_CLICK, args );
+        {
+            if( st->button == BUT_RIGHT )
+                evt = MakeRightClickEvent( doesRightClickCancel(), args );
+            else
+                evt = TOOL_EVENT( TC_MOUSE, TA_MOUSE_CLICK, args );
+        }
 
         st->dragging = false;
     }

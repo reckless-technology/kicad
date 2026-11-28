@@ -161,6 +161,7 @@ protected:
     /// them down first using heuristics.
     bool            m_skip_heuristics;
     bool            m_highlight_modifier;///< Select highlight net on left click.
+    bool            m_highlight_add_modifier; ///< Add the net to the highlighted ones on left click.
     bool            m_drag_additive;     ///< Add multiple items to selection.
     bool            m_drag_subtractive;  ///< Remove multiple from selection.
 

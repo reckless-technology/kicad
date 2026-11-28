@@ -29,16 +29,17 @@
 
 
 SELECTION_TOOL::SELECTION_TOOL( const std::string& aName ) :
-    TOOL_INTERACTIVE( aName ),
-    m_additive( false ),
-    m_subtractive( false ),
-    m_exclusive_or( false ),
-    m_inSelectMultiple( false ),
-    m_skip_heuristics( false ),
-    m_highlight_modifier( false ),
-    m_drag_additive( false ),
-    m_drag_subtractive( false ),
-    m_canceledMenu( false )
+        TOOL_INTERACTIVE( aName ),
+        m_additive( false ),
+        m_subtractive( false ),
+        m_exclusive_or( false ),
+        m_inSelectMultiple( false ),
+        m_skip_heuristics( false ),
+        m_highlight_modifier( false ),
+        m_highlight_add_modifier( false ),
+        m_drag_additive( false ),
+        m_drag_subtractive( false ),
+        m_canceledMenu( false )
 {
 }
 
@@ -56,11 +57,13 @@ void SELECTION_TOOL::setModifiersState( bool aShiftState, bool aCtrlState, bool 
     {
         m_exclusive_or = false;
         m_highlight_modifier = aCtrlState && !aShiftState;
+        m_highlight_add_modifier = aCtrlState && aShiftState;
     }
     else
     {
         m_exclusive_or = aCtrlState && !aShiftState;
         m_highlight_modifier = false;
+        m_highlight_add_modifier = false;
     }
 
     // Drag is more forgiving and allows either Ctrl+Drag or Shift+Drag to add to the selection

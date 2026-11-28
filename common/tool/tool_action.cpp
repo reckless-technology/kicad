@@ -109,6 +109,8 @@ TOOL_ACTION::TOOL_ACTION( const TOOL_ACTION_ARGS& aArgs ) :
     if( aArgs.m_group.has_value() )
         m_group = aArgs.m_group;
 
+    m_forwardTarget = aArgs.m_forwardTarget;
+
     if( aArgs.m_icon.has_value() )
         m_icon = aArgs.m_icon.value();
 

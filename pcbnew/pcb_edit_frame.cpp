@@ -39,6 +39,7 @@
 #include <kiway.h>
 #include <board_design_settings.h>
 #include <settings/color_settings.h>
+#include <interaction_profile.h>
 #include <pgm_base.h>
 #include <pcb_edit_frame.h>
 #include <3d_viewer/eda_3d_viewer_frame.h>
@@ -655,6 +656,14 @@ PCB_EDIT_FRAME::PCB_EDIT_FRAME( KIWAY* aKiway, wxWindow* aParent ) :
 
     Bind( EDA_EVT_CLOSE_DIALOG_BOOK_REPORTER, &PCB_EDIT_FRAME::onCloseModelessBookReporterDialogs, this );
     Bind( EDA_EVT_CLOSE_DIALOG_FOOTPRINT_FIELDS_TABLE, &PCB_EDIT_FRAME::onCloseFootprintFieldsTableDialog, this );
+
+    // A configuration that starts in the Altium-style profile has not had its mouse preset yet; the frame must be
+    // shown before it can say so
+    CallAfter(
+            [this]()
+            {
+                ApplyMousePresetOnce();
+            } );
 }
 
 
@@ -2867,6 +2876,19 @@ int PCB_EDIT_FRAME::ShowExchangeFootprintsDialog( FOOTPRINT* aFootprint, bool aU
     DIALOG_EXCHANGE_FOOTPRINTS dialog( this, aFootprint, aUpdateMode, aSelectedMode );
 
     return dialog.ShowQuasiModal();
+}
+
+
+bool PCB_EDIT_FRAME::applyEditorMousePresetOnce()
+{
+    PCBNEW_SETTINGS* cfg = GetPcbNewSettings();
+
+    if( !cfg || INTERACTION_PROFILE::Active() != INTERACTION_PROFILE_ID::ALTIUM || cfg->m_AltiumMousePresetApplied )
+        return false;
+
+    cfg->m_CtrlClickHighlight = true;
+    cfg->m_AltiumMousePresetApplied = true;
+    return true;
 }
 
 

@@ -29,6 +29,7 @@
 #include <wx/string.h>
 
 class TOOL_ACTION;
+class COMMON_SETTINGS;
 
 /**
  * The interaction profiles: named ways of reaching KiCad's functions.
@@ -85,6 +86,17 @@ public:
      * re-applies it.
      */
     static void SetActive( INTERACTION_PROFILE_ID aProfile );
+
+    /**
+     * Apply the Altium-style profile's mouse preset (interaction-profile note, 5.6) to \a aSettings the first time the
+     * profile is in effect, and never again: the wheel scrolls vertically, Shift+wheel horizontally, Ctrl+wheel zooms
+     * (KiCad's trackpad defaults), right-drag pans and middle-drag zooms. What the user changes afterwards is theirs.
+     *
+     * The caller says so to the user and saves the settings.
+     *
+     * @return true when the preset was applied by this call; false in the stock profile, and when it was applied before.
+     */
+    static bool ApplyMousePresetOnce( COMMON_SETTINGS& aSettings );
 
     /// The profile's name as shown in Preferences.
     static wxString DisplayName( INTERACTION_PROFILE_ID aProfile );

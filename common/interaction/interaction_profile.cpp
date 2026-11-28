@@ -47,7 +47,38 @@ void INTERACTION_PROFILE::SetActive( INTERACTION_PROFILE_ID aProfile )
     COMMON_SETTINGS* settings = Pgm().GetCommonSettings();
 
     if( settings )
+    {
+        // A right-click ends a command in the Altium-style profile and opens its menu in stock KiCad. Choosing the
+        // profile already in force leaves the setting as it is.
+        if( settings->m_Input.interaction_profile != aProfile )
+            settings->m_Input.right_click_cancels = aProfile == INTERACTION_PROFILE_ID::ALTIUM;
+
         settings->m_Input.interaction_profile = aProfile;
+    }
+}
+
+
+bool INTERACTION_PROFILE::ApplyMousePresetOnce( COMMON_SETTINGS& aSettings )
+{
+    COMMON_SETTINGS::INPUT& input = aSettings.m_Input;
+
+    if( input.interaction_profile != INTERACTION_PROFILE_ID::ALTIUM || input.altium_mouse_preset_applied )
+        return false;
+
+    // KiCad's "trackpad defaults" mapping of the wheel
+    input.touchpad_mode = TOUCHPAD_MODE::SCROLL_GESTURES;
+    input.scroll_modifier_zoom = WXK_CONTROL;
+    input.scroll_modifier_pan_h = WXK_SHIFT;
+    input.scroll_modifier_pan_v = 0;
+    input.reverse_scroll_zoom = false;
+    input.reverse_scroll_pan_h = false;
+    input.horizontal_pan = true;
+
+    input.drag_right = MOUSE_DRAG_ACTION::PAN;
+    input.drag_middle = MOUSE_DRAG_ACTION::ZOOM;
+
+    input.altium_mouse_preset_applied = true;
+    return true;
 }
 
 

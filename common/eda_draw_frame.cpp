@@ -40,6 +40,7 @@
 #include <math/vector2wx.h>
 #include <page_info.h>
 #include <paths.h>
+#include <interaction_profile.h>
 #include <pgm_base.h>
 #include <reporter.h>
 #include <render_settings.h>
@@ -324,9 +325,41 @@ void EDA_DRAW_FRAME::ToggleUserUnits()
 }
 
 
+void EDA_DRAW_FRAME::ApplyMousePresetOnce()
+{
+    COMMON_SETTINGS* settings = Pgm().GetCommonSettings();
+
+    if( !settings )
+        return;
+
+    const bool isCommonApplied = INTERACTION_PROFILE::ApplyMousePresetOnce( *settings );
+    const bool isEditorApplied = applyEditorMousePresetOnce();
+
+    if( !isCommonApplied && !isEditorApplied )
+        return;
+
+    if( isCommonApplied )
+        Pgm().GetSettingsManager().Save( settings );
+
+    KIGFX::VIEW_CONTROLS* viewControls = GetCanvas()->GetViewControls();
+
+    viewControls->LoadSettings();
+    GetCanvas()->UpdateTouchpadGestureHandler();
+
+    ShowInfoBarMsg( _( "The Altium-style profile set the mouse: the wheel scrolls, Ctrl+wheel zooms, right-drag pans, "
+                       "middle-drag zooms and Ctrl+click highlights a net. Change any of it in Preferences > Mouse "
+                       "and Touchpad." ),
+                    true );
+}
+
+
 void EDA_DRAW_FRAME::CommonSettingsChanged( int aFlags )
 {
     EDA_BASE_FRAME::CommonSettingsChanged( aFlags );
+
+    // Choosing the Altium-style profile for the first time brings its mouse preset
+    if( aFlags & INTERACTION_PROFILE_CHANGED )
+        ApplyMousePresetOnce();
 
     COMMON_SETTINGS*      settings = Pgm().GetCommonSettings();
     KIGFX::VIEW_CONTROLS* viewControls = GetCanvas()->GetViewControls();

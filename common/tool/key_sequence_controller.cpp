@@ -119,6 +119,13 @@ bool KEY_SEQUENCE_CONTROLLER::Handle( const TOOL_EVENT& aEvent )
     {
         result = m_engine.HandleKey( WXK_ESCAPE, false );
     }
+    else if( aEvent.IsCancelFromRightClick() )
+    {
+        // A right-click that cancels abandons the sequence, as Esc does, and cancels nothing else
+        m_engine.Clear();
+        afterEngineChange();
+        return true;
+    }
     else if( aEvent.Category() == TC_MOUSE && aEvent.Action() != TA_MOUSE_MOTION && aEvent.Action() != TA_MOUSE_WHEEL )
     {
         // A click abandons the sequence, and goes on to its usual meaning

@@ -149,6 +149,22 @@ public:
     static TOOL_ACTION swapPinLabels;
     static TOOL_ACTION swapUnitLabels;
     static TOOL_ACTION properties;
+
+    /**
+     * Context aliases of the interaction profile (note 5.5): keys that rotate, mirror or open the properties of the item
+     * on the cursor while a move or a placement runs. Each forwards to the action named, has no default key and is
+     * bound only by the Altium-style profile's table.
+     */
+    static TOOL_ACTION rotateCCWWhileMoving;
+    static TOOL_ACTION rotateCWWhileMoving;
+    static TOOL_ACTION mirrorHWhileMoving;
+    static TOOL_ACTION mirrorVWhileMoving;
+    static TOOL_ACTION propertiesWhileMoving;
+    static TOOL_ACTION rotateCCWWhilePlacing;
+    static TOOL_ACTION rotateCWWhilePlacing;
+    static TOOL_ACTION mirrorHWhilePlacing;
+    static TOOL_ACTION mirrorVWhilePlacing;
+    static TOOL_ACTION propertiesWhilePlacing;
     static TOOL_ACTION editReference;
     static TOOL_ACTION editValue;
     static TOOL_ACTION editFootprint;

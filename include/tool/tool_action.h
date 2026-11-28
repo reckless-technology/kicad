@@ -68,6 +68,8 @@ const size_t gToolbarStateNumber = static_cast<size_t>( TOOLBAR_STATE::ENUM_LENG
 
 typedef std::bitset<gToolbarStateNumber> TOOLBAR_STATE_FLAGS;
 
+class TOOL_ACTION;
+
 /**
  * Define a group that can be used to group actions (and their events) of similar operations.
  */
@@ -208,6 +210,18 @@ public:
     }
 
     /**
+     * Make the action a context alias: a hotkey that reaches it, while its tool is running, runs \a aTarget instead.
+     *
+     * An alias lets a key mean one thing idle and another inside a command without changing the target, which is
+     * global. It has no default key, so the stock profile never reaches it.
+     */
+    TOOL_ACTION_ARGS& ForwardTo( const TOOL_ACTION& aTarget )
+    {
+        m_forwardTarget = &aTarget;
+        return *this;
+    }
+
+    /**
      * Flags describing the type of the action.
      */
     TOOL_ACTION_ARGS& Flags( TOOL_ACTION_FLAGS aFlags )
@@ -284,6 +298,8 @@ protected:
     std::optional<TOOLBAR_STATE_FLAGS>  m_toolbarState;
 
     ki::any                             m_param;
+
+    const TOOL_ACTION* m_forwardTarget = nullptr;
 };
 
 /**
@@ -406,6 +422,12 @@ public:
     TOOL_ACTION_SCOPE GetScope() const { return m_scope; }
 
     /**
+     * The action a hotkey that reaches this one runs instead (the interaction profile's context aliases), or nullptr
+     * for an ordinary action.
+     */
+    const TOOL_ACTION* GetForwardTarget() const { return m_forwardTarget; }
+
+    /**
      * Return a non-standard parameter assigned to the action.
      */
     template<typename T>
@@ -518,6 +540,8 @@ protected:
 
     TOOL_ACTION_FLAGS m_flags;
     ki::any           m_param; ///< Generic parameter.
+
+    const TOOL_ACTION* m_forwardTarget = nullptr; ///< What a hotkey for a context alias runs instead.
 };
 
 #endif

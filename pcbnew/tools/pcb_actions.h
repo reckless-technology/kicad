@@ -180,6 +180,16 @@ public:
 
     /// Activation of the edit tool
     static TOOL_ACTION properties;
+
+    /// Context aliases of the interaction profile (note 5.5), as in SCH_ACTIONS: keys for the move and placement loops
+    static TOOL_ACTION rotateCcwWhileMoving;
+    static TOOL_ACTION rotateCwWhileMoving;
+    static TOOL_ACTION flipWhileMoving;
+    static TOOL_ACTION propertiesWhileMoving;
+    static TOOL_ACTION rotateCcwWhilePlacing;
+    static TOOL_ACTION rotateCwWhilePlacing;
+    static TOOL_ACTION flipWhilePlacing;
+    static TOOL_ACTION propertiesWhilePlacing;
     static TOOL_ACTION matchProperties;
     static TOOL_ACTION matchPropertiesSettings;
 
@@ -642,6 +652,7 @@ public:
     // Appearance controls
     static TOOL_ACTION clearHighlight;          // Turns off highlight and resets previous highlight
     static TOOL_ACTION highlightNet;            // Highlights a net by code (cross-probe highlight)
+    static TOOL_ACTION highlightNetAdd;         // Adds the net under the cursor to the highlighted ones
     static TOOL_ACTION toggleLastNetHighlight;  // Toggles between current and previous highlight
     static TOOL_ACTION toggleNetHighlight;      // Toggles between highlight off and highlight on
     static TOOL_ACTION highlightNetSelection;   // Turns on highlight and takes net from selection
