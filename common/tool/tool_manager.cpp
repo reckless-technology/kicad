@@ -45,6 +45,7 @@
 #include <tool/action_menu.h>
 #include <tool/coroutine.h>
 #include <tool/action_manager.h>
+#include <tool/actions.h>
 #include <tool/key_sequence_controller.h>
 
 #include <class_draw_panel_gal.h>
