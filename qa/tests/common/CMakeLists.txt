@@ -80,6 +80,7 @@ set( QA_COMMON_SRCS
     test_interaction_profile_actions.cpp
     test_schematic_behaviors.cpp
     test_key_sequence.cpp
+    test_key_sequence_rows.cpp
     test_menu_def.cpp
     test_increment.cpp
     test_inplace_function.cpp
