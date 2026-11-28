@@ -23,8 +23,29 @@
 #include <hotkeys_basic.h>
 #include <tool/tool_action.h>
 #include <tool/tool_event.h>
+#include <interaction_profile.h>
 
-BOOST_AUTO_TEST_SUITE( HotkeyStore )
+/**
+ * These tests check KiCad's own hotkey rules, so they run in the stock profile whatever a new configuration starts in.
+ * In the Altium-style profile a compiled default whose key the profile takes is unbound (its table binds `A` in every
+ * editor); test_interaction_profile.cpp tests that, in AKeyTheProfileTakesDropsOutOfTheCompiledDefaults and
+ * ResetGivesTheProfilesDefaults.
+ */
+struct STOCK_PROFILE_FIXTURE
+{
+    STOCK_PROFILE_FIXTURE() :
+            m_previousProfile( INTERACTION_PROFILE::Active() )
+    {
+        INTERACTION_PROFILE::SetActive( INTERACTION_PROFILE_ID::STOCK );
+    }
+
+    ~STOCK_PROFILE_FIXTURE() { INTERACTION_PROFILE::SetActive( m_previousProfile ); }
+
+    INTERACTION_PROFILE_ID m_previousProfile;
+};
+
+
+BOOST_FIXTURE_TEST_SUITE( HotkeyStore, STOCK_PROFILE_FIXTURE )
 
 BOOST_AUTO_TEST_CASE( PersistenceAndDefaults )
 {
