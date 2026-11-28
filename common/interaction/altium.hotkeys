@@ -16,7 +16,8 @@
 #   - The in-command keys (Space, Shift+Space, L, X, Y and Tab) are bound below to context aliases, which act only while
 #     the move or placement loop they belong to runs; with no command running, those keys mean what they mean idle.
 #   - Routing keys, in-command and sticky: step 5.
-#   - Anything that needs a new action: the layer tab bar, the heads-up display, nudging, in-place editing, the 3D keys.
+#   - Anything that needs a new action and is not built yet: the heads-up display, nudging, in-place editing, the 3D
+#     keys.
 #
 # Roots of the key sequences: the letter is typed first, then the letters of the entries it leads to (6.1 and 6.3).
 common.Sequence.place	P
@@ -43,6 +44,8 @@ common.Control.zoomCenter	Home
 common.Control.zoomRedraw	End
 common.Control.zoomIn	PgUp
 common.Control.zoomOut	PgDn
+# G and Shift+G cycle the grid, in the schematic editor; the PCB editors take G for the grid list below (step 6) and keep
+# Shift+G on the previous grid until the heads-up display (step 8) takes it
 common.Control.gridNext	G
 common.Control.gridPrev	Shift+G
 common.Control.editGrids	Ctrl+G
@@ -86,6 +89,16 @@ pcbnew.Control.flipBoard	Ctrl+F
 pcbnew.Control.netColorMode	F5
 pcbnew.Control.layerNext	Num Pad *
 pcbnew.Control.layerPrev	Shift+Num Pad *
+# Views (5.7). L and Ctrl+D show the Appearance panel with the focus on its Layers or Objects tab; L typed in the panel
+# gives the focus back to the canvas. L is also the in-command flip key below, which wins while a move or a placement
+# runs. [ and ] step the mask level (the high-contrast dimming factor), also the net highlight's. G opens the grid list
+# at the cursor; the common.Control.gridNext above, which also holds G, loses it in the PCB editors (a pcbnew. action
+# takes its key there). Ctrl+D was Duplicate, which is Ctrl+R here.
+pcbnew.Control.showAppearanceLayers	L
+pcbnew.Control.showAppearanceObjects	Ctrl+D
+pcbnew.Control.maskLevelDown	[
+pcbnew.Control.maskLevelUp	]
+pcbnew.Control.showGridMenu	G
 # In-command keys of the move and placement loops (5.5), and the router's width and via editor
 pcbnew.InteractiveEdit.rotateCcwWhileMoving	Space
 pcbnew.InteractiveEdit.rotateCwWhileMoving	Shift+Space

@@ -75,6 +75,7 @@ set( QA_COMMON_SRCS
     test_hashtables.cpp
     test_hotkey_store.cpp
     test_interaction_profile.cpp
+    test_altium_views_settings.cpp
     test_interaction_profile_actions.cpp
     test_key_sequence.cpp
     test_menu_def.cpp
@@ -360,6 +361,10 @@ kicad_add_boost_test( qa_common qa_common )
 add_test( NAME reckless_color_theme_is_current
           COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tools/reckless/reckless_color_theme.py
                   --check ${CMAKE_SOURCE_DIR}/common/settings/reckless_color_theme.json )
+
+add_test( NAME altium_classic_color_theme_is_current
+          COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tools/reckless/altium_classic_color_theme.py
+                  --check ${CMAKE_SOURCE_DIR}/common/settings/altium_classic_color_theme.json )
 
 # The Reckless icon SVGs are written by their script; fail when the two have drifted apart
 add_test( NAME reckless_icon_set_is_current

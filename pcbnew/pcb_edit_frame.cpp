@@ -660,12 +660,13 @@ PCB_EDIT_FRAME::PCB_EDIT_FRAME( KIWAY* aKiway, wxWindow* aParent ) :
     Bind( EDA_EVT_CLOSE_DIALOG_BOOK_REPORTER, &PCB_EDIT_FRAME::onCloseModelessBookReporterDialogs, this );
     Bind( EDA_EVT_CLOSE_DIALOG_FOOTPRINT_FIELDS_TABLE, &PCB_EDIT_FRAME::onCloseFootprintFieldsTableDialog, this );
 
-    // A configuration that starts in the Altium-style profile has not had its mouse preset yet; the frame must be
-    // shown before it can say so
+    // A configuration that starts in the Altium-style profile has not had its mouse preset or its colors yet; the
+    // frame must be shown before it can say so
     CallAfter(
             [this]()
             {
                 ApplyMousePresetOnce();
+                ApplyColorThemeOnce();
             } );
 }
 

@@ -79,6 +79,7 @@
 #include <bezier_curves.h>
 #include <kiface_base.h>
 #include <gr_text.h>
+#include <interaction_profile.h>
 #include <pgm_base.h>
 
 using namespace KIGFX;
@@ -184,11 +185,29 @@ void PCB_RENDER_SETTINGS::LoadColors( const COLOR_SETTINGS* aSettings )
             m_layerColors[GetNetnameLayer( layer )] = lightLabel;
     }
 
-    if( PgmOrNull() )   // can be null if used without project (i.e. from python script)
-        m_hiContrastFactor = 1.0f - Pgm().GetCommonSettings()->m_Appearance.hicontrast_dimming_factor;
-    else
-        m_hiContrastFactor = 1.0f - 0.8f;   // default value
+    // PgmOrNull() can be null if used without project (i.e. from python script)
+    applyHighContrastDimming( PgmOrNull() ? Pgm().GetCommonSettings()->m_Appearance.hicontrast_dimming_factor : 0.8 );
 
+    update();
+}
+
+
+void PCB_RENDER_SETTINGS::applyHighContrastDimming( double aDimmingFactor )
+{
+    m_hiContrastFactor = 1.0f - aDimmingFactor;
+
+    // KiCad fades what a net highlight does not highlight by a fixed half. The Altium-style profile's mask level is one
+    // level for both, so there it fades by the high-contrast dimming factor.
+    const bool isMaskLevelShared = PgmOrNull() && INTERACTION_PROFILE::Active() == INTERACTION_PROFILE_ID::ALTIUM;
+
+    m_highlightDimFactor = isMaskLevelShared ? m_hiContrastFactor : 0.5f;
+    m_keepThroughHolesVisible = isMaskLevelShared;
+}
+
+
+void PCB_RENDER_SETTINGS::SetHighContrastDimming( double aDimmingFactor )
+{
+    applyHighContrastDimming( aDimmingFactor );
     update();
 }
 
@@ -239,7 +258,7 @@ bool PCB_RENDER_SETTINGS::GetLayerDim( int aLayer, COLOR4D& aToward, double& aKe
 
     // Net highlight fades every item it does not highlight towards black
     aToward = COLOR4D::BLACK;
-    aKeep = m_highlightEnabled ? m_highlightFactor : 1.0;
+    aKeep = m_highlightEnabled ? m_highlightDimFactor : 1.0;
 
     // Mirrors GetColor in dimmed high contrast, where zones, pad and via copper and clearance
     // outlines follow their copper layer
@@ -272,12 +291,30 @@ bool PCB_RENDER_SETTINGS::GetLayerDim( int aLayer, COLOR4D& aToward, double& aKe
 }
 
 
+bool PCB_RENDER_SETTINGS::IsThroughHoleKept( const BOARD_ITEM* aItem ) const
+{
+    if( !m_keepThroughHolesVisible || !aItem )
+        return false;
+
+    if( aItem->Type() == PCB_PAD_T )
+        return static_cast<const PAD*>( aItem )->GetAttribute() == PAD_ATTRIB::PTH;
+
+    if( aItem->Type() == PCB_VIA_T )
+        return static_cast<const PCB_VIA*>( aItem )->GetViaType() == VIATYPE::THROUGH;
+
+    return false;
+}
+
+
 bool PCB_RENDER_SETTINGS::IsDimExempt( const VIEW_ITEM* aItem ) const
 {
     const BOARD_ITEM* item = dynamic_cast<const BOARD_ITEM*>( aItem );
 
     if( !item )
         return false;
+
+    if( IsThroughHoleKept( item ) )
+        return true;
 
     // Must match the items GetColor leaves out of high contrast dimming
     if( item->IsBrightened() || item->IsSelected() )
@@ -517,7 +554,7 @@ COLOR4D PCB_RENDER_SETTINGS::GetColor( const BOARD_ITEM* aItem, int aLayer ) con
             if( highlighted )
                 netColor.Brighten( m_highlightFactor );
             else if( !IsCanvasFadedLayer( originalLayer ) )
-                netColor.Darken( 1.0 - m_highlightFactor );
+                netColor.Darken( 1.0 - m_highlightDimFactor );
         }
 
         color = netColor;
@@ -533,12 +570,12 @@ COLOR4D PCB_RENDER_SETTINGS::GetColor( const BOARD_ITEM* aItem, int aLayer ) con
         else if( !IsCanvasFadedLayer( originalLayer ) )
         {
             auto it_dark = m_layerColorsDark.find( aLayer );
-            color = it_dark == m_layerColorsDark.end() ? color.Darkened( 1.0 - m_highlightFactor ) : it_dark->second;
+            color = it_dark == m_layerColorsDark.end() ? color.Darkened( 1.0 - m_highlightDimFactor ) : it_dark->second;
         }
     }
 
     // Apply high-contrast dimming
-    if( m_hiContrastEnabled && m_highContrastLayers.size() && !highlighted && !selected )
+    if( m_hiContrastEnabled && m_highContrastLayers.size() && !highlighted && !selected && !IsThroughHoleKept( aItem ) )
     {
         PCB_LAYER_ID primary = GetPrimaryHighContrastLayer();
         bool         isActive = m_highContrastLayers.count( aLayer );

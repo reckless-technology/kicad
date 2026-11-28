@@ -472,8 +472,12 @@ void SETTINGS_MANAGER::loadAllColorSettings()
     // disambiguate any colliding user theme by appending its filename.
     std::set<wxString> builtinNames;
 
-    for( const wxString& builtin : { COLOR_SETTINGS::COLOR_BUILTIN_DEFAULT, COLOR_SETTINGS::COLOR_BUILTIN_CLASSIC,
-                                     COLOR_SETTINGS::COLOR_BUILTIN_RECKLESS } )
+    const std::vector<wxString> builtinIds = { COLOR_SETTINGS::COLOR_BUILTIN_DEFAULT,
+                                               COLOR_SETTINGS::COLOR_BUILTIN_CLASSIC,
+                                               COLOR_SETTINGS::COLOR_BUILTIN_RECKLESS,
+                                               COLOR_SETTINGS::COLOR_BUILTIN_ALTIUM_CLASSIC };
+
+    for( const wxString& builtin : builtinIds )
     {
         if( m_color_settings.count( builtin ) )
             builtinNames.insert( m_color_settings.at( builtin )->GetName() );
@@ -483,8 +487,8 @@ void SETTINGS_MANAGER::loadAllColorSettings()
     {
         COLOR_SETTINGS* settings = entry.second;
 
-        if( entry.first != COLOR_SETTINGS::COLOR_BUILTIN_DEFAULT && entry.first != COLOR_SETTINGS::COLOR_BUILTIN_CLASSIC
-            && entry.first != COLOR_SETTINGS::COLOR_BUILTIN_RECKLESS && builtinNames.count( settings->GetName() ) )
+        if( std::find( builtinIds.begin(), builtinIds.end(), entry.first ) == builtinIds.end()
+            && builtinNames.count( settings->GetName() ) )
         {
             // Absolute-path themes store a full path as their filename, so reduce it to a basename.
             settings->SetName( wxString::Format( wxS( "%s (%s)" ), settings->GetName(),
@@ -1119,7 +1123,7 @@ bool SETTINGS_MANAGER::LoadProject( const wxString& aFullPath, bool aSetActive, 
     BOARD_OPACITY_DEFAULTS opacityDefaults;
 
     if( m_common_settings )
-        opacityDefaults = m_common_settings->m_BoardOpacityDefaults;
+        opacityDefaults = m_common_settings->GetNewProjectOpacities();
 
     PROJECT_LOCAL_SETTINGS* settings = new PROJECT_LOCAL_SETTINGS( m_projects[fullPath], fn, opacityDefaults );
 

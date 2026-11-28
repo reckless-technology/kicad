@@ -29,6 +29,7 @@
 #include <wx/string.h>
 
 class TOOL_ACTION;
+class APP_SETTINGS_BASE;
 class COMMON_SETTINGS;
 
 /**
@@ -97,6 +98,23 @@ public:
      * @return true when the preset was applied by this call; false in the stock profile, and when it was applied before.
      */
     static bool ApplyMousePresetOnce( COMMON_SETTINGS& aSettings );
+
+    /**
+     * Make the Altium-style profile's color theme (Altium classic) the theme of \a aSettings (one application's) the
+     * first time the profile is in effect, and never again: what the user picks afterwards is theirs, and a switch to
+     * the stock profile and back does not bring it back.
+     *
+     * The caller saves the settings and reloads the colors.
+     *
+     * @return true when the theme was set by this call; false in the stock profile, and when it was set before.
+     */
+    static bool ApplyColorThemeOnce( APP_SETTINGS_BASE& aSettings );
+
+    /// How far one press of the mask level keys moves `appearance.hicontrast_dimming_factor`.
+    static constexpr double DIMMING_FACTOR_STEP = 0.1;
+
+    /// \a aDimmingFactor moved by \a aSteps of DIMMING_FACTOR_STEP, held between 0 and 1 and rounded to the step.
+    static double SteppedDimmingFactor( double aDimmingFactor, int aSteps );
 
     /**
      * Whether a right-click cancels the running command, from `input.right_click_cancels` (-1 follows the profile, 0 is

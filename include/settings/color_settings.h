@@ -91,6 +91,7 @@ public:
     static const wxString COLOR_BUILTIN_DEFAULT;
     static const wxString COLOR_BUILTIN_CLASSIC;
     static const wxString COLOR_BUILTIN_RECKLESS;
+    static const wxString COLOR_BUILTIN_ALTIUM_CLASSIC;
 
     /**
      * The built-in theme a new configuration starts in: Reckless in a build with KICAD_HOUSE_THEME, KiCad Default
@@ -99,6 +100,9 @@ public:
     static const wxString& DefaultBuiltinTheme();
 
 private:
+    /// A built-in theme read from a JSON buffer, held with no parameters. The caller owns it.
+    static COLOR_SETTINGS* makeBuiltinThemeFromJson( const wxString& aId, const wxString& aName, const char* aJson );
+
     bool migrateSchema0to1();
 
     void initFromOther( const COLOR_SETTINGS& aOther );

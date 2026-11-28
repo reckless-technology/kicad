@@ -200,6 +200,16 @@ public:
      */
     void ApplyMousePresetOnce();
 
+    /**
+     * Make the Altium-style profile's color theme (Altium classic) this editor's theme the first time the profile is in
+     * effect. It is recorded as applied in the editor's stored settings, so it is never applied again and never
+     * overrides a theme the user picks later (interaction-profile note, 5.7). Does nothing in the stock profile.
+     *
+     * @param aReloadColors reload the colors of this frame at once; false where a settings reload is about to follow.
+     * @return true when the theme was set by this call.
+     */
+    bool ApplyColorThemeOnce( bool aReloadColors = true );
+
     virtual wxString GetScreenDesc() const;
     virtual wxString GetFullScreenDesc() const;
 

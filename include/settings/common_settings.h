@@ -313,6 +313,26 @@ public:
     GIT                 m_Git;
     API                 m_Api;
 
+    /// A new project opens with the interaction profile's own board opacities (the Altium-style profile's transparent
+    /// 2D look) in place of m_BoardOpacityDefaults: -1 follows the profile, 0 is off, 1 is on
+    int m_BoardOpacityProfileLook = -1;
+
+    /// The opacities of the Altium-style profile's transparent 2D look (design note, 3.5 and 5.7).
+    static BOARD_OPACITY_DEFAULTS TransparentTwoDOpacities();
+
+    /**
+     * Whether a new project opens with the profile's opacities, from m_BoardOpacityProfileLook and the profile in
+     * force.
+     */
+    bool DoesProjectOpenTransparent() const;
+
+    /**
+     * The board opacities a project with none stored opens with: the profile's transparent 2D look where
+     * DoesProjectOpenTransparent() says so, the user's own project defaults otherwise. A project that stores its
+     * opacities keeps them, whatever this says.
+     */
+    BOARD_OPACITY_DEFAULTS GetNewProjectOpacities() const;
+
     /// Global field name templates shared by all project editors.
     TEMPLATES           m_FieldNameTemplates;
 

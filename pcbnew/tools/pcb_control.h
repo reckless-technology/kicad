@@ -86,6 +86,11 @@ public:
     int LayerToggle( const TOOL_EVENT& aEvent );
     int LayerAlphaInc( const TOOL_EVENT& aEvent );
     int LayerAlphaDec( const TOOL_EVENT& aEvent );
+
+    // Views of the Altium-style profile (5.7 of the design note)
+    int ShowAppearanceTab( const TOOL_EVENT& aEvent );
+    int StepMaskLevel( const TOOL_EVENT& aEvent );
+    int ShowGridMenu( const TOOL_EVENT& aEvent );
     int CycleLayerPresets( const TOOL_EVENT& aEvent );
     int LayerPresetFeedback( const TOOL_EVENT& aEvent );
 

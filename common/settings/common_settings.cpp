@@ -450,6 +450,10 @@ COMMON_SETTINGS::COMMON_SETTINGS() :
 
     const BOARD_OPACITY_DEFAULTS defaultOpacity;
 
+    // -1 follows the profile (the transparent 2D look in the Altium-style profile, none in stock), 0 is off, 1 is on
+    m_params.emplace_back(
+            new PARAM<int>( "project_defaults.board_opacity.profile_look", &m_BoardOpacityProfileLook, -1, -1, 1 ) );
+
     m_params.emplace_back( new PARAM<double>( "project_defaults.board_opacity.tracks",
                                               &m_BoardOpacityDefaults.m_TrackOpacity,
                                               defaultOpacity.m_TrackOpacity, 0.0, 1.0 ) );
@@ -1213,4 +1217,35 @@ bool COMMON_SETTINGS::getLegacy3DHollerith( const std::string& aString, size_t& 
 
     aIndex = i2 + 1;
     return true;
+}
+
+
+BOARD_OPACITY_DEFAULTS COMMON_SETTINGS::TransparentTwoDOpacities()
+{
+    BOARD_OPACITY_DEFAULTS opacities;
+
+    // Altium's transparency 20 % on pads, 0 % on vias, 15 % on tracks and arcs (one slider in KiCad), 70 % on pours and
+    // 40 % on regions and fills. Images and the entered group's surroundings are not Altium's, and keep KiCad's.
+    opacities.m_PadOpacity = 0.80;
+    opacities.m_ViaOpacity = 1.00;
+    opacities.m_TrackOpacity = 0.85;
+    opacities.m_ZoneOpacity = 0.30;
+    opacities.m_ShapeOpacity = 0.60;
+
+    return opacities;
+}
+
+
+bool COMMON_SETTINGS::DoesProjectOpenTransparent() const
+{
+    if( m_BoardOpacityProfileLook == 0 )
+        return false;
+
+    return m_BoardOpacityProfileLook > 0 || m_Input.interaction_profile == INTERACTION_PROFILE_ID::ALTIUM;
+}
+
+
+BOARD_OPACITY_DEFAULTS COMMON_SETTINGS::GetNewProjectOpacities() const
+{
+    return DoesProjectOpenTransparent() ? TransparentTwoDOpacities() : m_BoardOpacityDefaults;
 }

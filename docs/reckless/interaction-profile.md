@@ -495,6 +495,51 @@ Add it as a built-in theme beside "Reckless" for every editor, made the way the 
 script and a checked-in JSON). A theme in these layer colors already exists outside this repository with the
 converted libraries and is the reference. Any theme stays selectable in Preferences > Colors.
 
+**As built (step 6).** The views are PCB-editor actions in `pcbnew/tools/pcb_control.cpp`, and the profile table
+binds them.
+
+- **`L`, `Ctrl+D`.** `pcbnew.Control.showAppearanceLayers` and `showAppearanceObjects` show the pane when it is hidden
+  (by running `showLayersManager`, so the width and the selection filter beside it come back as they were), select the
+  notebook tab and put the keyboard focus on the notebook. With the focus in the panel, the panel's own key handler
+  (`APPEARANCE_CONTROLS::onCharHook`) takes the Layers key and gives the focus back to the canvas, because the canvas is
+  the only window that feeds the hotkey dispatcher; the Objects key selects the Objects tab. A key typed into a text box
+  or a list is left to that control. `L` stays the in-command flip key: the alias is a context action, the new action a
+  global one, and `ACTION_MANAGER::RunHotKey` prefers the running tool's. Both editors that have the panel (PCB and
+  footprint) get the keys; no pane is "collapsed" in AUI terms, so hidden is the only state handled.
+- **`[`, `]`.** `maskLevelDown` and `maskLevelUp` move `appearance.hicontrast_dimming_factor` by a tenth (rounded onto
+  the tenths so repeated presses never drift), hold it between 0 and 1, save it and recolor. They also take `[` and `]`
+  from the router's spreading-distance keys outside that tool; inside it the context actions still win.
+- **Net highlight did not follow the factor.** KiCad fades what a net highlight does not highlight by a fixed half
+  (`RENDER_SETTINGS::m_highlightFactor`, which also brightens the highlighted items), and high contrast dims by
+  `1 - hicontrast_dimming_factor`. Under the profile the fade now uses the mask level: a separate
+  `m_highlightDimFactor` follows the high-contrast factor (`PCB_RENDER_SETTINGS::SetHighContrastDimming`) and the stock
+  profile keeps its half.
+- **Grid.** `G` was already `common.Control.gridNext` from step 3, and `Shift+G`, `Ctrl+G` and `Q` were bound there.
+  In the PCB editors `pcbnew.Control.showGridMenu` takes `G` (a `pcbnew.` action takes its key in that editor only, so
+  `gridNext` loses it there) and pops up `GRID_MENU` at the mouse position; the schematic editor keeps `G` and `Shift+G`
+  as the next and previous grid. **Open point:** in the PCB editors `Shift+G` stays `gridPrev` until the heads-up display
+  (step 8) takes it for "follows the cursor"; 6.4 does not say what it is before then.
+- **Single-layer mode.** Not cheap to leave alone, and it was not right: in the dimmed and hidden modes a through-hole pad
+  and a through via drew on the inactive copper layers' colors (`isActive` is a lookup of the drawn layer in the
+  high-contrast set, which holds one copper layer's pad and via copper), so the part of a through-hole pad on the other
+  side faded, and with a non-copper layer active a through via did too. Under the profile
+  `PCB_RENDER_SETTINGS::IsThroughHoleKept` exempts PTH pads and through vias, in `GetColor` and in `IsDimExempt` (the
+  canvas fade).
+- **Colors.** `tools/reckless/altium_classic_color_theme.py` writes `common/settings/altium_classic_color_theme.json`,
+  which is built in beside "Reckless" (`COLOR_BUILTIN_ALTIUM_CLASSIC`) for the schematic, PCB and Gerber editors; the 3D
+  viewer keeps the board's own colors. The script holds the colors as written, not derived, and moves only two:
+  the bottom blue to 4.5:1 on the black canvas (the classic pure blue is 1.4:1) and the back overlay likewise. KiCad draws
+  a power port in the symbol outline's color, so the "dark-red power ports" are the parts' blue; the labels are dark red.
+  `EDA_DRAW_FRAME::ApplyColorThemeOnce` makes it each editor's theme once (`appearance.altium_color_theme_applied`, a
+  stored flag like the mouse preset's), from the frame constructors and on `INTERACTION_PROFILE_CHANGED`.
+- **Transparent 2D.** Of the two routes (a preset, or the profile supplying the defaults) the second is built:
+  `LAYER_PRESET` would have grown opacities it does not hold and a preset would have to be applied and re-applied, where
+  KiCad already seeds a project's local settings from `project_defaults.board_opacity.*` whenever it holds none. Under the
+  profile `COMMON_SETTINGS::GetNewProjectOpacities` supplies pads 0.80, vias 1.00, tracks and arcs 0.85, zones 0.30 and
+  filled shapes 0.60 there, controlled by the int `project_defaults.board_opacity.profile_look` (-1 follows the profile, 0
+  off, 1 on). A project that stores its opacities keeps them. Editing the opacities in the PCB editor's project defaults
+  preferences stores the user's values and turns the look off.
+
 ### 5.8 Routing
 
 All by rebinding unless marked new. Target keys are in section 6.4.

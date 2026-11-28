@@ -425,6 +425,9 @@ FOOTPRINT_EDIT_FRAME::FOOTPRINT_EDIT_FRAME( KIWAY* aKiway, wxWindow* aParent ) :
 
                 // Update the angle snap mode toolbar button to reflect the current preference
                 GetToolManager()->RunAction( PCB_ACTIONS::angleSnapModeChanged );
+
+                // A configuration that starts in the Altium-style profile has not had its colors yet
+                ApplyColorThemeOnce();
             } );
 }
 

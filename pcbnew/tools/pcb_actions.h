@@ -422,6 +422,18 @@ public:
     static TOOL_ACTION layerPrev;
     static TOOL_ACTION layerAlphaInc;
     static TOOL_ACTION layerAlphaDec;
+
+    /// Show the Appearance panel and put the keyboard focus on its Layers tab, or on its Objects tab (the Altium-style
+    /// profile's L and Ctrl+D)
+    static TOOL_ACTION showAppearanceLayers;
+    static TOOL_ACTION showAppearanceObjects;
+
+    /// Step the high-contrast dimming factor (the mask level) down or up (the Altium-style profile's [ and ])
+    static TOOL_ACTION maskLevelDown;
+    static TOOL_ACTION maskLevelUp;
+
+    /// Open the list of grids as a popup at the cursor (the Altium-style profile's G in the PCB editors)
+    static TOOL_ACTION showGridMenu;
     static TOOL_ACTION layerToggle;
     static TOOL_ACTION layerPairPresetsCycle;
 

@@ -107,6 +107,12 @@ public:
 
     void LoadColors( const COLOR_SETTINGS* aSettings ) override;
 
+    /**
+     * Set the high-contrast dimming factor (0 dims nothing, 1 dims the inactive layers out) and recompute the colors
+     * that follow it. Net highlight fades by the same factor under the Altium-style profile.
+     */
+    void SetHighContrastDimming( double aDimmingFactor );
+
     /// @copydoc RENDER_SETTINGS::GetColor()
     COLOR4D GetColor( const VIEW_ITEM* aItem, int aLayer ) const override;
 
@@ -126,6 +132,13 @@ public:
     void SetCanvasFadedLayers( const std::bitset<MAX_LAYERS_FOR_VIEW>& aLayers ) { m_canvasFadedLayers = aLayers; }
 
     bool IsCanvasFadedLayer( int aLayer ) const;
+
+    /**
+     * Whether high contrast leaves \a aItem undimmed and shown for being a through-hole pad or a through via, which
+     * the Altium-style profile keeps fully visible in the dimmed and hidden single-layer modes, as Altium does (5.7).
+     * Always false in the stock profile.
+     */
+    bool IsThroughHoleKept( const BOARD_ITEM* aItem ) const;
 
     bool HasCanvasFadedLayers() const { return m_canvasFadedLayers.any(); }
 
@@ -209,6 +222,9 @@ public:
     PAD*               m_PadEditModePad;       // Pad currently in Pad Edit Mode (if any)
 
 protected:
+    /// Set the high-contrast factor and what follows it, without recomputing the colors
+    void applyHighContrastDimming( double aDimmingFactor );
+
     /// Maximum font size for netnames (and other dynamically shown strings)
     static const double MAX_FONT_SIZE;
 
@@ -244,6 +260,9 @@ protected:
 
     /// Selected constraint members shadow highlighted
     std::unordered_set<KIID> m_highlightedConstraintMembers;
+
+    /// Through-hole pads and through vias stay visible in the dimmed and hidden modes, see IsThroughHoleKept()
+    bool m_keepThroughHolesVisible = false;
 
     /** Layers the canvas fades for high contrast, see SetCanvasFadedLayers() */
     std::bitset<MAX_LAYERS_FOR_VIEW> m_canvasFadedLayers;

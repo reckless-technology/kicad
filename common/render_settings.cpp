@@ -32,6 +32,7 @@ RENDER_SETTINGS::RENDER_SETTINGS() :
     // Set the default initial values
     m_activeLayer           = F_Cu;
     m_highlightFactor       = 0.5f;
+    m_highlightDimFactor    = 0.5f;
     m_selectFactor          = 0.5f;
     m_highlightEnabled      = false;
     m_hiContrastEnabled     = false;
@@ -89,7 +90,7 @@ void RENDER_SETTINGS::update()
                                                      m_hiContrastFactor );
 
         m_layerColorsHi[i]   = m_layerColors[i].Brightened( m_highlightFactor );
-        m_layerColorsDark[i] = m_layerColors[i].Darkened( 1.0 - m_highlightFactor );
+        m_layerColorsDark[i] = m_layerColors[i].Darkened( 1.0 - m_highlightDimFactor );
 
         // Skip selection brightening for things close to black, and netname text
         if( IsNetnameLayer( i ) || m_layerColors[i].GetBrightness() < 0.05 )

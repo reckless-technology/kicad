@@ -267,6 +267,10 @@ public:
     /// Active color theme name.
     wxString m_ColorTheme;
 
+    /// The Altium-style profile's color theme (Altium classic) has been made this application's theme once, and is
+    /// never made it again
+    bool m_AltiumColorThemeApplied = false;
+
     /// Use custom toolbars
     bool m_CustomToolbars;
 

@@ -362,6 +362,7 @@ protected:
     bool          m_highlightEnabled;     // Highlight display mode on/off
     std::set<int> m_highlightNetcodes;    // Set of net cods to be highlighted
     float         m_highlightFactor;      // Factor used for computing highlight color
+    float         m_highlightDimFactor;   // Share of its color a net highlight leaves to an item it does not highlight
 
     bool          m_drawBoundingBoxes;    // Visual aid for debugging
 

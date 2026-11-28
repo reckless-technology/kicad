@@ -35,12 +35,52 @@ const int colorsSchemaVersion = 6;
 const wxString COLOR_SETTINGS::COLOR_BUILTIN_DEFAULT = "_builtin_default";
 const wxString COLOR_SETTINGS::COLOR_BUILTIN_CLASSIC = "_builtin_classic";
 const wxString COLOR_SETTINGS::COLOR_BUILTIN_RECKLESS = "_builtin_reckless";
+const wxString COLOR_SETTINGS::COLOR_BUILTIN_ALTIUM_CLASSIC = "_builtin_altium_classic";
 
 /// The Reckless theme, built in from common/settings/reckless_color_theme.json, which
 /// tools/reckless/reckless_color_theme.py writes from the Reckless look's colors and measured contrast.
 static const char s_recklessThemeJson[] =
 #include "reckless_color_theme_json.h"
         ;
+
+/// The Altium classic theme, built in from common/settings/altium_classic_color_theme.json, which
+/// tools/reckless/altium_classic_color_theme.py writes.
+static const char s_altiumClassicThemeJson[] =
+#include "altium_classic_color_theme_json.h"
+        ;
+
+
+/**
+ * A built-in theme read from a JSON buffer: held with no parameters, as the classic theme is, so that reloading or
+ * resetting the settings never puts KiCad Default's colors back. A color the buffer does not name is KiCad Default's.
+ */
+COLOR_SETTINGS* COLOR_SETTINGS::makeBuiltinThemeFromJson( const wxString& aId, const wxString& aName,
+                                                          const char* aJson )
+{
+    COLOR_SETTINGS source( aId );
+
+    {
+        LOCALE_IO toggle;
+        bool      loaded = source.LoadFromBuffer( aJson );
+
+        // A theme that does not parse would load as KiCad Default's colors with no other sign
+        wxASSERT_MSG( loaded, wxS( "A built-in color theme did not parse" ) );
+        wxLogTrace( traceSettings, wxS( "Built-in theme %s parsed: %d" ), aName, loaded );
+    }
+
+    COLOR_SETTINGS* theme = new COLOR_SETTINGS( aId );
+    theme->SetName( aName );
+    theme->m_writeFile = false;
+
+    for( PARAM_BASE* param : theme->m_params )
+        delete param;
+
+    theme->m_params.clear(); // Disable load/store
+    theme->m_colors = source.m_colors;
+    theme->m_defaultColors = source.m_colors;
+
+    return theme;
+}
 
 
 const wxString& COLOR_SETTINGS::DefaultBuiltinTheme()
@@ -509,36 +549,18 @@ std::vector<COLOR_SETTINGS*> COLOR_SETTINGS::CreateBuiltinColorSettings()
     for( const std::pair<int, COLOR4D> entry : s_classicTheme )
         classicTheme->m_colors[entry.first] = entry.second;
 
-    // The Reckless theme is read through a theme with every parameter, so a color its file does not name is KiCad
-    // Default's, then held as the classic theme is, with no parameters, so that reloading or resetting the settings
-    // never puts KiCad Default's colors back.
-    COLOR_SETTINGS recklessSource( COLOR_BUILTIN_RECKLESS );
-
-    {
-        LOCALE_IO toggle;
-        bool      loaded = recklessSource.LoadFromBuffer( s_recklessThemeJson );
-
-        // A theme that does not parse would load as KiCad Default's colors with no other sign
-        wxASSERT_MSG( loaded, wxS( "The built-in Reckless color theme did not parse" ) );
-        wxLogTrace( traceSettings, wxS( "Built-in Reckless theme parsed: %d" ), loaded );
-    }
-
-    COLOR_SETTINGS* recklessTheme = new COLOR_SETTINGS( COLOR_BUILTIN_RECKLESS );
-    recklessTheme->SetName( wxS( "Reckless" ) );
-    recklessTheme->m_writeFile = false;
-
-    for( PARAM_BASE* param : recklessTheme->m_params )
-        delete param;
-
-    recklessTheme->m_params.clear(); // Disable load/store
-    recklessTheme->m_colors = recklessSource.m_colors;
-    recklessTheme->m_defaultColors = recklessSource.m_colors;
+    // The Reckless and Altium classic themes are read through a theme with every parameter
+    COLOR_SETTINGS* recklessTheme =
+            makeBuiltinThemeFromJson( COLOR_BUILTIN_RECKLESS, wxS( "Reckless" ), s_recklessThemeJson );
+    COLOR_SETTINGS* altiumClassicTheme =
+            makeBuiltinThemeFromJson( COLOR_BUILTIN_ALTIUM_CLASSIC, wxS( "Altium classic" ), s_altiumClassicThemeJson );
 
     std::vector<COLOR_SETTINGS*> ret;
 
     ret.push_back( defaultTheme );
     ret.push_back( classicTheme );
     ret.push_back( recklessTheme );
+    ret.push_back( altiumClassicTheme );
 
     return ret;
 }

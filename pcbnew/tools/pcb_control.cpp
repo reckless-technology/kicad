@@ -36,6 +36,13 @@
 #include <router/router_tool.h>
 #include <pgm_base.h>
 #include <tools/pcb_actions.h>
+#include <tool/grid_menu.h>
+#include <interaction_profile.h>
+#include <widgets/appearance_controls.h>
+#include <pcb_base_edit_frame.h>
+#include <settings/common_settings.h>
+#include <settings/settings_manager.h>
+#include <pcb_painter.h>
 #include <tools/pcb_picker_tool.h>
 #include <tools/pcb_selection_tool.h>
 #include <tools/board_reannotate_tool.h>
@@ -619,6 +626,73 @@ int PCB_CONTROL::LayerToggle( const TOOL_EVENT& aEvent [[maybe_unused]] )
 #define ALPHA_MIN 0.20
 #define ALPHA_MAX 1.00
 #define ALPHA_STEP 0.05
+
+
+int PCB_CONTROL::ShowAppearanceTab( const TOOL_EVENT& aEvent )
+{
+    PCB_BASE_EDIT_FRAME* frame = dynamic_cast<PCB_BASE_EDIT_FRAME*>( m_frame );
+
+    if( !frame || !frame->GetAppearancePanel() )
+        return 0;
+
+    APPEARANCE_CONTROLS* panel = frame->GetAppearancePanel();
+
+    // A hidden pane is shown first. Both editors toggle it as their own action does, so its width and the selection
+    // filter beside it come back as they were.
+    if( !frame->IsAppearancePanelShown() )
+        m_toolMgr->RunAction( PCB_ACTIONS::showLayersManager );
+
+    const bool isObjectsKey = aEvent.IsAction( &PCB_ACTIONS::showAppearanceObjects );
+
+    // The Layers key typed while the panel has the focus gives it back to the canvas; the panel's own key handler does
+    // that when the key reaches it first, and this covers a key that reaches the canvas anyway
+    if( !isObjectsKey && panel->HasKeyboardFocus() )
+        panel->ReturnFocusToCanvas();
+    else
+        panel->FocusTab( isObjectsKey ? APPEARANCE_CONTROLS::TAB::OBJECTS : APPEARANCE_CONTROLS::TAB::LAYERS );
+
+    return 0;
+}
+
+
+int PCB_CONTROL::StepMaskLevel( const TOOL_EVENT& aEvent )
+{
+    COMMON_SETTINGS* settings = Pgm().GetCommonSettings();
+
+    if( !settings )
+        return 0;
+
+    const int    steps = aEvent.IsAction( &PCB_ACTIONS::maskLevelUp ) ? 1 : -1;
+    const double previous = settings->m_Appearance.hicontrast_dimming_factor;
+    const double stepped = INTERACTION_PROFILE::SteppedDimmingFactor( previous, steps );
+
+    if( stepped == previous )
+    {
+        wxBell();
+        return 0;
+    }
+
+    settings->m_Appearance.hicontrast_dimming_factor = stepped;
+    Pgm().GetSettingsManager().Save( settings );
+
+    // The painter has its own copy of the factor, and the colors that follow it
+    KIGFX::PCB_PAINTER* painter = static_cast<KIGFX::PCB_PAINTER*>( view()->GetPainter() );
+    painter->GetSettings()->SetHighContrastDimming( stepped );
+
+    // The same path as a change of the display options recolors every layer and repaints
+    m_frame->SetDisplayOptions( m_frame->GetDisplayOptions() );
+    return 0;
+}
+
+
+int PCB_CONTROL::ShowGridMenu( const TOOL_EVENT& aEvent [[maybe_unused]] )
+{
+    GRID_MENU menu( m_frame );
+
+    menu.SetTool( this );
+    m_frame->PopupMenu( &menu, m_frame->ScreenToClient( KIPLATFORM::UI::GetMousePosition() ) );
+    return 0;
+}
 
 
 int PCB_CONTROL::LayerAlphaInc( const TOOL_EVENT& aEvent [[maybe_unused]] )
@@ -3453,6 +3527,11 @@ void PCB_CONTROL::setTransitions()
     Go( &PCB_CONTROL::LayerToggle,          PCB_ACTIONS::layerToggle.MakeEvent() );
     Go( &PCB_CONTROL::LayerAlphaInc,        PCB_ACTIONS::layerAlphaInc.MakeEvent() );
     Go( &PCB_CONTROL::LayerAlphaDec,        PCB_ACTIONS::layerAlphaDec.MakeEvent() );
+    Go( &PCB_CONTROL::ShowAppearanceTab,    PCB_ACTIONS::showAppearanceLayers.MakeEvent() );
+    Go( &PCB_CONTROL::ShowAppearanceTab,    PCB_ACTIONS::showAppearanceObjects.MakeEvent() );
+    Go( &PCB_CONTROL::StepMaskLevel,        PCB_ACTIONS::maskLevelDown.MakeEvent() );
+    Go( &PCB_CONTROL::StepMaskLevel,        PCB_ACTIONS::maskLevelUp.MakeEvent() );
+    Go( &PCB_CONTROL::ShowGridMenu,         PCB_ACTIONS::showGridMenu.MakeEvent() );
 
     Go( &PCB_CONTROL::CycleLayerPresets,    PCB_ACTIONS::layerPairPresetsCycle.MakeEvent() );
     Go( &PCB_CONTROL::LayerPresetFeedback,  PCB_EVENTS::LayerPairPresetChangedByKeyEvent() );

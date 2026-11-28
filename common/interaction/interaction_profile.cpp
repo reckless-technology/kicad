@@ -22,9 +22,14 @@
 #include <hotkeys_basic.h>
 #include <paths.h>
 #include <pgm_base.h>
+#include <settings/app_settings.h>
+#include <settings/color_settings.h>
 #include <settings/common_settings.h>
 #include <tool/tool_action.h>
 #include <wildcards_and_files_ext.h>
+
+#include <algorithm>
+#include <cmath>
 
 #include <wx/filename.h>
 
@@ -81,6 +86,26 @@ bool INTERACTION_PROFILE::ApplyMousePresetOnce( COMMON_SETTINGS& aSettings )
 
     input.altium_mouse_preset_applied = true;
     return true;
+}
+
+
+bool INTERACTION_PROFILE::ApplyColorThemeOnce( APP_SETTINGS_BASE& aSettings )
+{
+    if( Active() != INTERACTION_PROFILE_ID::ALTIUM || aSettings.m_AltiumColorThemeApplied )
+        return false;
+
+    aSettings.m_ColorTheme = COLOR_SETTINGS::COLOR_BUILTIN_ALTIUM_CLASSIC;
+    aSettings.m_AltiumColorThemeApplied = true;
+    return true;
+}
+
+
+double INTERACTION_PROFILE::SteppedDimmingFactor( double aDimmingFactor, int aSteps )
+{
+    // Whole steps, so that repeated presses never drift off the grid of tenths
+    const double stepped = std::round( aDimmingFactor / DIMMING_FACTOR_STEP ) + aSteps;
+
+    return std::clamp( stepped * DIMMING_FACTOR_STEP, 0.0, 1.0 );
 }
 
 

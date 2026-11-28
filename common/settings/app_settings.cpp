@@ -306,6 +306,9 @@ APP_SETTINGS_BASE::APP_SETTINGS_BASE( const std::string& aFilename, int aSchemaV
     m_params.emplace_back(
             new PARAM<wxString>( "appearance.color_theme", &m_ColorTheme, COLOR_SETTINGS::DefaultBuiltinTheme() ) );
 
+    m_params.emplace_back(
+            new PARAM<bool>( "appearance.altium_color_theme_applied", &m_AltiumColorThemeApplied, false ) );
+
     m_params.emplace_back( new PARAM<bool>( "appearance.custom_toolbars",
             &m_CustomToolbars, false ) );
 

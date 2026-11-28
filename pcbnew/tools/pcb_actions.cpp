@@ -2718,6 +2718,42 @@ TOOL_ACTION PCB_ACTIONS::layerAlphaDec( TOOL_ACTION_ARGS()
         .Tooltip( _( "Make the current layer more transparent" ) )
         .Icon( BITMAPS::contrast_mode ) );
 
+TOOL_ACTION PCB_ACTIONS::showAppearanceLayers( TOOL_ACTION_ARGS()
+        .Name( "pcbnew.Control.showAppearanceLayers" )
+        .Scope( AS_GLOBAL )
+        .FriendlyName( _( "Show Layers Tab" ) )
+        .Tooltip( _( "Show the Appearance panel with the focus on its Layers tab. Typed again with the focus in the "
+                     "panel, it returns the focus to the canvas." ) )
+        .Icon( BITMAPS::layers_manager ) );
+
+TOOL_ACTION PCB_ACTIONS::showAppearanceObjects( TOOL_ACTION_ARGS()
+        .Name( "pcbnew.Control.showAppearanceObjects" )
+        .Scope( AS_GLOBAL )
+        .FriendlyName( _( "Show Objects Tab" ) )
+        .Tooltip( _( "Show the Appearance panel with the focus on its Objects tab" ) )
+        .Icon( BITMAPS::layers_manager ) );
+
+TOOL_ACTION PCB_ACTIONS::maskLevelDown( TOOL_ACTION_ARGS()
+        .Name( "pcbnew.Control.maskLevelDown" )
+        .Scope( AS_GLOBAL )
+        .FriendlyName( _( "Decrease Mask Level" ) )
+        .Tooltip( _( "Dim the inactive layers and the items a net highlight does not highlight less" ) )
+        .Icon( BITMAPS::contrast_mode ) );
+
+TOOL_ACTION PCB_ACTIONS::maskLevelUp( TOOL_ACTION_ARGS()
+        .Name( "pcbnew.Control.maskLevelUp" )
+        .Scope( AS_GLOBAL )
+        .FriendlyName( _( "Increase Mask Level" ) )
+        .Tooltip( _( "Dim the inactive layers and the items a net highlight does not highlight more" ) )
+        .Icon( BITMAPS::contrast_mode ) );
+
+TOOL_ACTION PCB_ACTIONS::showGridMenu( TOOL_ACTION_ARGS()
+        .Name( "pcbnew.Control.showGridMenu" )
+        .Scope( AS_GLOBAL )
+        .FriendlyName( _( "Grid List" ) )
+        .Tooltip( _( "Open the list of grids at the cursor" ) )
+        .Icon( BITMAPS::grid_select ) );
+
 TOOL_ACTION PCB_ACTIONS::layerPairPresetsCycle( TOOL_ACTION_ARGS()
         .Name( "pcbnew.Control.layerPairPresetCycle" )
         .Scope( AS_GLOBAL )

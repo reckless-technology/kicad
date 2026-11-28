@@ -234,6 +234,9 @@ public:
 
     APPEARANCE_CONTROLS* GetAppearancePanel() { return m_appearancePanel; }
 
+    /// Whether the AUI pane of the Appearance panel is shown
+    bool IsAppearancePanelShown() { return m_auimgr.GetPane( AppearancePanelName() ).IsShown(); }
+
     /// The name of the AUI pane of the layer tab bar
     static wxString LayerTabBarPaneName() { return wxS( "LayerTabBar" ); }
 

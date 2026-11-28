@@ -52,6 +52,7 @@
 #include <widgets/grid_color_swatch_helpers.h>
 #include <widgets/grid_text_helpers.h>
 #include <widgets/indicator_icon.h>
+#include <widgets/ui_common.h>
 #include <widgets/wx_infobar.h>
 #include <widgets/wx_grid.h>
 #include <dialogs/eda_view_switcher.h>
@@ -621,6 +622,7 @@ APPEARANCE_CONTROLS::APPEARANCE_CONTROLS( PCB_BASE_FRAME* aParent, wxWindow* aFo
     Bind( wxEVT_COMMAND_MENU_SELECTED, &APPEARANCE_CONTROLS::OnLayerContextMenu, this,
           ID_CHANGE_COLOR, ID_LAST_VALUE );
 
+    Bind( wxEVT_CHAR_HOOK, &APPEARANCE_CONTROLS::onCharHook, this );
     m_frame->Bind( EDA_LANG_CHANGED, &APPEARANCE_CONTROLS::OnLanguageChanged, this );
 }
 
@@ -850,6 +852,57 @@ bool APPEARANCE_CONTROLS::IsLayerOptionsExpanded()
 bool APPEARANCE_CONTROLS::IsNetOptionsExpanded()
 {
     return m_paneNetDisplayOptions->IsExpanded();
+}
+
+
+void APPEARANCE_CONTROLS::FocusTab( TAB aTab )
+{
+    m_notebook->SetSelection( static_cast<size_t>( aTab ) );
+    m_notebook->SetFocus();
+}
+
+
+bool APPEARANCE_CONTROLS::HasKeyboardFocus() const
+{
+    for( wxWindow* window = wxWindow::FindFocus(); window; window = window->GetParent() )
+    {
+        if( window == this )
+            return true;
+    }
+
+    return false;
+}
+
+
+void APPEARANCE_CONTROLS::onCharHook( wxKeyEvent& aEvent )
+{
+    // A key typed into a text box or a list is that control's
+    if( KIUI::IsInputControlFocused() )
+    {
+        aEvent.Skip();
+        return;
+    }
+
+    int modifiers = 0;
+
+    if( aEvent.ShiftDown() )
+        modifiers |= MD_SHIFT;
+
+    if( aEvent.ControlDown() )
+        modifiers |= MD_CTRL;
+
+    if( aEvent.AltDown() )
+        modifiers |= MD_ALT;
+
+    const int key = aEvent.GetKeyCode() | modifiers;
+
+    // No key is bound outside the Altium-style profile, and an unbound action is 0
+    if( key != 0 && key == PCB_ACTIONS::showAppearanceLayers.GetHotKey() )
+        passOnFocus();
+    else if( key != 0 && key == PCB_ACTIONS::showAppearanceObjects.GetHotKey() )
+        FocusTab( TAB::OBJECTS );
+    else
+        aEvent.Skip();
 }
 
 

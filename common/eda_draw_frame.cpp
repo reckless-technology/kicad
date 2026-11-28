@@ -352,13 +352,34 @@ void EDA_DRAW_FRAME::ApplyMousePresetOnce()
 }
 
 
+bool EDA_DRAW_FRAME::ApplyColorThemeOnce( bool aReloadColors )
+{
+    APP_SETTINGS_BASE* settings = config();
+
+    if( !settings || !INTERACTION_PROFILE::ApplyColorThemeOnce( *settings ) )
+        return false;
+
+    Pgm().GetSettingsManager().Save( settings );
+
+    if( aReloadColors )
+        CommonSettingsChanged( 0 );
+
+    return true;
+}
+
+
 void EDA_DRAW_FRAME::CommonSettingsChanged( int aFlags )
 {
     EDA_BASE_FRAME::CommonSettingsChanged( aFlags );
 
-    // Choosing the Altium-style profile for the first time brings its mouse preset
+    // Choosing the Altium-style profile for the first time brings its mouse preset and its colors
     if( aFlags & INTERACTION_PROFILE_CHANGED )
+    {
         ApplyMousePresetOnce();
+
+        // The colors are reloaded by the editor's own part of this settings change, which follows
+        ApplyColorThemeOnce( false );
+    }
 
     COMMON_SETTINGS*      settings = Pgm().GetCommonSettings();
     KIGFX::VIEW_CONTROLS* viewControls = GetCanvas()->GetViewControls();

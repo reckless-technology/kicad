@@ -473,6 +473,18 @@ add_custom_command(
     COMMENT "Creating reckless_color_theme_json.h from settings/reckless_color_theme.json"
     )
 
+# The built-in Altium classic color theme, embedded the same way
+add_custom_command(
+    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/altium_classic_color_theme_json.h
+    COMMAND ${CMAKE_COMMAND}
+        -DinputFile=${CMAKE_CURRENT_SOURCE_DIR}/settings/altium_classic_color_theme.json
+        -DoutputFile=${CMAKE_CURRENT_BINARY_DIR}/altium_classic_color_theme_json.h
+        -P ${KICAD_CMAKE_MODULE_PATH}/BuildSteps/Text2CString.cmake
+    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/settings/altium_classic_color_theme.json
+        ${KICAD_CMAKE_MODULE_PATH}/BuildSteps/Text2CString.cmake
+    COMMENT "Creating altium_classic_color_theme_json.h from settings/altium_classic_color_theme.json"
+    )
+
 # The Altium-style interaction profile's hotkey table, embedded the same way
 add_custom_command(
     OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/altium_hotkeys.h
@@ -488,6 +500,7 @@ add_custom_command(
 add_library( kicommon SHARED
     ${KICOMMON_SRCS}
     ${CMAKE_CURRENT_BINARY_DIR}/reckless_color_theme_json.h
+    ${CMAKE_CURRENT_BINARY_DIR}/altium_classic_color_theme_json.h
     )
 
 target_include_directories( kicommon PRIVATE ${CMAKE_CURRENT_BINARY_DIR} )

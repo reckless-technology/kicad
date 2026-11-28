@@ -238,6 +238,22 @@ public:
     /// Update the widget when the active board layer is changed.
     void OnLayerChanged();
 
+    /// The tabs of the panel, in the order of its notebook.
+    enum class TAB
+    {
+        LAYERS = 0,
+        OBJECTS = 1
+    };
+
+    /// Show \a aTab and put the keyboard focus in the panel's notebook. The pane must be shown by the caller.
+    void FocusTab( TAB aTab );
+
+    /// Whether the keyboard focus is in this panel or in a control of it.
+    bool HasKeyboardFocus() const;
+
+    /// Give the keyboard focus back to the canvas.
+    void ReturnFocusToCanvas() { passOnFocus(); }
+
     /// The layer tab bar to tell whenever what it draws may have changed; it holds no state of its own.
     void SetLayerTabBar( PCB_LAYER_TAB_BAR* aLayerTabBar ) { m_layerTabBar = aLayerTabBar; }
 
@@ -324,6 +340,10 @@ protected:
     void OnNetGridRightClick( wxGridEvent& event ) override;
     void OnNetGridMouseEvent( wxMouseEvent& aEvent );
     void OnLanguageChanged( wxCommandEvent& aEvent );
+
+    /// A key typed while the panel has the focus: the keys of the appearance actions work here too (5.7 of the design
+    /// note), the Layers key giving the focus back to the canvas.
+    void onCharHook( wxKeyEvent& aEvent );
 
 private:
     void createControls();

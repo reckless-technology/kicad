@@ -107,7 +107,7 @@ wxDirTraverseResult PROJECT_TREE_TRAVERSER::OnFile( const wxString& aSrcFilePath
         else if( ext == FILEEXT::ProjectLocalSettingsFileExtension )
         {
             PROJECT_LOCAL_SETTINGS projectLocalSettings( nullptr, aSrcFilePath,
-                                                         Pgm().GetCommonSettings()->m_BoardOpacityDefaults );
+                                                         Pgm().GetCommonSettings()->GetNewProjectOpacities() );
             projectLocalSettings.LoadFromFile();
             projectLocalSettings.SaveAs( destFile.GetPath(), destFile.GetName() );
         }

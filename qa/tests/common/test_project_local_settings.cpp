@@ -27,6 +27,7 @@
 
 #include <qa_utils/wx_utils/unit_test_utils.h>
 
+#include <interaction_profile.h>
 #include <project.h>
 #include <project/project_local_settings.h>
 #include <settings/layer_settings_utils.h>
@@ -231,6 +232,107 @@ BOOST_AUTO_TEST_CASE( FirstPrlWriterKeepsUserOpacityDefaults )
     BOOST_REQUIRE( settingsManager.LoadProject( wxString( proPath.string() ) ) );
 
     BOOST_CHECK_EQUAL( settingsManager.Prj().GetLocalSettings().m_TrackOpacity, 0.25 );
+}
+
+
+/**
+ * A project with no stored opacities opens with the Altium-style profile's transparent 2D look (design note, 5.7), and
+ * one that stores them keeps them.
+ */
+BOOST_AUTO_TEST_CASE( ANewProjectOpensTransparentUnderTheAltiumStyleProfile )
+{
+    // As the schematic editor writes it before the board is ever opened
+    const std::string newPrl = R"({
+        "meta": { "filename": "new_project.kicad_prl", "version": 7 },
+        "project": { "files": [] }
+    })";
+
+    SETTINGS_MANAGER settingsManager;
+    settingsManager.GetCommonSettings()->m_Input.interaction_profile = INTERACTION_PROFILE_ID::ALTIUM;
+    settingsManager.GetCommonSettings()->m_BoardOpacityProfileLook = -1;
+    writeAndLoadProject( "new_project", newPrl, settingsManager );
+
+    PROJECT_LOCAL_SETTINGS& settings = settingsManager.Prj().GetLocalSettings();
+
+    BOOST_CHECK_EQUAL( settings.m_PadOpacity, 0.80 );
+    BOOST_CHECK_EQUAL( settings.m_ViaOpacity, 1.00 );
+    BOOST_CHECK_EQUAL( settings.m_TrackOpacity, 0.85 );
+    BOOST_CHECK_EQUAL( settings.m_ZoneOpacity, 0.30 );
+    BOOST_CHECK_EQUAL( settings.m_ShapeOpacity, 0.60 );
+}
+
+
+BOOST_AUTO_TEST_CASE( ANewProjectKeepsTheStockOpacitiesInTheStockProfile )
+{
+    const std::string newPrl = R"({
+        "meta": { "filename": "stock_project.kicad_prl", "version": 7 },
+        "project": { "files": [] }
+    })";
+
+    SETTINGS_MANAGER settingsManager;
+    settingsManager.GetCommonSettings()->m_Input.interaction_profile = INTERACTION_PROFILE_ID::STOCK;
+    settingsManager.GetCommonSettings()->m_BoardOpacityProfileLook = -1;
+    writeAndLoadProject( "stock_project", newPrl, settingsManager );
+
+    PROJECT_LOCAL_SETTINGS&      settings = settingsManager.Prj().GetLocalSettings();
+    const BOARD_OPACITY_DEFAULTS stock;
+
+    BOOST_CHECK_EQUAL( settings.m_PadOpacity, stock.m_PadOpacity );
+    BOOST_CHECK_EQUAL( settings.m_ViaOpacity, stock.m_ViaOpacity );
+    BOOST_CHECK_EQUAL( settings.m_TrackOpacity, stock.m_TrackOpacity );
+    BOOST_CHECK_EQUAL( settings.m_ZoneOpacity, stock.m_ZoneOpacity );
+    BOOST_CHECK_EQUAL( settings.m_ShapeOpacity, stock.m_ShapeOpacity );
+}
+
+
+BOOST_AUTO_TEST_CASE( AProjectThatStoresItsOpacitiesKeepsThemUnderTheAltiumStyleProfile )
+{
+    const std::string storedPrl = R"({
+        "board": {
+            "opacity": {
+                "images": 0.6,
+                "pads": 1.0,
+                "shapes": 1.0,
+                "tracks": 1.0,
+                "vias": 0.5,
+                "zones": 0.6
+            }
+        },
+        "meta": { "filename": "stored_project.kicad_prl", "version": 7 },
+        "project": { "files": [] }
+    })";
+
+    SETTINGS_MANAGER settingsManager;
+    settingsManager.GetCommonSettings()->m_Input.interaction_profile = INTERACTION_PROFILE_ID::ALTIUM;
+    settingsManager.GetCommonSettings()->m_BoardOpacityProfileLook = -1;
+    writeAndLoadProject( "stored_project", storedPrl, settingsManager );
+
+    PROJECT_LOCAL_SETTINGS& settings = settingsManager.Prj().GetLocalSettings();
+
+    BOOST_CHECK_EQUAL( settings.m_PadOpacity, 1.0 );
+    BOOST_CHECK_EQUAL( settings.m_ViaOpacity, 0.5 );
+    BOOST_CHECK_EQUAL( settings.m_TrackOpacity, 1.0 );
+    BOOST_CHECK_EQUAL( settings.m_ZoneOpacity, 0.6 );
+    BOOST_CHECK_EQUAL( settings.m_ShapeOpacity, 1.0 );
+}
+
+
+BOOST_AUTO_TEST_CASE( TheProfileLookCanBeTurnedOffAndThenTheUsersOwnDefaultsApply )
+{
+    const std::string newPrl = R"({
+        "meta": { "filename": "off_project.kicad_prl", "version": 7 },
+        "project": { "files": [] }
+    })";
+
+    SETTINGS_MANAGER settingsManager;
+    COMMON_SETTINGS* common = settingsManager.GetCommonSettings();
+
+    common->m_Input.interaction_profile = INTERACTION_PROFILE_ID::ALTIUM;
+    common->m_BoardOpacityProfileLook = 0;
+    common->m_BoardOpacityDefaults.m_PadOpacity = 0.4;
+    writeAndLoadProject( "off_project", newPrl, settingsManager );
+
+    BOOST_CHECK_EQUAL( settingsManager.Prj().GetLocalSettings().m_PadOpacity, 0.4 );
 }
 
 

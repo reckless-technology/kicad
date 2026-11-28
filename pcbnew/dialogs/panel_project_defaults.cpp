@@ -44,7 +44,7 @@ void PANEL_PROJECT_DEFAULTS::applyOpacities( const BOARD_OPACITY_DEFAULTS& aOpac
 bool PANEL_PROJECT_DEFAULTS::TransferDataToWindow()
 {
     if( COMMON_SETTINGS* cfg = Pgm().GetCommonSettings() )
-        applyOpacities( cfg->m_BoardOpacityDefaults );
+        applyOpacities( cfg->GetNewProjectOpacities() );
 
     return true;
 }
@@ -54,7 +54,7 @@ bool PANEL_PROJECT_DEFAULTS::TransferDataFromWindow()
 {
     if( COMMON_SETTINGS* cfg = Pgm().GetCommonSettings() )
     {
-        BOARD_OPACITY_DEFAULTS& opacities = cfg->m_BoardOpacityDefaults;
+        BOARD_OPACITY_DEFAULTS opacities;
 
         opacities.m_TrackOpacity = m_OptTrackOpacity->GetValue() / 100.0;
         opacities.m_ViaOpacity = m_OptViaOpacity->GetValue() / 100.0;
@@ -63,6 +63,22 @@ bool PANEL_PROJECT_DEFAULTS::TransferDataFromWindow()
         opacities.m_ShapeOpacity = m_OptFilledShapeOpacity->GetValue() / 100.0;
         opacities.m_ImageOpacity = m_OptImageOpacity->GetValue() / 100.0;
         opacities.m_OutsideGroupOpacity = m_OptOutsideGroupOpacity->GetValue() / 100.0;
+
+        // What the panel showed was the profile's look where a new project opens in it; edited, the user's values
+        // are the ones a new project opens with. Left alone, the profile's look stays the profile's.
+        const BOARD_OPACITY_DEFAULTS shown = cfg->GetNewProjectOpacities();
+
+        const bool isChanged =
+                opacities.m_TrackOpacity != shown.m_TrackOpacity || opacities.m_ViaOpacity != shown.m_ViaOpacity
+                || opacities.m_PadOpacity != shown.m_PadOpacity || opacities.m_ZoneOpacity != shown.m_ZoneOpacity
+                || opacities.m_ShapeOpacity != shown.m_ShapeOpacity || opacities.m_ImageOpacity != shown.m_ImageOpacity
+                || opacities.m_OutsideGroupOpacity != shown.m_OutsideGroupOpacity;
+
+        if( isChanged )
+        {
+            cfg->m_BoardOpacityDefaults = opacities;
+            cfg->m_BoardOpacityProfileLook = 0;
+        }
     }
 
     return true;
