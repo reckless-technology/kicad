@@ -23,6 +23,7 @@
 #include <footprint.h>
 #include <interaction/pcb_context_menu_altium.h>
 #include <interaction/pcb_menus_altium.h>
+#include <netinfo.h>
 #include <pad.h>
 #include <pcb_track.h>
 #include <tool/action_manager.h>
@@ -175,6 +176,9 @@ BOOST_AUTO_TEST_CASE( TheFormFollowsWhatIsUnderTheCursor )
     ZONE      zone( &board );
     PAD       pad( &footprint );
 
+    NETINFO_ITEM net( &board, wxT( "GND" ), 1 );
+    track.SetNet( &net );
+
     // Free space: routing, Place and the clipboard
     PCB_SELECTION selection;
     menu->Evaluate( selection );
@@ -189,7 +193,14 @@ BOOST_AUTO_TEST_CASE( TheFormFollowsWhatIsUnderTheCursor )
     BOOST_CHECK( !Submenu( *menu, "Polygon Actions" ) );
     BOOST_CHECK( !HasAction( *menu, PCB_ACTIONS::properties ) );
 
-    // A track: the fixed order, with Component and Polygon Actions in their places, and Net and Track Actions
+    // A track with no net has no Net Actions
+    PCB_TRACK     bareTrack( &board );
+    PCB_SELECTION bareTrackSelection;
+    bareTrackSelection.Add( &bareTrack );
+    menu->Evaluate( bareTrackSelection );
+    BOOST_CHECK( !Submenu( *menu, "Net Actions" ) );
+
+    // A track on a net: the fixed order, with Component and Polygon Actions in their places, and Net and Track Actions
     selection.Add( &track );
     menu->Evaluate( selection );
 
@@ -207,6 +218,18 @@ BOOST_AUTO_TEST_CASE( TheFormFollowsWhatIsUnderTheCursor )
     BOOST_CHECK( HasAction( *trackActions, PCB_ACTIONS::breakTrack ) );
     BOOST_CHECK( !Submenu( *menu, "Pad Actions" ) );
     BOOST_CHECK( HasAction( *menu, PCB_ACTIONS::properties ) );
+
+    // A pad with no net, such as an unplated hole, gets no Net Actions; on a real net it does
+    PAD           bare( &footprint );
+    PCB_SELECTION bareSelection;
+    bareSelection.Add( &bare );
+    menu->Evaluate( bareSelection );
+    BOOST_CHECK( !Submenu( *menu, "Net Actions" ) );
+
+    bare.SetNet( &net );
+    menu->Evaluate( bareSelection );
+    BOOST_CHECK( Submenu( *menu, "Net Actions" ) );
+    bare.SetNetCode( 0 );
 
     // A footprint: no net, no track
     PCB_SELECTION footprintSelection;

@@ -21,6 +21,7 @@
 
 #include "pcb_menus_altium.h"
 
+#include <board_connected_item.h>
 #include <pcb_edit_frame.h>
 #include <tool/actions.h>
 #include <tool/selection_conditions.h>
@@ -40,7 +41,6 @@ const std::vector<KICAD_T> footprintTypes = { PCB_FOOTPRINT_T };
 const std::vector<KICAD_T> padTypes = { PCB_PAD_T };
 const std::vector<KICAD_T> trackTypes = { PCB_TRACE_T, PCB_ARC_T, PCB_VIA_T };
 const std::vector<KICAD_T> zoneTypes = { PCB_ZONE_T };
-const std::vector<KICAD_T> netItemTypes = { PCB_TRACE_T, PCB_ARC_T, PCB_VIA_T, PCB_PAD_T };
 const std::vector<KICAD_T> markerTypes = { PCB_MARKER_T };
 const std::vector<KICAD_T> crossProbingTypes = { PCB_FOOTPRINT_T, PCB_PAD_T };
 const std::vector<KICAD_T> graphicTypes = { PCB_SHAPE_T, PCB_TEXT_T, PCB_TEXTBOX_T };
@@ -81,7 +81,21 @@ MENU_DEF PcbAltiumContextMenu( PCB_EDIT_FRAME* aFrame, PCB_SELECTION_TOOL* aSele
     const SELECTION_CONDITION zone = S::HasTypes( zoneTypes );
     const SELECTION_CONDITION onlyZones = S::MoreThan( 0 ) && S::OnlyTypes( zoneTypes );
     const SELECTION_CONDITION onlyTracks = S::MoreThan( 0 ) && S::OnlyTypes( trackTypes );
-    const SELECTION_CONDITION onNet = S::HasTypes( netItemTypes );
+
+    // Only an item on a real net: a pad with no net, such as an unplated mounting hole, has nothing to act on
+    const SELECTION_CONDITION onNet = []( const SELECTION& aSelection )
+    {
+        for( const EDA_ITEM* item : aSelection )
+        {
+            if( const BOARD_CONNECTED_ITEM* connected = dynamic_cast<const BOARD_CONNECTED_ITEM*>( item ) )
+            {
+                if( connected->GetNetCode() > 0 )
+                    return true;
+            }
+        }
+
+        return false;
+    };
     const SELECTION_CONDITION tableCells = S::MoreThan( 0 ) && S::OnlyTypes( { PCB_TABLECELL_T } );
     const SELECTION_CONDITION group = S::Count( 1 ) && S::HasType( PCB_GROUP_T );
     const SELECTION_CONDITION image = S::Count( 1 ) && S::HasType( PCB_REFERENCE_IMAGE_T );
