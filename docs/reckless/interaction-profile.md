@@ -441,8 +441,10 @@ a key two actions share, and runs the action it forwards to. The sequence roots 
 their letter and the root runs when no such command does. `input.right_click_cancels` is switched with the profile
 (`INTERACTION_PROFILE::SetActive()`); the cancel it makes carries `TOOL_EVENT::CANCEL_FROM_RIGHT_CLICK` so a loop can tell it from Esc,
 and only the wire tool does (it restores the wires as they stood at the last click and drops those on the cursor).
-The key list is `common.Control.showToolContextMenu`, which makes `TOOL_MANAGER::DispatchContextMenu()` open the first menu of
-the tools on the stack whatever its trigger. `Tab` left `Next Net Item` (now Edit > Select > Next Net Item, `E S N`; `Shift+Tab` still
+The key list is `common.Control.showToolContextMenu`, which `TOOL_MANAGER::processEvent()` turns into the right-click the tool that is
+running reacts to (tools show their own menus on it, from their loops; the `CMENU_NOW` of the first draft of this note opens nothing
+for them, whose trigger is off once they have shown their menu, and the dispatcher's right-click cancel does not touch it).
+`Tab` left `Next Net Item` (now Edit > Select > Next Net Item, `E S N`; `Shift+Tab` still
 goes to the previous one) and `Skip` (its command's right-click menu). The mouse preset is applied once per
 settings file (`input.altium_mouse_preset_applied`, and `editing.altium_mouse_preset_applied` for the PCB editor's Ctrl+click highlight),
 when a frame starts or the profile is chosen in Preferences, and announced in the info bar.

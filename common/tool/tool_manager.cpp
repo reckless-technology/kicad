@@ -977,11 +977,7 @@ void TOOL_MANAGER::DispatchContextMenu( const TOOL_EVENT& aEvent )
         if( st->contextMenuTrigger == CMENU_OFF )
             continue;
 
-        // The keyboard's way to a right-click: the first tool that has a menu shows it, whatever its trigger. The
-        // loop stops at the first CMENU_BUTTON tool for any other event, so this is decided before that.
-        const bool isMenuRequest = aEvent.IsAction( &ACTIONS::showToolContextMenu );
-
-        if( st->contextMenuTrigger == CMENU_BUTTON && !aEvent.IsClick( BUT_RIGHT ) && !isMenuRequest )
+        if( st->contextMenuTrigger == CMENU_BUTTON && !aEvent.IsClick( BUT_RIGHT ) )
             break;
 
         if( st->cofunc )
@@ -1231,6 +1227,17 @@ void TOOL_MANAGER::applyViewControls( const TOOL_STATE* aState )
 bool TOOL_MANAGER::processEvent( const TOOL_EVENT& aEvent )
 {
     wxLogTrace( kicadTraceToolStack, wxS( "TOOL_MANAGER::processEvent - %s" ), aEvent.Format() );
+
+    // The key list: the keyboard's way to a right-click, which is what opens the menu of the tool that is running.
+    // Tools show their own menus on that click, so it is delivered as one rather than opening a menu from here.
+    if( aEvent.IsAction( &ACTIONS::showToolContextMenu ) )
+    {
+        TOOL_EVENT rightClick( TC_MOUSE, TA_MOUSE_CLICK, BUT_RIGHT );
+
+        rightClick.SetMousePosition( m_viewControls ? m_viewControls->GetMousePosition() : VECTOR2D() );
+        return processEvent( rightClick );
+    }
+
 
     // Capture the cursor position from the keyboard event so that hotkey-triggered actions use
     // the position at keypress time rather than polling a potentially stale position later in the
