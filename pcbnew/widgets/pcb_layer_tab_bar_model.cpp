@@ -21,6 +21,8 @@
 
 #include <algorithm>
 
+#include <lseq.h>
+
 
 std::vector<PCB_LAYER_ID> LayerTabOrder( const LSET& aVisible, const LSET& aEnabled )
 {
