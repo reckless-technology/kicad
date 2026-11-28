@@ -246,9 +246,9 @@ BOOST_AUTO_TEST_CASE( AKeyTheProfileTakesDropsOutOfTheCompiledDefaults )
 {
     PROFILE_TEST_ACTIONS actions;
 
-    // Q was CustomTrackViaSize's; the profile binds it to toggleUnits, so CustomTrackViaSize has none
+    // Q was CustomTrackViaSize's; the profile binds it to toggleUnits and gives CustomTrackViaSize Tab (step 4)
     BOOST_CHECK( resolve( actions.customTrackViaSize, INTERACTION_PROFILE_ID::STOCK ) == KEYS( 'Q', 0 ) );
-    BOOST_CHECK( resolve( actions.customTrackViaSize, INTERACTION_PROFILE_ID::ALTIUM ) == KEYS( 0, 0 ) );
+    BOOST_CHECK( resolve( actions.customTrackViaSize, INTERACTION_PROFILE_ID::ALTIUM ) == KEYS( WXK_TAB, 0 ) );
 
     // Shift+S likewise
     BOOST_CHECK( resolve( actions.magneticSnapToggle, INTERACTION_PROFILE_ID::ALTIUM ) == KEYS( 0, 0 ) );
@@ -461,7 +461,7 @@ BOOST_AUTO_TEST_CASE( ResetGivesTheProfilesDefaults )
     store.ResetAllHotkeysToDefault( INTERACTION_PROFILE_ID::ALTIUM );
     BOOST_CHECK( store.GetProfile() == INTERACTION_PROFILE_ID::ALTIUM );
     BOOST_CHECK( keysOf( actions.toggleUnits ) == KEYS( 'Q', 0 ) );
-    BOOST_CHECK( keysOf( actions.customTrackViaSize ) == KEYS( 0, 0 ) );
+    BOOST_CHECK( keysOf( actions.customTrackViaSize ) == KEYS( WXK_TAB, 0 ) );
     BOOST_CHECK( keysOf( actions.untouched ) == KEYS( 'K', 'B' ) );
 
     // The no-argument reset is the store's profile's
@@ -670,6 +670,30 @@ BOOST_AUTO_TEST_CASE( TheKeySequenceHintDelayHasADefaultARangeAndOldFilesLoadThe
     BOOST_CHECK_EQUAL( loadWith( "\"key_sequence_hint_delay_ms\": 0," ), 0 );
     BOOST_CHECK_EQUAL( loadWith( "\"key_sequence_hint_delay_ms\": 750," ), 750 );
 }
+
+BOOST_AUTO_TEST_CASE( TheRightClickSettingFollowsTheBuildsProfile )
+{
+    COMMON_SETTINGS settings;
+
+    settings.Load();
+
+#ifdef KICAD_HOUSE_INTERACTION
+    BOOST_CHECK( settings.m_Input.right_click_cancels );
+#else
+    BOOST_CHECK( !settings.m_Input.right_click_cancels );
+#endif
+
+    // Round trip, and the name the note gives it
+    settings.m_Input.right_click_cancels = !settings.m_Input.right_click_cancels;
+
+    bool expected = settings.m_Input.right_click_cancels;
+
+    settings.Store();
+    settings.m_Input.right_click_cancels = !expected;
+    settings.Load();
+    BOOST_CHECK_EQUAL( settings.m_Input.right_click_cancels, expected );
+}
+
 
 BOOST_AUTO_TEST_CASE( TheMousePresetAppliesOnceAndNeverOverridesLaterEdits )
 {

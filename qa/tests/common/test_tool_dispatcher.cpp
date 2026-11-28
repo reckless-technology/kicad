@@ -20,7 +20,6 @@
 #include <boost/test/unit_test.hpp>
 #include <qa_utils/wx_utils/unit_test_utils.h>
 
-#include <settings/common_settings.h>
 #include <tool/actions.h>
 #include <tool/tool_dispatcher.h>
 #include <tool/tool_manager.h>
@@ -263,29 +262,6 @@ BOOST_AUTO_TEST_CASE( WithTheSettingOffTheRightClickIsTheClickItAlwaysWas )
     BOOST_CHECK( !click.IsCancel() );
     BOOST_CHECK( !click.IsCancelInteractive() );
     BOOST_CHECK( !click.IsCancelFromRightClick() );
-}
-
-BOOST_AUTO_TEST_CASE( TheSettingFollowsTheBuildsProfile )
-{
-    COMMON_SETTINGS settings;
-
-    settings.Load();
-
-#ifdef KICAD_HOUSE_INTERACTION
-    BOOST_CHECK( settings.m_Input.right_click_cancels );
-#else
-    BOOST_CHECK( !settings.m_Input.right_click_cancels );
-#endif
-
-    // Round trip, and the name the note gives it
-    settings.m_Input.right_click_cancels = !settings.m_Input.right_click_cancels;
-
-    bool expected = settings.m_Input.right_click_cancels;
-
-    settings.Store();
-    settings.m_Input.right_click_cancels = !expected;
-    settings.Load();
-    BOOST_CHECK_EQUAL( settings.m_Input.right_click_cancels, expected );
 }
 
 BOOST_AUTO_TEST_SUITE_END()
