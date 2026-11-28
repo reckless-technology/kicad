@@ -575,11 +575,21 @@ BOOST_AUTO_TEST_CASE( InsertZeroesTheDeltaAndSpaceKeepsOnlyItsRoleInACommand )
                                         { WXK_INSERT, 0 }, "eeschema." ),
                        WXK_INSERT );
 
-    // ... and Insert leaves the point editor's Create Corner in the PCB editors, which the table has no row for
-    BOOST_CHECK_EQUAL( PCB_ACTIONS::pointEditorAddCorner.GetHotKey(), WXK_INSERT );
+    // ... and Insert leaves the point editor's Create Corner in the PCB editors, which the table has no row for. Its
+    // stock key is Insert except on macOS, where it is F1, which the profile leaves alone. Both cases are checked on
+    // every platform, since the layer is given the compiled keys.
+#ifdef __WXMAC__
+    const int stockAddCornerKey = WXK_F1;
+#else
+    const int stockAddCornerKey = WXK_INSERT;
+#endif
+    BOOST_CHECK_EQUAL( PCB_ACTIONS::pointEditorAddCorner.GetHotKey(), stockAddCornerKey );
     BOOST_CHECK_EQUAL( keyUnderProfile( INTERACTION_PROFILE_ID::ALTIUM, "pcbnew.PointEditor.addCorner",
                                         { WXK_INSERT, 0 }, "pcbnew." ),
                        0 );
+    BOOST_CHECK_EQUAL(
+            keyUnderProfile( INTERACTION_PROFILE_ID::ALTIUM, "pcbnew.PointEditor.addCorner", { WXK_F1, 0 }, "pcbnew." ),
+            WXK_F1 );
 }
 
 
