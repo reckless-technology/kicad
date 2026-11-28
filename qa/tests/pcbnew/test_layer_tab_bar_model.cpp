@@ -69,8 +69,9 @@ BOOST_AUTO_TEST_CASE( UserLayersCloseTheList )
 
     const std::vector<PCB_LAYER_ID> order = LayerTabOrder( enabled, enabled );
 
-    // Every enabled layer has exactly one tab, and the user layers come after Margin
-    BOOST_CHECK_EQUAL( order.size(), enabled.count() );
+    // Every enabled layer but Rescue has exactly one tab, and the user layers come after Margin
+    BOOST_CHECK_EQUAL( order.size() + 1, enabled.count() ); // all but the Rescue layer
+    BOOST_CHECK( std::find( order.begin(), order.end(), Rescue ) == order.end() );
 
     const auto margin = std::find( order.begin(), order.end(), Margin );
     BOOST_REQUIRE( margin != order.end() );

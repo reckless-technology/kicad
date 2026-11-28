@@ -49,7 +49,8 @@ std::vector<PCB_LAYER_ID> LayerTabOrder( const LSET& aVisible, const LSET& aEnab
     // Everything else is a user layer; layer order keeps them in the order the Appearance panel lists them
     for( PCB_LAYER_ID layer : shown.Seq() )
     {
-        if( std::find( order.begin(), order.end(), layer ) == order.end() )
+        // Rescue holds items of a rescued file and has no row in the Appearance panel either
+        if( layer != Rescue && std::find( order.begin(), order.end(), layer ) == order.end() )
             order.push_back( layer );
     }
 
