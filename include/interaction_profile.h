@@ -122,6 +122,47 @@ public:
      */
     static bool DoesRightClickCancel( int aSetting, INTERACTION_PROFILE_ID aProfile );
 
+    /**
+     * Whether a mouse drag in the schematic keeps the attached wires (the Drag command) rather than moving the items
+     * alone (the Move command). \a aDragIsMove is the `input.drag_is_move` setting, which makes a plain drag a move.
+     * Under the Altium-style profile holding Ctrl gives the other of the two; the stock profile ignores Ctrl here.
+     */
+    static bool ShouldDragWithWires( INTERACTION_PROFILE_ID aProfile, bool aDragIsMove, bool aIsCtrlHeld );
+
+    /**
+     * Whether a drag that starts on empty space or on an unselected item, with these modifiers, draws a selection
+     * box that adds to the selection instead of replacing it. Stock KiCad adds with Ctrl or Shift; the Altium-style
+     * profile gives Ctrl to Ctrl+drag (the other of move and drag) and adds with Shift alone. Alt never adds.
+     */
+    static bool IsBoxSelectionAdditive( INTERACTION_PROFILE_ID aProfile, bool aIsCtrlHeld, bool aIsShiftHeld,
+                                        bool aIsAltHeld );
+
+    /**
+     * Whether Ctrl+drag, with Shift not held, is the profile's inverted move or drag rather than a selection
+     * modifier. Only the Altium-style profile; stock KiCad treats Ctrl as an exclusive-or selection modifier.
+     */
+    static bool IsCtrlDragInversion( INTERACTION_PROFILE_ID aProfile, bool aIsCtrlHeld, bool aIsShiftHeld );
+
+    /**
+     * Whether the symbol chooser's "Place repeated copies" starts checked: under the Altium-style profile it does, so
+     * that a part stays on the cursor for the next click.
+     */
+    static bool IsRepeatedPlacementDefault( INTERACTION_PROFILE_ID aProfile );
+
+    /**
+     * Whether a net label, global label or hierarchical label is attached without its dialog, as a copy of the
+     * previous one of its kind with the text incremented: the Altium-style profile does that once there is a previous
+     * label. The first label of a session, and every label under the stock profile, opens the dialog.
+     */
+    static bool IsLabelRepeated( INTERACTION_PROFILE_ID aProfile, bool aHasPreviousLabel );
+
+    /**
+     * The text of the next repeated label: \a aPreviousText with its trailing number moved by \a aIncrement
+     * (`drawing.repeat_label_increment`), by the same rule as the Repeat Last Item command. Text with no number to
+     * increment is repeated unchanged.
+     */
+    static wxString NextRepeatedLabelText( const wxString& aPreviousText, int aIncrement );
+
     /// The profile's name as shown in Preferences.
     static wxString DisplayName( INTERACTION_PROFILE_ID aProfile );
 

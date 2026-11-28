@@ -247,6 +247,9 @@ public:
 protected:
     SELECTION& selection() override { return m_selection; }
 
+    /// Ctrl+drag is the other of move and drag in the schematic editor, not in the symbol editor, which only moves.
+    bool ctrlDragMayInvertDragAction() override { return !m_isSymbolEditor; }
+
 private:
     OPT_TOOL_EVENT autostartEvent( TOOL_EVENT* aEvent, EE_GRID_HELPER& aGrid, SCH_ITEM* aItem );
 

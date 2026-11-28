@@ -66,6 +66,7 @@
 #include <scoped_set_reset.h>
 #include <libraries/legacy_symbol_library.h>
 #include <eeschema_settings.h>
+#include <interaction_profile.h>
 #include <dialogs/dialog_label_properties.h>
 #include <dialogs/dialog_text_properties.h>
 #include <dialogs/dialog_wire_bus_properties.h>
@@ -1719,6 +1720,23 @@ wxString SCH_DRAWING_TOOLS::findWireLabelDriverName( SCH_LINE* aWire )
 }
 
 
+void SCH_DRAWING_TOOLS::rememberPlacedLabel( const SCH_ITEM* aItem )
+{
+    const SCH_LABEL_BASE* label = dynamic_cast<const SCH_LABEL_BASE*>( aItem );
+
+    if( !label )
+        return;
+
+    switch( label->Type() )
+    {
+    case SCH_LABEL_T: m_lastPlacedLabelText[LAYER_LOCLABEL] = label->GetText(); break;
+    case SCH_GLOBAL_LABEL_T: m_lastPlacedLabelText[LAYER_GLOBLABEL] = label->GetText(); break;
+    case SCH_HIER_LABEL_T: m_lastPlacedLabelText[LAYER_HIERLABEL] = label->GetText(); break;
+    default: break; // directive labels carry fields, not a name; sheet pins follow their labels
+    }
+}
+
+
 bool SCH_DRAWING_TOOLS::createNewLabel( const VECTOR2I& aPosition, int aType,
                                         std::list<std::unique_ptr<SCH_LABEL_BASE>>& aLabelList )
 {
@@ -1786,10 +1804,19 @@ bool SCH_DRAWING_TOOLS::createNewLabel( const VECTOR2I& aPosition, int aType,
     labelItem->SetSpinStyle( m_lastTextOrientation );
     labelItem->SetFlags( IS_NEW | IS_MOVING );
 
+    const auto previousText = m_lastPlacedLabelText.find( aType );
+    const bool hasPreviousLabel = previousText != m_lastPlacedLabelText.end();
+
     if( !netName.IsEmpty() )
     {
         // Auto-create from attached wire
         labelItem->SetText( netName );
+    }
+    else if( INTERACTION_PROFILE::IsLabelRepeated( INTERACTION_PROFILE::Active(), hasPreviousLabel ) )
+    {
+        // Altium-style: the previous label again, its number moved on, with no dialog. Tab edits it before placing.
+        labelItem->SetText( INTERACTION_PROFILE::NextRepeatedLabelText(
+                previousText->second, m_frame->eeconfig()->m_Drawing.repeat_label_increment ) );
     }
     else
     {
@@ -2220,6 +2247,8 @@ int SCH_DRAWING_TOOLS::TwoClickPlace( const TOOL_EVENT& aEvent )
                 item->AutoplaceFields( m_frame->GetScreen(), AUTOPLACE_AUTO );
 
                 commit.Push( description );
+
+                rememberPlacedLabel( item );
 
                 m_view->ClearPreview();
 

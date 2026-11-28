@@ -29,6 +29,7 @@
 #include <wx/utils.h>
 #include <trigo.h>
 #include <gal/graphics_abstraction_layer.h>
+#include <interaction_profile.h>
 #include <tool/tool_manager.h>
 #include <tools/ee_grid_helper.h>
 #include <tools/sch_drag_net_collision.h>
@@ -759,6 +760,11 @@ bool SCH_MOVE_TOOL::doMoveSelection( const TOOL_EVENT& aEvent, SCH_COMMIT* aComm
             break;
         }
     }
+
+    // Under the Altium-style profile a Ctrl+drag starts the move or the drag, so Ctrl is still held when the tool
+    // starts and, as for a paste, would switch grid snapping off until the key is let go.
+    if( INTERACTION_PROFILE::Active() == INTERACTION_PROFILE_ID::ALTIUM && wxGetKeyState( WXK_CONTROL ) )
+        pasteHoldingCtrl = true;
 
     Activate();
 
@@ -3052,6 +3058,63 @@ int SCH_MOVE_TOOL::AlignToGrid( const TOOL_EVENT& aEvent [[maybe_unused]] )
 }
 
 
+int SCH_MOVE_TOOL::Nudge( const TOOL_EVENT& aEvent )
+{
+    // A running move already reads the arrow keys itself
+    if( m_moveInProgress || m_inMoveTool )
+        return 0;
+
+    // Only what is selected is nudged: an unselected item under the pointer is not a target
+    if( m_selectionTool->GetSelection().Empty() )
+        return 0;
+
+    REENTRANCY_GUARD guard( &m_inMoveTool );
+
+    const bool isSymbolEditor = !m_frame->eeconfig();
+    const bool isDragWithWires = !isSymbolEditor && !m_frame->eeconfig()->m_Input.drag_is_move;
+
+    m_mode = isDragWithWires ? DRAG : MOVE;
+    m_anchorPos.reset();
+
+    bool           unselect = false;
+    SCH_SELECTION& selection = prepareSelection( unselect );
+
+    if( selection.Empty() )
+        return 0;
+
+    SCH_COMMIT                     commit( m_toolMgr );
+    std::vector<DANGLING_END_ITEM> internalPoints;
+    GRID_HELPER_GRIDS              snapLayer = GRID_CURRENT;
+    EE_GRID_HELPER                 grid( m_toolMgr );
+
+    prepareMoveOperation( selection, &commit, internalPoints, snapLayer );
+
+    const VECTOR2D gridSize = grid.GetGridSize( snapLayer );
+    const VECTOR2D offset =
+            ACTIONS::NudgeOffset( aEvent.Parameter<ACTIONS::CURSOR_EVENT_TYPE>(), gridSize, getView()->IsMirroredX() );
+    const VECTOR2I delta( KiROUND( offset.x ), KiROUND( offset.y ) );
+
+    m_moveOffset = VECTOR2I( 0, 0 );
+
+    int xBendCount = 1;
+    int yBendCount = 1;
+
+    performItemMove( selection, delta, &commit, xBendCount, yBendCount, grid );
+
+    m_toolMgr->PostEvent( EVENTS::SelectedItemsMoved );
+
+    finalizeMoveOperation( selection, &commit, false, internalPoints );
+
+    m_dragAdditions.clear();
+    m_lineConnectionCache.clear();
+    m_hiddenJunctions.clear();
+    m_moveInProgress = false;
+
+    commit.Push( _( "Nudge" ) );
+    return 0;
+}
+
+
 void SCH_MOVE_TOOL::clearNewDragLines()
 {
     // Remove new bend lines added during the drag
@@ -3072,4 +3135,13 @@ void SCH_MOVE_TOOL::setTransitions()
     Go( &SCH_MOVE_TOOL::Main,               SCH_ACTIONS::breakWire.MakeEvent() );
     Go( &SCH_MOVE_TOOL::Main,               SCH_ACTIONS::slice.MakeEvent() );
     Go( &SCH_MOVE_TOOL::AlignToGrid,        SCH_ACTIONS::alignToGrid.MakeEvent() );
+
+    Go( &SCH_MOVE_TOOL::Nudge, ACTIONS::nudgeUp.MakeEvent() );
+    Go( &SCH_MOVE_TOOL::Nudge, ACTIONS::nudgeUpFast.MakeEvent() );
+    Go( &SCH_MOVE_TOOL::Nudge, ACTIONS::nudgeDown.MakeEvent() );
+    Go( &SCH_MOVE_TOOL::Nudge, ACTIONS::nudgeDownFast.MakeEvent() );
+    Go( &SCH_MOVE_TOOL::Nudge, ACTIONS::nudgeLeft.MakeEvent() );
+    Go( &SCH_MOVE_TOOL::Nudge, ACTIONS::nudgeLeftFast.MakeEvent() );
+    Go( &SCH_MOVE_TOOL::Nudge, ACTIONS::nudgeRight.MakeEvent() );
+    Go( &SCH_MOVE_TOOL::Nudge, ACTIONS::nudgeRightFast.MakeEvent() );
 }

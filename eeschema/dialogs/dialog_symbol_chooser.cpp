@@ -20,6 +20,7 @@
 #include <dialog_symbol_chooser.h>
 #include <widgets/panel_symbol_chooser.h>
 #include <eeschema_settings.h>
+#include <interaction_profile.h>
 #include <kiface_base.h>
 #include <sch_base_frame.h>
 #include <core/kicad_algo.h>
@@ -73,6 +74,7 @@ DIALOG_SYMBOL_CHOOSER::DIALOG_SYMBOL_CHOOSER( SCH_BASE_FRAME* aParent, const LIB
 
     m_keepSymbol = new wxCheckBox( this, wxID_ANY, _( "Place repeated copies" ) );
     m_keepSymbol->SetToolTip( _( "Keep the symbol selected for subsequent clicks." ) );
+    m_keepSymbol->SetValue( INTERACTION_PROFILE::IsRepeatedPlacementDefault( INTERACTION_PROFILE::Active() ) );
 
     m_useUnits = new wxCheckBox( this, wxID_ANY, _( "Place all units" ) );
     m_useUnits->SetValue( true );

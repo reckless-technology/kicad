@@ -77,7 +77,9 @@ void SELECTION_TOOL::setModifiersState( bool aShiftState, bool aCtrlState, bool 
 
     // Drag is more forgiving and allows either Ctrl+Drag or Shift+Drag to add to the selection
     // Note, however that we cannot provide disambiguation at the same time as the box selection
-    m_drag_additive      = ( aCtrlState || aShiftState ) && !aAltState;
+    m_drag_additive = INTERACTION_PROFILE::IsBoxSelectionAdditive(
+            ctrlDragMayInvertDragAction() ? INTERACTION_PROFILE::Active() : INTERACTION_PROFILE_ID::STOCK, aCtrlState,
+            aShiftState, aAltState );
     m_drag_subtractive   = aCtrlState && aShiftState && !aAltState;
 
     // While the ALT key has some conflicts under MSW (and some flavors of Linux WMs), it remains

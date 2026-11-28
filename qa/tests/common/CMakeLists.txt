@@ -77,6 +77,7 @@ set( QA_COMMON_SRCS
     test_interaction_profile.cpp
     test_altium_views_settings.cpp
     test_interaction_profile_actions.cpp
+    test_schematic_behaviors.cpp
     test_key_sequence.cpp
     test_menu_def.cpp
     test_increment.cpp

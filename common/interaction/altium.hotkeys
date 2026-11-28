@@ -16,7 +16,9 @@
 #   - The in-command keys (Space, Shift+Space, L, X, Y and Tab) are bound below to context aliases, which act only while
 #     the move or placement loop they belong to runs; with no command running, those keys mean what they mean idle.
 #   - Routing keys, in-command and sticky: step 5.
-#   - Anything that needs a new action and is not built yet: nudging, in-place editing, the 3D keys.
+#   - Anything that needs a new action and is not built yet: in-place editing, the 3D keys.
+#   - Ctrl+Space, the flip of the corner of the wires being dragged: the drag builds its corners as the pointer moves and
+#     keeps no posture to flip (docs/reckless/interaction-profile.md, 5.9, as built).
 #
 # Roots of the key sequences: the letter is typed first, then the letters of the entries it leads to (6.1 and 6.3).
 common.Sequence.place	P
@@ -54,6 +56,16 @@ common.Control.cursorDownFast	Shift+Down
 common.Control.cursorLeftFast	Shift+Left
 common.Control.cursorRightFast	Shift+Right
 common.Interactive.duplicate	Ctrl+R
+# Nudge (5.9, step 9): the selection one grid step, Shift+Ctrl ten. They take Ctrl+arrows from the cursor-fast actions
+# (stock Ctrl+arrows), which this table has on Shift+arrows. Schematic, symbol, PCB and footprint editors act on them.
+common.Interactive.nudgeUp	Ctrl+Up
+common.Interactive.nudgeDown	Ctrl+Down
+common.Interactive.nudgeLeft	Ctrl+Left
+common.Interactive.nudgeRight	Ctrl+Right
+common.Interactive.nudgeUpFast	Ctrl+Shift+Up
+common.Interactive.nudgeDownFast	Ctrl+Shift+Down
+common.Interactive.nudgeLeftFast	Ctrl+Shift+Left
+common.Interactive.nudgeRightFast	Ctrl+Shift+Right
 common.Interactive.measureTool	Ctrl+M
 common.Interactive.selectAll	Ctrl+A
 common.Control.showProperties	F11

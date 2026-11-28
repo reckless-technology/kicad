@@ -18,6 +18,7 @@
  */
 
 #include <interaction_profile.h>
+#include <increment.h>
 
 #include <hotkeys_basic.h>
 #include <paths.h>
@@ -62,6 +63,55 @@ bool INTERACTION_PROFILE::DoesRightClickCancel( int aSetting, INTERACTION_PROFIL
         return false;
 
     return aSetting > 0 || aProfile == INTERACTION_PROFILE_ID::ALTIUM;
+}
+
+
+bool INTERACTION_PROFILE::ShouldDragWithWires( INTERACTION_PROFILE_ID aProfile, bool aDragIsMove, bool aIsCtrlHeld )
+{
+    const bool isInverted = aProfile == INTERACTION_PROFILE_ID::ALTIUM && aIsCtrlHeld;
+
+    return aDragIsMove == isInverted;
+}
+
+
+bool INTERACTION_PROFILE::IsBoxSelectionAdditive( INTERACTION_PROFILE_ID aProfile, bool aIsCtrlHeld, bool aIsShiftHeld,
+                                                  bool aIsAltHeld )
+{
+    if( aIsAltHeld )
+        return false;
+
+    if( aProfile == INTERACTION_PROFILE_ID::ALTIUM )
+        return aIsShiftHeld;
+
+    return aIsCtrlHeld || aIsShiftHeld;
+}
+
+
+bool INTERACTION_PROFILE::IsCtrlDragInversion( INTERACTION_PROFILE_ID aProfile, bool aIsCtrlHeld, bool aIsShiftHeld )
+{
+    return aProfile == INTERACTION_PROFILE_ID::ALTIUM && aIsCtrlHeld && !aIsShiftHeld;
+}
+
+
+bool INTERACTION_PROFILE::IsRepeatedPlacementDefault( INTERACTION_PROFILE_ID aProfile )
+{
+    return aProfile == INTERACTION_PROFILE_ID::ALTIUM;
+}
+
+
+bool INTERACTION_PROFILE::IsLabelRepeated( INTERACTION_PROFILE_ID aProfile, bool aHasPreviousLabel )
+{
+    return aProfile == INTERACTION_PROFILE_ID::ALTIUM && aHasPreviousLabel;
+}
+
+
+wxString INTERACTION_PROFILE::NextRepeatedLabelText( const wxString& aPreviousText, int aIncrement )
+{
+    wxString text = aPreviousText;
+
+    IncrementString( text, aIncrement );
+
+    return text;
 }
 
 

@@ -184,6 +184,9 @@ public:
      */
     int MoveExact( const TOOL_EVENT& aEvent );
 
+    /// Move the selection by one grid step, or ten for the Fast actions, without starting a move.
+    int Nudge( const TOOL_EVENT& aEvent );
+
     /**
      * Increment some aspect of the selected items.q
      */

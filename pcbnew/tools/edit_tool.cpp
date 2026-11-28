@@ -3692,6 +3692,62 @@ int EDIT_TOOL::MoveExact( const TOOL_EVENT& aEvent [[maybe_unused]] )
 }
 
 
+int EDIT_TOOL::Nudge( const TOOL_EVENT& aEvent )
+{
+    if( isRouterActive() || m_dragging )
+        return 0;
+
+    // Only what is selected is nudged: an unselected item under the pointer is not a target
+    if( m_selectionTool->GetSelection().Empty() )
+        return 0;
+
+    const PCB_SELECTION& selection = m_selectionTool->RequestSelection(
+            []( const VECTOR2I& aPt [[maybe_unused]], GENERAL_COLLECTOR& aCollector, PCB_SELECTION_TOOL* sTool )
+            {
+                sTool->FilterCollectorForMarkers( aCollector );
+                sTool->FilterCollectorForHierarchy( aCollector, true );
+                sTool->FilterCollectorForFreePads( aCollector, false );
+                sTool->FilterCollectorForTableCells( aCollector );
+                sTool->FilterCollectorForLockedItems( aCollector );
+            } );
+
+    m_selectionTool->ReportFilteredLockedItems();
+
+    if( selection.Empty() )
+        return 0;
+
+    std::unique_ptr<GRID_HELPER> grid = frame()->MakeGridHelper();
+    const VECTOR2D               gridSize = grid->GetGridSize( grid->GetSelectionGrid( selection ) );
+    const VECTOR2D               offset =
+            ACTIONS::NudgeOffset( aEvent.Parameter<ACTIONS::CURSOR_EVENT_TYPE>(), gridSize, getView()->IsMirroredX() );
+    const VECTOR2I translation( KiROUND( offset.x ), KiROUND( offset.y ) );
+
+    BOARD_COMMIT commit( this );
+
+    for( EDA_ITEM* item : selection )
+    {
+        if( !item->IsBOARD_ITEM() )
+            continue;
+
+        BOARD_ITEM* boardItem = static_cast<BOARD_ITEM*>( item );
+
+        commit.Modify( boardItem, nullptr, RECURSE_MODE::RECURSE );
+
+        // A child moves with its parent, which is selected too
+        if( !boardItem->GetParent() || !boardItem->GetParent()->IsSelected() )
+            boardItem->Move( translation );
+
+        getView()->Update( boardItem );
+    }
+
+    commit.Push( _( "Nudge" ) );
+    reSolveConstraintsAfterEdit( selection );
+
+    m_toolMgr->ProcessEvent( EVENTS::SelectedItemsModified );
+    return 0;
+}
+
+
 bool EDIT_TOOL::CanDuplicateSelection( const SELECTION& aSelection )
 {
     // Some generators cannot be duplicated on their own, and neither can several of them
@@ -4380,6 +4436,14 @@ void EDIT_TOOL::setTransitions()
     Go( &EDIT_TOOL::Remove,                   PCB_ACTIONS::deleteFull.MakeEvent() );
     Go( &EDIT_TOOL::Properties,               PCB_ACTIONS::properties.MakeEvent() );
     Go( &EDIT_TOOL::MoveExact,                PCB_ACTIONS::moveExact.MakeEvent() );
+    Go( &EDIT_TOOL::Nudge,                    ACTIONS::nudgeUp.MakeEvent() );
+    Go( &EDIT_TOOL::Nudge,                    ACTIONS::nudgeUpFast.MakeEvent() );
+    Go( &EDIT_TOOL::Nudge,                    ACTIONS::nudgeDown.MakeEvent() );
+    Go( &EDIT_TOOL::Nudge,                    ACTIONS::nudgeDownFast.MakeEvent() );
+    Go( &EDIT_TOOL::Nudge,                    ACTIONS::nudgeLeft.MakeEvent() );
+    Go( &EDIT_TOOL::Nudge,                    ACTIONS::nudgeLeftFast.MakeEvent() );
+    Go( &EDIT_TOOL::Nudge,                    ACTIONS::nudgeRight.MakeEvent() );
+    Go( &EDIT_TOOL::Nudge,                    ACTIONS::nudgeRightFast.MakeEvent() );
     Go( &EDIT_TOOL::Move,                     PCB_ACTIONS::moveWithReference.MakeEvent() );
     Go( &EDIT_TOOL::Duplicate,                ACTIONS::duplicate.MakeEvent() );
     Go( &EDIT_TOOL::Duplicate,                PCB_ACTIONS::duplicateIncrement.MakeEvent() );

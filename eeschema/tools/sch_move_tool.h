@@ -85,6 +85,12 @@ public:
      */
     int AlignToGrid( const TOOL_EVENT& aEvent );
 
+    /**
+     * Move the selection by one grid step (ten for the Fast actions) without starting an interactive move. Connected
+     * wires follow or not by the same rule as a mouse drag: they follow unless `drag_is_move` is on.
+     */
+    int Nudge( const TOOL_EVENT& aEvent );
+
 private:
     bool doMoveSelection( const TOOL_EVENT& aEvent, SCH_COMMIT* aCommit );
 

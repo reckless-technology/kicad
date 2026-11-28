@@ -22,6 +22,7 @@
 #define SCH_DRAWING_TOOLS_H
 
 #include "sch_sheet_path.h"
+#include <map>
 #include <tools/sch_tool_base.h>
 #include <sch_base_frame.h>
 #include <sch_label.h>
@@ -78,6 +79,9 @@ private:
     bool createNewLabel( const VECTOR2I& aPosition, int aType,
                         std::list<std::unique_ptr<SCH_LABEL_BASE>>& aLabelList );
 
+    /// Remember the text of a label that was just placed, for the next label of its kind (a profile may repeat it).
+    void rememberPlacedLabel( const SCH_ITEM* aItem );
+
     SCH_SHEET_PIN* createNewSheetPin( SCH_SHEET* aSheet, const VECTOR2I& aPosition );
 
     SCH_SHEET_PIN* createNewSheetPinFromLabel( SCH_SHEET* aSheet, const VECTOR2I& aPosition,
@@ -107,6 +111,10 @@ private:
     GR_TEXT_H_ALIGN_T          m_lastTextHJustify;
     GR_TEXT_V_ALIGN_T          m_lastTextVJustify;
     wxString                   m_mruPath;
+
+    /// The text of the last label placed in this session, by label layer (LAYER_LOCLABEL, LAYER_GLOBLABEL or
+    /// LAYER_HIERLABEL): what the Altium-style profile repeats, incremented, for the next one.
+    std::map<int, wxString>    m_lastPlacedLabelText;
     bool                       m_lastAutoLabelRotateOnPlacement;
     MODE                       m_mode;
 

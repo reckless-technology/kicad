@@ -82,6 +82,17 @@ public:
     static TOOL_ACTION selectAll;
     static TOOL_ACTION unselectAll;
     static TOOL_ACTION duplicate;
+
+    /// Move the selection one grid step (or ten for the Fast ones) without starting a move. No stock key: the
+    /// Altium-style interaction profile binds them to Ctrl+arrows and Shift+Ctrl+arrows.
+    static TOOL_ACTION nudgeUp;
+    static TOOL_ACTION nudgeUpFast;
+    static TOOL_ACTION nudgeDown;
+    static TOOL_ACTION nudgeDownFast;
+    static TOOL_ACTION nudgeLeft;
+    static TOOL_ACTION nudgeLeftFast;
+    static TOOL_ACTION nudgeRight;
+    static TOOL_ACTION nudgeRightFast;
     static TOOL_ACTION doDelete;        // sadly 'delete' is a reserved word
     static TOOL_ACTION deleteTool;
     static TOOL_ACTION leftJustify;
@@ -336,6 +347,13 @@ public:
         CURSOR_DBL_CLICK,
         CURSOR_RIGHT_CLICK
     };
+
+    /**
+     * The offset a nudge of \a aDirection moves the selection by: one grid step, ten for the Fast types, on the axis of
+     * the direction and zero on the other. \a aIsMirroredX swaps left and right, as on the cursor keys. Any type that
+     * is not an arrow gives a zero offset.
+     */
+    static VECTOR2D NudgeOffset( CURSOR_EVENT_TYPE aDirection, const VECTOR2D& aGridSize, bool aIsMirroredX );
 
     /// Remove event modifier flags
     enum class REMOVE_FLAGS

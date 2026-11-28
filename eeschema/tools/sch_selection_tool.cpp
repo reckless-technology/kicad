@@ -1116,6 +1116,13 @@ int SCH_SELECTION_TOOL::Main( const TOOL_EVENT& aEvent [[maybe_unused]] )
                 continue;
             }
 
+            // Under the Altium-style profile, Ctrl+drag is the other of move and drag, not an
+            // exclusive-or selection modifier. Ctrl+Shift is still the subtractive box selection.
+            const bool isCtrlDragInversion =
+                    !m_isSymbolEditor
+                    && INTERACTION_PROFILE::IsCtrlDragInversion( INTERACTION_PROFILE::Active(),
+                                                                 evt->Modifier( MD_CTRL ), evt->Modifier( MD_SHIFT ) );
+
             // drag with LMB? Select multiple objects (or at least draw a selection box) or
             // drag them
             if( SCH_EDIT_FRAME* schframe = dynamic_cast<SCH_EDIT_FRAME*>( m_frame ) )
@@ -1139,7 +1146,7 @@ int SCH_SELECTION_TOOL::Main( const TOOL_EVENT& aEvent [[maybe_unused]] )
             {
                 selectTableCells( static_cast<SCH_TABLE*>( collector[0]->GetParent() ) );
             }
-            else if( hasModifier() || drag_action == MOUSE_DRAG_ACTION::SELECT )
+            else if( ( hasModifier() && !isCtrlDragInversion ) || drag_action == MOUSE_DRAG_ACTION::SELECT )
             {
                 if( m_selectionMode == SELECTION_MODE::INSIDE_LASSO
                         || m_selectionMode == SELECTION_MODE::TOUCHING_LASSO )
@@ -1212,10 +1219,17 @@ int SCH_SELECTION_TOOL::Main( const TOOL_EVENT& aEvent [[maybe_unused]] )
                 {
                     // drag_is_move option exists only in schematic editor, not in symbol editor
                     // (m_frame->eeconfig() returns nullptr in Symbol Editor)
-                    if( m_isSymbolEditor || m_frame->eeconfig()->m_Input.drag_is_move )
+                    if( m_isSymbolEditor
+                        || !INTERACTION_PROFILE::ShouldDragWithWires( INTERACTION_PROFILE::Active(),
+                                                                      m_frame->eeconfig()->m_Input.drag_is_move,
+                                                                      evt->Modifier( MD_CTRL ) ) )
+                    {
                         m_toolMgr->RunAction( SCH_ACTIONS::move );
+                    }
                     else
+                    {
                         m_toolMgr->RunAction( SCH_ACTIONS::drag );
+                    }
                 }
                 else
                 {

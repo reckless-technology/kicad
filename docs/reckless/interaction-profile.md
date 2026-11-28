@@ -667,6 +667,45 @@ All by rebinding unless marked new. Target keys are in section 6.4.
 - **Selection.** Unchanged, since it already matches: click, `Shift`+click, drag left-to-right for inside,
   right-to-left for touching. `S` and `X` sequences map to the existing select actions.
 
+**As built (step 9).** The decisions are small functions of `INTERACTION_PROFILE` (`ShouldDragWithWires`,
+`IsCtrlDragInversion`, `IsBoxSelectionAdditive`, `IsRepeatedPlacementDefault`, `IsLabelRepeated`,
+`NextRepeatedLabelText`) and `ACTIONS::NudgeOffset`, tested in `qa/tests/common/test_schematic_behaviors.cpp`; the
+stock profile gives the same answers as before for all of them.
+
+- *Ctrl+drag.* In `SCH_SELECTION_TOOL::Main` a drag with Ctrl and no Shift is no longer routed to a box selection by
+  the exclusive-or modifier; the drag action is `ShouldDragWithWires( profile, drag_is_move, Ctrl )`, so Ctrl gives
+  the other of Move and Drag in both settings. Ctrl+Shift stays the subtractive box. A box no longer adds with Ctrl
+  alone in the schematic editor (`SELECTION_TOOL::ctrlDragMayInvertDragAction`, so the PCB editor keeps its Ctrl); the
+  symbol editor only ever moves and is unchanged. A move that Ctrl started ignores the held Ctrl for grid snapping until
+  the key is let go (as for a paste), since Ctrl otherwise switches snapping off.
+- *Space and Ctrl+Space during a drag.* `Space` rotates: the drag runs in the move tool, whose step 4 aliases
+  (`eeschema.InteractiveMove.rotateCCWWhileMoving`) already apply. **`Ctrl+Space` is not built.** The wires of a drag
+  have no posture to flip: the move tool builds their corners as the pointer moves (`performItemMove` splits each
+  step into an X move and a Y move and `orthoLineDrag` adds the bends), and the wiring tool's `switchPosture` works on
+  a stored segment pair in that tool's loop. Flipping the corner of a dragged wire means changing that order of
+  moves, which has to be redesigned with the drag's bend merging and is left open.
+- *Sticky placement.* The symbol chooser's "Place repeated copies" is a checkbox of the dialog and is not stored, so
+  there is no setting; it starts checked under the profile (`IsRepeatedPlacementDefault`) and the user can still clear
+  it for that placement. The design block pane's own checkbox is unchanged. A wire tool started from the menu or a key
+  already stays active after a wire ends (`quitOnDraw` is set only for wires started by clicking a wire end), so
+  nothing changed there.
+- *Net labels.* `createNewLabel` remembers the text of the last local, global and hierarchical label placed in the
+  session, each kind on its own. Under the profile the next label of that kind skips the dialog and gets the text
+  incremented by `drawing.repeat_label_increment`; text with no trailing number is repeated unchanged. `Tab` while the
+  label is on the cursor opens its dialog (the step 4 alias for properties). A wire that already has a net name still
+  gives the label that name, ahead of the repeat. The first label of a session opens the dialog. The label is created
+  by the first click, as in stock, and placed by the second, which is one click more than Altium's label that is on
+  the cursor at once: creating it earlier would skip the wire's name. Directive labels (net class flags) carry fields,
+  not a name, and always open the dialog; a sheet pin follows its hierarchical label as before.
+- *Nudge.* Eight new actions, `common.Interactive.nudge{Up,Down,Left,Right}` and the same with `Fast`, have no stock
+  key; the table binds them to `Ctrl`+arrows and `Ctrl+Shift`+arrows, which the cursor-fast actions held in stock
+  (this table has those on `Shift`+arrows). They are common actions because 6.2 and 6.4 both give them, handled by
+  `SCH_MOVE_TOOL::Nudge` (the schematic and symbol editors) and `EDIT_TOOL::Nudge` (the PCB and footprint editors). A
+  step is one grid step of the selection's grid; ten for Fast. In the schematic wires follow by the same rule as a
+  mouse drag (they follow unless `drag_is_move` is on) and the nudge is one undo step, "Nudge". On the PCB it
+  translates the selection like Move Exactly, without rubber-banding. Only a selection is nudged; an item merely under
+  the pointer is not. No key of 6.2, 6.4 or 6.7 was in conflict; the conflict tests in `qa_common` check the table.
+
 ### 5.10 3D
 
 Step 1, small: `3` in the PCB editor shows the 3D viewer and `2` in the viewer raises the PCB editor (new action

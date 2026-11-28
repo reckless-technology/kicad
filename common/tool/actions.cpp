@@ -407,6 +407,99 @@ TOOL_ACTION ACTIONS::duplicate( TOOL_ACTION_ARGS()
         .Tooltip( _( "Duplicates the selected item(s)" ) )
         .Icon( BITMAPS::duplicate ) );
 
+// Nudge: the selection moves one grid step, without the move tool. The stock profile gives them no key
+TOOL_ACTION ACTIONS::nudgeUp( TOOL_ACTION_ARGS()
+                                      .Name( "common.Interactive.nudgeUp" )
+                                      .Scope( AS_GLOBAL )
+                                      .FriendlyName( _( "Nudge Up" ) )
+                                      .Tooltip( _( "Moves the selection up by one grid step" ) )
+                                      .ToolbarState( TOOLBAR_STATE::HIDDEN )
+                                      .Flags( AF_NONE )
+                                      .Parameter( CURSOR_UP ) );
+
+TOOL_ACTION ACTIONS::nudgeUpFast( TOOL_ACTION_ARGS()
+                                          .Name( "common.Interactive.nudgeUpFast" )
+                                          .Scope( AS_GLOBAL )
+                                          .FriendlyName( _( "Nudge Up Fast" ) )
+                                          .Tooltip( _( "Moves the selection up by ten grid steps" ) )
+                                          .ToolbarState( TOOLBAR_STATE::HIDDEN )
+                                          .Flags( AF_NONE )
+                                          .Parameter( CURSOR_UP_FAST ) );
+
+TOOL_ACTION ACTIONS::nudgeDown( TOOL_ACTION_ARGS()
+                                        .Name( "common.Interactive.nudgeDown" )
+                                        .Scope( AS_GLOBAL )
+                                        .FriendlyName( _( "Nudge Down" ) )
+                                        .Tooltip( _( "Moves the selection down by one grid step" ) )
+                                        .ToolbarState( TOOLBAR_STATE::HIDDEN )
+                                        .Flags( AF_NONE )
+                                        .Parameter( CURSOR_DOWN ) );
+
+TOOL_ACTION ACTIONS::nudgeDownFast( TOOL_ACTION_ARGS()
+                                            .Name( "common.Interactive.nudgeDownFast" )
+                                            .Scope( AS_GLOBAL )
+                                            .FriendlyName( _( "Nudge Down Fast" ) )
+                                            .Tooltip( _( "Moves the selection down by ten grid steps" ) )
+                                            .ToolbarState( TOOLBAR_STATE::HIDDEN )
+                                            .Flags( AF_NONE )
+                                            .Parameter( CURSOR_DOWN_FAST ) );
+
+TOOL_ACTION ACTIONS::nudgeLeft( TOOL_ACTION_ARGS()
+                                        .Name( "common.Interactive.nudgeLeft" )
+                                        .Scope( AS_GLOBAL )
+                                        .FriendlyName( _( "Nudge Left" ) )
+                                        .Tooltip( _( "Moves the selection left by one grid step" ) )
+                                        .ToolbarState( TOOLBAR_STATE::HIDDEN )
+                                        .Flags( AF_NONE )
+                                        .Parameter( CURSOR_LEFT ) );
+
+TOOL_ACTION ACTIONS::nudgeLeftFast( TOOL_ACTION_ARGS()
+                                            .Name( "common.Interactive.nudgeLeftFast" )
+                                            .Scope( AS_GLOBAL )
+                                            .FriendlyName( _( "Nudge Left Fast" ) )
+                                            .Tooltip( _( "Moves the selection left by ten grid steps" ) )
+                                            .ToolbarState( TOOLBAR_STATE::HIDDEN )
+                                            .Flags( AF_NONE )
+                                            .Parameter( CURSOR_LEFT_FAST ) );
+
+TOOL_ACTION ACTIONS::nudgeRight( TOOL_ACTION_ARGS()
+                                         .Name( "common.Interactive.nudgeRight" )
+                                         .Scope( AS_GLOBAL )
+                                         .FriendlyName( _( "Nudge Right" ) )
+                                         .Tooltip( _( "Moves the selection right by one grid step" ) )
+                                         .ToolbarState( TOOLBAR_STATE::HIDDEN )
+                                         .Flags( AF_NONE )
+                                         .Parameter( CURSOR_RIGHT ) );
+
+TOOL_ACTION ACTIONS::nudgeRightFast( TOOL_ACTION_ARGS()
+                                             .Name( "common.Interactive.nudgeRightFast" )
+                                             .Scope( AS_GLOBAL )
+                                             .FriendlyName( _( "Nudge Right Fast" ) )
+                                             .Tooltip( _( "Moves the selection right by ten grid steps" ) )
+                                             .ToolbarState( TOOLBAR_STATE::HIDDEN )
+                                             .Flags( AF_NONE )
+                                             .Parameter( CURSOR_RIGHT_FAST ) );
+
+
+VECTOR2D ACTIONS::NudgeOffset( CURSOR_EVENT_TYPE aDirection, const VECTOR2D& aGridSize, bool aIsMirroredX )
+{
+    const double horizontal = aIsMirroredX ? -aGridSize.x : aGridSize.x;
+
+    switch( aDirection )
+    {
+    case CURSOR_UP: return VECTOR2D( 0, -aGridSize.y );
+    case CURSOR_UP_FAST: return VECTOR2D( 0, -10 * aGridSize.y );
+    case CURSOR_DOWN: return VECTOR2D( 0, aGridSize.y );
+    case CURSOR_DOWN_FAST: return VECTOR2D( 0, 10 * aGridSize.y );
+    case CURSOR_LEFT: return VECTOR2D( -horizontal, 0 );
+    case CURSOR_LEFT_FAST: return VECTOR2D( -10 * horizontal, 0 );
+    case CURSOR_RIGHT: return VECTOR2D( horizontal, 0 );
+    case CURSOR_RIGHT_FAST: return VECTOR2D( 10 * horizontal, 0 );
+    default: return VECTOR2D( 0, 0 );
+    }
+}
+
+
 TOOL_ACTION ACTIONS::doDelete( TOOL_ACTION_ARGS()
         .Name( "common.Interactive.delete" )
         .Scope( AS_GLOBAL )

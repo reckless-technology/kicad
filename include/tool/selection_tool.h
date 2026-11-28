@@ -149,6 +149,12 @@ protected:
      */
     virtual bool ctrlClickHighlights() { return false; }
 
+    /**
+     * Whether Ctrl+drag, under a profile that says so, gives the other of the editor's move and drag commands. Then
+     * Ctrl no longer adds to a box selection (INTERACTION_PROFILE::IsBoxSelectionAdditive). Only the schematic editor.
+     */
+    virtual bool ctrlDragMayInvertDragAction() { return false; }
+
 public:
     /**
      * Pure decision on whether Shift+Ctrl+click adds the net to the highlighted ones. Only in the Altium-style profile,
