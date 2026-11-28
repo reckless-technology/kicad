@@ -444,6 +444,8 @@ PCB_EDIT_FRAME::PCB_EDIT_FRAME( KIWAY* aKiway, wxWindow* aParent ) :
                               .CloseButton( true )
                               .Hide() );
 
+    CreateLayerTabBar( 2 );
+
     RestoreAuiLayout();
 
     // A saved layout brings its own minimum, so the one the panel needs is set again.
@@ -451,6 +453,7 @@ PCB_EDIT_FRAME::PCB_EDIT_FRAME( KIWAY* aKiway, wxWindow* aParent ) :
 
     m_auimgr.GetPane( "LayersManager" ).Show( m_ShowLayerManagerTools );
     m_auimgr.GetPane( "SelectionFilter" ).Show( m_ShowLayerManagerTools );
+    ApplyLayerTabBarSetting( false );
     m_auimgr.GetPane( PropertiesPaneName() ).Show( GetPcbNewSettings()->m_AuiPanels.show_properties );
     m_auimgr.GetPane( NetInspectorPanelName() ).Show( m_ShowNetInspector );
     m_auimgr.GetPane( SearchPaneName() ).Show( m_ShowSearch );
@@ -1315,6 +1318,12 @@ void PCB_EDIT_FRAME::setupUIConditions()
                 return PropertiesShown();
             };
 
+    auto layerTabBarCond =
+            [this] ( const SELECTION& )
+            {
+                return IsLayerTabBarShown();
+            };
+
     auto netInspectorCond =
             [this] ( const SELECTION& )
             {
@@ -1393,6 +1402,7 @@ void PCB_EDIT_FRAME::setupUIConditions()
     mgr->SetConditions( ACTIONS::highContrastMode,         CHECK( highContrastCond ) );
     mgr->SetConditions( PCB_ACTIONS::flipBoard,            CHECK( boardFlippedCond ) );
     mgr->SetConditions( PCB_ACTIONS::showLayersManager,    CHECK( layerManagerCond ) );
+    mgr->SetConditions( PCB_ACTIONS::showLayerTabBar,      CHECK( layerTabBarCond ) );
     mgr->SetConditions( PCB_ACTIONS::showRatsnest,         CHECK( globalRatsnestCond ) );
     mgr->SetConditions( PCB_ACTIONS::ratsnestLineMode,     CHECK( curvedRatsnestCond ) );
     mgr->SetConditions( PCB_ACTIONS::toggleNetHighlight,   CHECK( netHighlightCond )
@@ -2896,6 +2906,10 @@ void PCB_EDIT_FRAME::CommonSettingsChanged( int aFlags )
 {
     PCB_BASE_EDIT_FRAME::CommonSettingsChanged( aFlags );
     m_appearancePanel->CommonSettingsChanged( aFlags );
+
+    // A bar that follows the profile appears or goes with it
+    if( aFlags & INTERACTION_PROFILE_CHANGED )
+        ApplyLayerTabBarSetting();
 
     PrepareLayerIndicator();
 

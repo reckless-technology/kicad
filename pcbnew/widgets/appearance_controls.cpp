@@ -19,6 +19,7 @@
  */
 
 #include <widgets/appearance_controls.h>
+#include <widgets/pcb_layer_tab_bar.h>
 
 #include <bitmaps.h>
 #include <board.h>
@@ -1122,6 +1123,8 @@ void APPEARANCE_CONTROLS::OnBoardChanged()
 
     Thaw();
     Refresh();
+
+    notifyLayerTabBar();
 }
 
 
@@ -1315,6 +1318,47 @@ void APPEARANCE_CONTROLS::OnLayerChanged()
     newSetting->ctl_indicator->SetIndicatorState( ROW_ICON_PROVIDER::STATE::ON );
 
     Refresh();
+
+    notifyLayerTabBar();
+}
+
+
+void APPEARANCE_CONTROLS::notifyLayerTabBar()
+{
+    if( m_layerTabBar )
+        m_layerTabBar->OnLayerStateChanged();
+}
+
+
+void APPEARANCE_CONTROLS::SetVisibleLayerSet( const LSET& aVisibleLayers )
+{
+    setVisibleLayers( aVisibleLayers );
+
+    syncLayerPresetSelection();
+    syncColorsAndVisibility();
+
+    if( !m_isFpEditor && m_frame->GetBoard() )
+        m_frame->GetCanvas()->SyncLayersVisibility( m_frame->GetBoard() );
+
+    m_frame->GetCanvas()->Refresh();
+}
+
+
+std::vector<std::pair<wxString, wxString>> APPEARANCE_CONTROLS::GetLayerPresetLabels() const
+{
+    std::vector<std::pair<wxString, wxString>> labels;
+
+    // Built-in presets first, as the preset list shows them, then the user's own
+    for( bool wantReadOnly : { true, false } )
+    {
+        for( const auto& [name, preset] : m_layerPresets )
+        {
+            if( preset.readOnly == wantReadOnly )
+                labels.emplace_back( name, wantReadOnly ? wxGetTranslation( name ) : name );
+        }
+    }
+
+    return labels;
 }
 
 
@@ -1396,6 +1440,8 @@ void APPEARANCE_CONTROLS::setVisibleLayers( const LSET& aLayers )
 
         m_frame->Update3DView( true, m_frame->GetPcbNewSettings()->m_Display.m_Live3DRefresh );
     }
+
+    notifyLayerTabBar();
 }
 
 
@@ -3285,6 +3331,7 @@ void APPEARANCE_CONTROLS::OnColorSwatchChanged( wxCommandEvent& aEvent )
     if( layer == LAYER_PCB_BACKGROUND )
         m_frame->SetDrawBgColor( newColor );
 
+    notifyLayerTabBar();
     passOnFocus();
 }
 

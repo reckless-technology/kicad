@@ -35,6 +35,7 @@ class BITMAP_TOGGLE;
 class COLOR_SWATCH;
 class INDICATOR_ICON;
 class PCB_BASE_FRAME;
+class PCB_LAYER_TAB_BAR;
 class PCBNEW_SETTINGS;
 class ROW_ICON_PROVIDER;
 class GRID_BITMAP_TOGGLE_RENDERER;
@@ -237,6 +238,18 @@ public:
     /// Update the widget when the active board layer is changed.
     void OnLayerChanged();
 
+    /// The layer tab bar to tell whenever what it draws may have changed; it holds no state of its own.
+    void SetLayerTabBar( PCB_LAYER_TAB_BAR* aLayerTabBar ) { m_layerTabBar = aLayerTabBar; }
+
+    /// The layers drawn now, from the board (or the view, in the footprint editor).
+    LSET GetVisibleLayerSet() { return getVisibleLayers(); }
+
+    /// Make exactly these layers visible, as the layer context menu does for its non-preset commands.
+    void SetVisibleLayerSet( const LSET& aVisibleLayers );
+
+    /// The layer presets as the name to pass to ApplyLayerPreset() and the label to show, built-in ones first.
+    std::vector<std::pair<wxString, wxString>> GetLayerPresetLabels() const;
+
     /// Notifies the panel when a net has been hidden or shown via the external tool.
     void OnNetVisibilityChanged( int aNetCode, bool aVisibility );
 
@@ -389,6 +402,9 @@ private:
 
     void passOnFocus();
 
+    /// Tell the layer tab bar, if there is one, that what it draws may have changed.
+    void notifyLayerTabBar();
+
     void idleFocusHandler( wxIdleEvent& aEvent );
 
     void onReadOnlySwatch();
@@ -408,6 +424,9 @@ private:
     BOARD* m_board;
 
     bool m_isFpEditor;
+
+    /// Told when the layers, colors or active layer change; null until the frame makes the bar.
+    PCB_LAYER_TAB_BAR* m_layerTabBar = nullptr;
 
     // Nets grid view
     NET_GRID_TABLE* m_netsTable;

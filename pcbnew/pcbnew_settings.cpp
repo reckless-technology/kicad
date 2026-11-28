@@ -49,6 +49,12 @@ void PCB_VIEWERS_SETTINGS_BASE::addMatchPropertiesParam()
 }
 
 
+void PCB_VIEWERS_SETTINGS_BASE::addLayerTabBarParam()
+{
+    m_params.emplace_back( new PARAM<int>( "aui.layer_tab_bar", &m_LayerTabBarMode, -1, -1, 1 ) );
+}
+
+
 PCBNEW_SETTINGS::PCBNEW_SETTINGS() :
         PCB_VIEWERS_SETTINGS_BASE( "pcbnew", pcbnewSchemaVersion ),
         m_AuiPanels(),
@@ -78,6 +84,7 @@ PCBNEW_SETTINGS::PCBNEW_SETTINGS() :
         m_FootprintViewerFPListWidth( 300 )
 {
     addMatchPropertiesParam();
+    addLayerTabBarParam();
 
     m_MagneticItems.pads      = MAGNETIC_OPTIONS::CAPTURE_CURSOR_IN_TRACK_TOOL;
     m_MagneticItems.tracks    = MAGNETIC_OPTIONS::CAPTURE_CURSOR_IN_TRACK_TOOL;

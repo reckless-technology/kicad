@@ -184,6 +184,7 @@ set( QA_PCBNEW_SRCS
     test_zone.cpp
     test_zone_filler.cpp
     test_pcb_context_menu.cpp
+    test_layer_tab_bar_model.cpp
     test_pcb_menu_tree.cpp
     test_poly_simplify.cpp
     test_pcb_dynamic_properties.cpp

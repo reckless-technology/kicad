@@ -987,6 +987,13 @@ int FOOTPRINT_EDITOR_CONTROL::ToggleLayersManager( const TOOL_EVENT& aEvent [[ma
 }
 
 
+int FOOTPRINT_EDITOR_CONTROL::ToggleLayerTabBar( const TOOL_EVENT& aEvent [[maybe_unused]] )
+{
+    m_frame->ToggleLayerTabBar();
+    return 0;
+}
+
+
 int FOOTPRINT_EDITOR_CONTROL::ToggleProperties( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     m_frame->ToggleProperties();
@@ -1322,6 +1329,7 @@ void FOOTPRINT_EDITOR_CONTROL::setTransitions()
 
     Go( &FOOTPRINT_EDITOR_CONTROL::Properties,           PCB_ACTIONS::footprintProperties.MakeEvent() );
     Go( &FOOTPRINT_EDITOR_CONTROL::ToggleLayersManager,  PCB_ACTIONS::showLayersManager.MakeEvent() );
+    Go( &FOOTPRINT_EDITOR_CONTROL::ToggleLayerTabBar,    PCB_ACTIONS::showLayerTabBar.MakeEvent() );
     Go( &FOOTPRINT_EDITOR_CONTROL::ToggleProperties,     ACTIONS::showProperties.MakeEvent() );
     // clang-format on
 

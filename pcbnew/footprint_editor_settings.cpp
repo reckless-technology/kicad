@@ -61,6 +61,7 @@ FOOTPRINT_EDITOR_SETTINGS::FOOTPRINT_EDITOR_SETTINGS() :
         m_LastExportPath()
 {
     addMatchPropertiesParam();
+    addLayerTabBarParam();
 
     m_MagneticItems.pads      = MAGNETIC_OPTIONS::CAPTURE_ALWAYS;
     m_MagneticItems.tracks    = MAGNETIC_OPTIONS::NO_EFFECT;

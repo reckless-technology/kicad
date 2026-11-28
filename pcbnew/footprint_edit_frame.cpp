@@ -329,8 +329,11 @@ FOOTPRINT_EDIT_FRAME::FOOTPRINT_EDIT_FRAME( KIWAY* aKiway, wxWindow* aParent ) :
     m_auimgr.AddPane( m_tabsPanel, EDA_PANE().Canvas().Name( "DrawFrame" )
                       .Center() );
 
+    CreateLayerTabBar( 1 );
+
     RestoreAuiLayout();
 
+    ApplyLayerTabBarSetting( false );
     m_auimgr.GetPane( "LayersManager" ).Show( m_show_layer_manager_tools );
     m_auimgr.GetPane( "SelectionFilter" ).Show( m_show_layer_manager_tools );
     m_auimgr.GetPane( PropertiesPaneName() ).Show( GetSettings()->m_AuiPanels.show_properties );
@@ -2360,6 +2363,12 @@ void FOOTPRINT_EDIT_FRAME::setupUIConditions()
                 return m_auimgr.GetPane( "LayersManager" ).IsShown();
             };
 
+    auto layerTabBarCond =
+            [this] ( const SELECTION& )
+            {
+                return IsLayerTabBarShown();
+            };
+
     auto propertiesCond =
             [this] ( const SELECTION& )
             {
@@ -2372,6 +2381,7 @@ void FOOTPRINT_EDIT_FRAME::setupUIConditions()
 
     mgr->SetConditions( ACTIONS::showLibraryTree,           CHECK( libraryTreeCond ) );
     mgr->SetConditions( PCB_ACTIONS::showLayersManager,     CHECK( layerManagerCond ) );
+    mgr->SetConditions( PCB_ACTIONS::showLayerTabBar,       CHECK( layerTabBarCond ) );
     mgr->SetConditions( ACTIONS::showProperties,            CHECK( propertiesCond ) );
 
     mgr->SetConditions( ACTIONS::print,                     ENABLE( haveFootprintCond ) );
@@ -2490,6 +2500,10 @@ void FOOTPRINT_EDIT_FRAME::CommonSettingsChanged( int aFlags )
 {
     PCB_BASE_EDIT_FRAME::CommonSettingsChanged( aFlags );
     m_appearancePanel->CommonSettingsChanged( aFlags );
+
+    // A bar that follows the profile appears or goes with it
+    if( aFlags & INTERACTION_PROFILE_CHANGED )
+        ApplyLayerTabBarSetting();
 
     if( FOOTPRINT_EDITOR_SETTINGS* cfg = GetAppSettings<FOOTPRINT_EDITOR_SETTINGS>( "fpedit" ) )
     {

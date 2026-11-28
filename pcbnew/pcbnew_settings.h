@@ -103,6 +103,9 @@ public:
     /// Keyed as "family/Property Name"; see MATCH_PROPERTIES_CATALOG.
     std::set<wxString> m_MatchProperties;
 
+    /// The layer tab bar under the canvas: -1 follows the interaction profile, 0 is off and 1 is on
+    int m_LayerTabBarMode = -1;
+
     PCB_VIEWERS_SETTINGS_BASE( const std::string& aFilename, int aSchemaVersion ):
         APP_SETTINGS_BASE( aFilename, aSchemaVersion ),
         m_FootprintViewerZoom( 1.0 ),
@@ -121,6 +124,9 @@ protected:
     /// Opt-in.  The two editors share one key and one default.  cvpcb derives from this class
     /// but cannot edit, so it keeps the key out of its file.
     void addMatchPropertiesParam();
+
+    /// Opt-in, like the match properties: cvpcb has no layer tab bar.
+    void addLayerTabBarParam();
 };
 
 

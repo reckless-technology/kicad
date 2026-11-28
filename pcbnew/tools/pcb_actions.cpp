@@ -2197,6 +2197,13 @@ TOOL_ACTION PCB_ACTIONS::showLayersManager( TOOL_ACTION_ARGS()
         .ToolbarState( TOOLBAR_STATE::TOGGLE )
         .Icon( BITMAPS::layers_manager ) );
 
+TOOL_ACTION PCB_ACTIONS::showLayerTabBar( TOOL_ACTION_ARGS()
+        .Name( "pcbnew.Control.showLayerTabBar" )
+        .Scope( AS_GLOBAL )
+        .FriendlyName( _( "Layer Tab Bar" ) )
+        .Tooltip( _( "Show/hide the layer tabs under the canvas" ) )
+        .ToolbarState( TOOLBAR_STATE::TOGGLE ) );
+
 TOOL_ACTION PCB_ACTIONS::showNetInspector( TOOL_ACTION_ARGS()
         .Name( "pcbnew.Control.showNetInspector" )
         .Scope( AS_GLOBAL )

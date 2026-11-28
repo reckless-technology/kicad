@@ -28,6 +28,9 @@
 #include <tools/pcb_actions.h>
 #include <tools/pcb_selection_tool.h>
 #include <widgets/panel_selection_filter.h>
+#include <widgets/pcb_layer_tab_bar.h>
+#include <widgets/pcb_layer_tab_bar_model.h>
+#include <interaction_profile.h>
 #include <pgm_base.h>
 #include <board.h>
 #include <board_design_settings.h>
@@ -60,6 +63,7 @@ PCB_BASE_EDIT_FRAME::PCB_BASE_EDIT_FRAME( KIWAY* aKiway, wxWindow* aParent,
         m_undoRedoBlocked( false ),
         m_selectionFilterPanel( nullptr ),
         m_appearancePanel( nullptr ),
+        m_layerTabBar( nullptr ),
         m_vertexEditorPane( nullptr ),
         m_tabbedPanel( nullptr )
 {
@@ -281,6 +285,56 @@ COLOR_SETTINGS* PCB_BASE_EDIT_FRAME::GetColorSettings( bool aForceRefresh [[mayb
 {
     PCBNEW_SETTINGS* cfg = GetPcbNewSettings();
     return ::GetColorSettings( cfg ? cfg->m_ColorTheme : DEFAULT_THEME );
+}
+
+
+void PCB_BASE_EDIT_FRAME::CreateLayerTabBar( int aDockLayer )
+{
+    wxCHECK( m_appearancePanel && !m_layerTabBar, /* void */ );
+
+    m_layerTabBar = new PCB_LAYER_TAB_BAR( this );
+    m_appearancePanel->SetLayerTabBar( m_layerTabBar );
+
+    const wxSize best = m_layerTabBar->GetBestSize();
+
+    m_auimgr.AddPane( m_layerTabBar, EDA_PANE().HToolbar().Name( LayerTabBarPaneName() )
+                      .Bottom().Layer( aDockLayer )
+                      .MinSize( best ).BestSize( best ).Hide() );
+}
+
+
+void PCB_BASE_EDIT_FRAME::ApplyLayerTabBarSetting( bool aUpdate )
+{
+    PCB_VIEWERS_SETTINGS_BASE* settings = GetViewerSettingsBase();
+
+    if( !m_layerTabBar || !settings )
+        return;
+
+    const bool isShown = ::IsLayerTabBarShown( settings->m_LayerTabBarMode, INTERACTION_PROFILE::Active() );
+
+    m_auimgr.GetPane( LayerTabBarPaneName() ).Show( isShown );
+
+    if( aUpdate )
+        m_auimgr.Update();
+}
+
+
+bool PCB_BASE_EDIT_FRAME::IsLayerTabBarShown()
+{
+    return m_layerTabBar && m_auimgr.GetPane( LayerTabBarPaneName() ).IsShown();
+}
+
+
+void PCB_BASE_EDIT_FRAME::ToggleLayerTabBar()
+{
+    PCB_VIEWERS_SETTINGS_BASE* settings = GetViewerSettingsBase();
+
+    if( !settings )
+        return;
+
+    settings->m_LayerTabBarMode =
+            ToggledLayerTabBarSetting( settings->m_LayerTabBarMode, INTERACTION_PROFILE::Active() );
+    ApplyLayerTabBarSetting();
 }
 
 

@@ -27,6 +27,7 @@
 #include <libraries/library_table.h>
 
 class APPEARANCE_CONTROLS;
+class PCB_LAYER_TAB_BAR;
 class LAYER_PAIR_SETTINGS;
 class BOARD_ITEM_CONTAINER;
 class PANEL_SELECTION_FILTER;
@@ -233,6 +234,26 @@ public:
 
     APPEARANCE_CONTROLS* GetAppearancePanel() { return m_appearancePanel; }
 
+    /// The name of the AUI pane of the layer tab bar
+    static wxString LayerTabBarPaneName() { return wxS( "LayerTabBar" ); }
+
+    /**
+     * Make the layer tab bar and dock it under the canvas, hidden. The Appearance panel must exist already. Call
+     * ApplyLayerTabBarSetting() once the saved layout is restored.
+     *
+     * @param aDockLayer the AUI dock layer of the bottom dock the bar goes in.
+     */
+    void CreateLayerTabBar( int aDockLayer );
+
+    /// Show or hide the bar as the stored setting and the interaction profile say.
+    void ApplyLayerTabBarSetting( bool aUpdate = true );
+
+    /// True when the bar is showing now.
+    bool IsLayerTabBarShown();
+
+    /// The View menu item: store the opposite of what is showing, explicitly, so the profile no longer decides it.
+    void ToggleLayerTabBar();
+
     /**
      * Access to the layer pair settings controller of the board, if available
      */
@@ -272,6 +293,7 @@ protected:
 
     PANEL_SELECTION_FILTER*              m_selectionFilterPanel;
     APPEARANCE_CONTROLS*                 m_appearancePanel;
+    PCB_LAYER_TAB_BAR*                   m_layerTabBar;
     std::unique_ptr<LAYER_PAIR_SETTINGS> m_layerPairSettings;
 
     PCB_VERTEX_EDITOR_PANE* m_vertexEditorPane;

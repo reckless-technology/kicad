@@ -274,6 +274,7 @@ MENU_DEF PcbAltiumMenuBar()
               M::Submenu( _( "&Panels" ), { M::CheckItem( _( "&Properties" ), ACTIONS::showProperties ),
                                             M::CheckItem( _( "&Search" ), PCB_ACTIONS::showSearch ),
                                             M::CheckItem( _( "&Appearance" ), PCB_ACTIONS::showLayersManager ),
+                                            M::CheckItem( _( "&Layer Tab Bar" ), PCB_ACTIONS::showLayerTabBar ),
                                             M::CheckItem( _( "&Net Inspector" ), PCB_ACTIONS::showNetInspector ),
                                             M::CheckItem( _( "&Constraints" ), PCB_ACTIONS::showConstraintsPanel ),
                                             M::CheckItem( _( "&Git Commit" ), ACTIONS::showGitCommitPane ),

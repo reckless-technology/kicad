@@ -524,6 +524,7 @@ public:
     static TOOL_ACTION toggleExcludeFromPosFiles;
 
     static TOOL_ACTION showLayersManager;
+    static TOOL_ACTION showLayerTabBar;
     static TOOL_ACTION showNetInspector;
     static TOOL_ACTION zonesManager;
 

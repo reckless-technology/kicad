@@ -1041,6 +1041,13 @@ int BOARD_EDITOR_CONTROL::ToggleLayersManager( const TOOL_EVENT& aEvent [[maybe_
 }
 
 
+int BOARD_EDITOR_CONTROL::ToggleLayerTabBar( const TOOL_EVENT& aEvent [[maybe_unused]] )
+{
+    getEditFrame<PCB_EDIT_FRAME>()->ToggleLayerTabBar();
+    return 0;
+}
+
+
 int BOARD_EDITOR_CONTROL::ToggleProperties( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     getEditFrame<PCB_EDIT_FRAME>()->ToggleProperties();
@@ -2477,6 +2484,7 @@ void BOARD_EDITOR_CONTROL::setTransitions()
     Go( &BOARD_EDITOR_CONTROL::UpdateSchematicFromPCB, ACTIONS::updateSchematicFromPcb.MakeEvent() );
     Go( &BOARD_EDITOR_CONTROL::ShowEeschema,           PCB_ACTIONS::showEeschema.MakeEvent() );
     Go( &BOARD_EDITOR_CONTROL::ToggleLayersManager,    PCB_ACTIONS::showLayersManager.MakeEvent() );
+    Go( &BOARD_EDITOR_CONTROL::ToggleLayerTabBar,      PCB_ACTIONS::showLayerTabBar.MakeEvent() );
     Go( &BOARD_EDITOR_CONTROL::ToggleProperties,       ACTIONS::showProperties.MakeEvent() );
     Go( &BOARD_EDITOR_CONTROL::ToggleNetInspector,     PCB_ACTIONS::showNetInspector.MakeEvent() );
     Go( &BOARD_EDITOR_CONTROL::ToggleGitCommitPane, ACTIONS::showGitCommitPane.MakeEvent() );
