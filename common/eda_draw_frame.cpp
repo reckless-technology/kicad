@@ -346,9 +346,8 @@ void EDA_DRAW_FRAME::ApplyMousePresetOnce()
     viewControls->LoadSettings();
     GetCanvas()->UpdateTouchpadGestureHandler();
 
-    ShowInfoBarMsg( _( "The Altium-style profile set the mouse: the wheel scrolls, Ctrl+wheel zooms, right-drag pans, "
-                       "middle-drag zooms and Ctrl+click highlights a net. Change any of it in Preferences > Mouse "
-                       "and Touchpad." ),
+    ShowInfoBarMsg( _( "Altium-style mouse set: the wheel scrolls, Ctrl+wheel zooms, right-drag pans and middle-drag "
+                       "zooms. Change it in Preferences > Mouse and Touchpad." ),
                     true );
 }
 
