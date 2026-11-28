@@ -24,6 +24,7 @@
 
 #include <interaction_profile.h>
 #include <layer_ids.h>
+#include <lseq.h>
 #include <lset.h>
 
 /**
