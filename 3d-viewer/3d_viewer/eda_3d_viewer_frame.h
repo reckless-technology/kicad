@@ -155,6 +155,13 @@ protected:
 
     void handleIconizeEvent( wxIconizeEvent& aEvent ) override;
 
+    /**
+     * Under the Altium-style profile, hide the viewer when the user closes it, and refuse the close, so that the camera
+     * is where it was left when the viewer is shown again. A close that cannot be vetoed (the editor closing, the
+     * session ending) is allowed, and destroys the viewer as it always did.
+     */
+    bool canCloseWindow( wxCloseEvent& aCloseEvent ) override;
+
 private:
     /// Called when user press the File->Exit
     void Exit3DFrame( wxCommandEvent& event );

@@ -21,6 +21,7 @@
 #include <3d_rendering/opengl/render_3d_opengl.h> // Must be included before any GL header
 
 #include <bitmaps.h>
+#include <wx/toplevel.h>
 #include <tool/actions.h>
 #include <tool/tool_manager.h>
 #include <eda_3d_canvas.h>
@@ -344,6 +345,31 @@ int EDA_3D_CONTROLLER::ZoomFitScreen( const TOOL_EVENT& aEvent [[maybe_unused]] 
 }
 
 
+int EDA_3D_CONTROLLER::ShowPcbEditor( const TOOL_EVENT& aEvent [[maybe_unused]] )
+{
+    // The viewer is a window of the editor that opened it. Raising that editor changes nothing in either view: the
+    // 2D view stays where it was, and the viewer stays open behind it.
+    EDA_BASE_FRAME* frame = dynamic_cast<EDA_BASE_FRAME*>( m_toolMgr->GetToolHolder() );
+
+    if( !frame || frame->GetFrameType() != FRAME_PCB_DISPLAY3D )
+        return 0;
+
+    if( wxWindow* editor = frame->GetParent() )
+    {
+        if( wxTopLevelWindow* editorFrame = dynamic_cast<wxTopLevelWindow*>( editor ) )
+        {
+            if( editorFrame->IsIconized() )
+                editorFrame->Iconize( false );
+        }
+
+        editor->Raise();
+        editor->SetFocus();
+    }
+
+    return 0;
+}
+
+
 int EDA_3D_CONTROLLER::ReloadBoard( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     EDA_BASE_FRAME* frame = dynamic_cast<EDA_BASE_FRAME*>( m_toolMgr->GetToolHolder() );
@@ -424,6 +450,7 @@ void EDA_3D_CONTROLLER::setTransitions()
 
     // Miscellaneous control
     Go( &EDA_3D_CONTROLLER::ReloadBoard,        EDA_3D_ACTIONS::reloadBoard.MakeEvent() );
+    Go( &EDA_3D_CONTROLLER::ShowPcbEditor,      EDA_3D_ACTIONS::showPcbEditor.MakeEvent() );
     Go( &EDA_3D_CONTROLLER::ToggleRaytracing,   EDA_3D_ACTIONS::toggleRaytacing.MakeEvent() );
     Go( &EDA_3D_CONTROLLER::ToggleShowMissingModels, EDA_3D_ACTIONS::toggleShowMissingModels.MakeEvent() );
     Go( &EDA_3D_CONTROLLER::ExportImage,        EDA_3D_ACTIONS::copyToClipboard.MakeEvent() );
@@ -449,6 +476,8 @@ void EDA_3D_CONTROLLER::setTransitions()
     Go( &EDA_3D_CONTROLLER::ViewControl,        EDA_3D_ACTIONS::pivotCenter.MakeEvent() );
     Go( &EDA_3D_CONTROLLER::ViewControl,        EDA_3D_ACTIONS::homeView.MakeEvent() );
     Go( &EDA_3D_CONTROLLER::ViewControl,        EDA_3D_ACTIONS::flipView.MakeEvent() );
+    Go( &EDA_3D_CONTROLLER::ViewControl,        EDA_3D_ACTIONS::viewIsometric.MakeEvent() );
+    Go( &EDA_3D_CONTROLLER::ViewControl,        EDA_3D_ACTIONS::rotateZ90.MakeEvent() );
     Go( &EDA_3D_CONTROLLER::RotateView,         EDA_3D_ACTIONS::rotateXCW.MakeEvent() );
     Go( &EDA_3D_CONTROLLER::RotateView,         EDA_3D_ACTIONS::rotateXCCW.MakeEvent() );
     Go( &EDA_3D_CONTROLLER::RotateView,         EDA_3D_ACTIONS::rotateYCW.MakeEvent() );

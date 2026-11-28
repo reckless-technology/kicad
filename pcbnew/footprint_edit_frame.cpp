@@ -33,6 +33,7 @@
 #include "tools/pcb_picker_tool.h"
 #include "tools/match_properties_tool.h"
 #include "tools/graphic_edit_tool.h"
+#include <interaction_profile.h>
 #include <geometry/geometry_utils.h>
 #include "tools/align_distribute_tool.h"
 #include "tools/pcb_point_editor.h"
@@ -2229,6 +2230,15 @@ void FOOTPRINT_EDIT_FRAME::setupUIConditions()
     PCB_EDITOR_CONDITIONS cond( this );
 
     wxCHECK2( mgr, return );
+
+    // `3` (the Altium-style profile's key for this) is an idle key: it never interrupts a command
+    auto mayRunIdleKey =
+            [this]( const SELECTION& )
+            {
+                return INTERACTION_PROFILE::MayRunIdleKey( INTERACTION_PROFILE::Active(), ToolStackIsEmpty() );
+            };
+
+    mgr->SetConditions( ACTIONS::show3DViewer, ACTION_CONDITIONS().HotkeyEnable( mayRunIdleKey ) );
 
 #define ENABLE( x ) ACTION_CONDITIONS().Enable( x )
 #define CHECK( x )  ACTION_CONDITIONS().Check( x )

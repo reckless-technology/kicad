@@ -16,7 +16,7 @@
 #   - The in-command keys (Space, Shift+Space, L, X, Y and Tab) are bound below to context aliases, which act only while
 #     the move or placement loop they belong to runs; with no command running, those keys mean what they mean idle.
 #   - Routing keys, in-command and sticky: step 5.
-#   - Anything that needs a new action and is not built yet: in-place editing, the 3D keys.
+#   - Anything that needs a new action and is not built yet: in-place editing.
 #   - Ctrl+Space, the flip of the corner of the wires being dragged: the drag builds its corners as the pointer moves and
 #     keeps no posture to flip (docs/reckless/interaction-profile.md, 5.9, as built).
 #
@@ -135,3 +135,17 @@ pcbnew.InteractiveRouter.OptimizeSelected	Ctrl+Alt+G
 pcbnew.InteractiveRouter.SingleTrack	Ctrl+W
 # Ctrl+W was the router's corner-style switch, which step 5 rebinds; no key until then, so it cannot fight the above
 pcbnew.InteractiveRouter.SwitchRounding45	
+#
+# 3D viewer (5.10, step 10; 6.5). 3 shows the viewer from the PCB and the footprint editors, and 2 raises the editor
+# from the viewer. 3 is common.* because the show-3D-viewer action is, so it is taken in every editor, where no other
+# action holds it by default (the PCB editor's length tuner has 3 and 2 for its in-command keys and loses them; they
+# are step 5's, with the router's). It runs only with no command running (INTERACTION_PROFILE::MayRunIdleKey), so
+# routing and tuning keep their key. The viewer's own keys are in its own scope, 3DViewer., and are taken there only:
+# 0 top, 9 a quarter turn about Z, 8 isometric, Ctrl+F flip. PgUp and PgDn zoom the viewer too, through
+# common.Control.zoomIn and zoomOut above. Alt+3, the stock key of the 3D viewer, is gone in this profile.
+common.Control.show3DViewer	3
+3DViewer.Control.showPcbEditor	2
+3DViewer.Control.viewTop	0
+3DViewer.Control.rotateZ90	9
+3DViewer.Control.viewIsometric	8
+3DViewer.Control.flipView	Ctrl+F

@@ -35,6 +35,7 @@ set( QA_PCBNEW_SRCS
     test_bbox_3d.cpp
     test_creepage_groove_order.cpp
     test_3d_viewer_layer_presets.cpp
+    test_3d_viewer_profile.cpp
     test_array_pad_name_provider.cpp
     test_barcode_load_save.cpp
     test_reckless_theme_round_trip.cpp
@@ -659,7 +660,7 @@ add_pcbnew_test_group( other "${PCBNEW_EXCLUDED_FROM_OTHER}" )
 
 # The action names this executable links, for the interaction profile's table check
 set_property( SOURCE ${CMAKE_SOURCE_DIR}/qa/tests/common/test_interaction_profile_actions.cpp APPEND PROPERTY
-    COMPILE_DEFINITIONS "INTERACTION_PROFILE_QA_PREFIXES=\"common.\",\"pcbnew.\"" )
+    COMPILE_DEFINITIONS "INTERACTION_PROFILE_QA_PREFIXES=\"common.\",\"pcbnew.\",\"3DViewer.\"" )
 
 # The right-click menu test reads the tools' sources, to compare KiCad's own menu with the interaction profile's
 set_property( SOURCE test_pcb_context_menu.cpp APPEND PROPERTY COMPILE_DEFINITIONS "KICAD_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"" )

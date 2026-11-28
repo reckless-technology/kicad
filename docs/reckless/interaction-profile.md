@@ -715,6 +715,31 @@ camera survives, and "live 3D refresh" defaults on. View keys in the viewer: `0`
 (`flipView`), `PgUp`/`PgDn` zoom. Mouse: `Shift`+right-drag orbits and right-drag pans (orbit is hard-coded to
 left-drag in `HIDPI_GL_3D_CANVAS::OnMouseMoveCamera`; add the modifier path and keep left-drag).
 
+**As built (step 10).** Keys, all in `altium.hotkeys`: `3` is `common.Control.show3DViewer` (so it is taken in every editor, where
+the only action that held it by default is the PCB editor's length tuner amplitude key, an in-command key that is step 5's), and
+in the viewer's own scope `3DViewer.` `2` is `showPcbEditor` (raises the editor that owns the viewer and changes neither
+view), `0` `viewTop`, `9` `rotateZ90`, `8` `viewIsometric` and `Ctrl+F` `flipView`; `PgUp` and `PgDn` zoom the viewer through
+the common zoom actions the table already binds. `rotateZ90` and `viewIsometric` are new `3DViewer.Control` actions with no stock key, and
+both are in the viewer's View menu. `rotateZ90` turns the board exactly 90 degrees about its own Z, clockwise seen from above
+like Rotate Z Clockwise (`CAMERA::QuarterTurnAboutZ()`); `viewIsometric` is the front view turned 45 degrees toward the right view
+and tilted so that the line of sight is 35.264 degrees above the board (`CAMERA::IsometricRotation()`), which foreshortens
+the three axes equally. `2` is not bound in the PCB editor, which is already 2D there, and the stock `2` (the tuner's spacing key) keeps it.
+**What `3` does while a command runs: nothing.** `ACTIONS::show3DViewer` has a hotkey condition in the PCB and footprint
+editors (`INTERACTION_PROFILE::MayRunIdleKey`), so under the profile it runs only with the tool stack empty; a router or
+tuner that gets its own `3` in step 5 (a context alias, which `RunHotKey` prefers) wins over it in any case, and until then
+routing has no `3` and nothing else takes it. Under the profile the tuner loses `3` (amplitude up), which
+the table now takes; step 5 restores it as an alias. **Camera:** closing the viewer hides it when the close can be
+vetoed (`INTERACTION_PROFILE::ShouldHide3DViewerOnClose`: the user's close, the menu's Close); the editor's close, and a board's or
+project's, force it and destroy it as before, and a viewer that is hidden when the editor loads another board is handed
+the new one at once (`PCB_BASE_FRAME::SetBoard`) and is not redrawn while hidden (`Update3DView`), only marked for a reload.
+**Live refresh** is the int `pcb_display.live_3d_refresh_mode` (-1 follows the profile, 0 off, 1 on) beside the older bool
+`pcb_display.live_3d_refresh`, which is read for the stock profile so a saved choice survives and is still written; the
+preference box writes both only when the user changes it, so an untouched box keeps following the profile. **Mouse:**
+`HIDPI_GL_3D_CANVAS::OnMouseMoveCamera` asks `INTERACTION_PROFILE::Camera3DDragMode`: left orbits, Shift+right orbits under the
+profile, right and middle pan by their own settings. The context menu is unaffected: the dispatcher turns a right
+press that moved into a drag, not a click, and the viewer's own `m_mouse_was_moved` guard, which stops the menu after a pan, covers
+a drag too short for that.
+
 Step 2, larger: show the 3D canvas inside the PCB frame in place of the 2D canvas, so `2` and `3` switch one
 document's view as in Altium. `PANEL_PREVIEW_3D_MODEL` shows what an embedded canvas needs: its own
 `BOARD_ADAPTER`, camera, tool manager and dispatcher. Swap the visible AUI center pane rather than showing both;

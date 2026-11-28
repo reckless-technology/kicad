@@ -1499,6 +1499,8 @@ bool EDA_3D_CANVAS::SetView3D( VIEW3D_TYPE aRequestedView )
     case VIEW3D_TYPE::VIEW3D_FRONT:
     case VIEW3D_TYPE::VIEW3D_BACK:
     case VIEW3D_TYPE::VIEW3D_FLIP:
+    case VIEW3D_TYPE::VIEW3D_ISOMETRIC:
+    case VIEW3D_TYPE::VIEW3D_ROTATE_Z_90:
         m_camera.SetInterpolateMode( CAMERA_INTERPOLATION::BEZIER );
         m_camera.SetT0_and_T1_current_T();
         m_camera.ViewCommand_T1( aRequestedView );

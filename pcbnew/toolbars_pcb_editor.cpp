@@ -619,7 +619,7 @@ void PCB_EDIT_FRAME::SetCurrentVariant( const wxString& aVariantName )
 
     GetCanvas()->Refresh();
 
-    Update3DView( true, GetPcbNewSettings()->m_Display.m_Live3DRefresh );
+    Update3DView( true, GetPcbNewSettings()->IsLive3DRefreshOn() );
     m_toolManager->ProcessEvent( EVENTS::SelectedItemsModified );
 }
 

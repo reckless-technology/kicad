@@ -79,6 +79,9 @@ public:
     int ToggleVisibility( const TOOL_EVENT& aEvent );
     int ToggleLayersManager( const TOOL_EVENT& aEvent );
 
+    /// Raise the PCB editor (or footprint editor) that owns this viewer.
+    int ShowPcbEditor( const TOOL_EVENT& aEvent );
+
     int ReloadBoard( const TOOL_EVENT& aEvent );
     int ToggleRaytracing( const TOOL_EVENT& aEvent );
     int ToggleShowMissingModels( const TOOL_EVENT& aEvent );

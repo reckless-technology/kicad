@@ -88,6 +88,7 @@ void EDA_3D_VIEWER_FRAME::doReCreateMenuBar()
     viewMenu->Add( EDA_3D_ACTIONS::viewLeft );
     viewMenu->Add( EDA_3D_ACTIONS::viewFront );
     viewMenu->Add( EDA_3D_ACTIONS::viewBack );
+    viewMenu->Add( EDA_3D_ACTIONS::viewIsometric );
 
     ACTION_MENU* rotateSubmenu = new ACTION_MENU( false, tool );
     rotateSubmenu->SetTitle( _( "Rotate Board" ) );
@@ -101,6 +102,7 @@ void EDA_3D_VIEWER_FRAME::doReCreateMenuBar()
     rotateSubmenu->AppendSeparator();
     rotateSubmenu->Add( EDA_3D_ACTIONS::rotateZCW );
     rotateSubmenu->Add( EDA_3D_ACTIONS::rotateZCCW );
+    rotateSubmenu->Add( EDA_3D_ACTIONS::rotateZ90 );
 
     ACTION_MENU* moveSubmenu = new ACTION_MENU( false, tool );
     moveSubmenu->SetTitle( _( "Move Board" ) );

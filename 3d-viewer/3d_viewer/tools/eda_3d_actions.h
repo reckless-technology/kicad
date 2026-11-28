@@ -58,6 +58,9 @@ public:
     static TOOL_ACTION moveDown;
     static TOOL_ACTION homeView;
     static TOOL_ACTION flipView;
+    static TOOL_ACTION viewIsometric;
+    static TOOL_ACTION rotateZ90;
+    static TOOL_ACTION showPcbEditor;
     static TOOL_ACTION toggleOrtho;
 
     static TOOL_ACTION viewFront;

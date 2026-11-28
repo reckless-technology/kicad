@@ -2232,7 +2232,7 @@ void BOARD_EDITOR_CONTROL::doCrossProbePcbToSch( const TOOL_EVENT& aEvent, bool 
     m_frame->SendSelectItemsToSch( selection.GetItems(), focusItem, aForce );
 
     // Update 3D viewer highlighting
-    m_frame->Update3DView( false, frame()->GetPcbNewSettings()->m_Display.m_Live3DRefresh );
+    m_frame->Update3DView( false, frame()->GetPcbNewSettings()->IsLive3DRefreshOn() );
 }
 
 

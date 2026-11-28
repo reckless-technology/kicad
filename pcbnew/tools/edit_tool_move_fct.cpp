@@ -1201,7 +1201,7 @@ bool EDIT_TOOL::doMoveSelection( const TOOL_EVENT& aEvent, BOARD_COMMIT* aCommit
 
     LEADER_MODE angleSnapMode = GetAngleSnapMode();
     bool eatFirstMouseUp = true;
-    bool allowRedraw3D   = cfg->m_Display.m_Live3DRefresh;
+    bool allowRedraw3D   = cfg->IsLive3DRefreshOn();
     bool showCourtyardConflicts = !m_isFootprintEditor && cfg->m_ShowCourtyardCollisions;
 
     const auto buildConstraintMoveSession =

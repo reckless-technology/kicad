@@ -23,6 +23,7 @@
 #include <layer_ids.h>
 #include <lset.h>
 #include <pcbnew_settings.h>
+#include <interaction_profile.h>
 #include <pgm_base.h>
 #include <router/pns_routing_settings.h>
 #include <settings/common_settings.h>
@@ -327,6 +328,9 @@ PCBNEW_SETTINGS::PCBNEW_SETTINGS() :
     m_params.emplace_back( new PARAM<bool>( "pcb_display.live_3d_refresh",
             &m_Display.m_Live3DRefresh, false ) );
 
+    m_params.emplace_back(
+            new PARAM<int>( "pcb_display.live_3d_refresh_mode", &m_Display.m_Live3DRefreshMode, -1, -1, 1 ) );
+
     m_params.emplace_back( new PARAM<bool>( "pcb_display.show_page_borders",
             &m_ShowPageLimits, true ) );
 
@@ -453,6 +457,13 @@ PCBNEW_SETTINGS::PCBNEW_SETTINGS() :
 
 
 PCBNEW_SETTINGS::~PCBNEW_SETTINGS() = default;
+
+
+bool PCBNEW_SETTINGS::IsLive3DRefreshOn() const
+{
+    return INTERACTION_PROFILE::IsLive3DRefreshOn( m_Display.m_Live3DRefreshMode, m_Display.m_Live3DRefresh,
+                                                   INTERACTION_PROFILE::Active() );
+}
 
 
 bool PCBNEW_SETTINGS::MigrateFromLegacy( wxConfigBase* aCfg )

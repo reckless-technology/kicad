@@ -46,6 +46,15 @@ enum class INTERACTION_PROFILE_ID
 };
 
 
+/// What a mouse drag in the 3D viewer does to the camera.
+enum class CAMERA_DRAG_MODE
+{
+    NONE,  ///< the drag does nothing
+    ORBIT, ///< the drag rotates the board
+    PAN    ///< the drag moves the board in the view
+};
+
+
 /// Action name to primary and alternate key, the shape of a hotkey file.
 using PROFILE_HOTKEY_MAP = std::map<std::string, std::pair<int, int>>;
 
@@ -142,6 +151,50 @@ public:
      * modifier. Only the Altium-style profile; stock KiCad treats Ctrl as an exclusive-or selection modifier.
      */
     static bool IsCtrlDragInversion( INTERACTION_PROFILE_ID aProfile, bool aIsCtrlHeld, bool aIsShiftHeld );
+
+    /**
+     * Whether the PCB editor refreshes an open 3D viewer as the board is edited. \a aSetting is
+     * `pcb_display.live_3d_refresh_mode` (-1 follows the profile, 0 is off, 1 is on). While it follows the profile, the
+     * Altium-style profile refreshes and the stock profile keeps what the older `pcb_display.live_3d_refresh` switch
+     * says, \a aIsLegacySwitchOn, so a stock user's saved choice survives.
+     */
+    static bool IsLive3DRefreshOn( int aSetting, bool aIsLegacySwitchOn, INTERACTION_PROFILE_ID aProfile );
+
+    /**
+     * Whether closing the 3D viewer hides it, so that its camera is still there when it is shown again, rather than
+     * destroying it. The Altium-style profile hides it when the user closes it (\a aCanVeto, the close event allows
+     * a veto); the PCB editor closing, which forces the close, always destroys it, and so does the stock profile.
+     */
+    static bool ShouldHide3DViewerOnClose( INTERACTION_PROFILE_ID aProfile, bool aCanVeto );
+
+    /**
+     * Whether a key that the Altium-style profile gives to an idle editor (`3`, the 3D viewer) may run now. Under that
+     * profile it runs only when no command is running (\a aIsToolStackEmpty), so a command that owns the key, or the
+     * router while it has none of its own, is not interrupted. The stock profile has no such limit.
+     */
+    static bool MayRunIdleKey( INTERACTION_PROFILE_ID aProfile, bool aIsToolStackEmpty );
+
+    /**
+     * What a drag with these buttons held does to the 3D viewer's camera. The left button always orbits. The Altium-style
+     * profile also orbits on Shift+right-drag; the right button without Shift, and the middle button, pan when their
+     * setting (\a aDoesRightDragPan, \a aDoesMiddleDragPan) says so, as in the stock profile, which has no orbit on the
+     * right button. Defined here, not in the static `common` library, because the 3D canvas that asks is in kicommon.
+     */
+    static CAMERA_DRAG_MODE Camera3DDragMode( INTERACTION_PROFILE_ID aProfile, bool aIsLeftDown, bool aIsMiddleDown,
+                                              bool aIsRightDown, bool aIsShiftHeld, bool aDoesMiddleDragPan,
+                                              bool aDoesRightDragPan )
+    {
+        if( aIsLeftDown )
+            return CAMERA_DRAG_MODE::ORBIT;
+
+        if( aProfile == INTERACTION_PROFILE_ID::ALTIUM && aIsRightDown && aIsShiftHeld )
+            return CAMERA_DRAG_MODE::ORBIT;
+
+        if( ( aIsMiddleDown && aDoesMiddleDragPan ) || ( aIsRightDown && aDoesRightDragPan ) )
+            return CAMERA_DRAG_MODE::PAN;
+
+        return CAMERA_DRAG_MODE::NONE;
+    }
 
     /**
      * Whether the symbol chooser's "Place repeated copies" starts checked: under the Altium-style profile it does, so

@@ -217,7 +217,14 @@ public:
         bool                 m_DisplayInvertYAxis;
 
         bool                 m_ForceShowFieldsWhenFPSelected;
+
+        /// Refresh an open 3D viewer as the board is edited. The older switch, still read and written, for the stock
+        /// profile; see m_Live3DRefreshMode.
         bool                 m_Live3DRefresh;
+
+        /// The same, as -1 follows the interaction profile (on in the Altium-style one, m_Live3DRefresh in stock),
+        /// 0 is off and 1 is on. Read it through IsLive3DRefreshOn().
+        int m_Live3DRefreshMode = -1;
 
         bool m_ShowConstraints; ///< Keep the geometric-constraint overlay shown.
     };
@@ -233,6 +240,9 @@ public:
 
     PCBNEW_SETTINGS();
     virtual ~PCBNEW_SETTINGS();
+
+    /// Whether an open 3D viewer is refreshed as the board is edited, under the interaction profile in force.
+    bool IsLive3DRefreshOn() const;
 
     virtual bool MigrateFromLegacy( wxConfigBase* aLegacyConfig ) override;
 

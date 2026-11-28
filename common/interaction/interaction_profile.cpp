@@ -93,6 +93,30 @@ bool INTERACTION_PROFILE::IsCtrlDragInversion( INTERACTION_PROFILE_ID aProfile, 
 }
 
 
+bool INTERACTION_PROFILE::IsLive3DRefreshOn( int aSetting, bool aIsLegacySwitchOn, INTERACTION_PROFILE_ID aProfile )
+{
+    if( aSetting == 0 )
+        return false;
+
+    if( aSetting > 0 )
+        return true;
+
+    return aProfile == INTERACTION_PROFILE_ID::ALTIUM || aIsLegacySwitchOn;
+}
+
+
+bool INTERACTION_PROFILE::ShouldHide3DViewerOnClose( INTERACTION_PROFILE_ID aProfile, bool aCanVeto )
+{
+    return aProfile == INTERACTION_PROFILE_ID::ALTIUM && aCanVeto;
+}
+
+
+bool INTERACTION_PROFILE::MayRunIdleKey( INTERACTION_PROFILE_ID aProfile, bool aIsToolStackEmpty )
+{
+    return aProfile != INTERACTION_PROFILE_ID::ALTIUM || aIsToolStackEmpty;
+}
+
+
 bool INTERACTION_PROFILE::IsRepeatedPlacementDefault( INTERACTION_PROFILE_ID aProfile )
 {
     return aProfile == INTERACTION_PROFILE_ID::ALTIUM;

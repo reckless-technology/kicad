@@ -25,6 +25,8 @@
 #include <gal/3d/camera.h>
 #include <wx/log.h>
 #include <algorithm>
+#include <cmath>
+#include <glm/gtc/constants.hpp>
 #include <3d_enums.h>
 
 // A helper function to normalize aAngle between -2PI and +2PI
@@ -148,9 +150,39 @@ bool CAMERA::ViewCommand_T1( VIEW3D_TYPE aRequestedView )
         RotateY_T1( glm::radians( 179.999f ) );
         return true;
 
+    case VIEW3D_TYPE::VIEW3D_ISOMETRIC:
+    {
+        Reset_T1();
+
+        const SFVEC3F isometric = IsometricRotation();
+
+        RotateX_T1( isometric.x );
+        RotateY_T1( isometric.y );
+        RotateZ_T1( isometric.z );
+        return true;
+    }
+
+    case VIEW3D_TYPE::VIEW3D_ROTATE_Z_90: RotateZ_T1( QuarterTurnAboutZ() ); return true;
+
     default:
         return false;
     }
+}
+
+
+float CAMERA::QuarterTurnAboutZ()
+{
+    return -glm::half_pi<float>();
+}
+
+
+SFVEC3F CAMERA::IsometricRotation()
+{
+    // The front view is a tilt of -90 degrees about X (the board edge on), the right view adds -90 about Z. Halfway
+    // between them is -45 about Z, and the tilt from the top view (none) is 90 degrees less the elevation.
+    const float elevation = std::atan( 1.0f / std::sqrt( 2.0f ) );
+
+    return SFVEC3F( -( glm::half_pi<float>() - elevation ), 0.0f, -glm::quarter_pi<float>() );
 }
 
 

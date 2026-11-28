@@ -3046,7 +3046,7 @@ HANDLER_RESULT<SyncSelectionResponse> API_HANDLER_PCB::handleSyncSelection( cons
         frame()->GetToolManager()->RunAction( PCB_ACTIONS::syncSelection, &items );
 
     // Update 3D viewer highlighting
-    frame()->Update3DView( false, frame()->GetPcbNewSettings()->m_Display.m_Live3DRefresh );
+    frame()->Update3DView( false, frame()->GetPcbNewSettings()->IsLive3DRefreshOn() );
 
     frame()->m_ProbingSchToPcb = false;
 

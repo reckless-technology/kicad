@@ -20,6 +20,8 @@
  */
 
 #include <gal/hidpi_gl_3D_canvas.h>
+#include <interaction_profile.h>
+#include <pgm_base.h>
 #include <settings/common_settings.h>
 
 const float HIDPI_GL_3D_CANVAS::m_delta_move_step_factor = 0.7f;
@@ -49,19 +51,22 @@ void HIDPI_GL_3D_CANVAS::OnMouseMoveCamera( wxMouseEvent& event )
 
     if( event.Dragging() )
     {
-        bool handled = false;
+        // Which button does what is the profile's to say: the Altium-style one also orbits on Shift+right-drag
+        // (read from the common settings, since INTERACTION_PROFILE::Active() is in the static common library)
+        COMMON_SETTINGS*             commonSettings = Pgm().GetCommonSettings();
+        const INTERACTION_PROFILE_ID profile =
+                commonSettings ? commonSettings->m_Input.interaction_profile : INTERACTION_PROFILE_ID::STOCK;
 
-        if( event.LeftIsDown() )
-        {
+        const CAMERA_DRAG_MODE mode = INTERACTION_PROFILE::Camera3DDragMode(
+                profile, event.LeftIsDown(), event.MiddleIsDown(), event.RightIsDown(), event.ShiftDown(),
+                m_settings.m_dragMiddle == MOUSE_DRAG_ACTION::PAN, m_settings.m_dragRight == MOUSE_DRAG_ACTION::PAN );
+
+        bool handled = mode != CAMERA_DRAG_MODE::NONE;
+
+        if( mode == CAMERA_DRAG_MODE::ORBIT )
             m_camera.Drag( nativePosition );
-            handled = true;
-        }
-        else if( ( event.MiddleIsDown() && m_settings.m_dragMiddle == MOUSE_DRAG_ACTION::PAN )
-                 || ( event.RightIsDown() && m_settings.m_dragRight == MOUSE_DRAG_ACTION::PAN ) )
-        {
+        else if( mode == CAMERA_DRAG_MODE::PAN )
             m_camera.Pan( nativePosition );
-            handled = true;
-        }
 
         if( handled )
         {

@@ -63,7 +63,7 @@ void PANEL_DISPLAY_OPTIONS::loadPCBSettings( PCBNEW_SETTINGS* aCfg )
     m_OptDisplayPadNumber->SetValue( aCfg->m_ViewersDisplay.m_DisplayPadNumbers );
     m_ShowNetNamesOption->SetSelection( aCfg->m_Display.m_NetNames );
     m_checkForceShowFieldsWhenFPSelected->SetValue( aCfg->m_Display.m_ForceShowFieldsWhenFPSelected );
-    m_live3Drefresh->SetValue( aCfg->m_Display.m_Live3DRefresh );
+    m_live3Drefresh->SetValue( aCfg->IsLive3DRefreshOn() );
     m_checkCrossProbeOnSelection->SetValue( aCfg->m_CrossProbing.on_selection );
     m_checkCrossProbeCenter->SetValue( aCfg->m_CrossProbing.center_on_items );
     m_checkCrossProbeZoom->SetValue( aCfg->m_CrossProbing.zoom_to_fit );
@@ -102,7 +102,14 @@ bool PANEL_DISPLAY_OPTIONS::TransferDataFromWindow()
             cfg->m_ViewersDisplay.m_DisplayPadNumbers = m_OptDisplayPadNumber->GetValue();
             cfg->m_Display.m_NetNames = m_ShowNetNamesOption->GetSelection();
             cfg->m_Display.m_ForceShowFieldsWhenFPSelected = m_checkForceShowFieldsWhenFPSelected->GetValue();
-            cfg->m_Display.m_Live3DRefresh = m_live3Drefresh->GetValue();
+
+            // A box left as it was keeps following the profile; one the user changed is theirs, on or off
+            if( m_live3Drefresh->GetValue() != cfg->IsLive3DRefreshOn() )
+            {
+                cfg->m_Display.m_Live3DRefresh = m_live3Drefresh->GetValue();
+                cfg->m_Display.m_Live3DRefreshMode = m_live3Drefresh->GetValue() ? 1 : 0;
+            }
+
             cfg->m_CrossProbing.on_selection = m_checkCrossProbeOnSelection->GetValue();
             cfg->m_CrossProbing.center_on_items = m_checkCrossProbeCenter->GetValue();
             cfg->m_CrossProbing.zoom_to_fit = m_checkCrossProbeZoom->GetValue();

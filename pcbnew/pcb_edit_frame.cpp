@@ -1199,6 +1199,15 @@ void PCB_EDIT_FRAME::setupUIConditions()
                 return GetUndoCommandCount() > 0;
             };
 
+    // `3` (the Altium-style profile's key for this) is an idle key: it never interrupts a command, the router included
+    auto mayRunIdleKey =
+            [this]( const SELECTION& )
+            {
+                return INTERACTION_PROFILE::MayRunIdleKey( INTERACTION_PROFILE::Active(), ToolStackIsEmpty() );
+            };
+
+    mgr->SetConditions( ACTIONS::show3DViewer, ACTION_CONDITIONS().HotkeyEnable( mayRunIdleKey ) );
+
     auto groupWithDesignBlockLink =
             [] ( const SELECTION& aSel )
             {
@@ -2499,7 +2508,7 @@ void PCB_EDIT_FRAME::OnModify()
     // A drill chart compares a counter but a stackup table regenerates its text, ~100 us at 32 layers
     RefreshGeneratedTables( *GetBoard() );
 
-    Update3DView( true, GetPcbNewSettings()->m_Display.m_Live3DRefresh );
+    Update3DView( true, GetPcbNewSettings()->IsLive3DRefreshOn() );
 
     if( !GetTitle().StartsWith( wxT( "*" ) ) )
         UpdateTitle();

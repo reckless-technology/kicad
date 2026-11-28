@@ -194,6 +194,30 @@ TOOL_ACTION EDA_3D_ACTIONS::flipView( TOOL_ACTION_ARGS()
         .Flags( AF_NONE )
         .Parameter( VIEW3D_TYPE::VIEW3D_FLIP ) );
 
+TOOL_ACTION EDA_3D_ACTIONS::viewIsometric( TOOL_ACTION_ARGS()
+        .Name( "3DViewer.Control.viewIsometric" )
+        .Scope( AS_ACTIVE )
+        .FriendlyName( _( "View Isometric" ) )
+        .Tooltip( _( "View the board from the front right, above" ) )
+        .Flags( AF_NONE )
+        .Parameter( VIEW3D_TYPE::VIEW3D_ISOMETRIC ) );
+
+TOOL_ACTION EDA_3D_ACTIONS::rotateZ90( TOOL_ACTION_ARGS()
+        .Name( "3DViewer.Control.rotateZ90" )
+        .Scope( AS_ACTIVE )
+        .FriendlyName( _( "Rotate 90 Degrees" ) )
+        .Tooltip( _( "Rotate the board view exactly 90 degrees about Z" ) )
+        .Icon( BITMAPS::rotate_cw_z )
+        .Flags( AF_NONE )
+        .Parameter( VIEW3D_TYPE::VIEW3D_ROTATE_Z_90 ) );
+
+TOOL_ACTION EDA_3D_ACTIONS::showPcbEditor( TOOL_ACTION_ARGS()
+        .Name( "3DViewer.Control.showPcbEditor" )
+        .Scope( AS_ACTIVE )
+        .FriendlyName( _( "PCB Editor" ) )
+        .Tooltip( _( "Raise the PCB editor window" ) )
+        .Flags( AF_NONE ) );
+
 TOOL_ACTION EDA_3D_ACTIONS::toggleOrtho( TOOL_ACTION_ARGS()
         .Name( "3DViewer.Control.toggleOrtho" )
         .Scope( AS_GLOBAL )

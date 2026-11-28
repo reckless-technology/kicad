@@ -88,6 +88,10 @@ enum class VIEW3D_TYPE
     VIEW3D_BACK,
     VIEW3D_FLIP,
 
+    // Presets of the Altium-style profile
+    VIEW3D_ISOMETRIC,   ///< Looking at the board from the front right, 35.264 degrees above its plane
+    VIEW3D_ROTATE_Z_90, ///< The board turned exactly 90 degrees about Z, clockwise seen from above
+
     // Movement commands
     VIEW3D_PAN_UP,
     VIEW3D_PAN_DOWN,

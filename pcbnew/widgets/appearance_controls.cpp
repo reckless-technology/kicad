@@ -1449,7 +1449,7 @@ void APPEARANCE_CONTROLS::SetObjectVisible( GAL_LAYER_ID aLayer, bool isVisible 
 
     board->SetElementVisibility( aLayer, isVisible );
 
-    m_frame->Update3DView( true, m_frame->GetPcbNewSettings()->m_Display.m_Live3DRefresh );
+    m_frame->Update3DView( true, m_frame->GetPcbNewSettings()->IsLive3DRefreshOn() );
 
     m_frame->GetCanvas()->GetView()->SetLayerVisible( aLayer, isVisible );
     m_frame->GetCanvas()->Refresh();
@@ -1491,7 +1491,7 @@ void APPEARANCE_CONTROLS::setVisibleLayers( const LSET& aLayers )
                     return !narrow || KIGFX::PCB_PAINTER::VisibleLayersChangeDrawing( item, before, aLayers );
                 } );
 
-        m_frame->Update3DView( true, m_frame->GetPcbNewSettings()->m_Display.m_Live3DRefresh );
+        m_frame->Update3DView( true, m_frame->GetPcbNewSettings()->IsLive3DRefreshOn() );
     }
 
     notifyLayerTabBar();
@@ -1552,7 +1552,7 @@ void APPEARANCE_CONTROLS::setVisibleObjects( GAL_SET aLayers )
             }
         }
 
-        m_frame->Update3DView( true, m_frame->GetPcbNewSettings()->m_Display.m_Live3DRefresh );
+        m_frame->Update3DView( true, m_frame->GetPcbNewSettings()->IsLive3DRefreshOn() );
     }
 }
 

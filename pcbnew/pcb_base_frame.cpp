@@ -152,7 +152,9 @@ void PCB_BASE_FRAME::Update3DView( bool aMarkDirty, bool aRefresh, const wxStrin
         if( aMarkDirty )
             draw3DFrame->ReloadRequest();
 
-        if( aRefresh )
+        // A viewer the profile has hidden is not drawn: it is marked for a reload above, and shown up to date when it
+        // is raised again
+        if( aRefresh && draw3DFrame->IsShown() )
             draw3DFrame->Redraw();
     }
 }
@@ -164,6 +166,12 @@ void PCB_BASE_FRAME::SetBoard( BOARD* aBoard, PROGRESS_REPORTER* aReporter [[may
     {
         delete m_pcb;
         m_pcb = aBoard;
+
+        // A hidden 3D viewer (the profile hides it on close) keeps the board it was given, which is gone now. Hand it
+        // the new one at once, so that nothing it still does can reach the old one. A shown viewer is reloaded by the
+        // caller, as it always was.
+        if( EDA_3D_VIEWER_FRAME* viewer3D = GetOur3DViewerFrame(); viewer3D && !viewer3D->IsShown() )
+            viewer3D->ReloadRequest();
 
         if( GetBoard() )
             GetBoard()->SetUserUnits( GetUserUnits() );

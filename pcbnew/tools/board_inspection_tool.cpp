@@ -2588,7 +2588,7 @@ int BOARD_INSPECTION_TOOL::HighlightItem( const TOOL_EVENT& aEvent )
     }
     m_frame->m_ProbingSchToPcb = false;
 
-    bool request3DviewRedraw = frame()->GetPcbNewSettings()->m_Display.m_Live3DRefresh;
+    bool request3DviewRedraw = frame()->GetPcbNewSettings()->IsLive3DRefreshOn();
 
     if( item && item->Type() != PCB_FOOTPRINT_T )
         request3DviewRedraw = false;

@@ -28,6 +28,7 @@
 #include <wx/dialog.h>
 #include "eda_3d_viewer_frame.h"
 #include "dialogs/appearance_controls_3D.h"
+#include <interaction_profile.h>
 #include <dialogs/eda_view_switcher.h>
 #include <eda_3d_viewer_settings.h>
 #include <3d_rendering/raytracing/render_3d_raytrace_ram.h>
@@ -478,7 +479,27 @@ void EDA_3D_VIEWER_FRAME::Exit3DFrame( wxCommandEvent &event [[maybe_unused]] )
 {
     wxLogTrace( m_logTrace, wxT( "EDA_3D_VIEWER_FRAME::Exit3DFrame" ) );
 
-    Close( true );
+    // A close that may be vetoed lets canCloseWindow() hide the viewer, under the profile that does; a forced one
+    // destroys it
+    Close( !INTERACTION_PROFILE::ShouldHide3DViewerOnClose( INTERACTION_PROFILE::Active(), true ) );
+}
+
+
+bool EDA_3D_VIEWER_FRAME::canCloseWindow( wxCloseEvent& aCloseEvent )
+{
+    // The user closing the viewer hides it under the Altium-style profile, so that the camera is where it was left when
+    // the viewer is shown again. The editor closing, or the program ending, forces the close and gets the destruction
+    // of EDA_BASE_FRAME::windowClosing(), with the canvas and the board adapter, so a hidden viewer never outlives its
+    // editor.
+    if( !INTERACTION_PROFILE::ShouldHide3DViewerOnClose( INTERACTION_PROFILE::Active(), aCloseEvent.CanVeto() ) )
+        return true;
+
+    Hide();
+
+    if( wxWindow* editor = GetParent() )
+        editor->Raise();
+
+    return false;
 }
 
 

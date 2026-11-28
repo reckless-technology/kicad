@@ -227,6 +227,17 @@ public:
 
     bool ViewCommand_T1( VIEW3D_TYPE aRequestedView );
 
+    /// The turn of VIEW3D_ROTATE_Z_90 about Z, in radians: negative is clockwise seen from above, like Rotate Z Clockwise.
+    static float QuarterTurnAboutZ();
+
+    /**
+     * The auxiliary rotation angles (about X, Y and Z, in radians, as the camera applies them) of VIEW3D_ISOMETRIC: the
+     * front view turned 45 degrees about Z toward the right view, then tilted so that the view is 35.264 degrees
+     * (the arctangent of 1 over the square root of 2) above the board's plane, which draws all three axes equally
+     * foreshortened.
+     */
+    static SFVEC3F IsometricRotation();
+
     /**
      * Rotates the camera in screen plane.
      */

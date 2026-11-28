@@ -836,7 +836,7 @@ void BOARD_COMMIT::Push( const wxString& aMessage, int aCommitFlags )
         if( !( aCommitFlags & SKIP_SET_DIRTY ) )
             frame->OnModify();
         else
-            frame->Update3DView( true, frame->GetPcbNewSettings()->m_Display.m_Live3DRefresh );
+            frame->Update3DView( true, frame->GetPcbNewSettings()->IsLive3DRefreshOn() );
 
         // Ensure the message panel is updated after committing changes.
         // By default (i.e. if no event posted), display the updated board info
