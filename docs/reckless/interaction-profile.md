@@ -433,6 +433,21 @@ Preferences > Mouse and Touchpad:
 The wheel mapping is the owner's own Altium setting (wheel scrolls, `Ctrl` is required to zoom), read from that
 installation, not just Altium's default.
 
+**As built (step 4).** The aliases are `eeschema.InteractiveMove.*WhileMoving` and `eeschema.InteractiveDrawing.*WhilePlacing`
+(rotate counterclockwise and clockwise, mirror horizontally and vertically, properties) and `pcbnew.InteractiveEdit.*WhileMoving` and
+`pcbnew.InteractiveDrawing.*WhilePlacing` (rotate both ways, flip, properties). An alias is a `TOOL_ACTION_ARGS::ForwardTo()`
+action: `ACTION_MANAGER::RunHotKey` picks the context action of the tool highest on the stack, as it always did for
+a key two actions share, and runs the action it forwards to. The sequence roots are global, so a running command's alias wins
+their letter and the root runs when no such command does. `input.right_click_cancels` is switched with the profile
+(`INTERACTION_PROFILE::SetActive()`); the cancel it makes carries `TOOL_EVENT::CANCEL_FROM_RIGHT_CLICK` so a loop can tell it from Esc,
+and only the wire tool does (it restores the wires as they stood at the last click and drops those on the cursor).
+The key list is `common.Control.showToolContextMenu`, which makes `TOOL_MANAGER::DispatchContextMenu()` open the first menu of
+the tools on the stack whatever its trigger. `Tab` left `Next Net Item` (now Edit > Select > Next Net Item, `E S N`; `Shift+Tab` still
+goes to the previous one) and `Skip` (its command's right-click menu). The mouse preset is applied once per
+settings file (`input.altium_mouse_preset_applied`, and `editing.altium_mouse_preset_applied` for the PCB editor's Ctrl+click highlight),
+when a frame starts or the profile is chosen in Preferences, and announced in the info bar.
+`Shift+Ctrl`+click adds the net under the cursor to the highlighted ones when Ctrl+click highlights (`highlightNetAdd`).
+
 ### 5.7 PCB views
 
 **Appearance by key.** `L` shows the Appearance panel and puts focus on its Layers tab; `Ctrl+D` on its Objects

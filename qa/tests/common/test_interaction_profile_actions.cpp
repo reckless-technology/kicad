@@ -233,9 +233,11 @@ BOOST_AUTO_TEST_CASE( TheContextAliasesAreBoundOnlyByTheAltiumProfile )
             const std::string scope = INTERACTION_PROFILE::ScopeOf( alias->GetName() );
 
             // Stock KiCad never reaches it by a key
-            BOOST_CHECK( ACTION_MANAGER::ResolveHotKey( *alias, std::map<std::string, int>(), PROFILE_HOTKEY_LAYER(),
-                                                        PROFILE_HOTKEY_MAP(), scope )
-                         == std::pair<int, int>( 0, 0 ) );
+            std::pair<int, int> stockKeys = ACTION_MANAGER::ResolveHotKey(
+                    *alias, std::map<std::string, int>(), PROFILE_HOTKEY_LAYER(), PROFILE_HOTKEY_MAP(), scope );
+
+            BOOST_CHECK_EQUAL( stockKeys.first, 0 );
+            BOOST_CHECK_EQUAL( stockKeys.second, 0 );
 
             // The Altium-style table binds it
             std::pair<int, int> keys = ACTION_MANAGER::ResolveHotKey( *alias, std::map<std::string, int>(), altium,
