@@ -105,6 +105,35 @@ bool INTERACTION_PROFILE::IsLive3DRefreshOn( int aSetting, bool aIsLegacySwitchO
 }
 
 
+bool INTERACTION_PROFILE::IsAutoTrackWidthOn( int aSetting, bool aIsLegacySwitchOn, INTERACTION_PROFILE_ID aProfile )
+{
+    if( aSetting == 0 )
+        return false;
+
+    if( aSetting > 0 )
+        return true;
+
+    return aProfile == INTERACTION_PROFILE_ID::ALTIUM || aIsLegacySwitchOn;
+}
+
+
+int INTERACTION_PROFILE::AutoTrackWidthSettingToStore( int aSetting, bool aIsOn, bool aIsLegacySwitchOn,
+                                                       INTERACTION_PROFILE_ID aProfile )
+{
+    if( aSetting != 0 && aSetting != 1 && aIsOn == IsAutoTrackWidthOn( -1, aIsLegacySwitchOn, aProfile ) )
+        return -1;
+
+    return aIsOn ? 1 : 0;
+}
+
+
+bool INTERACTION_PROFILE::DoesClickAttemptFinish( INTERACTION_PROFILE_ID aProfile, bool aIsCtrlHeld, bool aIsShiftHeld,
+                                                  bool aIsAltHeld )
+{
+    return aProfile == INTERACTION_PROFILE_ID::ALTIUM && aIsCtrlHeld && !aIsShiftHeld && !aIsAltHeld;
+}
+
+
 bool INTERACTION_PROFILE::ShouldHide3DViewerOnClose( INTERACTION_PROFILE_ID aProfile, bool aCanVeto )
 {
     return aProfile == INTERACTION_PROFILE_ID::ALTIUM && aCanVeto;

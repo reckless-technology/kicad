@@ -210,9 +210,10 @@ BOOST_AUTO_TEST_CASE( TheContextAliasesAreBoundOnlyByTheAltiumProfile )
 
     for( const std::string& prefix : std::vector<std::string>( { INTERACTION_PROFILE_QA_PREFIXES } ) )
     {
-        // The schematic editor's move and placement loops have five aliases each, the PCB editor's four, and the
-        // length tuner has one (amplitude up, which 3 would otherwise take for the 3D viewer)
-        expected += prefix == "eeschema." ? 10 : prefix == "pcbnew." ? 9 : 0;
+        // The schematic editor's move and placement loops have five aliases each, the PCB editor's four each, the length
+        // tuner four (amplitude and spacing, down and up) and the router five (the router mode, the next track width and
+        // via size, and the next and previous layer)
+        expected += prefix == "eeschema." ? 10 : prefix == "pcbnew." ? 17 : 0;
     }
 
     for( const TOOL_ACTION* alias : ACTION_MANAGER::GetActionList() )

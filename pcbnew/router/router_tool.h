@@ -81,6 +81,14 @@ public:
     int SettingsDialog( const TOOL_EVENT& aEvent );
     int ChangeRouterMode( const TOOL_EVENT& aEvent );
     int CycleRouterMode( const TOOL_EVENT& aEvent );
+
+    /// Flip the look-ahead for the session, and the removal of loops (note 5.8)
+    int ToggleLookAhead( const TOOL_EVENT& aEvent );
+    int ToggleLoopRemoval( const TOOL_EVENT& aEvent );
+
+    /// Pop up the track widths or the via sizes at the cursor
+    int ShowTrackWidthMenu( const TOOL_EVENT& aEvent );
+    int ShowViaSizeMenu( const TOOL_EVENT& aEvent );
     int CustomTrackWidthDialog( const TOOL_EVENT& aEvent );
 
     PNS::PNS_MODE GetRouterMode();
@@ -112,6 +120,12 @@ private:
     /// Tell the heads-up display what the router is doing: its settings and sizes as they are now, or nothing once the
     /// route is over. Reads the router and keeps nothing of it.
     void updateHeadsUpRoute();
+
+    /// Show the half of the track width menu that \a aPart (a TRACK_WIDTH_MENU::PART) names, at the cursor.
+    void showTrackViaSizePopup( int aPart );
+
+    /// Whether \a aEvent is the click that attempts to finish the route (Ctrl+click under the Altium-style profile).
+    bool isFinishClick( const TOOL_EVENT& aEvent ) const;
 
     void performRouting( VECTOR2D aStartPosition );
     void performDragging( int aMode = PNS::DM_ANY );

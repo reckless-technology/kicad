@@ -1297,11 +1297,29 @@ TOOL_ACTION PCB_ACTIONS::flipWhilePlacing( TOOL_ACTION_ARGS()
         .FriendlyName( _( "Change Side / Flip While Placing" ) )
         .ForwardTo( PCB_ACTIONS::flip ) );
 
+TOOL_ACTION PCB_ACTIONS::amplDecreaseWhileTuning( TOOL_ACTION_ARGS()
+        .Name( "pcbnew.InteractiveDrawing.amplDecreaseWhileTuning" )
+        .Scope( AS_CONTEXT )
+        .FriendlyName( _( "Decrease Amplitude While Tuning" ) )
+        .ForwardTo( PCB_ACTIONS::amplDecrease ) );
+
 TOOL_ACTION PCB_ACTIONS::amplIncreaseWhileTuning( TOOL_ACTION_ARGS()
         .Name( "pcbnew.InteractiveDrawing.amplIncreaseWhileTuning" )
         .Scope( AS_CONTEXT )
         .FriendlyName( _( "Increase Amplitude While Tuning" ) )
         .ForwardTo( PCB_ACTIONS::amplIncrease ) );
+
+TOOL_ACTION PCB_ACTIONS::spacingDecreaseWhileTuning( TOOL_ACTION_ARGS()
+        .Name( "pcbnew.InteractiveDrawing.spacingDecreaseWhileTuning" )
+        .Scope( AS_CONTEXT )
+        .FriendlyName( _( "Decrease Spacing While Tuning" ) )
+        .ForwardTo( PCB_ACTIONS::spacingDecrease ) );
+
+TOOL_ACTION PCB_ACTIONS::spacingIncreaseWhileTuning( TOOL_ACTION_ARGS()
+        .Name( "pcbnew.InteractiveDrawing.spacingIncreaseWhileTuning" )
+        .Scope( AS_CONTEXT )
+        .FriendlyName( _( "Increase Spacing While Tuning" ) )
+        .ForwardTo( PCB_ACTIONS::spacingIncrease ) );
 
 TOOL_ACTION PCB_ACTIONS::propertiesWhilePlacing( TOOL_ACTION_ARGS()
         .Name( "pcbnew.InteractiveDrawing.propertiesWhilePlacing" )
@@ -2714,6 +2732,20 @@ TOOL_ACTION PCB_ACTIONS::layerPrev( TOOL_ACTION_ARGS()
         .FriendlyName( _( "Switch to Previous Layer" ) )
         .Flags( AF_NOTIFY ) );
 
+TOOL_ACTION PCB_ACTIONS::layerNextVisible( TOOL_ACTION_ARGS()
+        .Name( "pcbnew.Control.layerNextVisible" )
+        .Scope( AS_GLOBAL )
+        .FriendlyName( _( "Switch to Next Visible Layer" ) )
+        .Tooltip( _( "Make the next visible layer, copper or not, the active layer" ) )
+        .Flags( AF_NOTIFY ) );
+
+TOOL_ACTION PCB_ACTIONS::layerPrevVisible( TOOL_ACTION_ARGS()
+        .Name( "pcbnew.Control.layerPrevVisible" )
+        .Scope( AS_GLOBAL )
+        .FriendlyName( _( "Switch to Previous Visible Layer" ) )
+        .Tooltip( _( "Make the previous visible layer, copper or not, the active layer" ) )
+        .Flags( AF_NOTIFY ) );
+
 TOOL_ACTION PCB_ACTIONS::layerToggle( TOOL_ACTION_ARGS()
         .Name( "pcbnew.Control.layerToggle" )
         .Scope( AS_GLOBAL )
@@ -3368,6 +3400,61 @@ TOOL_ACTION PCB_ACTIONS::routerAttemptFinish( TOOL_ACTION_ARGS()
         .FriendlyName( _( "Attempt Finish" ) )
         .Tooltip( _( "Attempts to complete current route to nearest ratsnest end." ) )
         .Parameter<bool*>( nullptr ) );
+
+TOOL_ACTION PCB_ACTIONS::cycleRouterModeWhileRouting( TOOL_ACTION_ARGS()
+        .Name( "pcbnew.InteractiveRouter.cycleRouterModeWhileRouting" )
+        .Scope( AS_CONTEXT )
+        .FriendlyName( _( "Cycle Router Mode While Routing" ) )
+        .ForwardTo( PCB_ACTIONS::cycleRouterMode ) );
+
+TOOL_ACTION PCB_ACTIONS::trackWidthIncWhileRouting( TOOL_ACTION_ARGS()
+        .Name( "pcbnew.InteractiveRouter.trackWidthIncWhileRouting" )
+        .Scope( AS_CONTEXT )
+        .FriendlyName( _( "Switch Track Width to Next While Routing" ) )
+        .ForwardTo( PCB_ACTIONS::trackWidthInc ) );
+
+TOOL_ACTION PCB_ACTIONS::viaSizeIncWhileRouting( TOOL_ACTION_ARGS()
+        .Name( "pcbnew.InteractiveRouter.viaSizeIncWhileRouting" )
+        .Scope( AS_CONTEXT )
+        .FriendlyName( _( "Increase Via Size While Routing" ) )
+        .ForwardTo( PCB_ACTIONS::viaSizeInc ) );
+
+TOOL_ACTION PCB_ACTIONS::layerNextWhileRouting( TOOL_ACTION_ARGS()
+        .Name( "pcbnew.InteractiveRouter.layerNextWhileRouting" )
+        .Scope( AS_CONTEXT )
+        .FriendlyName( _( "Switch to Next Layer While Routing" ) )
+        .ForwardTo( PCB_ACTIONS::layerNext ) );
+
+TOOL_ACTION PCB_ACTIONS::layerPrevWhileRouting( TOOL_ACTION_ARGS()
+        .Name( "pcbnew.InteractiveRouter.layerPrevWhileRouting" )
+        .Scope( AS_CONTEXT )
+        .FriendlyName( _( "Switch to Previous Layer While Routing" ) )
+        .ForwardTo( PCB_ACTIONS::layerPrev ) );
+
+TOOL_ACTION PCB_ACTIONS::routerToggleLookAhead( TOOL_ACTION_ARGS()
+        .Name( "pcbnew.InteractiveRouter.ToggleLookAhead" )
+        .Scope( AS_CONTEXT )
+        .FriendlyName( _( "Toggle Look-Ahead" ) )
+        .Tooltip( _( "Switch between fixing every segment up to the cursor and only those before the last one, "
+                     "until the program is closed. The stored setting does not change." ) ) );
+
+TOOL_ACTION PCB_ACTIONS::routerToggleLoopRemoval( TOOL_ACTION_ARGS()
+        .Name( "pcbnew.InteractiveRouter.ToggleLoopRemoval" )
+        .Scope( AS_CONTEXT )
+        .FriendlyName( _( "Toggle Loop Removal" ) )
+        .Tooltip( _( "Switch the removal of loops made by the route you lay on or off" ) ) );
+
+TOOL_ACTION PCB_ACTIONS::routerShowTrackWidthMenu( TOOL_ACTION_ARGS()
+        .Name( "pcbnew.InteractiveRouter.ShowTrackWidthMenu" )
+        .Scope( AS_CONTEXT )
+        .FriendlyName( _( "Choose Track Width..." ) )
+        .Tooltip( _( "Show the list of track widths at the cursor" ) ) );
+
+TOOL_ACTION PCB_ACTIONS::routerShowViaSizeMenu( TOOL_ACTION_ARGS()
+        .Name( "pcbnew.InteractiveRouter.ShowViaSizeMenu" )
+        .Scope( AS_CONTEXT )
+        .FriendlyName( _( "Choose Via Size..." ) )
+        .Tooltip( _( "Show the list of via sizes at the cursor" ) ) );
 
 TOOL_ACTION PCB_ACTIONS::routerRouteSelected( TOOL_ACTION_ARGS()
         .Name( "pcbnew.InteractiveRouter.RouteSelected" )

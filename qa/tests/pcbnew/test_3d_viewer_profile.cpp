@@ -171,7 +171,7 @@ BOOST_AUTO_TEST_CASE( PageUpAndPageDownZoomTheViewerUnderTheProfile )
 }
 
 
-BOOST_AUTO_TEST_CASE( TheTunerKeepsItsKeysAndIdleThreeIsTheViewer )
+BOOST_AUTO_TEST_CASE( TheTunerHasItsOwnKeysAndIdleThreeIsTheViewer )
 {
     PROFILE_HOTKEY_LAYER altium = INTERACTION_PROFILE::BuildHotKeyLayer( INTERACTION_PROFILE_ID::ALTIUM );
 
@@ -179,47 +179,61 @@ BOOST_AUTO_TEST_CASE( TheTunerKeepsItsKeysAndIdleThreeIsTheViewer )
     BOOST_CHECK_EQUAL( altium.m_bindings.at( ACTIONS::show3DViewer.GetName() ).first, '3' );
     BOOST_CHECK( ACTIONS::show3DViewer.GetScope() == AS_GLOBAL );
 
-    // While tuning, 3 is the tuner's alias, a context action of the drawing tool that runs the tuner, forwarding to the
-    // stock amplitude-up action; RunHotKey prefers a context action of a tool on the stack to a global one
-    const TOOL_ACTION& alias = PCB_ACTIONS::amplIncreaseWhileTuning;
+    // While tuning, the tuner's keys are context aliases of the drawing tool that runs the tuner, forwarding to the
+    // stock actions (step 5 moved them to the comma and period for the amplitude, and 3 and 4 for the spacing);
+    // RunHotKey prefers a context action of a tool on the stack to a global one
+    struct ALIAS
+    {
+        const TOOL_ACTION& alias;
+        const TOOL_ACTION& target;
+        int                key;
+    };
 
-    BOOST_CHECK( alias.GetScope() == AS_CONTEXT );
-    BOOST_CHECK( alias.GetForwardTarget() == &PCB_ACTIONS::amplIncrease );
-    BOOST_CHECK_EQUAL( alias.GetToolName(), "pcbnew.InteractiveDrawing" );
-    BOOST_CHECK_EQUAL( altium.m_bindings.at( alias.GetName() ).first, '3' );
+    for( const ALIAS& entry : { ALIAS{ PCB_ACTIONS::amplDecreaseWhileTuning, PCB_ACTIONS::amplDecrease, ',' },
+                                ALIAS{ PCB_ACTIONS::amplIncreaseWhileTuning, PCB_ACTIONS::amplIncrease, '.' },
+                                ALIAS{ PCB_ACTIONS::spacingDecreaseWhileTuning, PCB_ACTIONS::spacingDecrease, '3' },
+                                ALIAS{ PCB_ACTIONS::spacingIncreaseWhileTuning, PCB_ACTIONS::spacingIncrease, '4' } } )
+    {
+        BOOST_TEST_CONTEXT( entry.alias.GetName() )
+        {
+            BOOST_CHECK( entry.alias.GetScope() == AS_CONTEXT );
+            BOOST_CHECK( entry.alias.GetForwardTarget() == &entry.target );
+            BOOST_CHECK_EQUAL( entry.alias.GetToolName(), "pcbnew.InteractiveDrawing" );
+            BOOST_CHECK_EQUAL( altium.m_bindings.at( entry.alias.GetName() ).first, entry.key );
+
+            // A context alias is never stripped of its key
+            BOOST_CHECK_EQUAL(
+                    INTERACTION_PROFILE::ApplyHotKeyLayer( altium, entry.alias.GetName(), { 0, 0 }, "pcbnew.", true )
+                            .first,
+                    entry.key );
+        }
+    }
 
     // The tuner's own tool is the one that handles the forwarded action
     BOOST_CHECK_EQUAL( PCB_ACTIONS::amplIncrease.GetName(), "pcbnew.lengthTuner.AmplIncrease" );
 
-    // A context alias is never stripped of its key
-    BOOST_CHECK_EQUAL(
-            INTERACTION_PROFILE::ApplyHotKeyLayer( altium, alias.GetName(), { 0, 0 }, "pcbnew.", true ).first,
-            altium.m_bindings.at( alias.GetName() ).first );
-
-    // The tuner's other keys are not bound by the table and keep their stock keys: 1 and 2 for the spacing, 4 for the
-    // amplitude down. (2, the viewer's key for the editor, is taken in the viewer's scope only.)
-    struct KEEP
+    // The stock tuner actions keep no key of their own under the profile: 3 is the viewer's, and the others are the
+    // router's, the comma's and the period's
+    for( const TOOL_ACTION* stockAction : { &PCB_ACTIONS::spacingIncrease, &PCB_ACTIONS::spacingDecrease,
+                                            &PCB_ACTIONS::amplIncrease, &PCB_ACTIONS::amplDecrease } )
     {
-        const TOOL_ACTION* action;
-        int                key;
-    };
-
-    for( const KEEP& keep : { KEEP{ &PCB_ACTIONS::spacingIncrease, '1' }, KEEP{ &PCB_ACTIONS::spacingDecrease, '2' },
-                              KEEP{ &PCB_ACTIONS::amplDecrease, '4' } } )
-    {
-        BOOST_CHECK_EQUAL( keep.action->GetDefaultHotKey(), keep.key );
-        BOOST_CHECK( altium.m_bindings.find( keep.action->GetName() ) == altium.m_bindings.end() );
-        BOOST_CHECK_EQUAL( INTERACTION_PROFILE::ApplyHotKeyLayer( altium, keep.action->GetName(), { keep.key, 0 },
-                                                                  "pcbnew.", false )
+        BOOST_CHECK_EQUAL( INTERACTION_PROFILE::ApplyHotKeyLayer( altium, stockAction->GetName(),
+                                                                  { stockAction->GetDefaultHotKey(), 0 }, "pcbnew.",
+                                                                  false )
                                    .first,
-                           keep.key );
+                           0 );
     }
 
     // The stock profile binds no alias key at all
     PROFILE_HOTKEY_LAYER stock = INTERACTION_PROFILE::BuildHotKeyLayer( INTERACTION_PROFILE_ID::STOCK );
 
-    BOOST_CHECK( stock.m_bindings.find( alias.GetName() ) == stock.m_bindings.end() );
-    BOOST_CHECK_EQUAL( alias.GetDefaultHotKey(), 0 );
+    for( const TOOL_ACTION* alias :
+         { &PCB_ACTIONS::amplDecreaseWhileTuning, &PCB_ACTIONS::amplIncreaseWhileTuning,
+           &PCB_ACTIONS::spacingDecreaseWhileTuning, &PCB_ACTIONS::spacingIncreaseWhileTuning } )
+    {
+        BOOST_CHECK( stock.m_bindings.find( alias->GetName() ) == stock.m_bindings.end() );
+        BOOST_CHECK_EQUAL( alias->GetDefaultHotKey(), 0 );
+    }
 }
 
 

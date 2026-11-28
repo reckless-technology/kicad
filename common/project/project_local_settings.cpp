@@ -38,6 +38,7 @@ PROJECT_LOCAL_SETTINGS::PROJECT_LOCAL_SETTINGS( PROJECT* aProject, const wxStrin
         m_ContrastModeDisplay( HIGH_CONTRAST_MODE::NORMAL ),
         m_NetColorMode( NET_COLOR_MODE::RATSNEST ),
         m_AutoTrackWidth( true ),
+        m_AutoTrackWidthMode( -1 ),
         m_ZoneDisplayMode( ZONE_DISPLAY_MODE::SHOW_FILLED ),
         m_PrototypeZoneFill( false ),
         m_TrackOpacity( aOpacityDefaults.m_TrackOpacity ),
@@ -210,6 +211,9 @@ PROJECT_LOCAL_SETTINGS::PROJECT_LOCAL_SETTINGS( PROJECT* aProject, const wxStrin
 
     m_params.emplace_back( new PARAM<bool>( "board.auto_track_width",
                            &m_AutoTrackWidth, true ) );
+
+    // -1 follows the interaction profile, 0 is off and 1 is on; the switch above is what the stock profile reads
+    m_params.emplace_back( new PARAM<int>( "board.auto_track_width_mode", &m_AutoTrackWidthMode, -1, -1, 1 ) );
 
     m_params.emplace_back( new PARAM_ENUM<ZONE_DISPLAY_MODE>( "board.zone_display_mode",
                            &m_ZoneDisplayMode,

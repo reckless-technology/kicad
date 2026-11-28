@@ -36,6 +36,7 @@ set( QA_PCBNEW_SRCS
     test_creepage_groove_order.cpp
     test_3d_viewer_layer_presets.cpp
     test_3d_viewer_profile.cpp
+    test_routing_keys_profile.cpp
     test_array_pad_name_provider.cpp
     test_barcode_load_save.cpp
     test_reckless_theme_round_trip.cpp

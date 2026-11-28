@@ -83,6 +83,8 @@ public:
     int LayerSwitch( const TOOL_EVENT& aEvent );
     int LayerNext( const TOOL_EVENT& aEvent );
     int LayerPrev( const TOOL_EVENT& aEvent );
+    int LayerNextVisible( const TOOL_EVENT& aEvent );
+    int LayerPrevVisible( const TOOL_EVENT& aEvent );
     int LayerToggle( const TOOL_EVENT& aEvent );
     int LayerAlphaInc( const TOOL_EVENT& aEvent );
     int LayerAlphaDec( const TOOL_EVENT& aEvent );
@@ -151,6 +153,9 @@ public:
 private:
     /// Sets up handlers for various events.
     void setTransitions() override;
+
+    /// Make the layer \a aStep (1 or -1) tabs along the layer tab bar's order the active layer.
+    int stepVisibleLayer( int aStep );
 
     /**
      * We have bug reports indicating that some new users confuse zone filling/unfilling with

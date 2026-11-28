@@ -13,9 +13,10 @@
 #   - Ctrl+Shift+G: the schematic toggles the visible grid and the PCB editor the grid overrides, the same clash. The
 #     PCB editor's is its stock key; the schematic's is the sequence V G V.
 #   - Right-click and Esc in a command: right-click is the input.right_click_cancels setting, Esc is KiCad's own.
-#   - The in-command keys (Space, Shift+Space, L, X, Y and Tab) are bound below to context aliases, which act only while
-#     the move or placement loop they belong to runs; with no command running, those keys mean what they mean idle.
-#   - Routing keys, in-command and sticky: step 5.
+#   - The in-command keys (Space, Shift+Space, L, X, Y and Tab, and the router's and the length tuner's) are bound below to
+#     context actions and aliases, which act only while the command they belong to runs; with no command running, those keys mean what they mean idle.
+#   - Routing keys that Altium has and KiCad's router has no action for: `6` (via type), `5`, `Shift+6` and `Shift+B` (the
+#     differential pair's via pattern and sources), the length gauge and the accordions (5.8, as built).
 #   - Anything that needs a new action and is not built yet: in-place editing.
 #   - Ctrl+Space, the flip of the corner of the wires being dragged: the drag builds its corners as the pointer moves and
 #     keeps no posture to flip (docs/reckless/interaction-profile.md, 5.9, as built).
@@ -128,10 +129,47 @@ pcbnew.InteractiveDrawing.rotateCcwWhilePlacing	Space
 pcbnew.InteractiveDrawing.rotateCwWhilePlacing	Shift+Space
 pcbnew.InteractiveDrawing.flipWhilePlacing	L
 pcbnew.InteractiveDrawing.propertiesWhilePlacing	Tab
-# The length tuner's amplitude-up key is 3 as in stock, which the show-3D-viewer key below takes from the action itself.
-# The alias gives it back while the drawing tool, which runs the tuner, is on the stack; idle, 3 is the 3D viewer.
-# The tuner's 1, 2 and 4 are not bound by this table and keep their keys.
-pcbnew.InteractiveDrawing.amplIncreaseWhileTuning	3
+# The length tuner's keys (5.8, step 5): `,` and `.` step the amplitude down and up, `3` and `4` the spacing down and up.
+# KiCad's tuner has no miter or corner action, so Altium's `1` and `2` of the tuner are not bound. The aliases are context
+# actions of the drawing tool, which runs the tuner, and act while it is on the stack; the keys of the stock tuner actions
+# (`1` to `4`, global) are taken by this table and by the router's keys below. Idle, 3 is the 3D viewer.
+pcbnew.InteractiveDrawing.amplDecreaseWhileTuning	,
+pcbnew.InteractiveDrawing.amplIncreaseWhileTuning	.
+pcbnew.InteractiveDrawing.spacingDecreaseWhileTuning	3
+pcbnew.InteractiveDrawing.spacingIncreaseWhileTuning	4
+# The router's keys while routing (5.8, step 5). The first group is bound to the router's own context actions, which act
+# only while the router is on the stack and so leave the key what it means idle: Space and Shift+Space turn the corner
+# (the posture and the corner mode), 2 places a via (on the paired layer, not Altium's stay-on-layer via), 9 continues
+# from the other end, and Ctrl+L picks the layer for a via. The second group are aliases of global actions: Shift+R cycles
+# the router mode, 3 and 4 step to the next track width and via size, and numpad + and - (and + and -) change layer,
+# inserting a via, where idle they step through every visible layer (below). Backspace (undo the segment), Enter (click)
+# and Tab (the size dialog, above) are the keys KiCad has already, and are not bound here.
+pcbnew.InteractiveRouter.SwitchPosture	Space
+pcbnew.InteractiveRouter.SwitchRoundingToNext	Shift+Space
+pcbnew.InteractiveRouter.PlaceVia	2
+pcbnew.InteractiveRouter.ContinueFromEnd	9
+pcbnew.InteractiveRouter.SelLayerAndPlaceVia	Ctrl+L
+pcbnew.InteractiveRouter.ToggleLookAhead	1
+pcbnew.InteractiveRouter.ToggleLoopRemoval	Shift+D
+pcbnew.InteractiveRouter.ShowTrackWidthMenu	Shift+W
+pcbnew.InteractiveRouter.ShowViaSizeMenu	Shift+V
+pcbnew.InteractiveRouter.cycleRouterModeWhileRouting	Shift+R
+pcbnew.InteractiveRouter.trackWidthIncWhileRouting	3
+pcbnew.InteractiveRouter.viaSizeIncWhileRouting	4
+pcbnew.InteractiveRouter.layerNextWhileRouting	Num Pad +	+
+pcbnew.InteractiveRouter.layerPrevWhileRouting	Num Pad -	-
+# Idle, + and - (numpad or not) walk every visible layer, copper or not, as the layer tab bar lists them; the numpad * and
+# Shift+* keys above walk the copper layers
+pcbnew.Control.layerNextVisible	Num Pad +	+
+pcbnew.Control.layerPrevVisible	Num Pad -	-
+# What the keys above would take from an idle editor stays where it was: a key bound here is taken from every action of the
+# editor that has it, and these are the actions that had Shift+R, Shift+W, Shift+V, Ctrl+L and 9. (The footprint editor's
+# Ctrl+L, which focuses the library tree search, is taken and not given back.)
+pcbnew.InteractiveEdit.rotateCw	Shift+R
+pcbnew.EditorControl.trackWidthDec	Shift+W
+pcbnew.Control.layerPairPresetCycle	Shift+V
+pcbnew.LengthTuner.Settings	Ctrl+L
+pcbnew.LengthTuner.TuneDiffPairSkew	9
 pcbnew.InteractiveRouter.CustomTrackViaSize	Tab
 # Tab held "skip" while moving footprints one by one; it is in that command's right-click menu
 pcbnew.InteractiveEdit.skip	
@@ -141,8 +179,8 @@ pcbnew.InteractiveRouter.SingleTrack	Ctrl+W
 pcbnew.InteractiveRouter.SwitchRounding45	
 #
 # 3D viewer (5.10, step 10; 6.5). 3 shows the viewer from the PCB and the footprint editors, and 2 raises the editor
-# from the viewer. 3 is common.* because the show-3D-viewer action is, so it is taken in every editor, and the PCB
-# editor's length tuner gets its amplitude-up 3 back from the alias above. The key runs only with no command running
+# from the viewer. 3 is common.* because the show-3D-viewer action is, so it is taken in every editor, and the router
+# and the length tuner have their own 3 above. The key runs only with no command running
 # (INTERACTION_PROFILE::MayRunIdleKey), so routing and tuning keep theirs. The viewer's own keys are in its own scope,
 # 3DViewer., and are taken there only: 0 top, 9 a quarter turn about Z, 8 isometric, Ctrl+F flip. PgUp and PgDn zoom the
 # viewer too, through common.Control.zoomIn and zoomOut above. Alt+3, the stock key of the 3D viewer, is gone in this

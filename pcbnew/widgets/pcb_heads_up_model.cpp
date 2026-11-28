@@ -98,6 +98,9 @@ HEADS_UP_ROUTE HeadsUpRouteFromRouter( const PNS::ROUTING_SETTINGS& aSettings, c
     default: break;
     }
 
+    // Altium's look-ahead is the router's "fix all segments" the other way round
+    route.isLookAheadOn = !aSettings.GetFixAllSegments();
+
     route.trackWidth = aIsDiffPair ? aSizes.DiffPairWidth() : aSizes.TrackWidth();
     route.widthSource = aWidthSource;
     route.viaDiameter = aSizes.ViaDiameter();
@@ -155,7 +158,9 @@ wxString BuildHeadsUpRouteLine( const HEADS_UP_ROUTE& aRoute, EDA_UNITS aUnits )
     if( !aRoute.layerTo.IsEmpty() && aRoute.layerTo != aRoute.layerFrom )
         layers += wxS( " > " ) + aRoute.layerTo;
 
-    return wxString::Format( _( "%s, %s, width %s (%s), via %s / %s, %s, length %s" ), corner, mode,
+    const wxString lookAhead = aRoute.isLookAheadOn ? _( "look-ahead on" ) : _( "look-ahead off" );
+
+    return wxString::Format( _( "%s, %s, %s, width %s (%s), via %s / %s, %s, length %s" ), corner, mode, lookAhead,
                              formatDistance( aUnits, aRoute.trackWidth, true ), source,
                              formatDistance( aUnits, aRoute.viaDiameter, false ),
                              formatDistance( aUnits, aRoute.viaDrill, true ), layers,

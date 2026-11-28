@@ -106,6 +106,7 @@ struct HEADS_UP_ROUTE
 {
     HEADS_UP_CORNER_MODE  cornerMode = HEADS_UP_CORNER_MODE::MITERED_45;
     HEADS_UP_ROUTER_MODE  routerMode = HEADS_UP_ROUTER_MODE::SHOVE;
+    bool isLookAheadOn = false; ///< the segment ahead of the last click is shown but not fixed (fix_all_segments off)
     int                   trackWidth = 0; ///< internal units
     HEADS_UP_WIDTH_SOURCE widthSource = HEADS_UP_WIDTH_SOURCE::NET_CLASS;
     int                   viaDiameter = 0; ///< internal units

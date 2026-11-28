@@ -82,4 +82,15 @@ LSET ApplyLayerTabCommand( LAYER_TAB_COMMAND aCommand, PCB_LAYER_ID aLayer, cons
  */
 PCB_LAYER_ID LayerToActivateAfterHiding( PCB_LAYER_ID aHidden, const LSET& aVisible, const LSET& aEnabled );
 
+/**
+ * The layer a step of the layer keys (numpad plus and minus idle) reaches: the next or the previous tab of the bar,
+ * which is every visible layer in stack order, copper or not, wrapping at the ends. A hidden layer is never reached.
+ *
+ * @param aActive the active layer. When it is not among the tabs (it is hidden) a step forward reaches the first tab and
+ *                a step back the last.
+ * @param aStep   +1 for the next layer, -1 for the previous one.
+ * @return the layer reached, or UNDEFINED_LAYER when no layer is visible.
+ */
+PCB_LAYER_ID SteppedVisibleLayer( PCB_LAYER_ID aActive, int aStep, const LSET& aVisible, const LSET& aEnabled );
+
 #endif // PCB_LAYER_TAB_BAR_MODEL_H

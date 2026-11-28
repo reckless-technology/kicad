@@ -566,7 +566,7 @@ have it.
   object-kind switches. It does not refresh if the board changes under a still cursor, until the next move.
 - **The routing line.** `ROUTER_TOOL::updateHeadsUpRoute` hands the frame the router's own settings and sizes
   (`HeadsUpRouteFromRouter`) after every move, click, mode, size or layer command, and clears them when the route ends;
-  the frame keeps the last one only so the display can draw it. Corner mode (free-angle first), router mode, track width
+  the frame keeps the last one only so the display can draw it. Corner mode (free-angle first), router mode, whether look-ahead is on (step 5), track width
   (the pair's width when routing a pair) with its source, via diameter and drill, the layer and the one a via takes the
   route to, then the length. The source is custom when the board design settings use the custom size, the net class when
   they take the width from it and the list otherwise (`HeadsUpWidthSource`). The length is that of the route being laid,
@@ -633,6 +633,66 @@ All by rebinding unless marked new. Target keys are in section 6.4.
 - Dragging: a mouse drag on a track uses `editing.track_drag_action`, default 45-degree drag, which matches. `M`
   sequences are in section 6.
 - Footprints: in the move loop `Space`/`Shift+Space` rotate and `L` flips to the other side (context aliases).
+
+**As built (step 5).** Nothing here changes the stock profile: every key below is in `altium.hotkeys`, and every new action has no
+key of its own, so it is reached by no key in stock KiCad. A key means one thing idle and another in the router because it is
+bound to an action of the router tool (`pcbnew.InteractiveRouter.`), which `RunHotKey` prefers while that tool is on the stack,
+and the global action that held the key idle stays where it was.
+
+- *Router actions that already existed, rebound:* `Space` is `SwitchPosture`, `Shift+Space` `SwitchRoundingToNext`, `2` `PlaceVia`,
+  `9` `ContinueFromEnd`, `Ctrl+L` `SelLayerAndPlaceVia`, `Tab` `CustomTrackViaSize` (step 4). `Backspace` (`UndoLastSegment`) and
+  `Enter` (`cursorClick`, which the loop handles as a click) are the keys KiCad has, and the table does not touch them.
+- *Aliases (step 4's `ForwardTo`) owned by the router tool,* each running the global action it forwards to:
+  `cycleRouterModeWhileRouting` (`Shift+R` to `CycleRouterMode`, which has no key of its own), `trackWidthIncWhileRouting` (`3`),
+  `viaSizeIncWhileRouting` (`4`), and `layerNextWhileRouting` and `layerPrevWhileRouting` (numpad `+` and `-`, and `+` and `-`).
+  **Widths** (the owner, 2026-11-28): `3` and `4` step to the next track width and the next via size, as `W` and `'` do in stock
+  KiCad; they do not cycle where the width comes from. The sources are chosen in the width menu (`Shift+W`), and the display shows
+  which is in force.
+- *New actions of the router tool:* `ToggleLookAhead` (`1`), `ToggleLoopRemoval` (`Shift+D`), `ShowTrackWidthMenu` (`Shift+W`)
+  and `ShowViaSizeMenu` (`Shift+V`). The two menus are `TRACK_WIDTH_MENU` shown at the cursor, the first with its track widths and
+  the three ways to choose them (starting track, net class, custom), the second with the via sizes; both change the same board
+  design settings as the menu does and refresh the route. They are context actions so that idle `Shift+W` (previous track
+  width) and `Shift+V` (cycle layer pair presets) stay as they were; the table binds both explicitly.
+- *Look-ahead* is the router setting `fix_all_segments` the other way round: look-ahead off, the default, fixes everything up to
+  the cursor on a click, as the owner routes. `1` flips it for the session only. `PNS::ROUTING_SETTINGS` holds the choice beside the
+  parameter and never stores it (`GetFixAllSegments()` is what the placers read; `GetStoredFixAllSegments()` is the parameter, and
+  is what the router settings dialog shows and writes, and only when its box was changed). The display's routing line says
+  `look-ahead on` or `look-ahead off`. `Shift+D` flips `remove_loops` itself, so it is stored with the router's other settings, as
+  the conflict mode cycle is.
+- *`2` and the via.* KiCad's via continues on the paired layer, where Altium's `2` stays on the layer; a stay-on-layer via is a router
+  change, not made. The difference is the one place where a key does what its label says and not what Altium's does.
+- *Layers.* `layerNextVisible` and `layerPrevVisible` (new, global) step through the layer tab bar's order (`LayerTabOrder`: every
+  layer shown in the Appearance panel, copper first, then the technical and user layers), wrapping, with a hidden layer skipped
+  (`SteppedVisibleLayer`, a function of the layer sets). They hold numpad `+` and `-` and `+` and `-`. The numpad `*` and `Shift+*`
+  walk the copper layers (`layerNext` and `layerPrev`), idle and while routing. While routing, `+` and `-` are `layerNext` and
+  `layerPrev`, which insert a via. Whichever path, the active layer is set through `SetActiveLayer`, which updates the layer tab bar
+  (through the Appearance panel's `OnLayerChanged`) and the display, so both follow.
+- *Use starting track width.* The project's `board.auto_track_width_mode` (project local settings) is an int: -1 follows the profile,
+  0 is off and 1 is on. Following, the Altium-style profile has it on and the stock profile keeps the older `board.auto_track_width`
+  switch, which is still written, so a stock user's saved choice survives. It is written as 0 or 1 only when the user has changed
+  it (`INTERACTION_PROFILE::AutoTrackWidthSettingToStore`), so a project that is only opened keeps following. A project with
+  neither key starts with it on in both profiles, as it always did.
+- *`Ctrl`+click* while routing attempts to finish, by the same code as `AttemptFinish` (`INTERACTION_PROFILE::DoesClickAttemptFinish`:
+  Ctrl alone, Altium-style profile only). Right-click and `Esc` are step 4's.
+- *Length tuning* has its own keys (6.7). The drawing tool runs the tuner, so the aliases are its (`pcbnew.InteractiveDrawing.`):
+  `,` and `.` step the amplitude down and up (`amplDecreaseWhileTuning`, `amplIncreaseWhileTuning`), `3` and `4` the spacing down and
+  up (`spacingDecreaseWhileTuning`, `spacingIncreaseWhileTuning`). KiCad's tuner has **no corner or miter action**, so Altium's
+  `1` and `2` of the tuner (the miter) are not bound and stay free for the router's keys. The stock `1` to `4` (global) have no key
+  under the profile. They replace step 10's `amplIncreaseWhileTuning` on `3`. The drawing tool is on the stack for its other
+  drawing commands too, so these keys are inert there, and idle `3` is still the 3D viewer.
+- *Differential-pair extras.* None of `5` (via pattern), `Shift+6` (gap source) and `Shift+B` (width and gap sources together) has
+  an action in KiCad: the pair's dimensions are chosen in `DIFF_PAIR_MENU` and its dialog, which have no key. Not bound. Likewise
+  not bound are `6` (change via type), the length gauge and the accordions.
+- *Keys the table takes and gives back.* A key the table binds is taken from every other action of the editor. The new router keys
+  would have taken `Shift+R` (`rotateCw`), `Shift+W` (`trackWidthDec`), `Shift+V` (`layerPairPresetsCycle`), `Ctrl+L`
+  (`lengthTunerSettings`) and `9` (`tuneSkew`) from idle editing, so each is bound again to its own action. Idle, those keys are
+  what they were; a router on the stack prefers its own. Not given back: the footprint editor's `Ctrl+L`
+  (`common.Control.libraryTreeSearch`, focus the library tree's search box), which is common to every editor and cannot be rebound
+  for one, and the stock `1` to `4` of the tuner, above. `Ctrl+Shift`+wheel changing the layer (5.6) is not part of this step.
+- *Tests.* `qa/tests/pcbnew/test_routing_keys_profile.cpp`: every new action registered and bound under the profile only; each key
+  to the action it reaches with the router, the tuner and nothing on the tool stack (through `ACTION_MANAGER::ChooseContextAction`,
+  which `RunHotKey` uses); the session look-ahead against the stored setting. `test_layer_tab_bar_model.cpp` has the layer stepping,
+  `test_interaction_profile_routing.cpp` the tri-state setting and the click, `test_heads_up_model.cpp` the routing line.
 
 ### 5.9 Schematic
 
@@ -725,11 +785,10 @@ like Rotate Z Clockwise (`CAMERA::QuarterTurnAboutZ()`); `viewIsometric` is the 
 and tilted so that the line of sight is 35.264 degrees above the board (`CAMERA::IsometricRotation()`), which foreshortens
 the three axes equally. `2` is not bound in the PCB editor, which is already 2D there, and the stock `2` (the tuner's spacing key) keeps it.
 **What `3` does while a command runs.** `ACTIONS::show3DViewer` has a hotkey condition in the PCB and footprint
-editors (`INTERACTION_PROFILE::MayRunIdleKey`), so under the profile it runs only with the tool stack empty, and the
-router, which has no `3` of its own until step 5, gets nothing from it. The length tuner keeps its stock `3`
-(amplitude up) through the context alias `pcbnew.InteractiveDrawing.amplIncreaseWhileTuning` (`ForwardTo` the stock action),
-which `RunHotKey` prefers over the global key while the drawing tool, which runs the tuner, is on the stack; its `1`, `2`
-and `4` are not bound by the table and keep their keys. Idle, `3` is the 3D viewer. **Camera:** closing the viewer hides it when the close can be
+editors (`INTERACTION_PROFILE::MayRunIdleKey`), so under the profile it runs only with the tool stack empty. While the router
+runs, `3` is its own (the next track width, 5.8, step 5), and while the length tuner runs, which is the drawing tool, it steps the
+spacing down (also 5.8): both are context aliases, which `RunHotKey` prefers over the global key while their tool is on the stack.
+(Until step 5 `3` held the tuner's amplitude up through `pcbnew.InteractiveDrawing.amplIncreaseWhileTuning`, now on `.`.) Idle, `3` is the 3D viewer. **Camera:** closing the viewer hides it when the close can be
 vetoed (`INTERACTION_PROFILE::ShouldHide3DViewerOnClose`: the user's close, the menu's Close); the editor's close, and a board's or
 project's, force it and destroy it as before, and a viewer that is hidden when the editor loads another board is handed
 the new one at once (`PCB_BASE_FRAME::SetBoard`) and is not redrawn while hidden (`Update3DView`), only marked for a reload.
@@ -1159,7 +1218,9 @@ message. Then: `Shift+G` toggles the length gauge, `,` / `.` decrease / increase
 `3` / `4` the spacing, `Space` cycles the pattern style, `Ctrl`+drag rotates the pattern and `R` toggles 45-degree
 snapping while rotating, `Tab` pauses, numpad `+` `-` `*` change layer. The display shows the net length and the
 target. The digits mean something else here than when routing, as the PCB line list above shows: the in-command
-keys belong to the command (5.5).
+keys belong to the command (5.5). **As built (step 5):** `,` / `.` the amplitude down / up and `3` / `4` the spacing down / up, as
+aliases of the drawing tool that runs the tuner (5.8); `1` / `2` are not bound, since KiCad's tuner has no miter or corner action; the
+length gauge, the pattern style, the rotation and the pause have none either.
 
 **Differential-pair routing (`U` popup).** Started on a pad of one net of a defined pair; if the other net has nothing
 near the pick, a message says so and the command keeps waiting. Its list is the fullest routing set: everything in
@@ -1190,9 +1251,10 @@ and the gloss effort; and one with the net name, the routed length and the size 
 bar repeats the mode line, layer tabs other than signal layers grey out, and the uncommitted look-ahead segment is
 drawn red and hatched. 5.7's HUD and 5.8's look-ahead cover these.
 
-**What this changes in 6.4.** `3` and `4` cycle where the width and via size come from (user choice, rule minimum,
-preferred, maximum), not the next size; 6.4's `trackWidthInc` / `viaSizeInc` is a different behavior. Step 4 (#137)
-decides between a source-cycling action and keeping the next-size mapping as the nearest KiCad meaning.
+**What this changes in 6.4.** `3` and `4` while routing step to the next track width and the next via size
+(`trackWidthInc` / `viaSizeInc`), as 6.4 says. They do not cycle where the width and via size come from (user choice, rule
+minimum, preferred, maximum), which is Altium's own `3`: the owner decided this on 2026-11-28, closing the question step 4
+(#137) left open. KiCad's sources, the net class, the list and the custom size, are chosen in the width menu (`Shift+W`).
 
 ## 7. Order of work
 

@@ -134,6 +134,10 @@ public:
     /// The current setting for whether to automatically adjust track widths to match
     bool m_AutoTrackWidth;
 
+    /// Whether "use starting track width" is on: -1 follows the interaction profile (on in the Altium-style profile,
+    /// and in the stock one what m_AutoTrackWidth says), 0 is off and 1 is on.
+    int m_AutoTrackWidthMode;
+
     /// How zones are drawn
     ZONE_DISPLAY_MODE m_ZoneDisplayMode;
 

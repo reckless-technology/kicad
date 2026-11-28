@@ -215,8 +215,21 @@ BOOST_AUTO_TEST_CASE( TheRoutingLineIsBuiltFromTheRoutersOwnSettings )
     BOOST_CHECK_EQUAL( route.trackWidth, pcbIUScale.mmToIU( 0.25 ) );
 
     BOOST_CHECK_EQUAL( BuildHeadsUpRouteLine( route, EDA_UNITS::MM ),
-                       wxS( "45-degree rounded, Walk around, width 0.2500 mm (net class), via 0.8000 / 0.4000 mm, "
-                            "F.Cu > B.Cu, length 12.5000 mm" ) );
+                       wxS( "45-degree rounded, Walk around, look-ahead off, width 0.2500 mm (net class), via 0.8000 / "
+                            "0.4000 mm, F.Cu > B.Cu, length 12.5000 mm" ) );
+
+    // The look-ahead is the router's fix-all-segments the other way round, and a session's choice shows at once
+    BOOST_CHECK( !route.isLookAheadOn );
+
+    settings.ToggleSessionFixAllSegments();
+
+    const HEADS_UP_ROUTE lookingAhead =
+            HeadsUpRouteFromRouter( settings, sizes, false, HEADS_UP_WIDTH_SOURCE::NET_CLASS, wxS( "F.Cu" ),
+                                    wxS( "B.Cu" ), pcbIUScale.mmToIU( 12.5 ) );
+
+    BOOST_CHECK( lookingAhead.isLookAheadOn );
+    BOOST_CHECK( BuildHeadsUpRouteLine( lookingAhead, EDA_UNITS::MM )
+                         .Contains( wxS( "Walk around, look-ahead on, width" ) ) );
 }
 
 

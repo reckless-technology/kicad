@@ -24,6 +24,7 @@
 #define __PNS_ROUTING_SETTINGS
 
 #include <cstdio>
+#include <optional>
 
 #include <settings/nested_settings.h>
 #include <geometry/direction45.h>
@@ -149,8 +150,25 @@ public:
     bool GetAutoPosture() const { return m_autoPosture; }
     void SetAutoPosture( bool aEnable ) { m_autoPosture = aEnable; }
 
-    bool GetFixAllSegments() const { return m_fixAllSegments; }
-    void SetFixAllSegments( bool aEnable ) { m_fixAllSegments = aEnable; }
+    /// Whether a click fixes every segment up to the cursor (look-ahead off). The session's choice (see
+    /// ToggleSessionFixAllSegments()) when there is one, else the stored setting.
+    bool GetFixAllSegments() const { return m_sessionFixAllSegments.value_or( m_fixAllSegments ); }
+
+    /// The stored setting, which the session's choice does not touch.
+    bool GetStoredFixAllSegments() const { return m_fixAllSegments; }
+
+    /// Set the stored setting and drop the session's choice, so that the setting is what is in force.
+    void SetFixAllSegments( bool aEnable )
+    {
+        m_fixAllSegments = aEnable;
+        m_sessionFixAllSegments.reset();
+    }
+
+    /// Flip GetFixAllSegments() until the program ends. Nothing is stored, so the setting is what the next run starts with.
+    void ToggleSessionFixAllSegments() { m_sessionFixAllSegments = !GetFixAllSegments(); }
+
+    /// Whether GetFixAllSegments() is a choice made for this session and not the stored setting.
+    bool IsFixAllSegmentsSessionChoice() const { return m_sessionFixAllSegments.has_value(); }
 
     bool GetRestrictAngles() const { return m_restrictAngles; }
     void SetRestrictAngles( bool aEnable ) { m_restrictAngles = aEnable; }
@@ -186,6 +204,9 @@ private:
     bool m_optimizeEntireDraggedTrack;
     bool m_autoPosture;
     bool m_fixAllSegments;
+
+    /// Not a parameter: never stored, never loaded
+    std::optional<bool> m_sessionFixAllSegments;
     bool m_restrictAngles;
     bool m_keepDPCouplingWhenDragging;
 

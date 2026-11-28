@@ -112,3 +112,23 @@ PCB_LAYER_ID LayerToActivateAfterHiding( PCB_LAYER_ID aHidden, const LSET& aVisi
 
     return after[std::min( index, after.size() - 1 )];
 }
+
+
+PCB_LAYER_ID SteppedVisibleLayer( PCB_LAYER_ID aActive, int aStep, const LSET& aVisible, const LSET& aEnabled )
+{
+    const std::vector<PCB_LAYER_ID> order = LayerTabOrder( aVisible, aEnabled );
+
+    if( order.empty() )
+        return UNDEFINED_LAYER;
+
+    const auto position = std::find( order.begin(), order.end(), aActive );
+    const int  count = static_cast<int>( order.size() );
+
+    if( position == order.end() )
+        return aStep >= 0 ? order.front() : order.back();
+
+    const int index = static_cast<int>( position - order.begin() );
+
+    // The sum is kept positive so that the remainder is too
+    return order[( index + ( aStep >= 0 ? 1 : count - 1 ) ) % count];
+}

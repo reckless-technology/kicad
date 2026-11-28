@@ -170,35 +170,17 @@ bool ACTION_MANAGER::RunHotKey( int aHotKey ) const
 
     // Choose the action that has the highest priority on the active tools stack
     // If there is none, run the global action associated with the hot key
-    int                             highestPriority = -1;
-    int                             priority = -1;
-    const TOOL_ACTION*              context = nullptr; // pointer to context action of the highest priority tool
-    std::vector<const TOOL_ACTION*> global;            // pointers to global actions if there are no context actions
+    std::vector<const TOOL_ACTION*> global; // pointers to global actions if there are no context actions
 
-    for( const TOOL_ACTION* action : actions )
-    {
-        if( action->GetScope() == AS_GLOBAL )
-        {
-            // Store the global action in case there are no context actions to run
-            global.emplace_back( action );
-            continue;
-        }
-
-        TOOL_BASE* tool = m_toolMgr->FindTool( action->GetToolName() );
-
-        if( tool )
-        {
-            // Choose the action that goes to the tool with highest priority
-            // (i.e. is on the top of active tools stack)
-            priority = m_toolMgr->GetPriority( tool->GetId() );
-
-            if( priority >= 0 && priority > highestPriority )
+    const TOOL_ACTION* context = ChooseContextAction(
+            actions,
+            [this]( const TOOL_ACTION& aAction )
             {
-                highestPriority = priority;
-                context = action;
-            }
-        }
-    }
+                TOOL_BASE* tool = m_toolMgr->FindTool( aAction.GetToolName() );
+
+                return tool ? m_toolMgr->GetPriority( tool->GetId() ) : -1;
+            },
+            global );
 
     // Get the selection to use to test if the action is enabled
     SELECTION& sel = m_toolMgr->GetToolHolder()->GetCurrentSelection();
@@ -250,6 +232,36 @@ bool ACTION_MANAGER::RunHotKey( int aHotKey ) const
                 KeyNameFromKeyCode( aHotKey ) );
 
     return false;
+}
+
+
+const TOOL_ACTION* ACTION_MANAGER::ChooseContextAction( const std::list<TOOL_ACTION*>&                  aActions,
+                                                        const std::function<int( const TOOL_ACTION& )>& aPriorityOfTool,
+                                                        std::vector<const TOOL_ACTION*>&                aGlobal )
+{
+    int                highestPriority = -1;
+    const TOOL_ACTION* context = nullptr; // context action of the highest priority tool
+
+    for( const TOOL_ACTION* action : aActions )
+    {
+        if( action->GetScope() == AS_GLOBAL )
+        {
+            // Store the global action in case there are no context actions to run
+            aGlobal.emplace_back( action );
+            continue;
+        }
+
+        // Choose the action that goes to the tool with highest priority (i.e. is on the top of active tools stack)
+        int priority = aPriorityOfTool( *action );
+
+        if( priority >= 0 && priority > highestPriority )
+        {
+            highestPriority = priority;
+            context = action;
+        }
+    }
+
+    return context;
 }
 
 

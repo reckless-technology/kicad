@@ -23,6 +23,7 @@
 #ifndef ACTION_MANAGER_H_
 #define ACTION_MANAGER_H_
 
+#include <functional>
 #include <list>
 #include <map>
 #include <optional>
@@ -180,6 +181,22 @@ public:
      */
     static void PromoteUserBoundFrameAction( std::vector<const TOOL_ACTION*>& aGlobalActions, FRAME_T aFrameType,
                                              int aMatchedHotKey );
+
+    /**
+     * Choose what a key does among the actions that hold it: the context action of the tool that is highest on the
+     * tool stack, if any tool that owns one is on it, else the global actions in their order. RunHotKey() runs what
+     * this chooses.
+     *
+     * @param aActions the actions that hold the key.
+     * @param aPriorityOfTool the place of the tool of an action on the stack: 0 or more, higher the nearer the top, or
+     *                        -1 when that tool is not on it.
+     * @param aGlobal receives the global actions, in order, for the caller to try when no context action is chosen or
+     *                the chosen one cannot run.
+     * @return the context action of the tool highest on the stack, or nullptr when there is none.
+     */
+    static const TOOL_ACTION* ChooseContextAction( const std::list<TOOL_ACTION*>&                  aActions,
+                                                   const std::function<int( const TOOL_ACTION& )>& aPriorityOfTool,
+                                                   std::vector<const TOOL_ACTION*>&                aGlobal );
 
     /**
      * Return the hot key associated with a given action or 0 if there is none.
