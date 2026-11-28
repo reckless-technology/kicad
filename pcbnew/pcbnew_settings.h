@@ -106,6 +106,9 @@ public:
     /// The layer tab bar under the canvas: -1 follows the interaction profile, 0 is off and 1 is on
     int m_LayerTabBarMode = -1;
 
+    /// The draw order that follows the layer stack: -1 follows the interaction profile, 0 is off and 1 is on
+    int m_StackDrawOrderMode = -1;
+
     /// The heads-up display over the canvas: -1 follows the interaction profile, 0 is off and 1 is on
     int m_HeadsUpMode = -1;
 
@@ -133,6 +136,9 @@ protected:
 
     /// Opt-in, like the match properties: cvpcb has no layer tab bar.
     void addLayerTabBarParam();
+
+    /// Opt-in, like the layer tab bar: cvpcb draws no copper stack.
+    void addStackDrawOrderParam();
 
     /// Opt-in, like the layer tab bar: cvpcb has no heads-up display.
     void addHeadsUpParams();

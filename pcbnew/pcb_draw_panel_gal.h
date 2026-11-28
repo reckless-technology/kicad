@@ -181,6 +181,13 @@ protected:
     /// Reassign layer order to the initial settings.
     void setDefaultLayerOrder();
 
+    /**
+     * Give the layers of the board's stack the draw order of the stack draw order setting, when it is on.
+     *
+     * @return the copper layer count the order was made for, or 0 when the setting is off or there is no board.
+     */
+    int applyStackDrawOrder( PCB_LAYER_ID aActiveLayer );
+
     /// Set rendering targets & dependencies for layers.
     void setDefaultLayerDeps();
 
@@ -219,6 +226,9 @@ protected:
 
     /** The active layer the item colours were last computed for */
     PCB_LAYER_ID m_coloredLayer = UNDEFINED_LAYER;
+
+    /** The copper layer count the stack draw order was last applied for, or 0 when it is not in use */
+    int m_stackDrawOrderCopperCount = 0;
 
     KIGFX::VIEW_ITEM* m_persistentItem = nullptr; ///< see SetPersistentItem()
 

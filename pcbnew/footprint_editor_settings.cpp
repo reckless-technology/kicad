@@ -62,6 +62,7 @@ FOOTPRINT_EDITOR_SETTINGS::FOOTPRINT_EDITOR_SETTINGS() :
 {
     addMatchPropertiesParam();
     addLayerTabBarParam();
+    addStackDrawOrderParam();
     addHeadsUpParams();
 
     m_MagneticItems.pads      = MAGNETIC_OPTIONS::CAPTURE_ALWAYS;

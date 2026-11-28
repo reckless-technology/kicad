@@ -186,6 +186,7 @@ set( QA_PCBNEW_SRCS
     test_zone_filler.cpp
     test_pcb_context_menu.cpp
     test_layer_tab_bar_model.cpp
+    test_pcb_stack_draw_order.cpp
     test_heads_up_model.cpp
     test_pcb_menu_tree.cpp
     test_altium_views.cpp

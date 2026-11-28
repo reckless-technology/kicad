@@ -56,6 +56,12 @@ void PCB_VIEWERS_SETTINGS_BASE::addLayerTabBarParam()
 }
 
 
+void PCB_VIEWERS_SETTINGS_BASE::addStackDrawOrderParam()
+{
+    m_params.emplace_back( new PARAM<int>( "display.stack_draw_order", &m_StackDrawOrderMode, -1, -1, 1 ) );
+}
+
+
 void PCB_VIEWERS_SETTINGS_BASE::addHeadsUpParams()
 {
     m_params.emplace_back( new PARAM<int>( "aui.heads_up_display", &m_HeadsUpMode, -1, -1, 1 ) );
@@ -93,6 +99,7 @@ PCBNEW_SETTINGS::PCBNEW_SETTINGS() :
 {
     addMatchPropertiesParam();
     addLayerTabBarParam();
+    addStackDrawOrderParam();
     addHeadsUpParams();
 
     m_MagneticItems.pads      = MAGNETIC_OPTIONS::CAPTURE_CURSOR_IN_TRACK_TOOL;
