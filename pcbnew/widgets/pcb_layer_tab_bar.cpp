@@ -215,9 +215,10 @@ void PCB_LAYER_TAB_BAR::onPaint( wxPaintEvent& )
     const wxColour text = wxSystemSettings::GetColour( wxSYS_COLOUR_BTNTEXT );
     const bool     isDark = luminance( background ) < 0.5;
 
-    // The active tab is lighter than the bar in light and dark themes alike, whatever the system colors are
+    // The active tab is lighter than the bar in light and dark themes alike, whatever the system colors are, but only
+    // slightly in a dark theme so that the text on it stays easy to read
     wxColour activeBackground =
-            isDark ? background.ChangeLightness( 160 ) : wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW );
+            isDark ? blend( background, text, 0.16 ) : wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW );
 
     if( luminance( activeBackground ) <= luminance( background ) )
         activeBackground = background.ChangeLightness( 115 );
