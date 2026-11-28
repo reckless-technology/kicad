@@ -540,6 +540,34 @@ binds them.
   off, 1 on). A project that stores its opacities keeps them. Editing the opacities in the PCB editor's project defaults
   preferences stores the user's values and turns the look off.
 
+**As built (stack draw order, #168).** The order is a pure function in `pcbnew/pcb_stack_draw_order.{h,cpp}`
+(`StackDrawOrder` of the copper layer count, the active layer, whether the board is flipped, the setting and the
+profile), and `PCB_DRAW_PANEL_GAL::applyStackDrawOrder` applies it inside `SetTopLayer`.
+
+- **The order.** Seen from above, nearest first: F.CrtYd, F.Fab, F.SilkS, F.Mask, F.Paste, F.Adhes, then the copper
+  layers from the top down (`LSET::CuStack`, the helper the layer tab bar also uses), then B.Adhes, B.Paste, B.Mask,
+  B.SilkS, B.Fab, B.CrtYd. Flipped, the list is reversed, so B.CrtYd is nearest and F.CrtYd furthest. Silkscreen, mask,
+  paste and adhesive are in the order the notes name them; courtyard and fabrication are documentation, so they sit at
+  the outer edge of their own side (nearest the viewer on that side, furthest when the side is turned away). Edge.Cuts,
+  the margin, the user and mechanical layers, the always-on-top overlay and marker layers and the drawing sheet stay
+  where KiCad puts them.
+- **How it is applied.** Each board layer travels with its sub-layers (copper: net names, pad and via copper, clearance,
+  point and zone; technical: zone), in the order KiCad already gave them within one layer. The stack's layers take, in
+  the new order, the slots they hold in the view's layer table, so nothing outside the stack moves. Drill symbols are
+  re-seated with the layer that owns them.
+- **The active layer.** It and its sub-layers go first in the order and are also marked top, as KiCad does, so they draw
+  over the whole stack and under the overlays. **The active side's technical layers no longer jump forward** under the
+  setting: Altium shows the current layer on top and leaves the rest in stack order, and a front-side jump would put
+  F.SilkS and F.Mask over an active inner layer, which is the opposite of what the stack says. Through-hole items (vias,
+  plated pad holes and walls, the overlays) stay always-on-top as before.
+- **Updates.** `SetTopLayer` runs on an active-layer change and on `SetDisplayOptions`, which a View > Flip Board goes
+  through after the view is mirrored, so the flip needed no new call. `SyncLayersVisibility` runs it again when the
+  board's copper layer count no longer matches the one the order was made for (a board load, Board Setup).
+- **Setting.** `display.stack_draw_order` is an int in the PCB and footprint editor settings: -1 follows the profile
+  (on in the Altium-style profile, off in stock), 0 is off, 1 is on. A canvas with no editor frame (dialog previews)
+  keeps KiCad's order. Stock KiCad gets no order from the function and so runs its old code unchanged.
+- **Tests.** `qa/tests/pcbnew/test_pcb_stack_draw_order.cpp`.
+
 **As built (step 8).** The model is `pcbnew/widgets/pcb_heads_up_model.{h,cpp}` (no window: the lines a state says, the
 routing line, the item under a point, the setting), the item is `pcb_heads_up.{h,cpp}`, and the frame side is
 `PCB_BASE_EDIT_FRAME`'s `CreateHeadsUp`, `UpdateHeadsUp` and `SetHeadsUpRoute`, so the PCB and footprint editors both

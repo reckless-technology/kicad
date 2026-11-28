@@ -39,6 +39,10 @@
 #include <pcb_grid_item.h>
 #include <pcb_base_frame.h>
 #include <pcbnew_settings.h>
+#include <pcb_stack_draw_order.h>
+#include <interaction_profile.h>
+#include <algorithm>
+#include <lset.h>
 #include <ratsnest/ratsnest_data.h>
 #include <ratsnest/ratsnest_view_item.h>
 #include <pcb_board_outline.h>
@@ -564,10 +568,57 @@ void PCB_DRAW_PANEL_GAL::applyHighContrastLayer( PCB_LAYER_ID aLayer, bool aOnly
 }
 
 
+int PCB_DRAW_PANEL_GAL::applyStackDrawOrder( PCB_LAYER_ID aActiveLayer )
+{
+    PCB_BASE_FRAME* frame = IsDialogPreview() ? nullptr : dynamic_cast<PCB_BASE_FRAME*>( GetParentEDAFrame() );
+    PCB_VIEWERS_SETTINGS_BASE* settings = frame ? frame->GetViewerSettingsBase() : nullptr;
+    const BOARD*               board = frame ? frame->GetBoard() : nullptr;
+
+    // A canvas with no frame, as a dialog's preview, keeps the stock order
+    if( !settings || !board )
+        return 0;
+
+    const int copperLayerCount = board->GetCopperLayerCount();
+
+    const std::vector<int> order = StackDrawOrder( copperLayerCount, aActiveLayer, m_view->IsMirroredX(),
+                                                   settings->m_StackDrawOrderMode, INTERACTION_PROFILE::Active() );
+
+    if( order.empty() )
+        return 0;
+
+    // The layers take the slots they hold now, so everything else keeps its place around them
+    std::vector<int> slots;
+
+    for( int layer : order )
+        slots.push_back( m_view->GetLayerOrder( layer ) );
+
+    std::sort( slots.begin(), slots.end() );
+
+    for( size_t i = 0; i < order.size(); ++i )
+        m_view->SetLayerOrder( order[i], slots[i], false );
+
+    // Drill symbols draw with the layer that owns them
+    for( int i = 0; i < PCB_LAYER_ID_COUNT; ++i )
+    {
+        const PCB_LAYER_ID boardLayer = static_cast<PCB_LAYER_ID>( i );
+
+        m_view->SetLayerOrder( DRILL_SYMBOL_LAYER_FOR( boardLayer ), m_view->GetLayerOrder( boardLayer ), false );
+    }
+
+    m_view->SortOrderedLayers();
+    return copperLayerCount;
+}
+
+
 void PCB_DRAW_PANEL_GAL::SetTopLayer( PCB_LAYER_ID aLayer )
 {
     m_view->ClearTopLayers();
     setDefaultLayerOrder();
+
+    // Under the stack draw order the sides' technical layers follow the stack instead of jumping forward
+    m_stackDrawOrderCopperCount = applyStackDrawOrder( aLayer );
+    const bool isFollowingStack = m_stackDrawOrderCopperCount > 0;
+
     m_view->SetTopLayer( aLayer );
 
     // Layers that should always have on-top attribute enabled
@@ -611,6 +662,10 @@ void PCB_DRAW_PANEL_GAL::SetTopLayer( PCB_LAYER_ID aLayer )
     {
         for( auto layer : *extraLayers )
         {
+            // The stack order keeps these in their place between the other layers
+            if( isFollowingStack )
+                break;
+
             m_view->SetTopLayer( layer );
 
             if( layer < PCB_LAYER_ID_COUNT )
@@ -669,6 +724,19 @@ void PCB_DRAW_PANEL_GAL::SyncLayersVisibility( const BOARD* aBoard )
         activeLayer = frame->GetActiveLayer();
 
     SyncLayersVisibility( *m_view, aBoard, activeLayer );
+
+    // A board change or Board Setup can change the stack the draw order follows
+    if( frame && frame->GetCanvas() == this && activeLayer != UNDEFINED_LAYER )
+    {
+        PCB_VIEWERS_SETTINGS_BASE* settings = frame->GetViewerSettingsBase();
+
+        const bool isStackOrderWanted =
+                settings && IsStackDrawOrderOn( settings->m_StackDrawOrderMode, INTERACTION_PROFILE::Active() );
+        const int wantedCount = isStackOrderWanted ? frame->GetBoard()->GetCopperLayerCount() : 0;
+
+        if( wantedCount != m_stackDrawOrderCopperCount )
+            SetTopLayer( activeLayer );
+    }
 }
 
 

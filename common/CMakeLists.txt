@@ -1360,6 +1360,7 @@ set( PCB_COMMON_SRCS
     ${CMAKE_SOURCE_DIR}/pcbnew/netlist_reader/legacy_netlist_reader.cpp
     ${CMAKE_SOURCE_DIR}/pcbnew/netlist_reader/netlist_reader.cpp
     ${CMAKE_SOURCE_DIR}/pcbnew/pcb_draw_panel_gal.cpp
+    ${CMAKE_SOURCE_DIR}/pcbnew/pcb_stack_draw_order.cpp
     ${CMAKE_SOURCE_DIR}/pcbnew/netlist_reader/pcb_netlist.cpp
     ${CMAKE_SOURCE_DIR}/pcbnew/pcb_origin_transforms.cpp
     ${CMAKE_SOURCE_DIR}/pcbnew/pcb_painter.cpp
