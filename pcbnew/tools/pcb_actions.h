@@ -189,6 +189,7 @@ public:
     static TOOL_ACTION rotateCcwWhilePlacing;
     static TOOL_ACTION rotateCwWhilePlacing;
     static TOOL_ACTION flipWhilePlacing;
+    static TOOL_ACTION amplIncreaseWhileTuning;
     static TOOL_ACTION propertiesWhilePlacing;
     static TOOL_ACTION matchProperties;
     static TOOL_ACTION matchPropertiesSettings;

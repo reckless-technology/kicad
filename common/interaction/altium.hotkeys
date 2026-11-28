@@ -128,6 +128,10 @@ pcbnew.InteractiveDrawing.rotateCcwWhilePlacing	Space
 pcbnew.InteractiveDrawing.rotateCwWhilePlacing	Shift+Space
 pcbnew.InteractiveDrawing.flipWhilePlacing	L
 pcbnew.InteractiveDrawing.propertiesWhilePlacing	Tab
+# The length tuner's amplitude-up key is 3 as in stock, which the show-3D-viewer key below takes from the action itself.
+# The alias gives it back while the drawing tool, which runs the tuner, is on the stack; idle, 3 is the 3D viewer.
+# The tuner's 1, 2 and 4 are not bound by this table and keep their keys.
+pcbnew.InteractiveDrawing.amplIncreaseWhileTuning	3
 pcbnew.InteractiveRouter.CustomTrackViaSize	Tab
 # Tab held "skip" while moving footprints one by one; it is in that command's right-click menu
 pcbnew.InteractiveEdit.skip	
@@ -137,12 +141,12 @@ pcbnew.InteractiveRouter.SingleTrack	Ctrl+W
 pcbnew.InteractiveRouter.SwitchRounding45	
 #
 # 3D viewer (5.10, step 10; 6.5). 3 shows the viewer from the PCB and the footprint editors, and 2 raises the editor
-# from the viewer. 3 is common.* because the show-3D-viewer action is, so it is taken in every editor, where no other
-# action holds it by default (the PCB editor's length tuner has 3 and 2 for its in-command keys and loses them; they
-# are step 5's, with the router's). It runs only with no command running (INTERACTION_PROFILE::MayRunIdleKey), so
-# routing and tuning keep their key. The viewer's own keys are in its own scope, 3DViewer., and are taken there only:
-# 0 top, 9 a quarter turn about Z, 8 isometric, Ctrl+F flip. PgUp and PgDn zoom the viewer too, through
-# common.Control.zoomIn and zoomOut above. Alt+3, the stock key of the 3D viewer, is gone in this profile.
+# from the viewer. 3 is common.* because the show-3D-viewer action is, so it is taken in every editor, and the PCB
+# editor's length tuner gets its amplitude-up 3 back from the alias above. The key runs only with no command running
+# (INTERACTION_PROFILE::MayRunIdleKey), so routing and tuning keep theirs. The viewer's own keys are in its own scope,
+# 3DViewer., and are taken there only: 0 top, 9 a quarter turn about Z, 8 isometric, Ctrl+F flip. PgUp and PgDn zoom the
+# viewer too, through common.Control.zoomIn and zoomOut above. Alt+3, the stock key of the 3D viewer, is gone in this
+# profile.
 common.Control.show3DViewer	3
 3DViewer.Control.showPcbEditor	2
 3DViewer.Control.viewTop	0

@@ -32,6 +32,7 @@
 #include <pcbnew_settings.h>
 #include <settings/json_settings_internals.h>
 #include <tool/action_manager.h>
+#include <tools/pcb_actions.h>
 #include <tool/actions.h>
 #include <tool/tool_action.h>
 
@@ -46,7 +47,7 @@ const TOOL_ACTION* findRegistered( const std::string& aName )
     auto        found = std::find_if( actions.begin(), actions.end(),
                                       [&]( const TOOL_ACTION* aAction )
                                       {
-                                          return aAction->GetName() == aName;
+                                   return aAction->GetName() == aName;
                                       } );
 
     return found == actions.end() ? nullptr : *found;
@@ -120,12 +121,11 @@ BOOST_AUTO_TEST_CASE( TheProfileBindsThemAndTheStockProfileDoesNot )
         int                key;
     };
 
-    const EXPECTATION expectations[] = { { &ACTIONS::show3DViewer, '3' },
-                                         { &EDA_3D_ACTIONS::showPcbEditor, '2' },
-                                         { &EDA_3D_ACTIONS::viewTop, '0' },
-                                         { &EDA_3D_ACTIONS::rotateZ90, '9' },
-                                         { &EDA_3D_ACTIONS::viewIsometric, '8' },
-                                         { &EDA_3D_ACTIONS::flipView, MD_CTRL + 'F' } };
+    const EXPECTATION expectations[] = {
+        { &ACTIONS::show3DViewer, '3' },         { &EDA_3D_ACTIONS::showPcbEditor, '2' },
+        { &EDA_3D_ACTIONS::viewTop, '0' },       { &EDA_3D_ACTIONS::rotateZ90, '9' },
+        { &EDA_3D_ACTIONS::viewIsometric, '8' }, { &EDA_3D_ACTIONS::flipView, MD_CTRL + 'F' }
+    };
 
     for( const EXPECTATION& expectation : expectations )
     {
@@ -164,36 +164,62 @@ BOOST_AUTO_TEST_CASE( PageUpAndPageDownZoomTheViewerUnderTheProfile )
                                .first,
                        static_cast<int>( WXK_PAGEUP ) );
     BOOST_CHECK_EQUAL( INTERACTION_PROFILE::ApplyHotKeyLayer( altium, ACTIONS::zoomOut.GetName(),
-                                                              { ACTIONS::zoomOut.GetDefaultHotKey(), 0 },
-                                                              std::string(), false )
+                                                              { ACTIONS::zoomOut.GetDefaultHotKey(), 0 }, std::string(),
+                                                              false )
                                .first,
                        static_cast<int>( WXK_PAGEDOWN ) );
 }
 
 
-BOOST_AUTO_TEST_CASE( ThreeLeavesTheRoutersAndTheTunersInCommandKeysToStepFive )
+BOOST_AUTO_TEST_CASE( TheTunerKeepsItsKeysAndIdleThreeIsTheViewer )
 {
     PROFILE_HOTKEY_LAYER altium = INTERACTION_PROFILE::BuildHotKeyLayer( INTERACTION_PROFILE_ID::ALTIUM );
 
-    // `3` is the show-3D-viewer key in every editor, so it is taken from an action of the PCB editor that holds it by
-    // default; the only one is the length tuner's amplitude key, which is an in-command key and is step 5's. The key
-    // is gated by MayRunIdleKey, so with a command running it runs nothing at all.
-    BOOST_CHECK_EQUAL( INTERACTION_PROFILE::ApplyHotKeyLayer( altium, "pcbnew.lengthTuner.AmplIncrease", { '3', 0 },
-                                                              "pcbnew.", false )
-                               .first,
-                       0 );
+    // Idle, 3 is the show-3D-viewer action, a global one
+    BOOST_CHECK_EQUAL( altium.m_bindings.at( ACTIONS::show3DViewer.GetName() ).first, '3' );
+    BOOST_CHECK( ACTIONS::show3DViewer.GetScope() == AS_GLOBAL );
 
-    // `2`, the viewer's key for the editor, is taken in the viewer's scope only: the tuner's `2` is untouched
-    BOOST_CHECK_EQUAL( INTERACTION_PROFILE::ApplyHotKeyLayer( altium, "pcbnew.lengthTuner.SpacingDecrease", { '2', 0 },
-                                                              "pcbnew.", false )
-                               .first,
-                       '2' );
+    // While tuning, 3 is the tuner's alias, a context action of the drawing tool that runs the tuner, forwarding to the
+    // stock amplitude-up action; RunHotKey prefers a context action of a tool on the stack to a global one
+    const TOOL_ACTION& alias = PCB_ACTIONS::amplIncreaseWhileTuning;
 
-    // A context alias is never stripped of its key: whatever step 5 binds to 3 for the router wins over the idle key
-    BOOST_CHECK_EQUAL( INTERACTION_PROFILE::ApplyHotKeyLayer( altium, "pcbnew.InteractiveRouter.someAlias", { '3', 0 },
-                                                              "pcbnew.", true )
-                               .first,
-                       '3' );
+    BOOST_CHECK( alias.GetScope() == AS_CONTEXT );
+    BOOST_CHECK( alias.GetForwardTarget() == &PCB_ACTIONS::amplIncrease );
+    BOOST_CHECK_EQUAL( alias.GetToolName(), "pcbnew.InteractiveDrawing" );
+    BOOST_CHECK_EQUAL( altium.m_bindings.at( alias.GetName() ).first, '3' );
+
+    // The tuner's own tool is the one that handles the forwarded action
+    BOOST_CHECK_EQUAL( PCB_ACTIONS::amplIncrease.GetName(), "pcbnew.lengthTuner.AmplIncrease" );
+
+    // A context alias is never stripped of its key
+    BOOST_CHECK_EQUAL(
+            INTERACTION_PROFILE::ApplyHotKeyLayer( altium, alias.GetName(), { 0, 0 }, "pcbnew.", true ).first,
+            altium.m_bindings.at( alias.GetName() ).first );
+
+    // The tuner's other keys are not bound by the table and keep their stock keys: 1 and 2 for the spacing, 4 for the
+    // amplitude down. (2, the viewer's key for the editor, is taken in the viewer's scope only.)
+    struct KEEP
+    {
+        const TOOL_ACTION* action;
+        int                key;
+    };
+
+    for( const KEEP& keep : { KEEP{ &PCB_ACTIONS::spacingIncrease, '1' }, KEEP{ &PCB_ACTIONS::spacingDecrease, '2' },
+                              KEEP{ &PCB_ACTIONS::amplDecrease, '4' } } )
+    {
+        BOOST_CHECK_EQUAL( keep.action->GetDefaultHotKey(), keep.key );
+        BOOST_CHECK( altium.m_bindings.find( keep.action->GetName() ) == altium.m_bindings.end() );
+        BOOST_CHECK_EQUAL( INTERACTION_PROFILE::ApplyHotKeyLayer( altium, keep.action->GetName(), { keep.key, 0 },
+                                                                  "pcbnew.", false )
+                                   .first,
+                           keep.key );
+    }
+
+    // The stock profile binds no alias key at all
+    PROFILE_HOTKEY_LAYER stock = INTERACTION_PROFILE::BuildHotKeyLayer( INTERACTION_PROFILE_ID::STOCK );
+
+    BOOST_CHECK( stock.m_bindings.find( alias.GetName() ) == stock.m_bindings.end() );
+    BOOST_CHECK_EQUAL( alias.GetDefaultHotKey(), 0 );
 }
 
 

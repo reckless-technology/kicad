@@ -1297,6 +1297,12 @@ TOOL_ACTION PCB_ACTIONS::flipWhilePlacing( TOOL_ACTION_ARGS()
         .FriendlyName( _( "Change Side / Flip While Placing" ) )
         .ForwardTo( PCB_ACTIONS::flip ) );
 
+TOOL_ACTION PCB_ACTIONS::amplIncreaseWhileTuning( TOOL_ACTION_ARGS()
+        .Name( "pcbnew.InteractiveDrawing.amplIncreaseWhileTuning" )
+        .Scope( AS_CONTEXT )
+        .FriendlyName( _( "Increase Amplitude While Tuning" ) )
+        .ForwardTo( PCB_ACTIONS::amplIncrease ) );
+
 TOOL_ACTION PCB_ACTIONS::propertiesWhilePlacing( TOOL_ACTION_ARGS()
         .Name( "pcbnew.InteractiveDrawing.propertiesWhilePlacing" )
         .Scope( AS_CONTEXT )

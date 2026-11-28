@@ -715,8 +715,8 @@ camera survives, and "live 3D refresh" defaults on. View keys in the viewer: `0`
 (`flipView`), `PgUp`/`PgDn` zoom. Mouse: `Shift`+right-drag orbits and right-drag pans (orbit is hard-coded to
 left-drag in `HIDPI_GL_3D_CANVAS::OnMouseMoveCamera`; add the modifier path and keep left-drag).
 
-**As built (step 10).** Keys, all in `altium.hotkeys`: `3` is `common.Control.show3DViewer` (so it is taken in every editor, where
-the only action that held it by default is the PCB editor's length tuner amplitude key, an in-command key that is step 5's), and
+**As built (step 10).** Keys, all in `altium.hotkeys`: `3` is `common.Control.show3DViewer` (so it is taken in every editor, including from the
+PCB editor's length tuner amplitude key, which a context alias gives back, below), and
 in the viewer's own scope `3DViewer.` `2` is `showPcbEditor` (raises the editor that owns the viewer and changes neither
 view), `0` `viewTop`, `9` `rotateZ90`, `8` `viewIsometric` and `Ctrl+F` `flipView`; `PgUp` and `PgDn` zoom the viewer through
 the common zoom actions the table already binds. `rotateZ90` and `viewIsometric` are new `3DViewer.Control` actions with no stock key, and
@@ -724,11 +724,12 @@ both are in the viewer's View menu. `rotateZ90` turns the board exactly 90 degre
 like Rotate Z Clockwise (`CAMERA::QuarterTurnAboutZ()`); `viewIsometric` is the front view turned 45 degrees toward the right view
 and tilted so that the line of sight is 35.264 degrees above the board (`CAMERA::IsometricRotation()`), which foreshortens
 the three axes equally. `2` is not bound in the PCB editor, which is already 2D there, and the stock `2` (the tuner's spacing key) keeps it.
-**What `3` does while a command runs: nothing.** `ACTIONS::show3DViewer` has a hotkey condition in the PCB and footprint
-editors (`INTERACTION_PROFILE::MayRunIdleKey`), so under the profile it runs only with the tool stack empty; a router or
-tuner that gets its own `3` in step 5 (a context alias, which `RunHotKey` prefers) wins over it in any case, and until then
-routing has no `3` and nothing else takes it. Under the profile the tuner loses `3` (amplitude up), which
-the table now takes; step 5 restores it as an alias. **Camera:** closing the viewer hides it when the close can be
+**What `3` does while a command runs.** `ACTIONS::show3DViewer` has a hotkey condition in the PCB and footprint
+editors (`INTERACTION_PROFILE::MayRunIdleKey`), so under the profile it runs only with the tool stack empty, and the
+router, which has no `3` of its own until step 5, gets nothing from it. The length tuner keeps its stock `3`
+(amplitude up) through the context alias `pcbnew.InteractiveDrawing.amplIncreaseWhileTuning` (`ForwardTo` the stock action),
+which `RunHotKey` prefers over the global key while the drawing tool, which runs the tuner, is on the stack; its `1`, `2`
+and `4` are not bound by the table and keep their keys. Idle, `3` is the 3D viewer. **Camera:** closing the viewer hides it when the close can be
 vetoed (`INTERACTION_PROFILE::ShouldHide3DViewerOnClose`: the user's close, the menu's Close); the editor's close, and a board's or
 project's, force it and destroy it as before, and a viewer that is hidden when the editor loads another board is handed
 the new one at once (`PCB_BASE_FRAME::SetBoard`) and is not redrawn while hidden (`Update3DView`), only marked for a reload.
