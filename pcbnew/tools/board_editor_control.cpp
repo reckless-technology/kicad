@@ -1041,6 +1041,28 @@ int BOARD_EDITOR_CONTROL::ToggleLayersManager( const TOOL_EVENT& aEvent [[maybe_
 }
 
 
+int BOARD_EDITOR_CONTROL::ToggleHeadsUp( const TOOL_EVENT& aEvent [[maybe_unused]] )
+{
+    getEditFrame<PCB_EDIT_FRAME>()->ToggleHeadsUp();
+    return 0;
+}
+
+
+int BOARD_EDITOR_CONTROL::ToggleHeadsUpFollow( const TOOL_EVENT& aEvent [[maybe_unused]] )
+{
+    getEditFrame<PCB_EDIT_FRAME>()->ToggleHeadsUpFollow();
+    return 0;
+}
+
+
+int BOARD_EDITOR_CONTROL::ResetHeadsUpDelta( const TOOL_EVENT& aEvent [[maybe_unused]] )
+{
+    // The same command the stock key runs; this action only gives the profile a key of its own for it
+    m_toolMgr->RunAction( ACTIONS::resetLocalCoords );
+    return 0;
+}
+
+
 int BOARD_EDITOR_CONTROL::ToggleLayerTabBar( const TOOL_EVENT& aEvent [[maybe_unused]] )
 {
     getEditFrame<PCB_EDIT_FRAME>()->ToggleLayerTabBar();
@@ -2485,6 +2507,9 @@ void BOARD_EDITOR_CONTROL::setTransitions()
     Go( &BOARD_EDITOR_CONTROL::ShowEeschema,           PCB_ACTIONS::showEeschema.MakeEvent() );
     Go( &BOARD_EDITOR_CONTROL::ToggleLayersManager,    PCB_ACTIONS::showLayersManager.MakeEvent() );
     Go( &BOARD_EDITOR_CONTROL::ToggleLayerTabBar,      PCB_ACTIONS::showLayerTabBar.MakeEvent() );
+    Go( &BOARD_EDITOR_CONTROL::ToggleHeadsUp, PCB_ACTIONS::toggleHeadsUp.MakeEvent() );
+    Go( &BOARD_EDITOR_CONTROL::ToggleHeadsUpFollow, PCB_ACTIONS::toggleHeadsUpFollow.MakeEvent() );
+    Go( &BOARD_EDITOR_CONTROL::ResetHeadsUpDelta, PCB_ACTIONS::resetHeadsUpDelta.MakeEvent() );
     Go( &BOARD_EDITOR_CONTROL::ToggleProperties,       ACTIONS::showProperties.MakeEvent() );
     Go( &BOARD_EDITOR_CONTROL::ToggleNetInspector,     PCB_ACTIONS::showNetInspector.MakeEvent() );
     Go( &BOARD_EDITOR_CONTROL::ToggleGitCommitPane, ACTIONS::showGitCommitPane.MakeEvent() );

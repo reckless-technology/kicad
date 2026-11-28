@@ -454,6 +454,8 @@ PCB_EDIT_FRAME::PCB_EDIT_FRAME( KIWAY* aKiway, wxWindow* aParent ) :
     m_auimgr.GetPane( "LayersManager" ).Show( m_ShowLayerManagerTools );
     m_auimgr.GetPane( "SelectionFilter" ).Show( m_ShowLayerManagerTools );
     ApplyLayerTabBarSetting( false );
+    CreateHeadsUp();
+    ApplyHeadsUpSetting();
     m_auimgr.GetPane( PropertiesPaneName() ).Show( GetPcbNewSettings()->m_AuiPanels.show_properties );
     m_auimgr.GetPane( NetInspectorPanelName() ).Show( m_ShowNetInspector );
     m_auimgr.GetPane( SearchPaneName() ).Show( m_ShowSearch );
@@ -1325,6 +1327,12 @@ void PCB_EDIT_FRAME::setupUIConditions()
                 return IsLayerTabBarShown();
             };
 
+    auto headsUpCond =
+            [this] ( const SELECTION& )
+            {
+                return IsHeadsUpShown();
+            };
+
     auto netInspectorCond =
             [this] ( const SELECTION& )
             {
@@ -1404,6 +1412,7 @@ void PCB_EDIT_FRAME::setupUIConditions()
     mgr->SetConditions( PCB_ACTIONS::flipBoard,            CHECK( boardFlippedCond ) );
     mgr->SetConditions( PCB_ACTIONS::showLayersManager,    CHECK( layerManagerCond ) );
     mgr->SetConditions( PCB_ACTIONS::showLayerTabBar,      CHECK( layerTabBarCond ) );
+    mgr->SetConditions( PCB_ACTIONS::toggleHeadsUp,        CHECK( headsUpCond ) );
     mgr->SetConditions( PCB_ACTIONS::showRatsnest,         CHECK( globalRatsnestCond ) );
     mgr->SetConditions( PCB_ACTIONS::ratsnestLineMode,     CHECK( curvedRatsnestCond ) );
     mgr->SetConditions( PCB_ACTIONS::toggleNetHighlight,   CHECK( netHighlightCond )
@@ -2211,6 +2220,7 @@ void PCB_EDIT_FRAME::SetActiveLayer( PCB_LAYER_ID aLayer, bool aForceRedraw )
         return;
 
     PCB_BASE_FRAME::SetActiveLayer( aLayer );
+    UpdateHeadsUp();
 
     m_appearancePanel->OnLayerChanged();
 
@@ -2910,7 +2920,10 @@ void PCB_EDIT_FRAME::CommonSettingsChanged( int aFlags )
 
     // A bar that follows the profile appears or goes with it
     if( aFlags & INTERACTION_PROFILE_CHANGED )
+    {
         ApplyLayerTabBarSetting();
+        ApplyHeadsUpSetting();
+    }
 
     PrepareLayerIndicator();
 

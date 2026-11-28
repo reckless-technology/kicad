@@ -246,6 +246,7 @@ void PCB_EDIT_FRAME::doReCreateMenuBar()
     showHidePanels->Add( PCB_ACTIONS::showSearch,                 ACTION_MENU::CHECK );
     showHidePanels->Add( PCB_ACTIONS::showLayersManager,          ACTION_MENU::CHECK );
     showHidePanels->Add( PCB_ACTIONS::showLayerTabBar,            ACTION_MENU::CHECK );
+    showHidePanels->Add( PCB_ACTIONS::toggleHeadsUp, ACTION_MENU::CHECK );
     showHidePanels->Add( PCB_ACTIONS::showNetInspector,           ACTION_MENU::CHECK );
     showHidePanels->Add( PCB_ACTIONS::showConstraintsPanel,       ACTION_MENU::CHECK );
     showHidePanels->Add( ACTIONS::showGitCommitPane, ACTION_MENU::CHECK );

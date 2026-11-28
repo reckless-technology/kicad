@@ -142,6 +142,7 @@ void FOOTPRINT_EDIT_FRAME::doReCreateMenuBar()
     showHidePanels->Add( ACTIONS::showLibraryTree,       ACTION_MENU::CHECK );
     showHidePanels->Add( PCB_ACTIONS::showLayersManager, ACTION_MENU::CHECK );
     showHidePanels->Add( PCB_ACTIONS::showLayerTabBar,   ACTION_MENU::CHECK );
+    showHidePanels->Add( PCB_ACTIONS::toggleHeadsUp, ACTION_MENU::CHECK );
     viewMenu->Add( showHidePanels );
     viewMenu->AppendSeparator();
 

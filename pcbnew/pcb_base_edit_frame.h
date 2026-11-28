@@ -23,11 +23,16 @@
 #ifndef BASE_EDIT_FRAME_H
 #define BASE_EDIT_FRAME_H
 
+#include <memory>
+#include <optional>
+
 #include <pcb_base_frame.h>
 #include <libraries/library_table.h>
+#include <widgets/pcb_heads_up_model.h>
 
 class APPEARANCE_CONTROLS;
 class PCB_LAYER_TAB_BAR;
+class PCB_HEADS_UP;
 class LAYER_PAIR_SETTINGS;
 class BOARD_ITEM_CONTAINER;
 class PANEL_SELECTION_FILTER;
@@ -257,6 +262,35 @@ public:
     /// The View menu item: store the opposite of what is showing, explicitly, so the profile no longer decides it.
     void ToggleLayerTabBar();
 
+    /// Make the heads-up display, a child window of the canvas, hidden. Call ApplyHeadsUpSetting() after it.
+    void CreateHeadsUp();
+
+    /// Show or hide the display as the stored setting and the interaction profile say.
+    void ApplyHeadsUpSetting();
+
+    /// True when the display is showing now.
+    bool IsHeadsUpShown() const;
+
+    /// True when the display follows the cursor instead of sitting at the top left of the canvas.
+    bool IsHeadsUpFollowing() const;
+
+    /// The View menu item and its key: store the opposite of what is showing, explicitly, so the profile no longer
+    /// decides it.
+    void ToggleHeadsUp();
+
+    /// Follow the cursor or go back to the top left, and store which.
+    void ToggleHeadsUpFollow();
+
+    /// Say the display's present state again: the cursor, the active layer, the grid and the item under the cursor.
+    /// It costs one comparison when nothing it shows has changed, and nothing at all while the display is hidden.
+    void UpdateHeadsUp();
+
+    /// The router's state for the display's routing line, or nothing when no route is being laid.
+    void SetHeadsUpRoute( const std::optional<HEADS_UP_ROUTE>& aRoute );
+
+    /// The status bar's refresh, which every cursor move, layer change and tool event reaches; the display follows it.
+    void UpdateStatusBar() override;
+
     /**
      * Access to the layer pair settings controller of the board, if available
      */
@@ -297,6 +331,12 @@ protected:
     PANEL_SELECTION_FILTER*              m_selectionFilterPanel;
     APPEARANCE_CONTROLS*                 m_appearancePanel;
     PCB_LAYER_TAB_BAR*                   m_layerTabBar;
+    std::unique_ptr<PCB_HEADS_UP>        m_headsUp;
+    std::optional<HEADS_UP_ROUTE>        m_headsUpRoute;
+    VECTOR2D                             m_headsUpLookupPosition;
+    PCB_LAYER_ID                         m_headsUpLookupLayer;
+    bool                                 m_isHeadsUpLookupValid;
+    HEADS_UP_ITEM                        m_headsUpItem;
     std::unique_ptr<LAYER_PAIR_SETTINGS> m_layerPairSettings;
 
     PCB_VERTEX_EDITOR_PANE* m_vertexEditorPane;

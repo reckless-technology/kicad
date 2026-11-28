@@ -567,6 +567,8 @@ set( PCBNEW_CLASS_SRCS
     widgets/appearance_controls_base.cpp
     widgets/pcb_layer_tab_bar.cpp
     widgets/pcb_layer_tab_bar_model.cpp
+    widgets/pcb_heads_up.cpp
+    widgets/pcb_heads_up_model.cpp
     widgets/footprint_wizard_properties_panel.cpp
     widgets/constraint_list_view.cpp
     widgets/panel_constraints.cpp

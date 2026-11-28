@@ -97,6 +97,9 @@ public:
     int ShowEeschema( const TOOL_EVENT& aEvent );
     int ToggleLayersManager( const TOOL_EVENT& aEvent );
     int ToggleLayerTabBar( const TOOL_EVENT& aEvent );
+    int ToggleHeadsUp( const TOOL_EVENT& aEvent );
+    int ToggleHeadsUpFollow( const TOOL_EVENT& aEvent );
+    int ResetHeadsUpDelta( const TOOL_EVENT& aEvent );
     int ToggleProperties( const TOOL_EVENT& aEvent );
     int ToggleNetInspector( const TOOL_EVENT& aEvent );
     int ToggleGitCommitPane( const TOOL_EVENT& aEvent );

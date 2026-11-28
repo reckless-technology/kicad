@@ -16,8 +16,7 @@
 #   - The in-command keys (Space, Shift+Space, L, X, Y and Tab) are bound below to context aliases, which act only while
 #     the move or placement loop they belong to runs; with no command running, those keys mean what they mean idle.
 #   - Routing keys, in-command and sticky: step 5.
-#   - Anything that needs a new action and is not built yet: the heads-up display, nudging, in-place editing, the 3D
-#     keys.
+#   - Anything that needs a new action and is not built yet: nudging, in-place editing, the 3D keys.
 #
 # Roots of the key sequences: the letter is typed first, then the letters of the entries it leads to (6.1 and 6.3).
 common.Sequence.place	P
@@ -44,8 +43,8 @@ common.Control.zoomCenter	Home
 common.Control.zoomRedraw	End
 common.Control.zoomIn	PgUp
 common.Control.zoomOut	PgDn
-# G and Shift+G cycle the grid, in the schematic editor; the PCB editors take G for the grid list below (step 6) and keep
-# Shift+G on the previous grid until the heads-up display (step 8) takes it
+# G and Shift+G cycle the grid, in the schematic editor; the PCB editors take G for the grid list and Shift+G for the
+# heads-up display following the cursor, both below, so gridNext and gridPrev lose those keys there
 common.Control.gridNext	G
 common.Control.gridPrev	Shift+G
 common.Control.editGrids	Ctrl+G
@@ -99,6 +98,15 @@ pcbnew.Control.showAppearanceObjects	Ctrl+D
 pcbnew.Control.maskLevelDown	[
 pcbnew.Control.maskLevelUp	]
 pcbnew.Control.showGridMenu	G
+# Heads-up display (5.7, step 8). Shift+H shows or hides it and Shift+G makes it follow the cursor, which takes the
+# key from gridPrev in the PCB editors; the schematic keeps it. Insert zeroes the delta through
+# pcbnew.Control.resetHeadsUpDelta, which runs common.Control.resetLocalCoords. That action is common.*, so binding
+# it here would take Insert in the schematic as well (its Repeat Last Item). Its Space was already lost in the PCB
+# editors to the in-command rotate keys below. The PCB editors lose Insert on Create Corner (the point editor),
+# which stays in its context menu; the in-command Insert of the drawing tools is not a profile key yet (6.7).
+pcbnew.Control.toggleHeadsUp	Shift+H
+pcbnew.Control.toggleHeadsUpFollow	Shift+G
+pcbnew.Control.resetHeadsUpDelta	Ins
 # In-command keys of the move and placement loops (5.5), and the router's width and via editor
 pcbnew.InteractiveEdit.rotateCcwWhileMoving	Space
 pcbnew.InteractiveEdit.rotateCwWhileMoving	Shift+Space

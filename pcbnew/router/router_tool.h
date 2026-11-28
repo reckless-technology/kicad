@@ -109,6 +109,10 @@ public:
     void UpdateMessagePanel();
 
 private:
+    /// Tell the heads-up display what the router is doing: its settings and sizes as they are now, or nothing once the
+    /// route is over. Reads the router and keeps nothing of it.
+    void updateHeadsUpRoute();
+
     void performRouting( VECTOR2D aStartPosition );
     void performDragging( int aMode = PNS::DM_ANY );
     void breakTrack();

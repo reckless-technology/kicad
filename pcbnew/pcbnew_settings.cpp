@@ -55,6 +55,13 @@ void PCB_VIEWERS_SETTINGS_BASE::addLayerTabBarParam()
 }
 
 
+void PCB_VIEWERS_SETTINGS_BASE::addHeadsUpParams()
+{
+    m_params.emplace_back( new PARAM<int>( "aui.heads_up_display", &m_HeadsUpMode, -1, -1, 1 ) );
+    m_params.emplace_back( new PARAM<bool>( "aui.heads_up_follows_cursor", &m_IsHeadsUpFollowingCursor, false ) );
+}
+
+
 PCBNEW_SETTINGS::PCBNEW_SETTINGS() :
         PCB_VIEWERS_SETTINGS_BASE( "pcbnew", pcbnewSchemaVersion ),
         m_AuiPanels(),
@@ -85,6 +92,7 @@ PCBNEW_SETTINGS::PCBNEW_SETTINGS() :
 {
     addMatchPropertiesParam();
     addLayerTabBarParam();
+    addHeadsUpParams();
 
     m_MagneticItems.pads      = MAGNETIC_OPTIONS::CAPTURE_CURSOR_IN_TRACK_TOOL;
     m_MagneticItems.tracks    = MAGNETIC_OPTIONS::CAPTURE_CURSOR_IN_TRACK_TOOL;

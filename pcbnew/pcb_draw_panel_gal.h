@@ -26,6 +26,7 @@
 #include <class_draw_panel_gal.h>
 #include <layer_ids.h>
 #include <pcb_view.h>
+#include <view/view_item.h>
 
 class DS_PROXY_VIEW_ITEM;
 class RATSNEST_VIEW_ITEM;
@@ -56,6 +57,13 @@ public:
      * @param aReporter is the optional #REPORTER object to write status messages to.
      */
     void DisplayBoard( BOARD* aBoard, PROGRESS_REPORTER* aReporter = nullptr );
+
+    /**
+     * Keep an item in the view across #DisplayBoard(), which empties the view: the item is added to it now and
+     * again each time a board is displayed. The canvas does not own it, and it must be taken out (a null item) or
+     * outlive the canvas.
+     */
+    void SetPersistentItem( KIGFX::VIEW_ITEM* aItem );
 
     /**
      * Set or update drawing-sheet used by the draw panel.
@@ -211,6 +219,8 @@ protected:
 
     /** The active layer the item colours were last computed for */
     PCB_LAYER_ID m_coloredLayer = UNDEFINED_LAYER;
+
+    KIGFX::VIEW_ITEM* m_persistentItem = nullptr; ///< see SetPersistentItem()
 
     std::unique_ptr<RATSNEST_VIEW_ITEM> m_ratsnest;      ///< Ratsnest view item
     std::unique_ptr<RATSNEST_VIEW_ITEM> m_localRatsnest; /**< Moving items' part, when split off */

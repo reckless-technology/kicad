@@ -382,6 +382,7 @@ void FOOTPRINT_EDIT_FRAME::SetActiveLayer( PCB_LAYER_ID aLayer )
         return;
 
     PCB_BASE_FRAME::SetActiveLayer( aLayer );
+    UpdateHeadsUp();
 
     /*
      * Follow the PCB editor logic for showing/hiding clearance layers: show only for

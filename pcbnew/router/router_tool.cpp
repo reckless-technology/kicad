@@ -58,6 +58,7 @@ using namespace std::placeholders;
 #include <kidialog.h>
 #include <widgets/wx_infobar.h>
 #include <widgets/appearance_controls.h>
+#include <widgets/pcb_heads_up_model.h>
 #include <connectivity/connectivity_data.h>
 #include <connectivity/connectivity_algo.h>
 #include <gal/graphics_abstraction_layer.h>
@@ -1867,6 +1868,7 @@ bool ROUTER_TOOL::prepareInteractive( VECTOR2D aStartPosition )
 bool ROUTER_TOOL::finishInteractive()
 {
     m_router->StopRouting();
+    updateHeadsUpRoute();
 
     m_stackDropAwaitingVia = false;
 
@@ -1960,6 +1962,7 @@ void ROUTER_TOOL::performRouting( VECTOR2D aStartPosition )
         {
             updateEndItem( *evt );
             m_router->Move( m_endSnapPoint, m_endItem );
+            updateHeadsUpRoute();
         }
         else if( evt->IsAction( &PCB_ACTIONS::routerUndoLastSegment )
                     || evt->IsAction( &ACTIONS::doDelete )
@@ -2057,6 +2060,7 @@ void ROUTER_TOOL::performRouting( VECTOR2D aStartPosition )
 
             updateEndItem( *evt );
             m_router->Move( m_endSnapPoint, m_endItem );
+            updateHeadsUpRoute();
             m_startItem = nullptr;
         }
         else if( evt->IsAction( &ACT_PlaceViaStack ) )
@@ -3845,8 +3849,47 @@ int ROUTER_TOOL::onTrackViaSizeChanged( const TOOL_EVENT& aEvent )
 }
 
 
+void ROUTER_TOOL::updateHeadsUpRoute()
+{
+    if( m_router->GetState() != PNS::ROUTER::ROUTE_TRACK || !m_router->Placer() )
+    {
+        frame()->SetHeadsUpRoute( std::nullopt );
+        return;
+    }
+
+    const PNS::SIZES_SETTINGS sizes( m_router->Sizes() );
+    const int                 currentLayer = m_router->GetCurrentLayer();
+    int                       otherLayer = sizes.GetLayerBottom();
+
+    if( std::optional<int> paired = PNS::SIZES_SETTINGS( sizes ).PairedLayer( currentLayer ) )
+        otherLayer = *paired;
+    else if( currentLayer == sizes.GetLayerBottom() )
+        otherLayer = sizes.GetLayerTop();
+
+    long long           length = 0;
+    const PNS::ITEM_SET traces = m_router->Placer()->Traces();
+
+    // A differential pair is two lines of the same length, so the first stands for the net
+    if( traces.Count() > 0 )
+    {
+        if( const PNS::LINE* line = dynamic_cast<const PNS::LINE*>( traces[0] ) )
+            length = line->CLine().Length();
+    }
+
+    const BOARD_DESIGN_SETTINGS& bds = board()->GetDesignSettings();
+
+    frame()->SetHeadsUpRoute( HeadsUpRouteFromRouter(
+            m_router->Settings(), sizes, m_router->Mode() == PNS::ROUTER_MODE::PNS_MODE_ROUTE_DIFF_PAIR,
+            HeadsUpWidthSource( bds.UseCustomTrackViaSize(), bds.UseNetClassTrack() ),
+            board()->GetLayerName( m_iface->GetBoardLayerFromPNSLayer( currentLayer ) ),
+            board()->GetLayerName( m_iface->GetBoardLayerFromPNSLayer( otherLayer ) ), length ) );
+}
+
+
 void ROUTER_TOOL::UpdateMessagePanel()
 {
+    updateHeadsUpRoute();
+
     std::vector<MSG_PANEL_ITEM> items;
 
     if( m_router->GetState() == PNS::ROUTER::ROUTE_TRACK )

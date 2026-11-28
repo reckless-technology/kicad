@@ -106,6 +106,12 @@ public:
     /// The layer tab bar under the canvas: -1 follows the interaction profile, 0 is off and 1 is on
     int m_LayerTabBarMode = -1;
 
+    /// The heads-up display over the canvas: -1 follows the interaction profile, 0 is off and 1 is on
+    int m_HeadsUpMode = -1;
+
+    /// The heads-up display tracks the cursor instead of sitting at the top left of the canvas
+    bool m_IsHeadsUpFollowingCursor = false;
+
     PCB_VIEWERS_SETTINGS_BASE( const std::string& aFilename, int aSchemaVersion ):
         APP_SETTINGS_BASE( aFilename, aSchemaVersion ),
         m_FootprintViewerZoom( 1.0 ),
@@ -127,6 +133,9 @@ protected:
 
     /// Opt-in, like the match properties: cvpcb has no layer tab bar.
     void addLayerTabBarParam();
+
+    /// Opt-in, like the layer tab bar: cvpcb has no heads-up display.
+    void addHeadsUpParams();
 };
 
 

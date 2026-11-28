@@ -537,6 +537,12 @@ public:
 
     static TOOL_ACTION showLayersManager;
     static TOOL_ACTION showLayerTabBar;
+
+    // Heads-up display (interaction profile, 5.7). resetHeadsUpDelta gives the Altium-style profile a key of its own
+    // for common.Control.resetLocalCoords, which is common and would take the key in every editor
+    static TOOL_ACTION toggleHeadsUp;
+    static TOOL_ACTION toggleHeadsUpFollow;
+    static TOOL_ACTION resetHeadsUpDelta;
     static TOOL_ACTION showNetInspector;
     static TOOL_ACTION zonesManager;
 

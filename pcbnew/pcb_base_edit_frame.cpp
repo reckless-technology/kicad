@@ -30,6 +30,8 @@
 #include <widgets/panel_selection_filter.h>
 #include <widgets/pcb_layer_tab_bar.h>
 #include <widgets/pcb_layer_tab_bar_model.h>
+#include <widgets/pcb_heads_up.h>
+#include <widgets/pcb_heads_up_model.h>
 #include <interaction_profile.h>
 #include <pgm_base.h>
 #include <board.h>
@@ -37,6 +39,10 @@
 #include <drc/drc_engine.h>
 #include <tool/action_toolbar.h>
 #include <gal/graphics_abstraction_layer.h>
+#include <view/view.h>
+#include <view/view_controls.h>
+#include <pcb_draw_panel_gal.h>
+#include <math/util.h>
 #include <pcb_dimension.h>
 #include <pcb_layer_box_selector.h>
 #include <footprint.h>
@@ -55,8 +61,7 @@
 #include <id.h>
 
 
-PCB_BASE_EDIT_FRAME::PCB_BASE_EDIT_FRAME( KIWAY* aKiway, wxWindow* aParent,
-                                          FRAME_T aFrameType, const wxString& aTitle,
+PCB_BASE_EDIT_FRAME::PCB_BASE_EDIT_FRAME( KIWAY* aKiway, wxWindow* aParent, FRAME_T aFrameType, const wxString& aTitle,
                                           const wxPoint& aPos, const wxSize& aSize, long aStyle,
                                           const wxString& aFrameName ) :
         PCB_BASE_FRAME( aKiway, aParent, aFrameType, aTitle, aPos, aSize, aStyle, aFrameName ),
@@ -64,6 +69,9 @@ PCB_BASE_EDIT_FRAME::PCB_BASE_EDIT_FRAME( KIWAY* aKiway, wxWindow* aParent,
         m_selectionFilterPanel( nullptr ),
         m_appearancePanel( nullptr ),
         m_layerTabBar( nullptr ),
+        m_headsUp(),
+        m_headsUpLookupLayer( UNDEFINED_LAYER ),
+        m_isHeadsUpLookupValid( false ),
         m_vertexEditorPane( nullptr ),
         m_tabbedPanel( nullptr )
 {
@@ -335,6 +343,148 @@ void PCB_BASE_EDIT_FRAME::ToggleLayerTabBar()
     settings->m_LayerTabBarMode =
             ToggledLayerTabBarSetting( settings->m_LayerTabBarMode, INTERACTION_PROFILE::Active() );
     ApplyLayerTabBarSetting();
+}
+
+
+void PCB_BASE_EDIT_FRAME::CreateHeadsUp()
+{
+    wxCHECK( GetCanvas() && !m_headsUp, /* void */ );
+
+    m_headsUp = std::make_unique<PCB_HEADS_UP>();
+    GetCanvas()->SetPersistentItem( m_headsUp.get() );
+}
+
+
+void PCB_BASE_EDIT_FRAME::ApplyHeadsUpSetting()
+{
+    PCB_VIEWERS_SETTINGS_BASE* settings = GetViewerSettingsBase();
+
+    if( !m_headsUp || !settings )
+        return;
+
+    const bool isShown = ::IsHeadsUpShown( settings->m_HeadsUpMode, INTERACTION_PROFILE::Active() );
+
+    m_headsUp->SetShown( isShown );
+    m_isHeadsUpLookupValid = false;
+
+    UpdateHeadsUp();
+    GetCanvas()->GetView()->Update( m_headsUp.get() );
+    GetCanvas()->Refresh();
+}
+
+
+bool PCB_BASE_EDIT_FRAME::IsHeadsUpShown() const
+{
+    return m_headsUp && m_headsUp->IsShown();
+}
+
+
+bool PCB_BASE_EDIT_FRAME::IsHeadsUpFollowing() const
+{
+    PCB_VIEWERS_SETTINGS_BASE* settings = const_cast<PCB_BASE_EDIT_FRAME*>( this )->GetViewerSettingsBase();
+
+    return settings && settings->m_IsHeadsUpFollowingCursor;
+}
+
+
+void PCB_BASE_EDIT_FRAME::ToggleHeadsUp()
+{
+    PCB_VIEWERS_SETTINGS_BASE* settings = GetViewerSettingsBase();
+
+    if( !settings )
+        return;
+
+    settings->m_HeadsUpMode = ToggledHeadsUpSetting( settings->m_HeadsUpMode, INTERACTION_PROFILE::Active() );
+    ApplyHeadsUpSetting();
+}
+
+
+void PCB_BASE_EDIT_FRAME::ToggleHeadsUpFollow()
+{
+    PCB_VIEWERS_SETTINGS_BASE* settings = GetViewerSettingsBase();
+
+    if( !settings )
+        return;
+
+    settings->m_IsHeadsUpFollowingCursor = !settings->m_IsHeadsUpFollowingCursor;
+    UpdateHeadsUp();
+}
+
+
+void PCB_BASE_EDIT_FRAME::SetHeadsUpRoute( const std::optional<HEADS_UP_ROUTE>& aRoute )
+{
+    if( aRoute == m_headsUpRoute )
+        return;
+
+    m_headsUpRoute = aRoute;
+    UpdateHeadsUp();
+}
+
+
+void PCB_BASE_EDIT_FRAME::UpdateStatusBar()
+{
+    PCB_BASE_FRAME::UpdateStatusBar();
+    UpdateHeadsUp();
+}
+
+
+void PCB_BASE_EDIT_FRAME::UpdateHeadsUp()
+{
+    if( !m_headsUp || !m_headsUp->IsShown() || IsClosing() || !GetBoard() || !GetScreen() )
+        return;
+
+    KIGFX::VIEW_CONTROLS* controls = GetCanvas()->GetViewControls();
+    KIGFX::VIEW*          view = GetCanvas()->GetView();
+
+    const VECTOR2D     cursor = controls->GetCursorPosition();
+    const PCB_LAYER_ID activeLayer = GetActiveLayer();
+
+    HEADS_UP_STATE state;
+
+    state.units = GetUserUnits();
+
+    state.cursor =
+            VECTOR2D( m_originTransforms.ToDisplayAbsX( cursor.x ), m_originTransforms.ToDisplayAbsY( cursor.y ) );
+
+    const VECTOR2D delta = HeadsUpDelta( cursor, *GetScreen() );
+    state.delta = VECTOR2D( m_originTransforms.ToDisplayRelX( delta.x ), m_originTransforms.ToDisplayRelY( delta.y ) );
+
+    state.layerName = GetBoard()->GetLayerName( activeLayer );
+
+    COLOR_SETTINGS* theme = GetColorSettings();
+
+    if( theme )
+        state.layerColor = theme->GetColor( activeLayer );
+
+    const VECTOR2D grid = GetCanvas()->GetGAL()->GetGridSize();
+
+    state.gridX = grid.x;
+    state.gridY = grid.y;
+    state.isSnapEnabled = GetCanvas()->GetGAL()->GetGridSnapping();
+
+    // One look at what is under the cursor per move of the cursor, or per change of the layer that ranks it
+    if( !m_isHeadsUpLookupValid || cursor != m_headsUpLookupPosition || activeLayer != m_headsUpLookupLayer )
+    {
+        m_headsUpItem = FindHeadsUpItem( *view, VECTOR2I( KiROUND( cursor.x ), KiROUND( cursor.y ) ),
+                                         KiROUND( view->ToWorld( 2.0 ) ), activeLayer );
+        m_headsUpLookupPosition = cursor;
+        m_headsUpLookupLayer = activeLayer;
+        m_isHeadsUpLookupValid = true;
+    }
+
+    state.item = m_headsUpItem;
+    state.route = m_headsUpRoute;
+
+    bool isChanged = m_headsUp->SetState( state );
+
+    if( theme )
+        isChanged |= m_headsUp->SetBackground( theme->GetColor( LAYER_PCB_BACKGROUND ) );
+
+    isChanged |= m_headsUp->SetFollowing( IsHeadsUpFollowing(), cursor );
+
+    // The cursor and the view's overlay are redrawn on every move already; this only says the item changed
+    if( isChanged )
+        view->Update( m_headsUp.get(), KIGFX::REPAINT );
 }
 
 

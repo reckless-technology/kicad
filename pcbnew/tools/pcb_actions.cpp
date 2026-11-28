@@ -2204,6 +2204,25 @@ TOOL_ACTION PCB_ACTIONS::showLayerTabBar( TOOL_ACTION_ARGS()
         .Tooltip( _( "Show/hide the layer tabs under the canvas" ) )
         .ToolbarState( TOOLBAR_STATE::TOGGLE ) );
 
+TOOL_ACTION PCB_ACTIONS::toggleHeadsUp( TOOL_ACTION_ARGS()
+        .Name( "pcbnew.Control.toggleHeadsUp" )
+        .Scope( AS_GLOBAL )
+        .FriendlyName( _( "Heads-Up Display" ) )
+        .Tooltip( _( "Show/hide the heads-up display of the cursor position, layer, grid and item under the cursor" ) )
+        .ToolbarState( TOOLBAR_STATE::TOGGLE ) );
+
+TOOL_ACTION PCB_ACTIONS::toggleHeadsUpFollow( TOOL_ACTION_ARGS()
+        .Name( "pcbnew.Control.toggleHeadsUpFollow" )
+        .Scope( AS_GLOBAL )
+        .FriendlyName( _( "Heads-Up Display Follows Cursor" ) )
+        .Tooltip( _( "Keep the heads-up display near the cursor instead of at the top left of the canvas" ) ) );
+
+TOOL_ACTION PCB_ACTIONS::resetHeadsUpDelta( TOOL_ACTION_ARGS()
+        .Name( "pcbnew.Control.resetHeadsUpDelta" )
+        .Scope( AS_GLOBAL )
+        .FriendlyName( _( "Reset Local Coordinates" ) )
+        .Tooltip( _( "Zero the delta of the heads-up display and the status bar at the cursor" ) ) );
+
 TOOL_ACTION PCB_ACTIONS::showNetInspector( TOOL_ACTION_ARGS()
         .Name( "pcbnew.Control.showNetInspector" )
         .Scope( AS_GLOBAL )

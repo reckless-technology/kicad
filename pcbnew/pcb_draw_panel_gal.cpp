@@ -275,9 +275,24 @@ PCB_DRAW_PANEL_GAL::~PCB_DRAW_PANEL_GAL()
 }
 
 
+void PCB_DRAW_PANEL_GAL::SetPersistentItem( KIGFX::VIEW_ITEM* aItem )
+{
+    if( m_persistentItem && m_view->HasItem( m_persistentItem ) )
+        m_view->Remove( m_persistentItem );
+
+    m_persistentItem = aItem;
+
+    if( m_persistentItem )
+        m_view->Add( m_persistentItem );
+}
+
+
 void PCB_DRAW_PANEL_GAL::DisplayBoard( BOARD* aBoard, PROGRESS_REPORTER* aReporter )
 {
     m_view->Clear();
+
+    if( m_persistentItem )
+        m_view->Add( m_persistentItem );
 
     aBoard->CacheTriangulation( aReporter );
 

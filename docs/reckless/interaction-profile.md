@@ -517,8 +517,8 @@ binds them.
 - **Grid.** `G` was already `common.Control.gridNext` from step 3, and `Shift+G`, `Ctrl+G` and `Q` were bound there.
   In the PCB editors `pcbnew.Control.showGridMenu` takes `G` (a `pcbnew.` action takes its key in that editor only, so
   `gridNext` loses it there) and pops up `GRID_MENU` at the mouse position; the schematic editor keeps `G` and `Shift+G`
-  as the next and previous grid. **Open point:** in the PCB editors `Shift+G` stays `gridPrev` until the heads-up display
-  (step 8) takes it for "follows the cursor"; 6.4 does not say what it is before then.
+  as the next and previous grid. **Settled in step 8:** in the PCB editors `Shift+G` stayed `gridPrev` until the heads-up display
+  took it for "follows the cursor".
 - **Single-layer mode.** Not cheap to leave alone, and it was not right: in the dimmed and hidden modes a through-hole pad
   and a through via drew on the inactive copper layers' colors (`isActive` is a lookup of the drawn layer in the
   high-contrast set, which holds one copper layer's pad and via copper), so the part of a through-hole pad on the other
@@ -539,6 +539,71 @@ binds them.
   filled shapes 0.60 there, controlled by the int `project_defaults.board_opacity.profile_look` (-1 follows the profile, 0
   off, 1 on). A project that stores its opacities keeps them. Editing the opacities in the PCB editor's project defaults
   preferences stores the user's values and turns the look off.
+
+**As built (step 8).** The model is `pcbnew/widgets/pcb_heads_up_model.{h,cpp}` (no window: the lines a state says, the
+routing line, the item under a point, the setting), the item is `pcb_heads_up.{h,cpp}`, and the frame side is
+`PCB_BASE_EDIT_FRAME`'s `CreateHeadsUp`, `UpdateHeadsUp` and `SetHeadsUpRoute`, so the PCB and footprint editors both
+have it.
+
+- **A view item, not a child window.** The note preferred a child window, and one was built first. On a GTK canvas a
+  child of the GL canvas stayed unpainted wherever it grew or moved, until it was hidden and shown again (seen under
+  Xvfb with software GL, which is the only display these runs may use). The display is therefore a `KIGFX::VIEW_ITEM` on
+  `LAYER_GP_OVERLAY`, which is on the overlay target the cursor shares, so a change redraws that target and not the
+  scene. It is laid out in screen pixels, so it stays put when the board pans or zooms, it can never take focus or eat
+  an event, and its panel is truly translucent (78 % black over a dark canvas, white over a light one, with text in the
+  other of the two, so the text is told from it by luminance and the layer color is a chip outlined in the text color).
+  `PCB_DRAW_PANEL_GAL::SetPersistentItem` keeps it in the view across `DisplayBoard`, which empties the view.
+- **What it says.** `X`/`Y` as the status bar shows them (the user origin applied), the delta from the local origin and
+  its length, the active layer and its color, grid and snap (`GAL::GetGridSnapping`, so snapping with the grid hidden
+  reads right), and the net and footprint reference of what is under the cursor, all in the frame's units through
+  `EDA_UNIT_UTILS::UI::MessageTextFromValue`, the status bar's own formatting. Polar mode is not reflected.
+- **Updates.** It hangs off `PCB_BASE_EDIT_FRAME::UpdateStatusBar`, which every cursor move, tool event, zoom and local
+  origin reset already reaches, and off `SetActiveLayer` in both editors. A state equal to the last repaints nothing;
+  the item under the cursor is looked up through the view's spatial index once per move of the (snapped) cursor and once
+  per change of the active layer, never per event; while the display is hidden none of it runs. A selection change
+  arrives as a tool event, so it needs no hook of its own. The lookup ranks pads over vias over tracks over zones over
+  footprint bodies, and an item on the active layer over one that is not, and honors layer visibility but not the
+  object-kind switches. It does not refresh if the board changes under a still cursor, until the next move.
+- **The routing line.** `ROUTER_TOOL::updateHeadsUpRoute` hands the frame the router's own settings and sizes
+  (`HeadsUpRouteFromRouter`) after every move, click, mode, size or layer command, and clears them when the route ends;
+  the frame keeps the last one only so the display can draw it. Corner mode (free-angle first), router mode, track width
+  (the pair's width when routing a pair) with its source, via diameter and drill, the layer and the one a via takes the
+  route to, then the length. The source is custom when the board design settings use the custom size, the net class when
+  they take the width from it and the list otherwise (`HeadsUpWidthSource`). The length is that of the route being laid,
+  not of the whole net, which would walk every track of the board on each move. The line is wrapped at commas into rows
+  of 60 characters.
+- **Keys.** `Shift+H` (`pcbnew.Control.toggleHeadsUp`), `Shift+G` (`toggleHeadsUpFollow`) and `Insert`
+  (`resetHeadsUpDelta`) are PCB-editor actions. Checked against the table and the sequence roots: `Shift+H` has no other
+  owner; a sequence root is a plain letter, so none is a prefix of these. `Shift+G` is also `gridPrev`, which the
+  schematic keeps, and in the PCB editors the frame's own action is promoted over a `common.` one on the same key, as
+  `G` already is over `gridNext`; Altium's length gauge on `Shift+G` while routing is not built (6.4), so following
+  holds the key there. **`Space`:** stock KiCad binds `resetLocalCoords` to it. The profile has already taken `Space` in
+  both editors for the in-command rotate keys (context aliases, which run only inside a move or placement), so
+  `resetLocalCoords` has had no key under the profile since step 4 and `Space` keeps only that role. **`Insert`** cannot
+  go on `resetLocalCoords` itself: it is a `common.` action, and the table's rule would take `Insert` in the schematic
+  from Repeat Last Item, which 6.4 keeps there. `resetHeadsUpDelta` is a `pcbnew.` action that runs `resetLocalCoords`,
+  so the delta resets exactly as before and the schematic is untouched. The cost: the PCB editors lose `Insert` on the
+  point editor's Create Corner, which stays in its context menu; the in-command `Insert` of the drawing tools (6.7) is
+  not a profile key yet.
+- **Setting.** `aui.heads_up_display` is an int in the PCB and footprint viewer settings: -1 follows the profile (on
+  under Altium-style, off in stock), 0 off, 1 on; the toggle stores the opposite explicitly.
+  `aui.heads_up_follows_cursor` is a plain bool, false by default, since nothing about it follows the profile. View >
+  Panels has "Heads-Up Display" (a checked item) in the Altium-style menu tree and, like the layer tab bar, in the stock
+  menu, off there by default, so the stock profile's behavior is unchanged. Following puts the panel 24 px below and to
+  the right of the cursor, or on the other side where that would leave the canvas.
+- **Cost.** Measured 2026-11-28 on the Linux Legion under Xvfb with Mesa software GL, in KiCad's `video.kicad_pcb` demo
+  (8,740 tracks, 189 footprints): the model's work per cursor move (lookup, state, lines) is 15 to 19 microseconds on
+  the demo boards `pic_programmer`, `tiny_tapeout`, `video` and `vme-wren` (376 to 31,024 tracks), and with the state
+  and lookup computed but no repaint the CPU of a 300-move sweep did not differ from the display off. Repainting the
+  overlay on each change is the cost: on that software renderer a 300-move sweep took about 21 % more CPU with the
+  display on (mean 2,550 against 2,100 ticks of 10 ms; 7 to 33 % across eight alternating on and off pairs). The
+  renderer redraws the whole scene's composite on every move there, so no real GPU number exists from this run; the
+  display is limited to repainting when a displayed value changes, which on a snapped grid is far fewer times than the
+  mouse moves.
+- **Tests.** `qa/tests/pcbnew/test_heads_up_model.cpp`: the lines in mm, mil and inch, the routing line from constructed
+  `PNS` settings in each mode and width source, wrapping, the delta after a local origin reset, the item lookup on a
+  small board, the tri-state setting and its stored keys, and the actions, their keys under each profile and the key
+  conflicts above. `RECKLESS_HEADS_UP_BOARD=<board file>` makes its `HeadsUpCost` case time the model on that board.
 
 ### 5.8 Routing
 
