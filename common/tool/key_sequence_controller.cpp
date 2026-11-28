@@ -353,7 +353,9 @@ void KEY_SEQUENCE_CONTROLLER::showPopup( const MENU_DEF& aNode )
     {
         int hotkey = toolManager->GetHotKey( aAction );
 
-        return hotkey ? AddHotkeyName( wxEmptyString, hotkey ).AfterFirst( '\t' ) : wxString();
+        // The key's own name, not a menu accelerator: on macOS AddHotkeyName() writes Cmd as Ctrl so that native menus
+        // draw the command glyph, and the popup draws its text itself
+        return hotkey ? KeyNameFromKeyCode( hotkey ) : wxString();
     };
 
     m_popup->ShowRows( StripMnemonicMarkers( aNode.m_label ), BuildKeySequenceRows( aNode, hotkeyText ),
