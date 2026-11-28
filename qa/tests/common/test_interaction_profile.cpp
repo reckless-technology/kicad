@@ -25,6 +25,7 @@
 #include <interaction_profile.h>
 #include <settings/common_settings.h>
 #include <tool/action_manager.h>
+#include <tool/selection_tool.h>
 #include <tool/tool_action.h>
 #include <tool/tool_event.h>
 
@@ -671,27 +672,53 @@ BOOST_AUTO_TEST_CASE( TheKeySequenceHintDelayHasADefaultARangeAndOldFilesLoadThe
     BOOST_CHECK_EQUAL( loadWith( "\"key_sequence_hint_delay_ms\": 750," ), 750 );
 }
 
-BOOST_AUTO_TEST_CASE( TheRightClickSettingFollowsTheBuildsProfile )
+BOOST_AUTO_TEST_CASE( TheRightClickSettingFollowsTheProfileUnlessSetExplicitly )
 {
     COMMON_SETTINGS settings;
 
-    settings.Load();
+    settings.ResetToDefaults();
 
-#ifdef KICAD_HOUSE_INTERACTION
-    BOOST_CHECK( settings.m_Input.right_click_cancels );
-#else
-    BOOST_CHECK( !settings.m_Input.right_click_cancels );
-#endif
+    // A configuration with no such key follows its profile, whatever profile the build starts new ones in
+    BOOST_CHECK_EQUAL( settings.m_Input.right_click_cancels, -1 );
 
-    // Round trip, and the name the note gives it
-    settings.m_Input.right_click_cancels = !settings.m_Input.right_click_cancels;
+    const INTERACTION_PROFILE_ID stock = INTERACTION_PROFILE_ID::STOCK;
+    const INTERACTION_PROFILE_ID altium = INTERACTION_PROFILE_ID::ALTIUM;
 
-    bool expected = settings.m_Input.right_click_cancels;
+    BOOST_CHECK( !INTERACTION_PROFILE::DoesRightClickCancel( settings.m_Input.right_click_cancels, stock ) );
+    BOOST_CHECK( INTERACTION_PROFILE::DoesRightClickCancel( settings.m_Input.right_click_cancels, altium ) );
 
-    settings.Store();
-    settings.m_Input.right_click_cancels = !expected;
-    settings.Load();
-    BOOST_CHECK_EQUAL( settings.m_Input.right_click_cancels, expected );
+    // An explicit 0 or 1 wins in either profile
+    for( INTERACTION_PROFILE_ID profile : { stock, altium } )
+    {
+        BOOST_CHECK( !INTERACTION_PROFILE::DoesRightClickCancel( 0, profile ) );
+        BOOST_CHECK( INTERACTION_PROFILE::DoesRightClickCancel( 1, profile ) );
+    }
+
+    // Round trip, and a file from before the setting has no key
+    for( int value : { 0, 1, -1 } )
+    {
+        settings.m_Input.right_click_cancels = value;
+        settings.Store();
+        settings.m_Input.right_click_cancels = 7;
+        settings.Load();
+        BOOST_CHECK_EQUAL( settings.m_Input.right_click_cancels, value );
+    }
+}
+
+
+BOOST_AUTO_TEST_CASE( ShiftCtrlClickAddsANetToTheHighlightOnlyInTheAltiumProfile )
+{
+    // Ctrl+click highlighting on, as the profile's preset sets it
+    BOOST_CHECK( SELECTION_TOOL::IsHighlightAddModifier( true, true, true, true ) );
+
+    // Stock KiCad keeps the subtractive selection Shift+Ctrl+click always gave, with the setting on or off
+    BOOST_CHECK( !SELECTION_TOOL::IsHighlightAddModifier( true, true, true, false ) );
+    BOOST_CHECK( !SELECTION_TOOL::IsHighlightAddModifier( true, true, false, false ) );
+    BOOST_CHECK( !SELECTION_TOOL::IsHighlightAddModifier( true, true, false, true ) );
+
+    // Neither Ctrl alone nor Shift alone
+    BOOST_CHECK( !SELECTION_TOOL::IsHighlightAddModifier( true, false, true, true ) );
+    BOOST_CHECK( !SELECTION_TOOL::IsHighlightAddModifier( false, true, true, true ) );
 }
 
 

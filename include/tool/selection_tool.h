@@ -149,6 +149,15 @@ protected:
      */
     virtual bool ctrlClickHighlights() { return false; }
 
+public:
+    /**
+     * Pure decision on whether Shift+Ctrl+click adds the net to the highlighted ones. Only in the Altium-style profile,
+     * with Ctrl+click highlighting: stock KiCad keeps the subtractive selection it has always had there.
+     */
+    static bool IsHighlightAddModifier( bool aCtrlState, bool aShiftState, bool aIsCtrlClickHighlight,
+                                        bool aIsAltiumProfile );
+
+protected:
     bool doSelectionMenu( COLLECTOR* aCollector );
 
 protected:

@@ -18,6 +18,7 @@
  */
 
 #include <bitmaps.h>
+#include <interaction_profile.h>
 #include <widgets/ui_common.h>
 #include <collector.h>
 #include <tool/tool_manager.h>
@@ -43,6 +44,13 @@ SELECTION_TOOL::SELECTION_TOOL( const std::string& aName ) :
 {
 }
 
+bool SELECTION_TOOL::IsHighlightAddModifier( bool aCtrlState, bool aShiftState, bool aIsCtrlClickHighlight,
+                                             bool aIsAltiumProfile )
+{
+    return aIsAltiumProfile && aIsCtrlClickHighlight && aCtrlState && aShiftState;
+}
+
+
 void SELECTION_TOOL::setModifiersState( bool aShiftState, bool aCtrlState, bool aAltState )
 {
     // Set the configuration of m_additive, m_subtractive, m_exclusive_or from the state of
@@ -57,7 +65,8 @@ void SELECTION_TOOL::setModifiersState( bool aShiftState, bool aCtrlState, bool 
     {
         m_exclusive_or = false;
         m_highlight_modifier = aCtrlState && !aShiftState;
-        m_highlight_add_modifier = aCtrlState && aShiftState;
+        m_highlight_add_modifier = IsHighlightAddModifier(
+                aCtrlState, aShiftState, true, INTERACTION_PROFILE::Active() == INTERACTION_PROFILE_ID::ALTIUM );
     }
     else
     {

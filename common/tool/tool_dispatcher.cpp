@@ -33,6 +33,7 @@
 #include <trace_helpers.h>
 #include <tool/tool_manager.h>
 #include <tool/tools_holder.h>
+#include <interaction_profile.h>
 #include <pgm_base.h>
 #include <settings/common_settings.h>
 #include <tool/actions.h>
@@ -245,7 +246,8 @@ bool TOOL_DISPATCHER::doesRightClickCancel() const
     if( !settings || !holder )
         return false;
 
-    return DoesRightClickCancel( settings->m_Input.right_click_cancels,
+    return DoesRightClickCancel( INTERACTION_PROFILE::DoesRightClickCancel( settings->m_Input.right_click_cancels,
+                                                                            settings->m_Input.interaction_profile ),
                                  holder->IsCurrentTool( ACTIONS::selectionTool ) );
 }
 

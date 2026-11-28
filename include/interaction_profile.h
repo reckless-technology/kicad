@@ -98,6 +98,12 @@ public:
      */
     static bool ApplyMousePresetOnce( COMMON_SETTINGS& aSettings );
 
+    /**
+     * Whether a right-click cancels the running command, from `input.right_click_cancels` (-1 follows the profile, 0 is
+     * off, 1 is on) and the profile in force.
+     */
+    static bool DoesRightClickCancel( int aSetting, INTERACTION_PROFILE_ID aProfile );
+
     /// The profile's name as shown in Preferences.
     static wxString DisplayName( INTERACTION_PROFILE_ID aProfile );
 

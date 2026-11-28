@@ -47,14 +47,16 @@ void INTERACTION_PROFILE::SetActive( INTERACTION_PROFILE_ID aProfile )
     COMMON_SETTINGS* settings = Pgm().GetCommonSettings();
 
     if( settings )
-    {
-        // A right-click ends a command in the Altium-style profile and opens its menu in stock KiCad. Choosing the
-        // profile already in force leaves the setting as it is.
-        if( settings->m_Input.interaction_profile != aProfile )
-            settings->m_Input.right_click_cancels = aProfile == INTERACTION_PROFILE_ID::ALTIUM;
-
         settings->m_Input.interaction_profile = aProfile;
-    }
+}
+
+
+bool INTERACTION_PROFILE::DoesRightClickCancel( int aSetting, INTERACTION_PROFILE_ID aProfile )
+{
+    if( aSetting == 0 )
+        return false;
+
+    return aSetting > 0 || aProfile == INTERACTION_PROFILE_ID::ALTIUM;
 }
 
 
