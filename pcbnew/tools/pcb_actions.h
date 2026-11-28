@@ -189,7 +189,12 @@ public:
     static TOOL_ACTION rotateCcwWhilePlacing;
     static TOOL_ACTION rotateCwWhilePlacing;
     static TOOL_ACTION flipWhilePlacing;
+
+    /// Context aliases of the length tuner's keys (note 5.8): the drawing tool runs the tuner
+    static TOOL_ACTION amplDecreaseWhileTuning;
     static TOOL_ACTION amplIncreaseWhileTuning;
+    static TOOL_ACTION spacingDecreaseWhileTuning;
+    static TOOL_ACTION spacingIncreaseWhileTuning;
     static TOOL_ACTION propertiesWhilePlacing;
     static TOOL_ACTION matchProperties;
     static TOOL_ACTION matchPropertiesSettings;
@@ -302,6 +307,18 @@ public:
 
     static TOOL_ACTION routerContinueFromEnd;
     static TOOL_ACTION routerAttemptFinish;
+
+    /// Router keys of the Altium-style profile (note 5.8): context aliases of the router tool that run the global
+    /// action they forward to, so that the key means something else idle, and toggles and menus that are new
+    static TOOL_ACTION cycleRouterModeWhileRouting;
+    static TOOL_ACTION trackWidthIncWhileRouting;
+    static TOOL_ACTION viaSizeIncWhileRouting;
+    static TOOL_ACTION layerNextWhileRouting;
+    static TOOL_ACTION layerPrevWhileRouting;
+    static TOOL_ACTION routerToggleLookAhead;
+    static TOOL_ACTION routerToggleLoopRemoval;
+    static TOOL_ACTION routerShowTrackWidthMenu;
+    static TOOL_ACTION routerShowViaSizeMenu;
     static TOOL_ACTION routerRouteSelected;
     static TOOL_ACTION routerRouteSelectedFromEnd;
     static TOOL_ACTION routerAutorouteSelected;
@@ -421,6 +438,10 @@ public:
     static TOOL_ACTION layerBottom;
     static TOOL_ACTION layerNext;
     static TOOL_ACTION layerPrev;
+
+    /// Step the active layer through every visible layer, not copper only (the Altium-style profile's + and -)
+    static TOOL_ACTION layerNextVisible;
+    static TOOL_ACTION layerPrevVisible;
     static TOOL_ACTION layerAlphaInc;
     static TOOL_ACTION layerAlphaDec;
 

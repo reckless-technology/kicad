@@ -21,6 +21,7 @@
  */
 
 #include <pcb_edit_frame.h>
+#include <interaction_profile.h>
 #include <tool/tool_manager.h>
 #include <tools/pcb_selection_tool.h>
 #include <board_design_settings.h>
@@ -130,7 +131,8 @@ bool PCB_EDIT_FRAME::LoadProjectSettings()
     // No refresh here: callers of LoadProjectSettings refresh later
     SetDisplayOptions( opts, false );
 
-    GetDesignSettings().m_UseConnectedTrackWidth = localSettings.m_AutoTrackWidth;
+    GetDesignSettings().m_UseConnectedTrackWidth = INTERACTION_PROFILE::IsAutoTrackWidthOn(
+            localSettings.m_AutoTrackWidthMode, localSettings.m_AutoTrackWidth, INTERACTION_PROFILE::Active() );
 
     wxFileName fn( GetCurrentFileName() );
     fn.MakeRelativeTo( Prj().GetProjectPath() );
@@ -228,6 +230,11 @@ void PCB_EDIT_FRAME::saveProjectSettings()
     localSettings.m_OutsideGroupOpacity = displayOpts.m_OutsideGroupOpacity;
 
     // Save Design settings
+    // The setting is written explicitly only once the user has made it differ from what the profile gives, so a
+    // project that is only opened keeps following the profile. The switch the stock profile reads is always written.
+    localSettings.m_AutoTrackWidthMode = INTERACTION_PROFILE::AutoTrackWidthSettingToStore(
+            localSettings.m_AutoTrackWidthMode, GetDesignSettings().m_UseConnectedTrackWidth,
+            localSettings.m_AutoTrackWidth, INTERACTION_PROFILE::Active() );
     localSettings.m_AutoTrackWidth = GetDesignSettings().m_UseConnectedTrackWidth;
 
     // Net display settings

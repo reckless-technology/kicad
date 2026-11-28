@@ -30,6 +30,7 @@
 #include <interaction_profile.h>
 #include <project.h>
 #include <project/project_local_settings.h>
+#include <settings/json_settings_internals.h>
 #include <settings/layer_settings_utils.h>
 #include <settings/common_settings.h>
 #include <settings/settings_manager.h>
@@ -333,6 +334,49 @@ BOOST_AUTO_TEST_CASE( TheProfileLookCanBeTurnedOffAndThenTheUsersOwnDefaultsAppl
     writeAndLoadProject( "off_project", newPrl, settingsManager );
 
     BOOST_CHECK_EQUAL( settingsManager.Prj().GetLocalSettings().m_PadOpacity, 0.4 );
+}
+
+
+/**
+ * "Use starting track width" follows the interaction profile unless it was chosen (note 5.8, step 5): an int that is -1
+ * until then, beside the older switch the stock profile reads, so that a project saved before the setting existed
+ * keeps what its owner chose in the stock profile.
+ */
+BOOST_AUTO_TEST_CASE( UseStartingTrackWidthFollowsTheProfileUntilItIsChosen )
+{
+    // A project that switched it off, from before the setting
+    std::string prlContent = R"({
+        "board": { "auto_track_width": false },
+        "meta": { "filename": "old_project.kicad_prl", "version": 3 }
+    })";
+
+    SETTINGS_MANAGER settingsManager;
+    writeAndLoadProject( "old_project", prlContent, settingsManager );
+
+    PROJECT_LOCAL_SETTINGS& localSettings = settingsManager.Prj().GetLocalSettings();
+
+    BOOST_CHECK_EQUAL( localSettings.m_AutoTrackWidthMode, -1 );
+    BOOST_CHECK( !localSettings.m_AutoTrackWidth );
+
+    // The stock profile keeps the switch; the Altium-style profile starts with it on
+    BOOST_CHECK( !INTERACTION_PROFILE::IsAutoTrackWidthOn(
+            localSettings.m_AutoTrackWidthMode, localSettings.m_AutoTrackWidth, INTERACTION_PROFILE_ID::STOCK ) );
+    BOOST_CHECK( INTERACTION_PROFILE::IsAutoTrackWidthOn(
+            localSettings.m_AutoTrackWidthMode, localSettings.m_AutoTrackWidth, INTERACTION_PROFILE_ID::ALTIUM ) );
+
+    // A project with no such setting at all starts on, as it always has
+    SETTINGS_MANAGER freshManager;
+    writeAndLoadProject( "new_project", R"({ "meta": { "filename": "new_project.kicad_prl", "version": 3 } })",
+                         freshManager );
+
+    BOOST_CHECK_EQUAL( freshManager.Prj().GetLocalSettings().m_AutoTrackWidthMode, -1 );
+    BOOST_CHECK( freshManager.Prj().GetLocalSettings().m_AutoTrackWidth );
+
+    // It is stored under its own key
+    localSettings.m_AutoTrackWidthMode = 0;
+    localSettings.Store();
+
+    BOOST_CHECK_EQUAL( localSettings.Internals()->Get<int>( "board.auto_track_width_mode" ), 0 );
 }
 
 

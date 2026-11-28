@@ -26,6 +26,7 @@
 #include <wx/valnum.h>
 #include <advanced_config.h>
 #include <kiplatform/ui.h>
+#include <interaction_profile.h>
 
 #include <functional>
 #include <iomanip>
@@ -378,27 +379,55 @@ ROUTER_TOOL::ROUTER_TOOL() :
 class TRACK_WIDTH_MENU : public ACTION_MENU
 {
 public:
-    TRACK_WIDTH_MENU( PCB_EDIT_FRAME& aFrame ) :
-        ACTION_MENU( true ),
-        m_frame( aFrame )
+    /// Which of the menu's two halves it lists: the track widths with the ways to choose them, or the via sizes
+    enum class PART
+    {
+        ALL,
+        TRACK_WIDTHS,
+        VIA_SIZES
+    };
+
+    TRACK_WIDTH_MENU( PCB_EDIT_FRAME& aFrame, PART aPart = PART::ALL ) :
+            ACTION_MENU( true ),
+            m_frame( aFrame ),
+            m_part( aPart )
     {
         SetIcon( BITMAPS::width_track_via );
-        SetTitle( _( "Select Track/Via Width" ) );
+
+        switch( aPart )
+        {
+        case PART::ALL: SetTitle( _( "Select Track/Via Width" ) ); break;
+        case PART::TRACK_WIDTHS: SetTitle( _( "Select Track Width" ) ); break;
+        case PART::VIA_SIZES: SetTitle( _( "Select Via Size" ) ); break;
+        }
     }
 
 protected:
-    ACTION_MENU* create() const override
-    {
-        return new TRACK_WIDTH_MENU( m_frame );
-    }
+    ACTION_MENU* create() const override { return new TRACK_WIDTH_MENU( m_frame, m_part ); }
 
     void update() override
     {
         BOARD_DESIGN_SETTINGS& bds = m_frame.GetBoard()->GetDesignSettings();
         bool                   useIndex = !bds.m_UseConnectedTrackWidth && !bds.UseCustomTrackViaSize();
-        wxString               msg;
 
         Clear();
+
+        const bool hasTrackWidths = m_part != PART::VIA_SIZES;
+        const bool hasViaSizes = m_part != PART::TRACK_WIDTHS;
+
+        if( hasTrackWidths )
+            appendTrackWidths( bds, useIndex );
+
+        if( hasTrackWidths && hasViaSizes )
+            AppendSeparator();
+
+        if( hasViaSizes )
+            appendViaSizes( bds, useIndex );
+    }
+
+    void appendTrackWidths( BOARD_DESIGN_SETTINGS& bds, bool useIndex )
+    {
+        wxString msg;
 
         Append( ID_POPUP_PCB_SELECT_AUTO_WIDTH, _( "Use Starting Track Width" ),
                 _( "Route using the width of the starting track." ), wxITEM_CHECK );
@@ -430,8 +459,11 @@ protected:
             Append( menuIdx, msg, wxEmptyString, wxITEM_CHECK );
             Check( menuIdx, useIndex && bds.GetTrackWidthIndex() == (int) i );
         }
+    }
 
-        AppendSeparator();
+    void appendViaSizes( BOARD_DESIGN_SETTINGS& bds, bool useIndex )
+    {
+        wxString msg;
 
         for( unsigned i = 0; i < bds.m_ViasDimensionsList.size(); i++ )
         {
@@ -504,6 +536,7 @@ protected:
 
 private:
     PCB_EDIT_FRAME& m_frame;
+    PART            m_part;
 };
 
 
@@ -994,6 +1027,14 @@ void ROUTER_TOOL::handleCommonEvents( TOOL_EVENT& aEvent )
         break;
     }
 }
+
+bool ROUTER_TOOL::isFinishClick( const TOOL_EVENT& aEvent ) const
+{
+    return aEvent.IsClick( BUT_LEFT )
+           && INTERACTION_PROFILE::DoesClickAttemptFinish( INTERACTION_PROFILE::Active(), aEvent.Modifier( MD_CTRL ),
+                                                           aEvent.Modifier( MD_SHIFT ), aEvent.Modifier( MD_ALT ) );
+}
+
 
 int ROUTER_TOOL::handlePnSCornerModeChange( const TOOL_EVENT& aEvent )
 {
@@ -1977,12 +2018,12 @@ void ROUTER_TOOL::performRouting( VECTOR2D aStartPosition )
             updateEndItem( *evt );
             m_router->Move( m_endSnapPoint, m_endItem );
         }
-        else if( evt->IsAction( &PCB_ACTIONS::routerAttemptFinish ) )
+        else if( evt->IsAction( &PCB_ACTIONS::routerAttemptFinish ) || isFinishClick( *evt ) )
         {
             if( m_toolMgr->IsContextMenuActive() )
                 m_toolMgr->WarpAfterContextMenu();
 
-            bool* autoRouted = evt->Parameter<bool*>();
+            bool* autoRouted = evt->IsAction( &PCB_ACTIONS::routerAttemptFinish ) ? evt->Parameter<bool*>() : nullptr;
 
             if( m_router->Finish() )
             {
@@ -2212,6 +2253,56 @@ int ROUTER_TOOL::CycleRouterMode( const TOOL_EVENT& aEvent [[maybe_unused]] )
     UpdateMessagePanel();
 
     return 0;
+}
+
+
+int ROUTER_TOOL::ToggleLookAhead( const TOOL_EVENT& aEvent [[maybe_unused]] )
+{
+    // Only the session changes: the stored setting is what the next run starts with
+    m_router->Settings().ToggleSessionFixAllSegments();
+
+    updateHeadsUpRoute();
+    UpdateMessagePanel();
+
+    return 0;
+}
+
+
+int ROUTER_TOOL::ToggleLoopRemoval( const TOOL_EVENT& aEvent [[maybe_unused]] )
+{
+    PNS::ROUTING_SETTINGS& settings = m_router->Settings();
+
+    settings.SetRemoveLoops( !settings.RemoveLoops() );
+    UpdateMessagePanel();
+
+    return 0;
+}
+
+
+int ROUTER_TOOL::ShowTrackWidthMenu( const TOOL_EVENT& aEvent [[maybe_unused]] )
+{
+    showTrackViaSizePopup( static_cast<int>( TRACK_WIDTH_MENU::PART::TRACK_WIDTHS ) );
+    return 0;
+}
+
+
+int ROUTER_TOOL::ShowViaSizeMenu( const TOOL_EVENT& aEvent [[maybe_unused]] )
+{
+    showTrackViaSizePopup( static_cast<int>( TRACK_WIDTH_MENU::PART::VIA_SIZES ) );
+    return 0;
+}
+
+
+void ROUTER_TOOL::showTrackViaSizePopup( int aPart )
+{
+    PCB_EDIT_FRAME* editFrame = getEditFrame<PCB_EDIT_FRAME>();
+
+    wxCHECK( editFrame, /* void */ );
+
+    TRACK_WIDTH_MENU menu( *editFrame, static_cast<TRACK_WIDTH_MENU::PART>( aPart ) );
+
+    menu.SetTool( this );
+    editFrame->PopupMenu( &menu, editFrame->ScreenToClient( KIPLATFORM::UI::GetMousePosition() ) );
 }
 
 
@@ -4048,6 +4139,10 @@ void ROUTER_TOOL::setTransitions()
     Go( &ROUTER_TOOL::ChangeRouterMode,       PCB_ACTIONS::routerShoveMode.MakeEvent() );
     Go( &ROUTER_TOOL::ChangeRouterMode,       PCB_ACTIONS::routerWalkaroundMode.MakeEvent() );
     Go( &ROUTER_TOOL::CycleRouterMode,        PCB_ACTIONS::cycleRouterMode.MakeEvent() );
+    Go( &ROUTER_TOOL::ToggleLookAhead, PCB_ACTIONS::routerToggleLookAhead.MakeEvent() );
+    Go( &ROUTER_TOOL::ToggleLoopRemoval, PCB_ACTIONS::routerToggleLoopRemoval.MakeEvent() );
+    Go( &ROUTER_TOOL::ShowTrackWidthMenu, PCB_ACTIONS::routerShowTrackWidthMenu.MakeEvent() );
+    Go( &ROUTER_TOOL::ShowViaSizeMenu, PCB_ACTIONS::routerShowViaSizeMenu.MakeEvent() );
     Go( &ROUTER_TOOL::InlineDrag,             PCB_ACTIONS::routerInlineDrag.MakeEvent() );
     Go( &ROUTER_TOOL::InlineBreakTrack,       PCB_ACTIONS::breakTrack.MakeEvent() );
     Go( &ROUTER_TOOL::SpreadTracks,           PCB_ACTIONS::routerSpreadTracks.MakeEvent() );

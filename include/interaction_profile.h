@@ -161,6 +161,30 @@ public:
     static bool IsLive3DRefreshOn( int aSetting, bool aIsLegacySwitchOn, INTERACTION_PROFILE_ID aProfile );
 
     /**
+     * Whether "use starting track width" is on. \a aSetting is `board.auto_track_width_mode` of the project's local
+     * settings (-1 follows the profile, 0 is off, 1 is on). While it follows the profile, the Altium-style profile has
+     * it on, as Altium picks up the width of the track a route starts on, and the stock profile keeps what the older
+     * `board.auto_track_width` switch says, \a aIsLegacySwitchOn, so a stock user's saved choice survives.
+     */
+    static bool IsAutoTrackWidthOn( int aSetting, bool aIsLegacySwitchOn, INTERACTION_PROFILE_ID aProfile );
+
+    /**
+     * The value of `board.auto_track_width_mode` to write when the project's settings are saved. A setting that is
+     * 0 or 1 stays explicit. One that follows the profile keeps following it until the user has made "use starting
+     * track width" differ from what the profile gave (\a aIsOn against IsAutoTrackWidthOn() with the legacy switch as
+     * it was loaded, \a aIsLegacySwitchOn); then it stores the user's choice, so an untouched project keeps following.
+     */
+    static int AutoTrackWidthSettingToStore( int aSetting, bool aIsOn, bool aIsLegacySwitchOn,
+                                             INTERACTION_PROFILE_ID aProfile );
+
+    /**
+     * Whether a left click while routing attempts to finish the route to the nearest ratsnest end (`Ctrl`+click, note
+     * 5.6) instead of fixing the track to the cursor. Only the Altium-style profile, and only with Ctrl alone.
+     */
+    static bool DoesClickAttemptFinish( INTERACTION_PROFILE_ID aProfile, bool aIsCtrlHeld, bool aIsShiftHeld,
+                                        bool aIsAltHeld );
+
+    /**
      * Whether closing the 3D viewer hides it, so that its camera is still there when it is shown again, rather than
      * destroying it. The Altium-style profile hides it when the user closes it (\a aCanVeto, the close event allows
      * a veto); the PCB editor closing, which forces the close, always destroys it, and so does the stock profile.

@@ -235,4 +235,68 @@ BOOST_AUTO_TEST_CASE( HidingTheOnlyTabLeavesNothingToActivate )
 }
 
 
+BOOST_AUTO_TEST_CASE( TheLayerKeysWalkEveryVisibleTabAndSkipTheHiddenOnes )
+{
+    const LSET enabled = fourLayerBoard();
+    LSET       visible = enabled;
+
+    // Every layer is in the bar: the walk is the bar's order, wrapping at the ends
+    const std::vector<PCB_LAYER_ID> order = LayerTabOrder( visible, enabled );
+
+    BOOST_REQUIRE_GT( order.size(), 6u );
+
+    for( size_t i = 0; i < order.size(); ++i )
+    {
+        BOOST_CHECK_EQUAL( SteppedVisibleLayer( order[i], 1, visible, enabled ), order[( i + 1 ) % order.size()] );
+        BOOST_CHECK_EQUAL( SteppedVisibleLayer( order[i], -1, visible, enabled ),
+                           order[( i + order.size() - 1 ) % order.size()] );
+    }
+
+    // The walk goes through the technical layers, not copper only
+    BOOST_CHECK_EQUAL( SteppedVisibleLayer( B_Cu, 1, visible, enabled ), F_SilkS );
+
+    // A hidden layer is stepped over, in both directions
+    visible.reset( F_SilkS );
+    visible.reset( In1_Cu );
+
+    BOOST_CHECK_EQUAL( SteppedVisibleLayer( B_Cu, 1, visible, enabled ), B_SilkS );
+    BOOST_CHECK_EQUAL( SteppedVisibleLayer( F_Cu, 1, visible, enabled ), In2_Cu );
+    BOOST_CHECK_EQUAL( SteppedVisibleLayer( In2_Cu, -1, visible, enabled ), F_Cu );
+    BOOST_CHECK_EQUAL( SteppedVisibleLayer( B_SilkS, -1, visible, enabled ), B_Cu );
+
+    // The first tab follows the last one, and the last precedes the first
+    const std::vector<PCB_LAYER_ID> shown = LayerTabOrder( visible, enabled );
+
+    BOOST_CHECK_EQUAL( SteppedVisibleLayer( shown.back(), 1, visible, enabled ), shown.front() );
+    BOOST_CHECK_EQUAL( SteppedVisibleLayer( shown.front(), -1, visible, enabled ), shown.back() );
+
+    // A layer the board does not have is never reached, however it is marked
+    BOOST_CHECK( !LayerTabOrder( visible | LSET( { In5_Cu } ), enabled ).empty() );
+    BOOST_CHECK_NE( SteppedVisibleLayer( B_Cu, 1, visible | LSET( { In5_Cu } ), enabled ), In5_Cu );
+}
+
+
+BOOST_AUTO_TEST_CASE( TheLayerKeysFromAHiddenLayerReachTheEndsAndNothingVisibleReachesNothing )
+{
+    const LSET enabled = fourLayerBoard();
+    LSET       visible = enabled;
+
+    visible.reset( In1_Cu );
+
+    const std::vector<PCB_LAYER_ID> order = LayerTabOrder( visible, enabled );
+
+    // The active layer is hidden: forward goes to the first tab, back to the last
+    BOOST_CHECK_EQUAL( SteppedVisibleLayer( In1_Cu, 1, visible, enabled ), order.front() );
+    BOOST_CHECK_EQUAL( SteppedVisibleLayer( In1_Cu, -1, visible, enabled ), order.back() );
+
+    // One tab steps to itself
+    BOOST_CHECK_EQUAL( SteppedVisibleLayer( F_Cu, 1, LSET( { F_Cu } ), enabled ), F_Cu );
+    BOOST_CHECK_EQUAL( SteppedVisibleLayer( F_Cu, -1, LSET( { F_Cu } ), enabled ), F_Cu );
+
+    // None visible
+    BOOST_CHECK_EQUAL( SteppedVisibleLayer( F_Cu, 1, LSET(), enabled ), UNDEFINED_LAYER );
+    BOOST_CHECK_EQUAL( SteppedVisibleLayer( F_Cu, -1, LSET(), enabled ), UNDEFINED_LAYER );
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()

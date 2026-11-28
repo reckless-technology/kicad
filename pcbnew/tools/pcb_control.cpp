@@ -67,6 +67,7 @@
 #include <layer_pairs.h>
 #include <pcb_group.h>
 #include <pcb_layer_presentation.h>
+#include <widgets/pcb_layer_tab_bar_model.h>
 #include <pcb_reference_image.h>
 #include <pcb_textbox.h>
 #include <board_tables/generated_table_refresh.h>
@@ -604,6 +605,38 @@ int PCB_CONTROL::LayerPrev( const TOOL_EVENT& aEvent [[maybe_unused]] )
     m_frame->SwitchLayer( layer );
 
     return 0;
+}
+
+
+int PCB_CONTROL::stepVisibleLayer( int aStep )
+{
+    // The layers the tab bar shows are the ones the Appearance panel has switched on
+    PCB_BASE_EDIT_FRAME* editFrame = dynamic_cast<PCB_BASE_EDIT_FRAME*>( m_frame );
+    LSET                 visible = board()->GetVisibleLayers();
+
+    if( editFrame && editFrame->GetAppearancePanel() )
+        visible = editFrame->GetAppearancePanel()->GetVisibleLayerSet();
+
+    PCB_LAYER_ID layer = SteppedVisibleLayer( m_frame->GetActiveLayer(), aStep, visible, board()->GetEnabledLayers() );
+
+    if( layer == UNDEFINED_LAYER )
+        wxBell();
+    else
+        m_frame->SwitchLayer( layer );
+
+    return 0;
+}
+
+
+int PCB_CONTROL::LayerNextVisible( const TOOL_EVENT& aEvent [[maybe_unused]] )
+{
+    return stepVisibleLayer( 1 );
+}
+
+
+int PCB_CONTROL::LayerPrevVisible( const TOOL_EVENT& aEvent [[maybe_unused]] )
+{
+    return stepVisibleLayer( -1 );
 }
 
 
@@ -3524,6 +3557,8 @@ void PCB_CONTROL::setTransitions()
     Go( &PCB_CONTROL::LayerSwitch,          PCB_ACTIONS::layerBottom.MakeEvent() );
     Go( &PCB_CONTROL::LayerNext,            PCB_ACTIONS::layerNext.MakeEvent() );
     Go( &PCB_CONTROL::LayerPrev,            PCB_ACTIONS::layerPrev.MakeEvent() );
+    Go( &PCB_CONTROL::LayerNextVisible,     PCB_ACTIONS::layerNextVisible.MakeEvent() );
+    Go( &PCB_CONTROL::LayerPrevVisible,     PCB_ACTIONS::layerPrevVisible.MakeEvent() );
     Go( &PCB_CONTROL::LayerToggle,          PCB_ACTIONS::layerToggle.MakeEvent() );
     Go( &PCB_CONTROL::LayerAlphaInc,        PCB_ACTIONS::layerAlphaInc.MakeEvent() );
     Go( &PCB_CONTROL::LayerAlphaDec,        PCB_ACTIONS::layerAlphaDec.MakeEvent() );
